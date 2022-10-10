@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "discord.js": "^14.5.0",
+    "klaw-sync": "^6.0.0"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && tsc",
+    "run": "node ./dist/index.js",
+    "dev": "yarn build && yarn run run"
+  },
+  "devDependencies": {
+    "colors": "^1.4.0",
+    "typescript": "^4.8.4"
+  }
+}
