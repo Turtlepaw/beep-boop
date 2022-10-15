@@ -6,6 +6,7 @@ import { StartService } from "./handler";
 import * as dotenv from 'dotenv';
 dotenv.config()
 import "./configuration";
+console.log("TROUBLESHOOTING LOG:".red, `${process.env}`.gray)
 
 const client = new Client({
     intents: [
