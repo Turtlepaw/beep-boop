@@ -1,10 +1,31 @@
 import { Client, Events } from "discord.js";
+import klawSync from "klaw-sync";
+import ButtonBuilder, { ButtonBuilderOptions } from "./lib/ButtonBuilder";
 
 export async function StartService(client: Client){
+    //Handle command interactions
     client.on(Events.InteractionCreate, async (interaction) => {
         if(interaction.isChatInputCommand()){
             const command = client.commands.get(interaction.commandName);
             command?.ExecuteCommand(interaction, client);
+        }
+    })
+
+    //Find the button files
+    const Files = klawSync("./dist/buttons", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+    const Buttons: ButtonBuilder[] = [];
+    for (const File of Files) {
+        const OriginalFile = require(File.path);
+        const Button: ButtonBuilder = new OriginalFile.default();
+        Buttons.push(Button);
+    }
+    
+    //Handle button interactions
+    client.on(Events.InteractionCreate, async (interaction) => {
+        if (interaction.isButton()) {
+            const Button = Buttons.find(e => e.CustomId == interaction.customId)
+            if(Button?.CustomId != interaction.customId) return;
+            Button.ExecuteInteraction(interaction, client);
         }
     })
 }

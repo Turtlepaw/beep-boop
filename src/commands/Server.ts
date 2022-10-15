@@ -2,7 +2,7 @@ import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Colors
 import Command from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
 
-export default class Help extends Command {
+export default class Server extends Command {
     constructor() {
         super({
             CanaryCommand: true,
