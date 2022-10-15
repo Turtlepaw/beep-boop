@@ -34,7 +34,7 @@ export default class Help extends Command {
                         name: "Beep Boop",
                         iconURL: client.user?.avatarURL() || ""
                     })
-                    .setDescription("Here's some basic information about Beep Boop.\n\nBeep Boop's just an ordinary bot that I built for utilitie purposes. Here's what you can do with it:")
+                    .setDescription("Here's some basic information about Beep Boop.\n\nBeep Boop's just an ordinary bot that I built for utility purposes. Here's what you can do with it:")
                     .addFields([{
                         name: `</whats_new:1030653979643887646>`,
                         value: "Shows you what's been happening on Discord, like new changes (e.g. modals, threads, etc...)"
