@@ -6,7 +6,6 @@ import { StartService } from "./handler";
 import * as dotenv from 'dotenv';
 dotenv.config()
 import "./configuration";
-console.log(process.env)
 
 const client = new Client({
     intents: [
@@ -26,6 +25,7 @@ client.on(Events.ClientReady, async () => {
     console.log("Beep boop! I'm ready.".green);
     console.log("Registering commands...".grey);
     client.commands = new Map()
+    client.DetailedCommands = [];
     await Deploy(client).then(() => console.log("Registered all commands successfully.".green));
     await StartService(client).then(() => {
         console.log("READY!".green)

@@ -24,10 +24,26 @@ export async function Deploy(client: Client) {
     const rest = new REST({ version: '10' }).setToken(token);
 
     rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: DeveloperCommands })
-        .then((data: any) => console.log(`Successfully registered ${data?.length} dev application commands.`))
+        .then((data: any) => {
+            console.log(`Successfully registered ${data?.length} dev application commands.`)
+            for(const CommandData of data){
+                client.DetailedCommands.push({
+                    Id: CommandData.id,
+                    Name: CommandData.name
+                });
+            }
+        })
         .catch(console.error);
 
     rest.put(Routes.applicationCommands(clientId), { body: PublicCommands })
-        .then((data: any) => console.log(`Successfully registered ${data?.length} public application commands.`))
+        .then((data: any) => {
+            console.log(`Successfully registered ${data?.length} public application commands.`)
+            for (const CommandData of data) {
+                client.DetailedCommands.push({
+                    Id: CommandData.id,
+                    Name: CommandData.name
+                });
+            }
+        })
         .catch(console.error);
 }

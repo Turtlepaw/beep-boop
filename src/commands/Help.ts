@@ -34,17 +34,14 @@ export default class Help extends Command {
                         name: "Beep Boop",
                         iconURL: client.user?.avatarURL() || ""
                     })
-                    .setDescription("Here's some basic information about Beep Boop.")
-                    .addFields([
-                        {
-                            name: "Who built this?",
-                            value: "Turtlepaw#3806"
-                        },
-                        {
-                            name: "What's this bot for?",
-                            value: "Mainly utilies for my servers"
-                        }
-                    ])
+                    .setDescription("Here's some basic information about Beep Boop.\n\nBeep Boop's just an ordinary bot that I built for utilitie purposes. Here's what you can do with it:")
+                    .addFields([{
+                        name: `</whats_new:1030653979643887646>`,
+                        value: "Shows you what's been happening on Discord, like new changes (e.g. modals, threads, etc...)"
+                    }, {
+                        name: "You've reached the end...",
+                        value: "That's all, seriously, no more stuff"
+                    }])
             ],
             components: [Buttons]
         })
