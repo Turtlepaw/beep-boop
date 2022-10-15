@@ -3,6 +3,10 @@ import { token } from "./configuration";
 import "colors";
 import { Deploy } from "./deploy";
 import { StartService } from "./handler";
+import * as dotenv from 'dotenv';
+dotenv.config()
+import "./configuration";
+console.log(process.env)
 
 const client = new Client({
     intents: [

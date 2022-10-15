@@ -1,6 +1,4 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import * as dotenv from 'dotenv';
-dotenv.config()
 
 export const token = process.env.TOKEN || "";
 export const clientId = process.env.CLIENT_ID || "1028785995337977856";
