@@ -1,16 +1,16 @@
 //Import packages
 import { Client, IntentsBitField, Partials, Events } from "discord.js";
-import { token } from "./configuration";
 import { Deploy } from "./deploy";
 import { StartService } from "./handler";
 //dotenv stuff
 import * as dotenv from 'dotenv';
 dotenv.config()
 //Import files & packages
-import "./configuration";
+import { token } from "./configuration";
 import "colors";
 //Debug logs
 console.log("DEBUG LOG:".red, process.env)
+console.log("DEBUG:".red, token)
 
 //Create Discord.js client
 const client = new Client({
