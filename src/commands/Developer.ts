@@ -5,7 +5,7 @@ import { Embed } from "../configuration";
 export default class Developer extends Command {
     constructor() {
         super({
-            CanaryCommand: true,
+            CanaryCommand: false,
             Description: "Utils built for the developer, but anyone can use them.",
             GuildOnly: false,
             Name: "developer",
@@ -22,6 +22,11 @@ export default class Developer extends Command {
                         .setLabel("See Command Id")
                         .setEmoji("📜")
                         .setCustomId("SEE_COMMANDS")
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel("Test Appeal System")
+                        .setEmoji("👆")
+                        .setCustomId("TEST_APPEALS")
                         .setStyle(ButtonStyle.Secondary)
                 );
 

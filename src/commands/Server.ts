@@ -5,7 +5,7 @@ import { Embed } from "../configuration";
 export default class Server extends Command {
     constructor() {
         super({
-            CanaryCommand: true,
+            CanaryCommand: false,
             Description: "Get information about the server.",
             GuildOnly: false,
             Name: "server",

@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { AutocompleteInteraction, Client, CommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType, PermissionsString } from "discord.js";
 
-export type CommandBuilderOptions = {
+export type ContextMenuBuilderOptions = {
     /**
      * Required permissions to execute this command.
      */
@@ -19,50 +19,41 @@ export type CommandBuilderOptions = {
      */
     CanaryCommand: boolean;
     /**
-     * The name of this command. (e.g. /command)
+     * The name of this command. (e.g. User Information)
      */
     Name: string;
     /**
-     * The description of the command that will be shown to the member.
+     * The type of this context menu. (can be user or message)
      */
-    Description: string;
+    Type: ContextMenuCommandType;
 }
-export default class Command {
+export default class ContextMenu {
     public Name: string;
-    public Description: string;
+    public Type: ContextMenuCommandType;
     public RequiredPermissions!: PermissionsString[];
     public SomePermissions!: PermissionsString[];
-    public Builder: SlashCommandBuilder = new SlashCommandBuilder();
+    public Builder: ContextMenuCommandBuilder = new ContextMenuCommandBuilder();
     public CanaryCommand: boolean = false;
     public GuildOnly: boolean = true;
 
-    constructor(options: CommandBuilderOptions) {
+    constructor(options: ContextMenuBuilderOptions) {
         //Setting Permissions
         this.SomePermissions = options.SomePermissions;
         this.RequiredPermissions = options.RequiredPermissions;
-        //Setting Main Data (name, description, etc...)
+        //Setting Main Data (name, guild only, etc...)
         this.Name = options.Name;
-        this.Description = options.Description;
+        this.Type = options.Type;
         this.CanaryCommand = options.CanaryCommand;
         this.GuildOnly = options.GuildOnly;
         //Set stuff on the builder
         this.Builder
             .setName(this.Name)
-            .setDescription(this.Description)
+            .setType(this.Type)
             .setDMPermission(this.GuildOnly)
     }
 
-    MakeCommandJSON() {
-        return this.Builder.toJSON();
-    }
-
-    public async ExecuteCommand(
-        interaction: CommandInteraction,
-        client: Client
-    ): Promise<void> { }
-
-    public async ExecuteAutocompleteRequest(
-        interaction: AutocompleteInteraction,
+    public async ExecuteContextMenu(
+        interaction: ContextMenuCommandInteraction,
         client: Client
     ): Promise<void> { }
 }

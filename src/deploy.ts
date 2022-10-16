@@ -2,6 +2,7 @@ import { REST, SlashCommandBuilder, Routes, Client } from "discord.js";
 import { clientId, guildId, token } from "./configuration";
 import klawSync from "klaw-sync";
 import CommandBuilder from "./lib/CommandBuilder";
+import ContextMenu from "./lib/ContextMenuBuilder";
 
 export async function Deploy(client: Client) {
     const DeveloperCommands: any[] = [];
@@ -21,12 +22,29 @@ export async function Deploy(client: Client) {
         }
     }
 
+    const ContextMenuFiles = klawSync("./dist/context_menus", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+    const ContextMenus: ContextMenu[] = [];
+    for (const File of ContextMenuFiles) {
+        const OriginalFile = require(File.path);
+        const ContextMenu: ContextMenu = new OriginalFile.default();
+        ContextMenus.push(ContextMenu);
+        client.ContextMenus.set(ContextMenu.Name, ContextMenu);
+    }
+
+    ContextMenus.forEach(e => {
+        if (e.CanaryCommand) {
+            DeveloperCommands.push(e.Builder.toJSON())
+        } else {
+            PublicCommands.push(e.Builder.toJSON())
+        }
+    })
+
     const rest = new REST({ version: '10' }).setToken(token);
 
     rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: DeveloperCommands })
         .then((data: any) => {
             console.log(`Successfully registered ${data?.length} dev application commands.`)
-            for(const CommandData of data){
+            for (const CommandData of data) {
                 client.DetailedCommands.push({
                     Id: CommandData.id,
                     Name: CommandData.name

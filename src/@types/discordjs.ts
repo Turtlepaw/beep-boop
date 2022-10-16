@@ -1,3 +1,4 @@
+import ContextMenu from "../lib/ContextMenuBuilder";
 import Command from "../lib/CommandBuilder";
 
 declare module 'discord.js' {
@@ -6,6 +7,7 @@ declare module 'discord.js' {
         DetailedCommands: {
             Id: string,
             Name: string
-        }[]
+        }[],
+        ContextMenus: Map<string, ContextMenu>
     }
 }

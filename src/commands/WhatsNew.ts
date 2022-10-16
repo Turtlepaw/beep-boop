@@ -5,7 +5,7 @@ import { Embed } from "../configuration";
 export default class WhatsNew extends Command {
     constructor() {
         super({
-            CanaryCommand: true,
+            CanaryCommand: false,
             Description: "What has Discord been up to?",
             GuildOnly: false,
             Name: "whats_new",

@@ -5,7 +5,7 @@ import { Embed } from "../configuration";
 export default class Help extends Command {
     constructor() {
         super({
-            CanaryCommand: true,
+            CanaryCommand: false,
             Description: "Get some information about Beep Boop.",
             GuildOnly: false,
             Name: "help",
