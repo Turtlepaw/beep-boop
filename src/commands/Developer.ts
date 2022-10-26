@@ -27,7 +27,13 @@ export default class Developer extends Command {
                         .setLabel("Test Appeal System")
                         .setEmoji("👆")
                         .setCustomId("TEST_APPEALS")
-                        .setStyle(ButtonStyle.Secondary)
+                        .setStyle(ButtonStyle.Secondary),
+                        new ButtonBuilder()
+                        .setLabel("Eval")
+                        .setEmoji("📦")
+                        .setCustomId("EVAL_CODE")
+                        .setStyle(ButtonStyle.Danger)
+                        .setDisabled(interaction.user.id != "820465204411236362")
                 );
 
             await interaction.reply({

@@ -12,6 +12,13 @@ export default class AddBirthday extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        if(interaction.user.id in client.storage["blocked"]) {
+            await interaction.reply({
+                content: "You're blocked from appealing, we sent you a message about why you were blocked.",
+                ephemeral: true
+            })
+            return;
+        }
         const Modal = new ModalBuilder()
             .setComponents(
                 new ActionRowBuilder<ModalActionRowComponentBuilder>()
@@ -29,7 +36,7 @@ export default class AddBirthday extends Button {
                         .setStyle(TextInputStyle.Paragraph)
                         .setRequired(true),
                 ),
-                new ActionRowBuilder<ModalActionRowComponentBuilder>()
+                /*new ActionRowBuilder<ModalActionRowComponentBuilder>()
                     .addComponents(
                         new TextInputBuilder()
                             .setCustomId("Q3")
@@ -37,7 +44,7 @@ export default class AddBirthday extends Button {
                             .setPlaceholder("DiscordUser#0000/1028790472879128676")
                             .setStyle(TextInputStyle.Short)
                             .setRequired(true)
-                    )
+                    )*/
             )
             .setCustomId("APPEAL_MODAL")
             .setTitle("Requesting an Appeal")

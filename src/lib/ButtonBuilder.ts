@@ -36,6 +36,7 @@ export default class Button {
 
     async ExecuteInteraction(
         interaction: ButtonInteraction,
-        client: Client
+        client: Client,
+        customId: string
     ): Promise<void> { }
 }

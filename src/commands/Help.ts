@@ -40,7 +40,7 @@ export default class Help extends Command {
                         value: "Shows you what's been happening on Discord, like new changes (e.g. modals, threads, etc...)"
                     }, {
                         name: "You've reached the end...",
-                        value: "That's all, seriously, no more stuff"
+                        value: "We're still building stuff!"
                     }])
             ],
             components: [Buttons]

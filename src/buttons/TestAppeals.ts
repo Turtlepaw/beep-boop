@@ -15,6 +15,13 @@ export default class TestAppeals extends Button {
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
         //@ts-expect-error
-        await SendAppealMessage(interaction.member);
+        const res = await SendAppealMessage(interaction.member);
+
+        if(res == null){
+            interaction.reply({
+                ephemeral: true,
+                content: "You haven't set up appeals yet, you can set up appeals using </server:1030997072175968328>"
+            })
+        }
     }
 }

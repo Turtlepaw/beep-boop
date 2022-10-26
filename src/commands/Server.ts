@@ -20,8 +20,14 @@ export default class Server extends Command {
                 .addComponents(
                     new ButtonBuilder()
                         .setLabel("Add Birthday as Event")
+                        .setEmoji("🎂")
                         .setCustomId("ADD_AS_BIRTHDAY")
-                        .setStyle(ButtonStyle.Primary)
+                        .setStyle(ButtonStyle.Primary),
+                    new ButtonBuilder()
+                    .setCustomId("SETUP_APPEALS")
+                    .setLabel("Setup Appeals")
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji("📫")
                 );
 
             await interaction.reply({

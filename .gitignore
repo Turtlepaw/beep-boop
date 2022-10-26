@@ -104,6 +104,6 @@ dist
 .tern-port
 
 .env
-storage.json
+storage
 ratelimits.json
 *config.json

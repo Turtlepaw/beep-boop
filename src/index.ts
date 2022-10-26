@@ -2,6 +2,7 @@
 import { Client, IntentsBitField, Partials, Events } from "discord.js";
 import { Deploy } from "./deploy";
 import { StartService } from "./handler";
+import KeyFileStorage from "key-file-storage";
 //dotenv stuff
 import * as dotenv from 'dotenv';
 dotenv.config()
@@ -30,6 +31,7 @@ const client = new Client({
 client.on(Events.ClientReady, async () => {
     console.log("Getting everything ready...".green);
     console.log("Registering commands...".grey);
+    client.storage = KeyFileStorage("storage")
     client.commands = new Map();
     client.ContextMenus = new Map();
     client.DetailedCommands = [];
