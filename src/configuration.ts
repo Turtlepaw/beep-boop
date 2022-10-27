@@ -1,23 +1,7 @@
 import { EmbedBuilder } from "@discordjs/builders";
-const { Token, ClientId } = requireConfigJSON();
 
-function requireConfigJSON() {
-    try {
-        const { token: Token, clientId: ClientId } = require("../config.json");
-        return {
-            Token,
-            ClientId
-        }
-    } catch (e) {
-        return {
-            Token: process.env["TOKEN"] || "aa",
-            ClientId: process.env["CLIENT_ID"] || "aa"
-        }
-    }
-}
-
-export const token = process.env.TOKEN || Token;
-export const clientId = process.env.CLIENT_ID || ClientId;
+//export const token = process.env.TOKEN;
+//export const clientId = process.env.CLIENT_ID;
 export const SupportServerInvite = "https://discord.gg/G59JT7VbxZ";
 export const guildId = "1028789308401918004";
 export const color = "#FF6060";

@@ -1,8 +1,9 @@
 import { REST, SlashCommandBuilder, Routes, Client } from "discord.js";
-import { clientId, guildId, token } from "./configuration";
+import { guildId } from "./configuration";
 import klawSync from "klaw-sync";
 import CommandBuilder from "./lib/CommandBuilder";
 import ContextMenu from "./lib/ContextMenuBuilder";
+import { CLIENT_ID as clientId, TOKEN as token } from "./index";
 
 export async function Deploy(client: Client) {
     const DeveloperCommands: any[] = [];

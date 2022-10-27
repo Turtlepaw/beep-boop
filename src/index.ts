@@ -6,12 +6,14 @@ import KeyFileStorage from "key-file-storage";
 //dotenv stuff
 import * as dotenv from 'dotenv';
 dotenv.config()
-//Import files & packages
-import { token } from "./configuration";
 import "colors";
 //Debug logs
 console.log("DEBUG LOG:".red, process.env)
-console.log("DEBUG:".red, token)
+
+export const TOKEN = process.env.TOKEN;
+export const CLIENT_ID = process.env.CLIENT_ID;
+
+console.log("DEBUG:".red, TOKEN)
 
 //Create Discord.js client
 const client = new Client({
@@ -40,4 +42,4 @@ client.on(Events.ClientReady, async () => {
     console.log("Ready".green)
 });
 
-client.login(token);
+client.login(TOKEN);
