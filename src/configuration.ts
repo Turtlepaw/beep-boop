@@ -3,7 +3,7 @@ const { Token, ClientId } = requireConfigJSON();
 
 function requireConfigJSON() {
     try {
-        const { token: Token, clientId: ClientId } = require("./config.json");
+        const { token: Token, clientId: ClientId } = require("../config.json");
         return {
             Token,
             ClientId
