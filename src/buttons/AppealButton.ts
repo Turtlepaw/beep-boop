@@ -12,7 +12,7 @@ export default class AddBirthday extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        if(interaction.user.id in client.storage["blocked"]) {
+        if (client.storage["blocked"] != null && client.storage["blocked"].includes(interaction.user.id)) {
             await interaction.reply({
                 content: "You're blocked from appealing, we sent you a message about why you were blocked.",
                 ephemeral: true

@@ -8,7 +8,8 @@ export default class AddBirthday extends Button {
             CustomId: "BLOCK_{any}",
             GuildOnly: true,
             RequiredPermissions: [],
-            SomePermissions: []
+            SomePermissions: [],
+            RequireIdFetching: true
         })
     }
 
@@ -20,6 +21,8 @@ export default class AddBirthday extends Button {
 
         await interaction.showModal(
             new ModalBuilder()
+                .setCustomId("SET_REASON_UT9")
+                .setTitle("Reason")
                 .addComponents(
                     new ActionRowBuilder<TextInputBuilder>()
                         .addComponents(
@@ -55,10 +58,11 @@ export default class AddBirthday extends Button {
 
         client.storage["blocked"] = [
             Id,
-            ...client.storage["blocked"]
+            ...(client.storage["blocked"] == null ? [] : client.storage["blocked"])
         ];
 
-        User.dmChannel.send({
+        const Channel = await User.user.createDM(true);
+        Channel.send({
             content: `😢 You've been blocked from appealing, here's what I know:\n\n\`\`\`${Reason}\`\`\``
         });
     }

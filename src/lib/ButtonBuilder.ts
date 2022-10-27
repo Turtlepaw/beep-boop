@@ -18,12 +18,14 @@ export type ButtonBuilderOptions = {
      * The custom Id that was set for this button.
      */
     CustomId: string;
+    RequireIdFetching?: boolean;
 }
 export default class Button {
     public CustomId: string;
     public RequiredPermissions!: PermissionsString[];
     public SomePermissions!: PermissionsString[];
     public GuildOnly: boolean = true;
+    public RequireIdFetching: boolean = false;
 
     constructor(options: ButtonBuilderOptions) {
         //Setting Permissions
@@ -32,6 +34,7 @@ export default class Button {
         //Setting Main Data (customId, guildOnly, etc...)
         this.GuildOnly = options.GuildOnly;
         this.CustomId = options.CustomId;
+        this.RequireIdFetching = options.RequireIdFetching;
     }
 
     async ExecuteInteraction(

@@ -18,6 +18,7 @@ function requireConfigJSON() {
 
 export const token = process.env.TOKEN || Token;
 export const clientId = process.env.CLIENT_ID || ClientId;
+export const SupportServerInvite = "https://discord.gg/G59JT7VbxZ";
 export const guildId = "1028789308401918004";
 export const color = "#FF6060";
 export enum Emojis {

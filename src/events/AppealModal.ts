@@ -17,10 +17,11 @@ export default class AppealService extends Event {
             RequestReason: ModalInteraction.fields.getTextInputValue("Q2"),
             //DiscordId: ModalInteraction.fields.getTextInputValue("Q3")
         }
+        const SendButtonId = "SEND_APPEAL_BUTTON"
         const Buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId("SEND_APPEAL")
+                    .setCustomId(SendButtonId)
                     .setEmoji("✉️")
                     .setLabel("Send")
                     .setStyle(ButtonStyle.Success)
@@ -51,7 +52,8 @@ export default class AppealService extends Event {
 
         const Button = await ModalInteraction.channel.awaitMessageComponent({
             time: 0,
-            componentType: ComponentType.Button
+            componentType: ComponentType.Button,
+            filter: (i) => i.customId == SendButtonId
         });
 
         const GuildId = client.storage[ModalInteraction.message.id];
@@ -62,11 +64,11 @@ export default class AppealService extends Event {
         const Components = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId("APPEALBTN_ACCEPT")
+                    .setCustomId("2RJ4JDWO_ACCEPT")
                     .setLabel("Accept")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setCustomId("APPEALBTN_DENY")
+                    .setCustomId("2RJ4JDWO_DENY")
                     .setLabel("Deny")
                     .setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder()
@@ -78,6 +80,7 @@ export default class AppealService extends Event {
 
 
         const Message = Channel.send({
+            components: [Components],
             embeds: [
                 new Embed()
                     .setAuthor({

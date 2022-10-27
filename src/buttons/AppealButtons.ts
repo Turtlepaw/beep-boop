@@ -1,25 +1,33 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { SendError } from "../error";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class AddBirthday extends Button {
     constructor() {
         super({
-            CustomId: "APPEALBTN_{any}",
+            CustomId: "2RJ4JDWO_{any}",
             GuildOnly: true,
             RequiredPermissions: [],
-            SomePermissions: []
+            SomePermissions: [],
+            RequireIdFetching: true
         })
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client, Id: "DENY" | "ACCEPT") {
+        //await interaction.deferReply();
         const UserId = client.storage[`pending_${interaction.message.id}`];
         const User = await interaction.guild.members.fetch({
             user: UserId
         });
+        const Channel = await User.createDM(true);
 
         if (Id == "ACCEPT") {
-            interaction.guild.members.unban(UserId, `${interaction.user} accepted the appeal`);
+            try {
+                await interaction.guild.members.unban(UserId, `${interaction.user} accepted the appeal`)
+            } catch (e) {
+                await SendError(interaction, e);
+            }
             interaction.reply({
                 embeds: [
                     new Embed()
@@ -31,18 +39,21 @@ export default class AddBirthday extends Button {
                 ]
             });
 
-            User.dmChannel.send({
-                content: `${Emojis.Tada} Your appeal was accepted, you're now able to rejoin! ${interaction.guild.invites.create(
-                    //@ts-expect-error
-                    interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText).first(), {
-                    maxAge: 0,
-                    maxUses: 3
-                }
-                )}`
+            const Invite = await interaction.guild.invites.create(
+                //@ts-expect-error
+                interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText).first(), {
+                maxAge: 0,
+                maxUses: 3
+            });
+
+            Channel.send({
+                content: `${Emojis.Tada} Your appeal was accepted, you're now able to rejoin! ${Invite.url}`
             });
         } else if (Id == "DENY") {
             await interaction.showModal(
                 new ModalBuilder()
+                    .setTitle("Reason")
+                    .setCustomId("SET_REASON_F25")
                     .addComponents(
                         new ActionRowBuilder<TextInputBuilder>()
                             .addComponents(
@@ -72,9 +83,13 @@ export default class AddBirthday extends Button {
                 ]
             });
 
-            User.dmChannel.send({
+            Channel.send({
                 content: `😢 Your appeal was denied, here's what I know:\n\n\`\`\`${Reason}\`\`\``
             });
+        } else {
+            interaction.reply({
+                content: "Something didn't go quite right..."
+            })
         }
     }
 }
