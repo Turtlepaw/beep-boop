@@ -1,4 +1,4 @@
-import { Client, Events as ClientEvents } from "discord.js";
+import { Client, Events as ClientEvents, InteractionReplyOptions } from "discord.js";
 import klawSync from "klaw-sync";
 import ButtonBuilder, { ButtonBuilderOptions } from "./lib/ButtonBuilder";
 import ContextMenu from "./lib/ContextMenuBuilder";
@@ -93,6 +93,19 @@ export async function StartService(client: Client) {
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isChatInputCommand()) {
                 const command = client.commands.get(interaction.commandName);
+                const PermissionsMessage: InteractionReplyOptions = {
+                    content: "⚠️ You don't have the required permissions to run this command.",
+                    ephemeral: true
+                };
+                if (!interaction.memberPermissions.any(command.SomePermissions)) {
+                    interaction.reply(PermissionsMessage);
+                    return;
+                }
+                if (!interaction.memberPermissions.has(command.RequiredPermissions)) {
+                    interaction.reply(PermissionsMessage);
+                    return;
+                }
+
                 command?.ExecuteCommand(interaction, client);
             }
         })
