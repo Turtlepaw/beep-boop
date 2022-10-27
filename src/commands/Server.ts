@@ -6,7 +6,7 @@ export default class Server extends Command {
     constructor() {
         super({
             CanaryCommand: false,
-            Description: "Get information about the server.",
+            Description: "Manage the server's settings.",
             GuildOnly: false,
             Name: "server",
             RequiredPermissions: [],

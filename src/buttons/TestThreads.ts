@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, InteractionResponse, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, InteractionResponse, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Button from "../lib/ButtonBuilder";
 
 export default class TestThreads extends Button {
@@ -29,5 +29,18 @@ export default class TestThreads extends Button {
             name: "🧵 Thread"
         });
 
+        interaction.reply({
+            content: `Thread Created`,
+            components: [
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setStyle(ButtonStyle.Link)
+                            .setLabel("Open Thread")
+                            .setURL(Thread.url)
+                    )
+            ],
+            ephemeral: true
+        })
     }
 }
