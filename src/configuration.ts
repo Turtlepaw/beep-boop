@@ -10,8 +10,8 @@ function requireConfigJSON() {
         }
     } catch (e) {
         return {
-            Token: "aa",
-            ClientId: "aa"
+            Token: process.env.TOKEN || "aa",
+            ClientId: process.env.CLIENT_ID || "aa"
         }
     }
 }
