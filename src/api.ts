@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 
 export enum Routes {
     AppealSettings = "/settings/appeals",
+    TicketSettings = "/settings/tickets",
     Index = "/",
     OAuth = "/oauth",
     GuildsWith = "/guilds",
@@ -126,6 +127,33 @@ export async function API(client: Client, token: string) {
         ));
 
         client.storage[`${GuildId}_appeal_channel`] = Channel;
+        res.send(Messages.Success);
+    });
+
+    app.get(Routes.TicketSettings, async (req, res) => {
+        const GuildId = req.query.id;
+
+        if (VerifyNumber(GuildId, 19)) return res.send(GetMessage(
+            Message(Messages.Error, "Invalid Guild Id")
+        ));
+
+        const Settings = client.storage[`${GuildId}_tickets`];
+        res.send(Settings);
+    });
+
+    app.post(Routes.TicketSettings, async (req, res) => {
+        const GuildId = req.body?.id;
+        const Channel = req.body?.channel;
+
+        if (VerifyNumber(Channel, 19)) return res.send(GetMessage(
+            Message(Messages.Error, "Invalid Channel Id")
+        ));
+
+        if (VerifyNumber(GuildId, 18)) return res.send(GetMessage(
+            Message(Messages.Error, "Invalid Guild Id")
+        ));
+
+        client.storage[`${GuildId}_tickets`] = Channel;
         res.send(Messages.Success);
     });
 

@@ -3,13 +3,13 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import Image from 'next/image'
 import React, { useState } from 'react';
-import { AutoCenter } from '../../components/AutoCenter';
-import { AddIcon, DownIcon } from '../../components/Icons';
-import { ExternalIcon, Menu } from '../../components/Menu';
-import { GetAppeals, GetChannels, SetAppeals } from '../../utils/api';
-import { DefaultProps, parseUser } from '../../utils/parse-user';
-import { APIChannel, APIGuild } from '../../utils/types';
-import { Configuration } from '../_app';
+import { AutoCenter } from '../../../components/AutoCenter';
+import { AddIcon, DownIcon } from '../../../components/Icons';
+import { ExternalIcon, Menu } from '../../../components/Menu';
+import { GetAppeals, GetChannels, SetAppeals } from '../../../utils/api';
+import { DefaultProps, parseUser } from '../../../utils/parse-user';
+import { APIChannel, APIGuild } from '../../../utils/types';
+import { Configuration } from '../../_app';
 
 export interface Props extends DefaultProps {
     guild: APIGuild | null;
@@ -79,33 +79,29 @@ export default function Home(props: Props) {
                 <Menu user={props.user} isDashboard />
                 <div>
                     <Center>
-                        <img src={guild.IconURL || ""} className="rounded-full w-16" />
+                        {/*<img src={guild.IconURL || ""} className="rounded-full w-16" />*/}
                     </Center>
-                    <h1 className='font-bold text-4xl pt-5 pb-5'>
+                    <h1 className='font-bold text-4xl pt-5'>
                         {guild?.Name}
                     </h1>
+                    <h2 className='font-bold text-xl DiscordTag pb-5'>
+                        Appeal Settings
+                    </h2>
                 </div>
 
-                <ExpandableCard expand={(
-                    <div className='mt-5'>
-                        <AutoCenter className='pt-4'>
-                            <h1 className='pb-2 text-lg font-semibold'>Channel</h1>
-                            <Select autoComplete='off' placeholder='Select option' width="10rem" onChange={OnChange.Appeals} value={props.channel}>
-                                {channels.map(e => (
-                                    <option selected={e.Id == Values.Appeals[0] || (e.Id == props.channel)} className='text-black' value={e.Id} key={e.Id}>#{e.Name}</option>
-                                ))}
-                            </Select>
-                            <Button className='mt-5' variant="success" onClick={TogglePanel}>
-                                Apply
-                            </Button>
-                        </AutoCenter>
-                    </div>
-                )
-                }>
-                    <h1>Appeal Settings</h1>
-                </ExpandableCard >
+                <AutoCenter className='pt-2'>
+                    <h1 className='pb-2 text-lg font-semibold'>Channel</h1>
+                    <Select autoComplete='off' placeholder='Select option' width="10rem" onChange={OnChange.Appeals} value={props.channel}>
+                        {channels.map(e => (
+                            <option selected={e.Id == Values.Appeals[0] || (e.Id == props.channel)} className='text-black' value={e.Id} key={e.Id}>#{e.Name}</option>
+                        ))}
+                    </Select>
+                    <Button className='mt-5' variant="success" onClick={TogglePanel}>
+                        Apply
+                    </Button>
+                </AutoCenter>
             </AutoCenter >
-            <div className={`${!SavePanel && "hidden"} popup z-50 fixed bottom-10 right-0 w-full flex flex-row flex-nowrap justify-center items-center`}>
+            <div className={`${!SavePanel && "hidden"} ease-in-out ${SavePanel == false ? "popdown" : "popup"} z-50 fixed bottom-10 right-0 w-full flex flex-row flex-nowrap justify-center items-center`}>
                 <div className='bg-[#131313] p-5 rounded-[8px]'>
                     You have unsaved changes
                     {/*ADD ANIMATIONS*/}

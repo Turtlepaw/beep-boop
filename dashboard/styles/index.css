@@ -241,20 +241,23 @@
 }
 
 .popup {
-  animation: popup 2s 0s;
+  animation: popup 0.5s 0s;
+}
+
+.popdown {
+  animation: popup 0.5s 0s;
+  animation-direction: reverse;
 }
 
 @keyframes popup {
-  0% {
+  /* 0% {
     bottom: -10;
-  }
+    opacity: 0;
+  } */
 
-  50% {
-    bottom: -5;
-  }
-
-  60% {
+  0% {
     bottom: 0;
+    opacity: 0;
   }
 
   70% {
@@ -263,5 +266,27 @@
 
   100% {
     bottom: 10;
+    opacity: 1;
+  }
+}
+
+@keyframes popdown {
+  /* 0% {
+    bottom: -10;
+    opacity: 0;
+  } */
+
+  0% {
+    bottom: 10;
+    opacity: 1;
+  }
+
+  70% {
+    bottom: 5;
+  }
+
+  100% {
+    bottom: 0;
+    opacity: 0;
   }
 }
