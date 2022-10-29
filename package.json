@@ -1,15 +1,24 @@
 {
   "dependencies": {
+    "@types/express": "^4.17.14",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/node-fetch": "^2.6.2",
+    "body-parser": "^1.20.1",
     "discord.js": "^14.5.0",
     "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^8.5.1",
     "key-file-storage": "^2.2.10",
     "klaw-sync": "^6.0.0",
+    "node-fetch": "^2.6.7",
     "storage-async": "^1.0.1"
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "run": "node ./dist/index.js",
-    "dev": "yarn build && yarn run run"
+    "dev": "yarn build && yarn run run",
+    "dash": "cd dashboard/ && yarn dev",
+    "start": "yarn dev & yarn dash"
   },
   "devDependencies": {
     "colors": "^1.4.0",

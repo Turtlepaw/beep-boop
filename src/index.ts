@@ -7,10 +7,12 @@ import KeyFileStorage from "key-file-storage";
 import * as dotenv from 'dotenv';
 dotenv.config()
 import "colors";
+import { API } from "./api";
 //Debug logs
-console.log("DEBUG LOG:".red, process.env)
+//console.log("DEBUG LOG:".red, process.env)
 
 export const TOKEN = process.env.TOKEN;
+export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
 
 console.log("DEBUG:".red, TOKEN)
@@ -39,7 +41,9 @@ client.on(Events.ClientReady, async () => {
     client.DetailedCommands = [];
     await Deploy(client).then(() => console.log("Registered all commands successfully.".green));
     await StartService(client)
-    console.log("Ready".green)
+    console.log("Ready".green);
+
+    await API(client, API_TOKEN);
 });
 
 client.login(TOKEN);

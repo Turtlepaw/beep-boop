@@ -24,10 +24,15 @@ export default class Server extends Command {
                         .setCustomId("ADD_AS_BIRTHDAY")
                         .setStyle(ButtonStyle.Primary),
                     new ButtonBuilder()
-                    .setCustomId("SETUP_APPEALS")
-                    .setLabel("Setup Appeals")
-                    .setStyle(ButtonStyle.Secondary)
-                    .setEmoji("📫")
+                        .setCustomId("SETUP_APPEALS")
+                        .setLabel("Setup Appeals")
+                        .setStyle(ButtonStyle.Secondary)
+                        .setEmoji("📫"),
+                    new ButtonBuilder()
+                        .setCustomId("SETUP_TICKETS")
+                        .setLabel("Setup Tickets")
+                        .setStyle(ButtonStyle.Secondary)
+                        .setEmoji("🎟️")
                 );
 
             await interaction.reply({

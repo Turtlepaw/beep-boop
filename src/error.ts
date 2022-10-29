@@ -19,7 +19,7 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
                     .setLabel("Developer Options")
                     .setCustomId(CustomId.DeveloperOptions)
                     .setStyle(ButtonStyle.Secondary)
-                    .setDisabled(true)
+                    .setDisabled(false)
             );
 
         const Message = await interaction.reply({
@@ -34,7 +34,7 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
             time: 0,
         }).then(async (ButtonInteraction) => {
             await ButtonInteraction.reply({
-                content: `Here's what we know:\n\`\`\`${errorMessage}\`\`\``
+                content: `Here's what we know:\n\n\`\`\`${errorMessage}\`\`\``
             });
         }).catch(console.log);
     }

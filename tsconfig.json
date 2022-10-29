@@ -11,13 +11,14 @@
         "outDir": "./dist/",
         "baseUrl": ".",
         "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
+        "experimentalDecorators": true
     },
     "exclude": [
         "node_modules",
         "./node_modules",
         "./node_modules/*",
         "./node_modules/@types/node/index.d.ts",
-        "./wip"
-    ]
+        "./wip",
+        "./dashboard"
+    ],
 }

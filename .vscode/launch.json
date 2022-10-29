@@ -9,6 +9,12 @@
             "type": "node-terminal",
             "request": "launch",
             "command": "yarn dev"
+        },
+        {
+            "name": "Bot & Dashboard",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "yarn start"
         }
     ]
 }
