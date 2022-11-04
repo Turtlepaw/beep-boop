@@ -1,8 +1,21 @@
-import { Center } from "@chakra-ui/react";
+import { Button, Menu as ChakraMenu, Center, MenuButton, MenuItem as ChakraMenuItem, MenuList, MenuDivider } from "@chakra-ui/react";
+import React from "react";
 import { DefaultProps } from "../utils/parse-user";
+import { DownIcon, UpIcon } from "./Icons";
 
 export interface MenuProps extends DefaultProps {
     isDashboard?: boolean;
+}
+
+function MenuItem({ children, className }: {
+    children: React.ReactNode;
+    className?: string;
+}) {
+    return (
+        <ChakraMenuItem _hover={{
+            bgColor: "#252629"
+        }} className={className}>{children}</ChakraMenuItem>
+    );
 }
 
 export function ExternalIcon() {
@@ -16,20 +29,36 @@ export function ExternalIcon() {
 
 export function Menu(props: MenuProps) {
     return (
-        <Center>
-            <div className='card px-4 py-2'>
+        <div className="!float-right pr-5 pt-5">
+            <div>
                 {
                     props.user != null ? (
                         <>
-                            {/*<img src={props.user.avatarURL} className="w-14 rounded-full" />*/}
-                            <h2 className='DiscordTag font-semibold'>Logged in as</h2>
-                            <h3 className='font-semibold text-lg'>{props.user?.username}#{props.user.discriminator}</h3>
-                            <Center>
-                                <a className='pt-0.5 DiscordTag hover:underline inline hover:opacity-80' href={props.isDashboard ? "/" : "/dashboard"}>
-                                    {props.isDashboard ? "Home" : "Dashboard"}
-                                    <ExternalIcon />
-                                </a>
-                            </Center>
+                            <ChakraMenu>
+                                {({ isOpen }) => (
+                                    <>
+                                        <MenuButton className="hover:opacity-75">
+                                            {/** @ts-expect-error */}
+                                            <img src={props.user.avatarURL} className="w-8 mr-0.5 rounded-full inline" />
+                                            {
+                                                isOpen ? (
+                                                    <UpIcon className="w-5 inline" />
+                                                ) : (
+                                                    <DownIcon className="w-5 inline" />
+                                                )
+                                            }
+                                        </MenuButton>
+                                        <MenuList bgColor="#1e1f22" >
+                                            <a href="/dashboard">
+                                                <MenuItem>My Servers</MenuItem>
+                                            </a>
+                                            <a href="/api/logout">
+                                                <MenuItem className="!text-red-500">Logout</MenuItem>
+                                            </a>
+                                        </MenuList>
+                                    </>
+                                )}
+                            </ChakraMenu>
                         </>
                     ) : (
                         <>
@@ -45,6 +74,6 @@ export function Menu(props: MenuProps) {
                     )
                 }
             </div>
-        </Center>
+        </div >
     );
 }

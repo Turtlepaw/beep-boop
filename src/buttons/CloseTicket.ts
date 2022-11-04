@@ -14,7 +14,7 @@ export default class TestAppeals extends Button {
             CustomId: "CLOSE_TICKET",
             GuildOnly: true,
             RequiredPermissions: [],
-            SomePermissions: ["ManageChannels"]
+            SomePermissions: ["ManageChannels", "KickMembers", "ManageMessages", "BanMembers"]
         })
     }
 
@@ -107,16 +107,16 @@ export default class TestAppeals extends Button {
                         name: "Closed By " + interaction.user.username
                     })
                     .addFields([{
-                        name: "Created At",
-                        value: time(ticket.CreatedAt, TimestampStyles.RelativeTime),
+                        name: "Created",
+                        value: time(new Date(ticket.CreatedAt), TimestampStyles.RelativeTime),
                         inline: true
                     }, {
                         name: "Created By",
                         value: `<@${ticket.CreatedBy}>`,
                         inline: true
                     }, {
-                        name: "Closed At",
-                        value: time(ticket.ClosedAt, TimestampStyles.RelativeTime),
+                        name: "Closed",
+                        value: time(new Date(ticket.ClosedAt), TimestampStyles.RelativeTime),
                         inline: true
                     }, {
                         name: "Closed By",
@@ -134,6 +134,7 @@ export default class TestAppeals extends Button {
             ]
         });
 
+        Interaction.channel.delete(`Ticket closed by: ${Interaction.user.tag}`)
         await Interaction.reply({
             ephemeral: true,
             content: `Closed ticket successfully.`

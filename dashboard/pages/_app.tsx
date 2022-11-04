@@ -5,6 +5,7 @@ import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { ChakraProvider, extendTheme } from '@chakra-ui/react'
 import React from 'react'
+import { Footer } from '../components/Footer'
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;
@@ -91,6 +92,12 @@ const theme = extendTheme({
             bg: 'grey.light'
           }
         },
+        MenuItem: {
+          _hover: {
+            bg: "#3c3f45"
+          },
+          bg: "transparent"
+        },
         outlineDark: {
           border: "1px solid #222",
           bgColor: "transparent",
@@ -108,7 +115,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <div className="Background Text">
       <ChakraProvider theme={theme}>
         <a href='/'>
-          <img src={Configuration.Icon.SVG} className="w-12 ml-5 mt-5 hover:opacity-80" />
+
         </a>
         <Head>
           <title>{Configuration.Title}</title>
@@ -132,6 +139,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <meta property="twitter:image" content={Configuration.Icon.PNG} />
         </Head>
         <Component {...pageProps} />
+        <Footer />
       </ChakraProvider>
     </div >
   )

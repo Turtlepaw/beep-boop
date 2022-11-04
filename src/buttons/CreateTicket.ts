@@ -119,7 +119,12 @@ export default class TestAppeals extends Button {
                             .setLabel("Close")
                             .setStyle(ButtonStyle.Danger)
                             .setEmoji("🔒")
-                            .setCustomId("CLOSE_TICKET")
+                            .setCustomId("CLOSE_TICKET"),
+                        new ButtonBuilder()
+                            .setLabel("Claim")
+                            .setStyle(ButtonStyle.Success)
+                            .setEmoji("🔍")
+                            .setCustomId("CLAIM_TICKET")
                     )
             ]
         });

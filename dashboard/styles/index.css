@@ -290,3 +290,15 @@
     opacity: 0;
   }
 }
+
+.SideMenu {
+  background-color: #1e1f22;
+}
+
+.MenuItem {
+  background-color: #252629;
+}
+
+.Item {
+  background-color: #1f2023;
+}

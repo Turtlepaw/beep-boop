@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
 import { AutocompleteInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
 
 export type CommandBuilderOptions = {
@@ -26,6 +26,10 @@ export type CommandBuilderOptions = {
      * The description of the command that will be shown to the member.
      */
     Description: string;
+    /**
+     * The subcommands for this command.
+     */
+    Subcomamnds?: (SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder)[];
 }
 export default class Command {
     public Name: string;
@@ -50,6 +54,14 @@ export default class Command {
             .setName(this.Name)
             .setDescription(this.Description)
             .setDMPermission(this.GuildOnly)
+
+        if (options?.Subcomamnds != null) options?.Subcomamnds.forEach(input => {
+            if (input instanceof SlashCommandSubcommandGroupBuilder) {
+                return this.Builder.addSubcommandGroup(input)
+            } else {
+                this.Builder.addSubcommand(input)
+            }
+        });
     }
 
     MakeCommandJSON() {

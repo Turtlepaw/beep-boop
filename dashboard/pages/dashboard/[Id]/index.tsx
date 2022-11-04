@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { AutoCenter } from '../../../components/AutoCenter';
 import { AddIcon, DownIcon } from '../../../components/Icons';
 import { ExternalIcon, Menu } from '../../../components/Menu';
+import { SideMenu } from '../../../components/SideMenu';
 import { GetAppeals, GetChannels, SetAppeals } from '../../../utils/api';
 import { DefaultProps, parseUser } from '../../../utils/parse-user';
 import { APIChannel, APIGuild } from '../../../utils/types';
@@ -65,41 +66,26 @@ export default function Home(props: Props) {
     const TogglePanel = () => SetPanel(!SavePanel)
 
     return (
-        <div>
-            <AutoCenter className='text-center'>
-                <Menu user={props.user} isDashboard />
-                <div>
-                    <Center>
-                        <img src={guild.IconURL || ""} className="rounded-full w-16" />
-                    </Center>
-                    <h1 className='font-bold text-4xl pt-5 pb-5'>
-                        {guild?.Name}
-                    </h1>
-                </div>
-
-                <Card href={`${props.guild?.Id}/appeals`}>
-                    <h1>Appeal Settings</h1>
-                </Card>
-            </AutoCenter >
-            <div className={`${!SavePanel && "hidden"} popup z-50 fixed bottom-10 right-0 w-full flex flex-row flex-nowrap justify-center items-center`}>
-                <div className='bg-[#131313] p-5 rounded-[8px]'>
-                    You have unsaved changes
-                    {/*ADD ANIMATIONS*/}
-                    <div className='inline pl-10'>
-                        <Button variant="primary" onClick={SaveAll} className='mr-2 w-20'>
-                            {
-                                IsSaving ? (
-                                    <Center>
-                                        <span className="loader mb-[1.6rem]"></span>
-                                    </Center>
-                                ) : "Save"
-                            }
-                        </Button>
-                        <Button variant="secondary" onClick={TogglePanel}>Cancel</Button>
+        <>
+            <Menu user={props.user} isDashboard />
+            <div className='!flex'>
+                <SideMenu GuildId={guild.Id} user={props.user} />
+                <AutoCenter className='text-center'>
+                    <div>
+                        <Center>
+                            <img src={guild.IconURL || ""} className="rounded-full w-16" />
+                        </Center>
+                        <h1 className='font-bold text-4xl pt-5 pb-5'>
+                            {guild?.Name}
+                        </h1>
                     </div>
-                </div>
-            </div>
-        </div >
+
+                    <Card href={`${props.guild?.Id}/appeals`}>
+                        <h1>Appeal Settings</h1>
+                    </Card>
+                </AutoCenter >
+            </div >
+        </>
     )
 }
 

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@airdot/activities": "^2.1.1",
     "@types/express": "^4.17.14",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/node-fetch": "^2.6.2",

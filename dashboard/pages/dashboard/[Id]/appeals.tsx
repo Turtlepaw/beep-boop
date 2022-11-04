@@ -1,4 +1,4 @@
-import { Button, Center, Select } from '@chakra-ui/react'
+import { Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import Image from 'next/image'
@@ -9,7 +9,12 @@ import { ExternalIcon, Menu } from '../../../components/Menu';
 import { GetAppeals, GetChannels, SetAppeals } from '../../../utils/api';
 import { DefaultProps, parseUser } from '../../../utils/parse-user';
 import { APIChannel, APIGuild } from '../../../utils/types';
+import { CreateHandler, CreateSelectHandler } from '../../../utils/utils';
 import { Configuration } from '../../_app';
+import Select, { StylesConfig } from 'react-select';
+import { CreateSaveOptions, Next, SaveAlert } from '../../../components/SaveAlert';
+import { SideMenu } from '../../../components/SideMenu';
+import { colourStyles } from '../../../components/Select';
 
 export interface Props extends DefaultProps {
     guild: APIGuild | null;
@@ -37,6 +42,7 @@ export function ExpandableCard(props: {
         </div>
     )
 }
+
 export default function Home(props: Props) {
     const { guild, channels } = props;
     if (guild == null) return (
@@ -54,72 +60,67 @@ export default function Home(props: Props) {
             </AutoCenter>
         </div>
     );
-    const [SavePanel, SetPanel] = useState(false);
-    const [IsSaving, SetSaving] = useState(false);
-    const Values = {
-        Appeals: useState("")
-    }
-    const OnChange = {
-        Appeals: async (selected: React.ChangeEvent<HTMLSelectElement>) => {
-            Values.Appeals[1](selected.target.value)
-            SetPanel(true)
-        }
-    }
-    const SaveSettings = {
-        Appeals: async () => {
-            SetAppeals(guild.Id, Values.Appeals[0])
-        }
+    const options = [
+        ...channels.map(e => ({
+            value: e.Id,
+            label: `#${e.Name}`
+        }))
+    ];
+    const [Channel, SetChannel] = useState("");
+    const [ChannelName, SetChannelName] = useState("");
+    const [isOpen, setOpen] = CreateSaveOptions();
+    const HandleChannel = CreateSelectHandler(Channel, SetChannel, (e: any) => {
+        setOpen(true)
+        SetChannelName(e?.label)
+    });
+    const SaveSettings = async () => {
+        SetAppeals(guild.Id, Channel)
     };
-    const SaveAll = () => SetSaving(!IsSaving)
-    const TogglePanel = () => SetPanel(!SavePanel)
+    const SaveAll = (next: Next) => {
+        next();
+    }
 
     return (
-        <div>
-            <AutoCenter className='text-center'>
-                <Menu user={props.user} isDashboard />
-                <div>
-                    <Center>
-                        {/*<img src={guild.IconURL || ""} className="rounded-full w-16" />*/}
-                    </Center>
-                    <h1 className='font-bold text-4xl pt-5'>
-                        {guild?.Name}
-                    </h1>
-                    <h2 className='font-bold text-xl DiscordTag pb-5'>
-                        Appeal Settings
-                    </h2>
-                </div>
-
-                <AutoCenter className='pt-2'>
-                    <h1 className='pb-2 text-lg font-semibold'>Channel</h1>
-                    <Select autoComplete='off' placeholder='Select option' width="10rem" onChange={OnChange.Appeals} value={props.channel}>
-                        {channels.map(e => (
-                            <option selected={e.Id == Values.Appeals[0] || (e.Id == props.channel)} className='text-black' value={e.Id} key={e.Id}>#{e.Name}</option>
-                        ))}
-                    </Select>
-                    <Button className='mt-5' variant="success" onClick={TogglePanel}>
-                        Apply
-                    </Button>
-                </AutoCenter>
-            </AutoCenter >
-            <div className={`${!SavePanel && "hidden"} ease-in-out ${SavePanel == false ? "popdown" : "popup"} z-50 fixed bottom-10 right-0 w-full flex flex-row flex-nowrap justify-center items-center`}>
-                <div className='bg-[#131313] p-5 rounded-[8px]'>
-                    You have unsaved changes
-                    {/*ADD ANIMATIONS*/}
-                    <div className='inline pl-10'>
-                        <Button variant="primary" onClick={SaveAll} className='mr-2 w-20'>
-                            {
-                                IsSaving ? (
-                                    <Center>
-                                        <span className="loader mb-[1.6rem]"></span>
-                                    </Center>
-                                ) : "Save"
-                            }
-                        </Button>
-                        <Button variant="secondary" onClick={TogglePanel}>Cancel</Button>
+        <>
+            <Menu user={props.user} isDashboard />
+            <div className='!flex'>
+                <SideMenu GuildId={guild.Id} user={props.user} />
+                <AutoCenter className='text-center'>
+                    <div>
+                        <Center>
+                            {/*<img src={guild.IconURL || ""} className="rounded-full w-16" />*/}
+                        </Center>
+                        <h1 className='font-bold text-4xl pt-5'>
+                            {guild?.Name}
+                        </h1>
+                        <h2 className='font-bold text-xl DiscordTag pb-5'>
+                            Appeal Settings
+                        </h2>
                     </div>
-                </div>
+
+                    <div className='Item px-5 py-5 rounded-md'>
+                        <AutoCenter className='pt-2'>
+                            <h1 className='pb-2 text-lg font-semibold'>Channel</h1>
+                            <Select
+                                options={options}
+                                isSearchable
+                                //@ts-expect-error
+                                isOptionSelected={e => e.value == Channel}
+                                onChange={HandleChannel}
+                                className="w-56"
+                                placeholder={ChannelName || "Select an option"}
+                                defaultValue={{
+                                    label: ChannelName || "Select an option",
+                                    value: Channel
+                                }}
+                                styles={colourStyles}
+                            />
+                        </AutoCenter>
+                    </div>
+                </AutoCenter >
+                <SaveAlert Save={SaveAll} isOpen={isOpen} setOpen={setOpen} />
             </div>
-        </div >
+        </>
     )
 }
 
