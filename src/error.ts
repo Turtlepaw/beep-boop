@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 import { ButtonStyle, ComponentType, Interaction, RequestManager } from "discord.js";
-import { SupportServerInvite } from "./configuration";
+import { Emojis, SupportServerInvite } from "./configuration";
 import { generateId, generatePassword } from "./Id";
 
 export async function SendError(interaction: Interaction, errorMessage: string) {
@@ -37,5 +37,14 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
                 content: `Here's what we know:\n\n\`\`\`${errorMessage}\`\`\``
             });
         }).catch(console.log);
+    }
+}
+
+export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string) {
+    if (interaction.isRepliable()) {
+        await interaction.reply({
+            content: `${Emojis.Error} ` + errorMessage,
+            ephemeral: true
+        });
     }
 }

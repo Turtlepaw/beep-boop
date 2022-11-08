@@ -32,7 +32,12 @@ export default class Server extends Command {
                         .setCustomId("SETUP_TICKETS")
                         .setLabel("Setup Tickets")
                         .setStyle(ButtonStyle.Secondary)
-                        .setEmoji("🎟️")
+                        .setEmoji("🎟️"),
+                    new ButtonBuilder()
+                        .setCustomId("MODERATOR_SETTINGS")
+                        .setLabel("Moderator Settings")
+                        .setStyle(ButtonStyle.Secondary)
+                        .setEmoji("⚙️"),
                 );
 
             await interaction.reply({

@@ -20,7 +20,8 @@ console.log("DEBUG:".red, TOKEN)
 //Create Discord.js client
 const client = new Client({
     intents: [
-        IntentsBitField.Flags.Guilds
+        IntentsBitField.Flags.Guilds,
+        IntentsBitField.Flags.GuildMessages
     ],
     partials: [
         Partials.Channel,
