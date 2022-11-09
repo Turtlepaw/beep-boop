@@ -17,7 +17,8 @@ export enum Emojis {
     Show = "<:show:966750357164286014>",
     Link = "<:link:966750307143024700>",
     Disabled = "<:offswitch:959903558214508564>",
-    Enabled = "<:onswitch:959903558310961243>"
+    Enabled = "<:onswitch:959903558310961243>",
+    Reason = "<:Reason:1039750995934195762>"
 }
 
 export class Embed extends EmbedBuilder {

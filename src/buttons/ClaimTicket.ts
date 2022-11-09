@@ -19,7 +19,26 @@ export default class TestAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        await interaction.reply({
+        await interaction.update({
+            components: [
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setLabel("Close")
+                            .setStyle(ButtonStyle.Danger)
+                            .setEmoji("🔒")
+                            .setCustomId("CLOSE_TICKET"),
+                        new ButtonBuilder()
+                            .setLabel("Claim")
+                            .setStyle(ButtonStyle.Success)
+                            .setEmoji("🔍")
+                            .setCustomId("CLAIM_TICKET")
+                            .setDisabled(true)
+                    )
+            ]
+        });
+
+        await interaction.followUp({
             content: `🔍 ${interaction.user} has claimed the ticket.`
         })
     }

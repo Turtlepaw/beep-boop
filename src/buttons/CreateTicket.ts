@@ -64,7 +64,7 @@ export default class TestAppeals extends Button {
             embeds: [
                 new Embed()
                     .setColor(Colors.Blurple)
-                    .setTitle("⚠️ Add a Reason")
+                    .setTitle(`${Emojis.Reason} Add a Reason`)
                     .setDescription("If you add a reason, you're more likely to get help faster.")
             ],
             components: [Buttons],
@@ -131,7 +131,16 @@ export default class TestAppeals extends Button {
 
         await Interaction.reply({
             ephemeral: true,
-            content: `Created a ticket in ${TicketChannel}`
+            content: `${Emojis.Success} Created a ticket in ${TicketChannel}`
+        });
+
+        await interaction.editReply({
+            components: [
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        Buttons.components.map(e => e.setDisabled(true))
+                    )
+            ]
         });
 
         client.storage[`ticket_${TicketChannel.id}`] = {

@@ -5,6 +5,7 @@ import { SendAppealMessage } from "../appeals";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
+import { Filter } from "../filter";
 
 export default class TestAppeals extends Button {
     constructor() {
@@ -17,6 +18,29 @@ export default class TestAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        const CurrentSettings = client.storage[`${interaction.guild.id}_tickets`];
+        let Button: ButtonInteraction;
+        const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setLabel("Continue")
+                    .setStyle(ButtonStyle.Danger)
+                    .setCustomId("CONTINUE")
+            )
+        if (CurrentSettings != null) {
+            const ActionMessage = await interaction.reply({
+                content: "If you continue you'll overwrite your current settings, are you sure you want to continue?",
+                components: [ActionButtons],
+                fetchReply: true
+            });
+
+            Button = await ActionMessage.awaitMessageComponent({
+                time: 0,
+                filter: Filter(interaction.member, "CONTINUE"),
+                componentType: ComponentType.Button
+            });
+        };
+
         const CustomIds = {
             ButtonModal: "CONFIGURE_BUTTON_MODAL"
         };
@@ -141,7 +165,7 @@ export default class TestAppeals extends Button {
                     .setStyle(ButtonStyle.Secondary)
             )
 
-        const Message = await interaction.reply({
+        const Message = await (Button == null ? interaction : Button).reply({
             embeds: [
                 new Embed()
                     .setAuthor({

@@ -7,6 +7,7 @@ import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../Id";
 import { Ticket } from "./CreateTicket";
+import { Filter } from "../filter";
 
 export default class TestAppeals extends Button {
     constructor() {
@@ -66,7 +67,7 @@ export default class TestAppeals extends Button {
             embeds: [
                 new Embed()
                     .setColor(Colors.Blurple)
-                    .setTitle("⚠️ Add a Reason")
+                    .setTitle(`${Emojis.Reason} Add a Reason`)
                     .setDescription("Would you like to add a reason to this?")
             ],
             components: [Buttons],
@@ -76,7 +77,8 @@ export default class TestAppeals extends Button {
 
         const ButtonInteraction = await interaction.channel.awaitMessageComponent({
             time: 0,
-            componentType: ComponentType.Button
+            componentType: ComponentType.Button,
+            filter: Filter(interaction.member, "ADD_REASON", "SKIP")
         });
 
         let Reason = "None provided.";
