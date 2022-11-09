@@ -21,7 +21,8 @@ console.log("DEBUG:".red, TOKEN)
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMessages
+        IntentsBitField.Flags.GuildMessages,
+        IntentsBitField.Flags.MessageContent
     ],
     partials: [
         Partials.Channel,
