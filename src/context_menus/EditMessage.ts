@@ -4,6 +4,7 @@ import { Emojis } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../error";
 import { CreateLinkButton } from "../buttons";
 import { Verifiers } from "../verify";
+import { Filter } from "../filter";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -122,7 +123,8 @@ export default class DeleteThis extends ContextMenu {
 
         const ButtonInteraction = await interaction.channel.awaitMessageComponent({
             componentType: ComponentType.Button,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, CustomIds.EditEmbed, CustomIds.MoveEmbed)
         });
 
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
@@ -167,7 +169,7 @@ export default class DeleteThis extends ContextMenu {
             const SelectInteraction = await interaction.channel.awaitMessageComponent({
                 componentType: ComponentType.SelectMenu,
                 time: 0,
-                filter: i => i.customId == CustomIds.ChannelSelect
+                filter: Filter(interaction.member, CustomIds.ChannelSelect)
             });
 
             const Value = SelectInteraction.values[0];

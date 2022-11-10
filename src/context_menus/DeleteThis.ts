@@ -1,5 +1,6 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, Client, ComponentType, ContextMenuCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits } from "discord.js";
+import { Filter } from "../filter";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -60,7 +61,8 @@ export default class DeleteThis extends ContextMenu {
 
         const Button = await Message.awaitMessageComponent({
             componentType: ComponentType.Button,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, CustomId.BulkDelete, CustomId.DeleteMessage)
         });
 
         const MessageSelected = await interaction.options.getMessage("message");

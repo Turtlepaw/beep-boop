@@ -181,7 +181,8 @@ export default class TestAppeals extends Button {
 
         const ButtonInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.Button,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, "OPEN_EMBED_MODAL")
         });
 
         await ButtonInteraction.showModal(Modal);
@@ -236,7 +237,8 @@ export default class TestAppeals extends Button {
 
         const MenuInteraction = await MenuMessage.awaitMessageComponent({
             componentType: ComponentType.SelectMenu,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, "CHANNEL_SELECT")
         });
 
         Settings.TicketChannel = MenuInteraction.values[0];
@@ -257,7 +259,8 @@ export default class TestAppeals extends Button {
 
         const ModeratorInteraction = await ModeratorMessage.awaitMessageComponent({
             componentType: ComponentType.SelectMenu,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, "CATEGORY_SELECT")
         });
 
         const Channels = await interaction.guild.channels.fetch();
@@ -305,7 +308,8 @@ export default class TestAppeals extends Button {
 
         const SetButtonValuesInteraction = await SetButtonMessage.awaitMessageComponent({
             componentType: ComponentType.Button,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, "SET_VALUES")
         });
 
         SetButtonValuesInteraction.showModal(ButtonModal);
@@ -359,7 +363,8 @@ export default class TestAppeals extends Button {
 
         const Interaction = await ButtonStyleMessage.awaitMessageComponent({
             componentType: ComponentType.Button,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, "Primary", "Secondary", "Success", "Danger")
         });
 
         Settings.ButtonStyle = ButtonStyle[Interaction.customId];

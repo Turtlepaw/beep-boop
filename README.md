@@ -9,11 +9,15 @@ We're working hard on building the future of Beep Boop, here's what's happening.
 #### Dashboard
 - [ ] Update the dashboard to make it look beautiful, yet simple and clean.
 #### Bot
-- [ ] Add more features
-    - [ ] Activities (gaming and levels)
-    - [ ] Roles (button roles)
-- [ ] Add filters to `Message#awaitMessageComponents`
-- [ ] Disable ticket claim button after use
+- [ ] Activities (gaming and levels)
+    - [x] Server Gaming Activities
+    - [ ] Server Level Activity
+    - [ ] Cooking Activity
+- [ ] Roles (button roles)
+- [x] Add filters to `Message#awaitMessageComponent`
+- [x] Fix ticket channel permissions - [🧵 (thread) Can't see created ticket](https://discord.com/channels/1028789308401918004/1039607094782988390)
+- [x] Disable ticket claim button after use
+- [ ] Quote message or embed message links?
 
 ### Support
 Click below to join our server for updates, support, and more.

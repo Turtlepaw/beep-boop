@@ -1,4 +1,5 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
+import { Filter } from "../filter";
 import { SendAppealMessage } from "../appeals";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
@@ -37,7 +38,8 @@ export default class TestAppeals extends Button {
 
         const SelectMenuInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.SelectMenu,
-            time: 0
+            time: 0,
+            filter: Filter(interaction.member, "CHANNEL_SELECT")
         });
 
         client.storage[`${interaction.guild.id}_appeal_channel`] = SelectMenuInteraction.values[0];

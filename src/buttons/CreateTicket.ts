@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
 import { SendError } from "../error";
 import { Verifiers } from "../verify";
 import { SendAppealMessage } from "../appeals";
@@ -6,6 +6,7 @@ import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../Id";
+import { Filter } from "../filter";
 
 export interface Ticket {
     CreatedBy: string;
@@ -56,7 +57,10 @@ export default class TestAppeals extends Button {
 
         const Channel = await interaction.guild.channels.fetch(client.storage[`${interaction.guild.id}_tickets`]);
         if (Channel.type != ChannelType.GuildCategory) {
-            await interaction.reply("Something didn't go right, contact the server owner about this.");
+            await interaction.reply({
+                content: "Tickets haven't been setup properly in this server, contact server moderators about this.",
+                ephemeral: true
+            });
             return;
         }
 
@@ -74,7 +78,8 @@ export default class TestAppeals extends Button {
 
         const ButtonInteraction = await interaction.channel.awaitMessageComponent({
             time: 0,
-            componentType: ComponentType.Button
+            componentType: ComponentType.Button,
+            filter: Filter(interaction.member, "ADD_REASON", "SKIP")
         });
 
         let Reason = "None provided.";
@@ -91,7 +96,17 @@ export default class TestAppeals extends Button {
 
         const TicketChannel = await Channel.children.create({
             name: `ticket-${interaction.user.username}`,
-            topic: `Created by ${interaction.user.tag}`
+            topic: `Created by ${interaction.user.tag}`,
+            permissionOverwrites: [
+                {
+                    id: interaction.user.id,
+                    allow: [
+                        PermissionsBitField.Flags.ViewChannel,
+                        PermissionsBitField.Flags.SendMessages
+                    ]
+                }
+            ],
+            type: ChannelType.GuildText
         });
 
         TicketChannel.send({

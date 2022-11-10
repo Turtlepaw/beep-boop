@@ -1,4 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
+import { Filter } from "../filter";
 import { Embed } from "../configuration";
 import Event from "../lib/Event";
 
@@ -53,7 +54,7 @@ export default class AppealService extends Event {
         const Button = await ModalInteraction.channel.awaitMessageComponent({
             time: 0,
             componentType: ComponentType.Button,
-            filter: (i) => i.customId == SendButtonId
+            filter: Filter(ModalInteraction.member, SendButtonId)
         });
 
         const GuildId = client.storage[ModalInteraction.message.id];

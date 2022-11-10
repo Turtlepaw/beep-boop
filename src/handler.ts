@@ -1,5 +1,6 @@
 import { Client, Events as ClientEvents, InteractionReplyOptions } from "discord.js";
 import klawSync from "klaw-sync";
+import { Emojis } from "./configuration";
 import ButtonBuilder, { ButtonBuilderOptions } from "./lib/ButtonBuilder";
 import ContextMenu from "./lib/ContextMenuBuilder";
 import EventBuilder from "./lib/Event";
@@ -62,6 +63,18 @@ async function StartButtonService(client: Client) {
                         } else return false;
                     }
                 })
+                const PermissionsMessage: InteractionReplyOptions = {
+                    content: `${Emojis.Error} You don't have the required permissions to use this button.`,
+                    ephemeral: true
+                };
+                if (!interaction.memberPermissions.any(Button.SomePermissions)) {
+                    interaction.reply(PermissionsMessage);
+                    return;
+                }
+                if (!interaction.memberPermissions.has(Button.RequiredPermissions)) {
+                    interaction.reply(PermissionsMessage);
+                    return;
+                }
                 if (CustomId != interaction.customId) return;
                 Button.ExecuteInteraction(interaction, client, Id);
             }
@@ -94,7 +107,7 @@ export async function StartService(client: Client) {
             if (interaction.isChatInputCommand()) {
                 const command = client.commands.get(interaction.commandName);
                 const PermissionsMessage: InteractionReplyOptions = {
-                    content: "⚠️ You don't have the required permissions to run this command.",
+                    content: `${Emojis.Error} You don't have the required permissions to run this command.`,
                     ephemeral: true
                 };
                 if (!interaction.memberPermissions.any(command.SomePermissions)) {
