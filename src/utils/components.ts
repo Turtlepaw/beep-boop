@@ -86,3 +86,56 @@ export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels:
                 )
         )
 }
+
+export function MessageBuilderModal(CustomId: string = "MESSAGE_BUILDER_MODAL", FieldId: string = "MESSAGE_CONTENT_FIELD") {
+    return new ModalBuilder()
+        .setCustomId(CustomId)
+        .setTitle("Configuring Message")
+        .addComponents(
+            new ActionRowBuilder<TextInputBuilder>()
+                .addComponents(
+                    new TextInputBuilder()
+                        .setCustomId(FieldId)
+                        .setLabel("Message Content")
+                        .setMaxLength(2000)
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setPlaceholder("Some great message!")
+                )
+        );
+}
+
+export interface ButtonFields {
+    Label: string;
+    Emoji: string;
+}
+
+export function ButtonBuilderModal(CustomId: string = "BUTTON_BUILDER_MODAL", Fields: ButtonFields) {
+    return new ModalBuilder()
+        .setCustomId(CustomId)
+        .setTitle("Configuring Button")
+        .addComponents(
+            new ActionRowBuilder<TextInputBuilder>()
+                .addComponents(
+                    new TextInputBuilder()
+                        .setCustomId(Fields.Label)
+                        .setLabel("Button Label")
+                        .setMaxLength(80)
+                        .setRequired(true)
+                        .setMinLength(1)
+                        .setStyle(TextInputStyle.Short)
+                        .setPlaceholder("Button")
+                ),
+            new ActionRowBuilder<TextInputBuilder>()
+                .addComponents(
+                    new TextInputBuilder()
+                        .setCustomId(Fields.Emoji)
+                        .setLabel("Button Emoji")
+                        .setMaxLength(10)
+                        .setRequired(false)
+                        .setMinLength(1)
+                        .setStyle(TextInputStyle.Short)
+                        .setPlaceholder("✨")
+                )
+        );
+}

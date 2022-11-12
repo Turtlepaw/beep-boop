@@ -1,10 +1,12 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Emojis } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
 import { CreateLinkButton } from "../utils/buttons";
 import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
+import e from "express";
+import { MessageBuilderModal as CreateMessageModal } from "../utils/components";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -36,11 +38,12 @@ export default class DeleteThis extends ContextMenu {
             EditEmbed = "EDIT_EMBED",
             RemoveButtons = "Remove_BUTTONS",
             ChannelSelect = "SELECT_CHANNEL_MENU",
-            EmbedModal = "EMBED_BUILDER_MODAL",
+            MessageBuilderModal = "MESSAGE_BUILDER_MODAL",
             TitleField = "EMBED_TITLE_FIELD",
             DescriptionField = "EMBED_DESCRIPTION_FIELD",
             ColorField = "EMBED_COLOR_FIELD",
-            FooterField = "EMBED_FOOTER_FIELD"
+            FooterField = "EMBED_FOOTER_FIELD",
+            ContentField = "MESSAGE_CONTENT_FIELD"
         }
 
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
@@ -61,8 +64,14 @@ export default class DeleteThis extends ContextMenu {
                     .setStyle(ButtonStyle.Danger)
                     .setDisabled(!isButtonMessage)
             );
-        const Modal = new ModalBuilder()
-            .setCustomId(CustomIds.EmbedModal)
+
+        const MessageBuilderModal = CreateMessageModal(
+            CustomIds.MessageBuilderModal,
+            CustomIds.ContentField
+        );
+
+        const EmbedBuilderModal = new ModalBuilder()
+            .setCustomId(CustomIds.MessageBuilderModal)
             .setTitle("Configuring Embed")
             .addComponents(
                 new ActionRowBuilder<TextInputBuilder>()
@@ -132,39 +141,57 @@ export default class DeleteThis extends ContextMenu {
             fetchReply: true
         });
 
-        const ButtonInteraction = await interaction.channel.awaitMessageComponent({
+        const ButtonInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.Button,
             time: 0,
-            filter: Filter(interaction.member, CustomIds.EditEmbed, CustomIds.MoveEmbed)
+            filter: Filter(interaction.member, CustomIds.EditEmbed, CustomIds.MoveEmbed, CustomIds.RemoveButtons)
         });
 
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
-            await ButtonInteraction.showModal(Modal);
+            const { targetMessage } = interaction;
+            const isMessage = targetMessage.content != '';
+            await ButtonInteraction.showModal(
+                isMessage ?
+                    MessageBuilderModal :
+                    EmbedBuilderModal
+            );
+
             const ModalInteraction = await ButtonInteraction.awaitModalSubmit({
                 time: 0
             });
-            const { targetMessage } = interaction;
-            const targetEmbed = targetMessage.embeds[0];
-            const Fields = {
-                Title: ModalInteraction.fields.getTextInputValue(CustomIds.TitleField),
-                Description: ModalInteraction.fields.getTextInputValue(CustomIds.DescriptionField),
-                Footer: ModalInteraction.fields.getTextInputValue(CustomIds.FooterField),
-                Color: ModalInteraction.fields.getTextInputValue(CustomIds.ColorField)
-            }
 
-            const Embed = new EmbedBuilder()
-            if (Verifiers.String(Fields.Title)) Embed.setTitle(Fields.Title || targetEmbed.title)
-            if (Verifiers.String(Fields.Description)) Embed.setDescription(Fields.Description || targetEmbed.description)
-            if (Verifiers.String(Fields.Footer)) Embed.setFooter({
-                text: Fields.Footer || targetEmbed.footer?.text
-            })
-            //@ts-expect-error
-            if (Verifiers.String(Fields.Color)) Embed.setColor(Fields.Color || targetEmbed.hexColor)
-            await interaction.targetMessage.edit({
-                embeds: [
-                    Embed
-                ]
-            });
+            const targetEmbed = targetMessage.embeds[0];
+
+            if (isMessage) {
+                const Fields = {
+                    MessageContent: ModalInteraction.fields.getTextInputValue(CustomIds.ContentField)
+                };
+
+                await interaction.targetMessage.edit({
+                    content: Fields.MessageContent
+                });
+            } else {
+                const Fields = {
+                    Title: ModalInteraction.fields.getTextInputValue(CustomIds.TitleField),
+                    Description: ModalInteraction.fields.getTextInputValue(CustomIds.DescriptionField),
+                    Footer: ModalInteraction.fields.getTextInputValue(CustomIds.FooterField),
+                    Color: ModalInteraction.fields.getTextInputValue(CustomIds.ColorField)
+                }
+
+                const Embed = new EmbedBuilder()
+                if (Verifiers.String(Fields.Title)) Embed.setTitle(Fields.Title || targetEmbed.title)
+                if (Verifiers.String(Fields.Description)) Embed.setDescription(Fields.Description || targetEmbed.description)
+                if (Verifiers.String(Fields.Footer)) Embed.setFooter({
+                    text: Fields.Footer || targetEmbed.footer?.text
+                })
+                //@ts-expect-error
+                if (Verifiers.String(Fields.Color)) Embed.setColor(Fields.Color || targetEmbed.hexColor)
+                await interaction.targetMessage.edit({
+                    embeds: [
+                        Embed
+                    ]
+                });
+            }
 
             ModalInteraction.reply({
                 content: `${Emojis.Success} Message successfully edited.`,
@@ -202,6 +229,53 @@ export default class DeleteThis extends ContextMenu {
                 components: [
                     CreateLinkButton(SentMessage.url, "View Message")
                 ]
+            });
+        } else if (ButtonInteraction.customId == CustomIds.RemoveButtons) {
+            const RawButtons =
+                interaction.targetMessage.components.map(e => {
+                    return e.components.map(btn => {
+                        if (btn.type != ComponentType.Button) return null;
+                        if (btn.customId.startsWith("button-role:")) return btn;
+                        else return null;
+                    })
+                }).filter(e => e != null)
+            const Buttons =
+                interaction.targetMessage.components.map(e => {
+                    return new ActionRowBuilder<MessageActionRowComponentBuilder>()
+                        .addComponents(
+                            e.components.map(btn => {
+                                if (btn.type != ComponentType.Button) return null;
+                                if (btn.customId.startsWith("button-role:")) return ButtonBuilder.from(btn).setCustomId(btn.customId.replace("button-role:", "remove-btn:"));
+                                else return null;
+                            })
+                        )
+                }).filter(e => e != null);
+
+            await ButtonInteraction.update({
+                content: `${Emojis.Tag} Select a button to remove`,
+                components: Buttons
+            });
+
+            const Btn = await Message.awaitMessageComponent({
+                time: 0,
+                componentType: ComponentType.Button
+            });
+
+            const FilteredButtons = RawButtons.map(btns => {
+                return new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        btns.filter(btn => btn.customId.replace("button-role:", "remove-btn:") != Btn.customId)
+                            .map(e => ButtonBuilder.from(e))
+                    )
+            });
+
+            interaction.targetMessage.edit({
+                components: FilteredButtons
+            });
+
+            Btn.update({
+                components: [],
+                content: `${Emojis.Success} Removed button successfully.`
             });
         }
     }

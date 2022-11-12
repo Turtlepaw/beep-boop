@@ -18,8 +18,8 @@ We're working hard on building the future of Beep Boop, here's what's happening.
 - [x] Fix ticket channel permissions - [🧵 (thread) Can't see created ticket](https://discord.com/channels/1028789308401918004/1039607094782988390)
 - [x] Disable ticket claim button after use
 - [ ] Transfer old message content to edit message modal
-- [ ] `Quick Edit` message content support
-- [ ] `Add Button` message content support
+- [x] `Quick Edit` message content support
+- [x] `Add Button` message content support
 - [ ] (later) Translated
 - [ ] (later) Quote message or embed message links?
 
