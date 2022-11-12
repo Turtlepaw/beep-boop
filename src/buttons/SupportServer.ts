@@ -2,7 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Channe
 import { SupportServerInvite } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
-export default class AddBirthday extends Button {
+export default class SupportServer extends Button {
     constructor() {
         super({
             CustomId: "REDIRECT_SUPPORT_SERVER",

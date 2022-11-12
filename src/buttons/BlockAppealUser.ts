@@ -2,7 +2,7 @@ import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildSchedule
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
-export default class AddBirthday extends Button {
+export default class BlockAppealUser extends Button {
     constructor() {
         super({
             CustomId: "BLOCK_{any}",

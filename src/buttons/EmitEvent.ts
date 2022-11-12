@@ -23,7 +23,7 @@ export const DiscordEvents = [
     "GuildUpdate"
 ]
 
-export default class AddBirthday extends Button {
+export default class EmitEvent extends Button {
     constructor() {
         super({
             CustomId: "EMIT_EVENT",

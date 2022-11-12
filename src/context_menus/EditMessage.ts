@@ -1,10 +1,10 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Emojis } from "../configuration";
-import { FriendlyInteractionError, SendError } from "../error";
-import { CreateLinkButton } from "../buttons";
-import { Verifiers } from "../verify";
-import { Filter } from "../filter";
+import { FriendlyInteractionError, SendError } from "../utils/error";
+import { CreateLinkButton } from "../utils/buttons";
+import { Verifiers } from "../utils/verify";
+import { Filter } from "../utils/filter";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -21,16 +21,20 @@ export default class DeleteThis extends ContextMenu {
     public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
         if (interaction.targetMessage.author.id != client.user.id) {
             return FriendlyInteractionError(interaction, "That message wasn't sent by me");
-        }
-        if (
-            interaction.targetMessage.components[0]?.components == null ||
-            interaction.targetMessage.components[0].components.find(e => e.customId == "OPEN_TICKET") == null
-        ) {
-            return FriendlyInteractionError(interaction, "That's not a ticket message");
-        }
+        };
+
+        const isTicketMessage =
+            interaction.targetMessage.components[0]?.components != null &&
+            interaction.targetMessage.components[0].components.find(e => e.customId == "OPEN_TICKET") != null;
+        const isCustomMessage =
+            client.Storage.HasInArray(interaction.targetMessage.id);
+        const isButtonMessage =
+            interaction.targetMessage.components.find(e => e.components.find(e => e.customId.startsWith("button-role:"))) != null;
+
         enum CustomIds {
             MoveEmbed = "MOVE_EMBED",
             EditEmbed = "EDIT_EMBED",
+            RemoveButtons = "Remove_BUTTONS",
             ChannelSelect = "SELECT_CHANNEL_MENU",
             EmbedModal = "EMBED_BUILDER_MODAL",
             TitleField = "EMBED_TITLE_FIELD",
@@ -44,11 +48,18 @@ export default class DeleteThis extends ContextMenu {
                 new ButtonBuilder()
                     .setLabel("Edit Embed")
                     .setCustomId(CustomIds.EditEmbed)
-                    .setStyle(ButtonStyle.Primary),
+                    .setStyle(ButtonStyle.Primary)
+                    .setDisabled(!isTicketMessage && !isCustomMessage && !isButtonMessage),
                 new ButtonBuilder()
                     .setLabel("Move Embed")
                     .setCustomId(CustomIds.MoveEmbed)
                     .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(!isTicketMessage && !isCustomMessage && !isButtonMessage),
+                new ButtonBuilder()
+                    .setLabel("Remove Buttons")
+                    .setCustomId(CustomIds.RemoveButtons)
+                    .setStyle(ButtonStyle.Danger)
+                    .setDisabled(!isButtonMessage)
             );
         const Modal = new ModalBuilder()
             .setCustomId(CustomIds.EmbedModal)

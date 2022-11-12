@@ -1,9 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
-import { Filter } from "../filter";
+import { Filter } from "../utils/filter";
 import { Embed } from "../configuration";
 import Event from "../lib/Event";
 
-export default class AppealService extends Event {
+export default class AppealModal extends Event {
     constructor() {
         super({
             EventName: Events.InteractionCreate

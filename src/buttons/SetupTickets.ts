@@ -1,13 +1,13 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { SendError } from "../error";
-import { Verifiers } from "../verify";
-import { SendAppealMessage } from "../appeals";
+import { SendError } from "../utils/error";
+import { Verifiers } from "../utils/verify";
+import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { Filter } from "../filter";
+import { Filter } from "../utils/filter";
 
-export default class TestAppeals extends Button {
+export default class SetupTickets extends Button {
     constructor() {
         super({
             CustomId: "SETUP_TICKETS",

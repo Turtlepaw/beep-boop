@@ -12,12 +12,16 @@ We're working hard on building the future of Beep Boop, here's what's happening.
 - [ ] Activities (gaming and levels)
     - [x] Server Gaming Activities
     - [ ] Server Level Activity
-    - [ ] Cooking Activity
+    - [ ] (later) Cooking Activity
 - [ ] Roles (button roles)
 - [x] Add filters to `Message#awaitMessageComponent`
 - [x] Fix ticket channel permissions - [🧵 (thread) Can't see created ticket](https://discord.com/channels/1028789308401918004/1039607094782988390)
 - [x] Disable ticket claim button after use
-- [ ] Quote message or embed message links?
+- [ ] Transfer old message content to edit message modal
+- [ ] `Quick Edit` message content support
+- [ ] `Add Button` message content support
+- [ ] (later) Translated
+- [ ] (later) Quote message or embed message links?
 
 ### Support
 Click below to join our server for updates, support, and more.

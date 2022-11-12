@@ -17,12 +17,12 @@ export default class SeeCommands extends Button {
             content: `Showing ${client.DetailedCommands.length} commands...`,
             embeds: [
                 new Embed()
-                .addFields(
-                    client.DetailedCommands.map(e => ({
-                        name: `\`/${e.Name}\``,
-                        value: `\`</${e.Name}:${e.Id}>\` = </${e.Name}:${e.Id}>`
-                    }))
-                )
+                    .addFields(
+                        client.DetailedCommands.map(e => ({
+                            name: `\`/${e.Name}\``,
+                            value: `\`</${e.Name}:${e.Id}>\` = </${e.Name}:${e.Id}>`
+                        }))
+                    )
             ],
             ephemeral: true
         })

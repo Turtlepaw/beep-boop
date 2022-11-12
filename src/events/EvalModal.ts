@@ -2,7 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMemb
 import { Embed } from "../configuration";
 import Event from "../lib/Event";
 
-export default class AppealService extends Event {
+export default class EvalModal extends Event {
     constructor() {
         super({
             EventName: Events.InteractionCreate

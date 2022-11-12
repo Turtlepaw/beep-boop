@@ -1,9 +1,29 @@
 import { Client, Events as ClientEvents, InteractionReplyOptions } from "discord.js";
 import klawSync from "klaw-sync";
-import { Emojis } from "./configuration";
-import ButtonBuilder, { ButtonBuilderOptions } from "./lib/ButtonBuilder";
-import ContextMenu from "./lib/ContextMenuBuilder";
-import EventBuilder from "./lib/Event";
+import { Emojis } from "../configuration";
+import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
+import ContextMenu from "../lib/ContextMenuBuilder";
+import EventBuilder from "../lib/Event";
+
+const InputPermissionsMessage: InteractionReplyOptions = {
+    content: `${Emojis.Error} You don't have the required permissions to run this command.`,
+    ephemeral: true
+};
+
+const ButtonPermissionsMessage: InteractionReplyOptions = {
+    content: `${Emojis.Error} You don't have the required permissions to use this button.`,
+    ephemeral: true
+};
+
+const ButtonGuildMessage: InteractionReplyOptions = {
+    content: `${Emojis.Error} This button can only be used within a server.`,
+    ephemeral: true
+};
+
+const InputGuildMessage: InteractionReplyOptions = {
+    content: `${Emojis.Error} This command can only be used within a server.`,
+    ephemeral: true
+};
 
 async function StartEventService(client: Client) {
     try {
@@ -63,18 +83,24 @@ async function StartButtonService(client: Client) {
                         } else return false;
                     }
                 })
-                const PermissionsMessage: InteractionReplyOptions = {
-                    content: `${Emojis.Error} You don't have the required permissions to use this button.`,
-                    ephemeral: true
-                };
-                if (!interaction.memberPermissions.any(Button.SomePermissions)) {
-                    interaction.reply(PermissionsMessage);
+
+                if (Button == null) return;
+                if (interaction.guild == null && Button.GuildOnly) {
+                    interaction.reply(ButtonGuildMessage);
                     return;
                 }
-                if (!interaction.memberPermissions.has(Button.RequiredPermissions)) {
-                    interaction.reply(PermissionsMessage);
-                    return;
+
+                if (interaction.guild != null) {
+                    if (!interaction.memberPermissions.any(Button.SomePermissions)) {
+                        interaction.reply(ButtonPermissionsMessage);
+                        return;
+                    }
+                    if (!interaction.memberPermissions.has(Button.RequiredPermissions)) {
+                        interaction.reply(ButtonPermissionsMessage);
+                        return;
+                    }
                 }
+
                 if (CustomId != interaction.customId) return;
                 Button.ExecuteInteraction(interaction, client, Id);
             }
@@ -106,17 +132,21 @@ export async function StartService(client: Client) {
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isChatInputCommand()) {
                 const command = client.commands.get(interaction.commandName);
-                const PermissionsMessage: InteractionReplyOptions = {
-                    content: `${Emojis.Error} You don't have the required permissions to run this command.`,
-                    ephemeral: true
-                };
-                if (!interaction.memberPermissions.any(command.SomePermissions)) {
-                    interaction.reply(PermissionsMessage);
+
+                if (interaction.guild == null && command.GuildOnly) {
+                    interaction.reply(InputGuildMessage);
                     return;
                 }
-                if (!interaction.memberPermissions.has(command.RequiredPermissions)) {
-                    interaction.reply(PermissionsMessage);
-                    return;
+
+                if (interaction.guild != null) {
+                    if (!interaction.memberPermissions.any(command.SomePermissions)) {
+                        interaction.reply(InputPermissionsMessage);
+                        return;
+                    }
+                    if (!interaction.memberPermissions.has(command.RequiredPermissions)) {
+                        interaction.reply(InputPermissionsMessage);
+                        return;
+                    }
                 }
 
                 command?.ExecuteCommand(interaction, client);

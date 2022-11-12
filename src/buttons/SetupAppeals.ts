@@ -1,10 +1,10 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { Filter } from "../filter";
-import { SendAppealMessage } from "../appeals";
+import { Filter } from "../utils/filter";
+import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
-export default class TestAppeals extends Button {
+export default class SetupAppeals extends Button {
     constructor() {
         super({
             CustomId: "SETUP_APPEALS",

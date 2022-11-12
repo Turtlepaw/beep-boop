@@ -2,9 +2,9 @@ import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputComma
 import Command from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
 import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
-import { SendError } from "../error";
+import { SendError } from "../utils/error";
 
-export default class Developer extends Command {
+export default class Activities extends Command {
     constructor() {
         super({
             CanaryCommand: false,

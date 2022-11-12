@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, InteractionResponse, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Button from "../lib/ButtonBuilder";
 
-export default class TestThreads extends Button {
+export default class TestModals extends Button {
     constructor() {
         super({
             CustomId: "test_modals",

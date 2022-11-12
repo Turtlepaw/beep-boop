@@ -1,6 +1,6 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, Client, ComponentType, ContextMenuCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits } from "discord.js";
-import { Filter } from "../filter";
+import { Filter } from "../utils/filter";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {

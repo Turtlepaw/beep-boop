@@ -16,29 +16,44 @@ export default class Server extends Command {
 
     async ExecuteCommand(interaction: CommandInteraction, client: Client) {
         if (interaction.inCachedGuild() && interaction.member?.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
-            const Buttons = new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setLabel("Add Birthday as Event")
-                        .setEmoji("🎂")
-                        .setCustomId("ADD_AS_BIRTHDAY")
-                        .setStyle(ButtonStyle.Primary),
-                    new ButtonBuilder()
-                        .setCustomId("SETUP_APPEALS")
-                        .setLabel("Setup Appeals")
-                        .setStyle(ButtonStyle.Secondary)
-                        .setEmoji("📫"),
-                    new ButtonBuilder()
-                        .setCustomId("SETUP_TICKETS")
-                        .setLabel("Setup Tickets")
-                        .setStyle(ButtonStyle.Secondary)
-                        .setEmoji("🎟️"),
-                    new ButtonBuilder()
-                        .setCustomId("MODERATOR_SETTINGS")
-                        .setLabel("Moderator Settings")
-                        .setStyle(ButtonStyle.Secondary)
-                        .setEmoji("⚙️"),
-                );
+            const Buttons = [
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setLabel("Add Birthday as Event")
+                            .setEmoji("🎂")
+                            .setCustomId("ADD_AS_BIRTHDAY")
+                            .setStyle(ButtonStyle.Primary),
+                        new ButtonBuilder()
+                            .setCustomId("SETUP_APPEALS")
+                            .setLabel("Setup Appeals")
+                            .setStyle(ButtonStyle.Secondary)
+                            .setEmoji("📫"),
+                        new ButtonBuilder()
+                            .setCustomId("SETUP_TICKETS")
+                            .setLabel("Setup Tickets")
+                            .setStyle(ButtonStyle.Secondary)
+                            .setEmoji("🎟️"),
+                        new ButtonBuilder()
+                            .setCustomId("MODERATOR_SETTINGS")
+                            .setLabel("Moderator Settings")
+                            .setStyle(ButtonStyle.Secondary)
+                            .setEmoji("🔒"),
+                        new ButtonBuilder()
+                            .setCustomId("SERVER_SETTINGS")
+                            .setLabel("Server Settings")
+                            .setEmoji("⚙️")
+                            .setStyle(ButtonStyle.Secondary)
+                    ),
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setLabel("Error Logs")
+                            .setEmoji("⚠️")
+                            .setCustomId("ERROR_LOG")
+                            .setStyle(ButtonStyle.Secondary)
+                    )
+            ];
 
             await interaction.reply({
                 embeds: [
@@ -47,7 +62,7 @@ export default class Server extends Command {
                         .setColor(Colors.Blurple)
                         .setDescription(`Since you're managing ${interaction.guild.name}, you're able to use Beep Boop's \`/server\` command, that allows you to use multiple util actions.`)
                 ],
-                components: [Buttons]
+                components: Buttons
             });
         } else {
 

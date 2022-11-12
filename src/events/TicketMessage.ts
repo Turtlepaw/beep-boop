@@ -1,12 +1,11 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
-import { ModeratorSettings } from "src/buttons/ModeratorSettings";
 import { Emojis } from "../configuration";
-import { SendAppealMessage } from "../appeals";
+import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
-import { Verifiers } from "../verify";
+import { Verifiers } from "../utils/verify";
 import { Ticket } from "../buttons/CreateTicket";
 
-export default class AppealService extends Event {
+export default class TicketService extends Event {
     constructor() {
         super({
             EventName: Events.MessageCreate

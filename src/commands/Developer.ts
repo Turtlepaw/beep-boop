@@ -28,7 +28,7 @@ export default class Developer extends Command {
                         .setEmoji("👆")
                         .setCustomId("TEST_APPEALS")
                         .setStyle(ButtonStyle.Secondary),
-                        new ButtonBuilder()
+                    new ButtonBuilder()
                         .setLabel("Eval")
                         .setEmoji("📦")
                         .setCustomId("EVAL_CODE")

@@ -1,5 +1,14 @@
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandOptionsOnlyBuilder, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
+import { ApplicationCommandOptionType, AutocompleteInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+
+export type SlashCommandOption = SlashCommandRoleOption |
+    SlashCommandAttachmentOption |
+    SlashCommandBooleanOption |
+    SlashCommandChannelOption |
+    SlashCommandIntegerOption |
+    SlashCommandMentionableOption |
+    SlashCommandNumberOption |
+    SlashCommandStringOption;
 
 export type CommandBuilderOptions = {
     /**
@@ -30,7 +39,9 @@ export type CommandBuilderOptions = {
      * The subcommands for this command.
      */
     Subcomamnds?: (SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder)[];
+    Options?: SlashCommandOption[];
 }
+
 export default class Command {
     public Name: string;
     public Description: string;
@@ -39,6 +50,7 @@ export default class Command {
     public Builder: SlashCommandBuilder = new SlashCommandBuilder();
     public CanaryCommand: boolean = false;
     public GuildOnly: boolean = true;
+    public Options: SharedSlashCommandOptions;
 
     constructor(options: CommandBuilderOptions) {
         //Setting Permissions
@@ -54,6 +66,11 @@ export default class Command {
             .setName(this.Name)
             .setDescription(this.Description)
             .setDMPermission(this.GuildOnly)
+
+        if (options?.Options != null) options.Options.forEach(ob => {
+            const type = `add${ApplicationCommandOptionType[ob.type]}Option`
+            this.Builder[type](e => ob);
+        })
 
         if (options?.Subcomamnds != null) options?.Subcomamnds.forEach(input => {
             if (input instanceof SlashCommandSubcommandGroupBuilder) {

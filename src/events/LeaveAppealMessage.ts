@@ -1,8 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember } from "discord.js";
-import { SendAppealMessage } from "../appeals";
+import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
 
-export default class AppealService extends Event {
+export default class LeaveAppealMessage extends Event {
     constructor() {
         super({
             EventName: Events.GuildMemberRemove

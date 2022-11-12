@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Button from "../lib/ButtonBuilder";
 
-export default class AddBirthday extends Button {
+export default class AppealButton extends Button {
     constructor() {
         super({
             CustomId: "REQUEST_APPEAL",

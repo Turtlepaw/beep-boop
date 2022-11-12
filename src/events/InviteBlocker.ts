@@ -1,11 +1,11 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
-import { ModeratorSettings } from "src/buttons/ModeratorSettings";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
+import { ModeratorSettings } from "../buttons/ModeratorSettings";
 import { Emojis } from "../configuration";
-import { SendAppealMessage } from "../appeals";
+import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
-import { Verifiers } from "../verify";
+import { Verifiers } from "../utils/verify";
 
-export default class AppealService extends Event {
+export default class InviteBlocker extends Event {
     constructor() {
         super({
             EventName: Events.MessageCreate
@@ -13,6 +13,7 @@ export default class AppealService extends Event {
     }
 
     async ExecuteEvent(client: Client, Message: GuildMessage) {
+        if (Message.guild == null) return;
         const Settings: ModeratorSettings = client.storage[`${Message.guild.id}_mod_settings`];
         const isInviteLink = await Verifiers.InviteLink(Message.content);
         if (Settings?.BlockInvites == true && isInviteLink) {

@@ -1,7 +1,41 @@
 import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
-import { ButtonStyle, ComponentType, Interaction, RequestManager } from "discord.js";
-import { Emojis, SupportServerInvite } from "./configuration";
+import { ButtonStyle, ComponentType, Guild, Interaction, RequestManager } from "discord.js";
+import { Emojis, SupportServerInvite } from "../configuration";
 import { generateId, generatePassword } from "./Id";
+
+export interface ErrorMessage {
+    GuildId: string;
+    Summary: string;
+    Effects: string;
+}
+
+export interface ErrorStorage {
+    [key: string]: ErrorMessage[];
+}
+
+export class ErrorManager {
+    AddError(Summary: string, Effects: string, Guild: Guild) {
+        const Key = this.GenerateKey(Guild.id);
+        const Items = Guild.client.storage[Key];
+
+        Guild.client.storage[Key] = [{
+            GuildId: Guild.id,
+            Summary,
+            Effects
+        },
+        ...(Items == null ? [] : Items)
+        ];
+    }
+
+    AllErrors(Guild: Guild): ErrorMessage[] {
+        const Key = this.GenerateKey(Guild.id);
+        return Guild.client.storage[Key];
+    }
+
+    private GenerateKey(Id: string) {
+        return `${Id}_errors`
+    }
+}
 
 export async function SendError(interaction: Interaction, errorMessage: string) {
     if (interaction.isRepliable()) {

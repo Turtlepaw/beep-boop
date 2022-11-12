@@ -4,14 +4,14 @@ import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { Filter } from "../utils/filter";
 
-export interface ModeratorSettings {
-    BlockInvites?: boolean;
+export interface ServerSettings {
+    Levels?: boolean;
 }
 
 export default class ModeratorGuildSettings extends Button {
     constructor() {
         super({
-            CustomId: "MODERATOR_SETTINGS",
+            CustomId: "SERVER_SETTINGS",
             GuildOnly: true,
             RequiredPermissions: [],
             SomePermissions: ["Administrator", "ManageGuild"]
@@ -19,32 +19,33 @@ export default class ModeratorGuildSettings extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const SettingsKey = `${interaction.guild.id}_mod_settings`;
-        const Settings: ModeratorSettings = client.storage[SettingsKey];
+        const SettingsKey = `${interaction.guild.id}_server_settings`;
+        const Settings: ServerSettings = client.storage[SettingsKey];
         enum CustomId {
-            ToggleInvites = "TOGGLE_INVITES"
+            ToggleLevels = "TOGGLE_LEVELS"
         }
         function RefreshButtons() {
-            const FreshSettings: ModeratorSettings = client.storage[SettingsKey];
+            const FreshSettings: ServerSettings = client.storage[SettingsKey];
             return new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId(CustomId.ToggleInvites)
-                        .setLabel("Invites")
+                        .setCustomId(CustomId.ToggleLevels)
+                        .setLabel("Levels")
                         .setStyle(
-                            FreshSettings?.BlockInvites == null ? ButtonStyle.Danger :
-                                FreshSettings?.BlockInvites ? ButtonStyle.Success : ButtonStyle.Danger
+                            FreshSettings?.Levels == null ? ButtonStyle.Danger :
+                                FreshSettings?.Levels ? ButtonStyle.Success : ButtonStyle.Danger
                         )
                 )
         }
 
         function RefreshEmbed() {
-            const FreshSettings: ModeratorSettings = client.storage[SettingsKey];
+            const FreshSettings: ServerSettings = client.storage[SettingsKey];
+            console.log(FreshSettings, SettingsKey)
             return new Embed()
                 .setTitle("Moderator Settings")
                 .addFields([{
-                    name: `${Emojis.Link} Invites`,
-                    value: FreshSettings?.BlockInvites ? QuickMessages.Enabled : QuickMessages.Disabled
+                    name: `${Emojis.Up} Levels`,
+                    value: FreshSettings?.Levels ? QuickMessages.Enabled : QuickMessages.Disabled
                 }])
         }
 
@@ -66,14 +67,14 @@ export default class ModeratorGuildSettings extends Button {
         const ButtonCollector = Message.createMessageComponentCollector({
             time: 0,
             componentType: ComponentType.Button,
-            filter: Filter(interaction.member, CustomId.ToggleInvites)
+            filter: Filter(interaction.member, CustomId.ToggleLevels)
         });
 
         ButtonCollector.on("collect", async (Button) => {
-            if (Button.customId == CustomId.ToggleInvites) {
+            if (Button.customId == CustomId.ToggleLevels) {
                 client.storage[SettingsKey] = {
                     ...Settings,
-                    BlockInvites: Settings?.BlockInvites == null ? true : !Settings?.BlockInvites
+                    Levels: Settings?.Levels == null ? true : !Settings?.Levels
                 };
 
                 await Button.update({
