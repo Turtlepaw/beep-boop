@@ -38,7 +38,7 @@ export function Menu(props: MenuProps) {
                                 {({ isOpen }) => (
                                     <>
                                         <MenuButton className="hover:opacity-75">
-                                            {/** @ts-expect-error */}
+                                            {/** @ts- expect-error */}
                                             <img src={props.user.avatarURL} className="w-8 mr-0.5 rounded-full inline" />
                                             {
                                                 isOpen ? (

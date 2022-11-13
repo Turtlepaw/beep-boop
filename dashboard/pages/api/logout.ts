@@ -14,7 +14,6 @@ export default async function Logout(_: NextApiRequest, res: NextApiResponse) {
 		}),
 	]);
 
-	//@ts-expect-error
 	const token = parse(_.headers.cookie)[config.cookieName];
 	await DeleteUser(token);
 
