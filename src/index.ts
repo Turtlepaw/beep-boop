@@ -11,6 +11,7 @@ import { API } from "./utils/api";
 import { Levels } from "./utils/levels";
 import { StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
+
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
 

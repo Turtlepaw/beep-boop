@@ -10,7 +10,7 @@ import { CreateLinkButton } from "../utils/buttons";
 export default class Send extends Command {
     constructor() {
         super({
-            CanaryCommand: true,
+            CanaryCommand: false,
             Description: "Send a message as Beep Boop.",
             GuildOnly: false,
             Name: "send",
