@@ -20,6 +20,7 @@ We're working hard on building the future of Beep Boop, here's what's happening.
 - [ ] Transfer old message content to edit message modal
 - [x] `Quick Edit` message content support
 - [x] `Add Button` message content support
+- [ ] Add webhook to `/sensen`
 - [ ] (later) Translated
 - [ ] (later) Quote message or embed message links?
 
