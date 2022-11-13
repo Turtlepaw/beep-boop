@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
+import { config } from "./config";
 import { APIGuild } from "./types";
-const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
+const URL = config.apiUri;
+//const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
 
 export enum Routes {
     AppealSettings = "/settings/appeals",
