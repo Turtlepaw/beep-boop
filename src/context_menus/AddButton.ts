@@ -1,8 +1,9 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonComponent, ButtonStyle, Client, ComponentType, ContextMenuCommandType, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, Client, ComponentType, ContextMenuCommandType, InteractionType, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, WebhookClient } from "discord.js";
 import { Filter } from "../utils/filter";
 import { Emojis } from "../configuration";
 import { ButtonBuilderModal } from "../utils/components";
+import { FriendlyInteractionError } from "../utils/error";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -20,13 +21,42 @@ export default class DeleteThis extends ContextMenu {
         enum ModalId {
             Modal = "BUTTON_BUILDER_MODAL",
             LabelField = "BUTTON_LABEL_FIELD",
-            EmojiField = "BUTTON_EMOJI_FIELD"
+            EmojiField = "BUTTON_EMOJI_FIELD",
+            LinkField = "BUTTON_LINK_FIELD"
         }
         const Target = interaction.targetMessage;
-        const ButtonModal = ButtonBuilderModal(ModalId.Modal, {
+        const Ids = {
             Emoji: ModalId.EmojiField,
-            Label: ModalId.LabelField
-        });
+            Label: ModalId.LabelField,
+            Link: ModalId.LinkField
+        };
+        const WebhookURL = client.Storage.Get(`custom_${Target.id}`);
+
+        if (WebhookURL == null)
+            return FriendlyInteractionError(interaction, "That message wasn't sent by me")
+
+        const Webhook = new WebhookClient({ url: WebhookURL });
+        const ButtonModal = ButtonBuilderModal(ModalId.Modal, Ids);
+        const LinkButtonModal = ButtonBuilderModal(ModalId.Modal, Ids, ButtonStyle.Link);
+        let Button: ButtonBuilder = new ButtonBuilder();
+        let ReplyMessage: ButtonInteraction;
+        const ButtonTypeSelector = new ActionRowBuilder<SelectMenuBuilder>()
+            .addComponents(
+                new SelectMenuBuilder()
+                    .setCustomId("BUTTON_TYPE_SELECTOR")
+                    .addOptions(
+                        new SelectMenuOptionBuilder()
+                            .setLabel("Role Button")
+                            .setEmoji(Emojis.Role)
+                            .setDescription("Creates a button to give or remove a role.")
+                            .setValue("ROLE_BUTTON"),
+                        new SelectMenuOptionBuilder()
+                            .setLabel("Link Button")
+                            .setEmoji(Emojis.Link)
+                            .setDescription("Creates a button to link to another website.")
+                            .setValue("LINK_BUTTON")
+                    )
+            );
         const RoleSelector = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(
                 new SelectMenuBuilder()
@@ -42,66 +72,90 @@ export default class DeleteThis extends ContextMenu {
             );
 
         const Message = await interaction.reply({
-            content: `${Emojis.Role} Select a role below`,
+            content: `${Emojis.Search} Select a button type below`,
             components: [
-                RoleSelector
+                ButtonTypeSelector
             ],
             ephemeral: true,
             fetchReply: true
         });
 
-        const Select = await Message.awaitMessageComponent({
+        const ButtonType = await Message.awaitMessageComponent({
             componentType: ComponentType.StringSelect,
-            filter: Filter(interaction.member, "ROLE_SELECT"),
+            filter: Filter(interaction.member, "BUTTON_TYPE_SELECTOR"),
             time: 0
         });
 
-        const Role = await interaction.guild.roles.fetch(Select.values[0]);
-        const Button = new ButtonBuilder()
-            .setCustomId(`button-role:${Role.id}`)
-            .setLabel(Role.name);
-        const ButtonStyles = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(
-                ButtonBuilder.from(Button)
-                    .setStyle(ButtonStyle.Primary)
-                    .setCustomId(ButtonStyle[ButtonStyle.Primary]),
-                ButtonBuilder.from(Button)
-                    .setStyle(ButtonStyle.Secondary)
-                    .setCustomId(ButtonStyle[ButtonStyle.Secondary]),
-                ButtonBuilder.from(Button)
-                    .setStyle(ButtonStyle.Danger)
-                    .setCustomId(ButtonStyle[ButtonStyle.Danger]),
-                ButtonBuilder.from(Button)
-                    .setStyle(ButtonStyle.Success)
-                    .setCustomId(ButtonStyle[ButtonStyle.Success])
-            );
+        const isRoleButton = ButtonType.values[0] == "ROLE_BUTTON";
+        const isLinkButton = !isRoleButton;
 
-        const StyleMessage = await Select.update({
-            content: `${Emojis.Tag} Select a button style`,
-            components: [ButtonStyles]
-        });
+        if (isRoleButton) {
+            await ButtonType.update({
+                content: `${Emojis.Role} Select a role below`,
+                components: [
+                    RoleSelector
+                ],
+                fetchReply: true
+            });
 
-        const Style = await Message.awaitMessageComponent({
-            componentType: ComponentType.Button,
-            filter: Filter(interaction.member,
-                ButtonStyle[ButtonStyle.Success],
-                ButtonStyle[ButtonStyle.Danger],
-                ButtonStyle[ButtonStyle.Primary],
-                ButtonStyle[ButtonStyle.Secondary]
-            ),
-            time: 0
-        });
+            const Select = await Message.awaitMessageComponent({
+                componentType: ComponentType.StringSelect,
+                filter: Filter(interaction.member, "ROLE_SELECT"),
+                time: 0
+            });
 
-        Button.setStyle(ButtonStyle[Style.customId]);
+            const Role = await interaction.guild.roles.fetch(Select.values[0]);
+            Button = new ButtonBuilder()
+                .setCustomId(`button-role:${Role.id}`)
+                .setLabel(Role.name);
+            const ButtonStyles = new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId(ButtonStyle[ButtonStyle.Primary]),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setCustomId(ButtonStyle[ButtonStyle.Secondary]),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Danger)
+                        .setCustomId(ButtonStyle[ButtonStyle.Danger]),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Success)
+                        .setCustomId(ButtonStyle[ButtonStyle.Success])
+                );
 
-        Style.update({
+            const StyleMessage = await Select.update({
+                content: `${Emojis.Tag} Select a button style`,
+                components: [ButtonStyles]
+            });
+
+            ReplyMessage = await Message.awaitMessageComponent({
+                componentType: ComponentType.Button,
+                filter: Filter(interaction.member,
+                    ButtonStyle[ButtonStyle.Success],
+                    ButtonStyle[ButtonStyle.Danger],
+                    ButtonStyle[ButtonStyle.Primary],
+                    ButtonStyle[ButtonStyle.Secondary]
+                ),
+                time: 0
+            });
+
+            Button.setStyle(ButtonStyle[ReplyMessage.customId as string]);
+        } else {
+            Button.setStyle(ButtonStyle.Link);
+        }
+
+        const ButtonReply = ReplyMessage != null ? ReplyMessage : ButtonType;
+        await ButtonReply.update({
             components: [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
-                        new ButtonBuilder()
-                            .setCustomId("DEFAULT_VALUES")
-                            .setLabel("Default Values")
-                            .setStyle(ButtonStyle.Primary),
+                        ...(isRoleButton ? [
+                            new ButtonBuilder()
+                                .setCustomId("DEFAULT_VALUES")
+                                .setLabel("Default Values")
+                                .setStyle(ButtonStyle.Primary)
+                        ] : []),
                         new ButtonBuilder()
                             .setCustomId("VALUE_SELECT")
                             .setLabel("Select Values")
@@ -119,7 +173,9 @@ export default class DeleteThis extends ContextMenu {
 
         let ReplyTo: any;
         if (Value.customId == "VALUE_SELECT") {
-            Value.showModal(ButtonModal);
+            Value.showModal(
+                isLinkButton ? LinkButtonModal : ButtonModal
+            );
 
             const Modal = await Value.awaitModalSubmit({
                 time: 0
@@ -127,18 +183,20 @@ export default class DeleteThis extends ContextMenu {
 
             const Fields = {
                 Label: Modal.fields.getTextInputValue(ModalId.LabelField),
-                Emoji: Modal.fields.getTextInputValue(ModalId.EmojiField)
+                Emoji: Modal.fields.getTextInputValue(ModalId.EmojiField),
+                Link: Modal.fields.getTextInputValue(ModalId.LinkField)
             }
 
             Button.setLabel(Fields.Label)
             if (Fields.Emoji != '') Button.setEmoji(Fields.Emoji);
+            if (Fields.Link != null) Button.setURL(Fields.Link);
 
             ReplyTo = Modal;
         } else {
             ReplyTo = Value;
         }
 
-        await Target.edit({
+        await Webhook.editMessage(Target.id, {
             components: [
                 new ActionRowBuilder<MessageActionRowComponentBuilder>()
                     .addComponents(
@@ -162,7 +220,7 @@ export default class DeleteThis extends ContextMenu {
         if (ReplyTo?.update != null) {
             await ReplyTo.update(Options);
         } else {
-            await Style.editReply({
+            await ReplyTo.editReply({
                 components: [],
                 content: "\u200B"
             });

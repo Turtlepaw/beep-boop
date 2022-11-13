@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder } from "discord.js"
+import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle } from "discord.js"
 import { Emojis } from "../configuration"
 
 export function EmbedModal(CustomId: string = "CONFIGURE_EMBED") {
@@ -108,34 +108,52 @@ export function MessageBuilderModal(CustomId: string = "MESSAGE_BUILDER_MODAL", 
 export interface ButtonFields {
     Label: string;
     Emoji: string;
+    Link?: string;
 }
 
-export function ButtonBuilderModal(CustomId: string = "BUTTON_BUILDER_MODAL", Fields: ButtonFields) {
+export function ButtonBuilderModal(CustomId: string = "BUTTON_BUILDER_MODAL", Fields: ButtonFields, ButtonType: ButtonStyle = ButtonStyle.Primary) {
+    const Components = [
+        new ActionRowBuilder<TextInputBuilder>()
+            .addComponents(
+                new TextInputBuilder()
+                    .setCustomId(Fields.Label)
+                    .setLabel("Button Label")
+                    .setMaxLength(80)
+                    .setRequired(true)
+                    .setMinLength(1)
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder("Button")
+            ),
+        new ActionRowBuilder<TextInputBuilder>()
+            .addComponents(
+                new TextInputBuilder()
+                    .setCustomId(Fields.Link)
+                    .setLabel("Button Link")
+                    .setMaxLength(80)
+                    .setRequired(true)
+                    .setMinLength(12)
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder("https://discord.com/")
+            )
+    ];
+
     return new ModalBuilder()
         .setCustomId(CustomId)
         .setTitle("Configuring Button")
         .addComponents(
-            new ActionRowBuilder<TextInputBuilder>()
-                .addComponents(
-                    new TextInputBuilder()
-                        .setCustomId(Fields.Label)
-                        .setLabel("Button Label")
-                        .setMaxLength(80)
-                        .setRequired(true)
-                        .setMinLength(1)
-                        .setStyle(TextInputStyle.Short)
-                        .setPlaceholder("Button")
-                ),
-            new ActionRowBuilder<TextInputBuilder>()
-                .addComponents(
-                    new TextInputBuilder()
-                        .setCustomId(Fields.Emoji)
-                        .setLabel("Button Emoji")
-                        .setMaxLength(10)
-                        .setRequired(false)
-                        .setMinLength(1)
-                        .setStyle(TextInputStyle.Short)
-                        .setPlaceholder("✨")
-                )
+            ...Components,
+            ...(ButtonType == ButtonStyle.Link ? [
+                new ActionRowBuilder<TextInputBuilder>()
+                    .addComponents(
+                        new TextInputBuilder()
+                            .setCustomId(Fields.Emoji)
+                            .setLabel("Button Link")
+                            .setMaxLength(10)
+                            .setRequired(false)
+                            .setMinLength(1)
+                            .setStyle(TextInputStyle.Short)
+                            .setPlaceholder("✨")
+                    )
+            ] : [])
         );
 }

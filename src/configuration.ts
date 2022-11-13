@@ -33,7 +33,8 @@ export enum Emojis {
     Up = "<:up:966750323446263949>",
     Toolbox = "<:Toolbox:1040733188470874112>",
     Role = "<:IconRole:1040823556726083634>",
-    Tag = "<:Tag:1040733256028520579>"
+    Tag = "<:Tag:1040733256028520579>",
+    Search = "<:Search:1040733272021405866>"
 }
 
 export class Embed extends EmbedBuilder {

@@ -1,5 +1,5 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle, WebhookClient } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Emojis } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
 import { CreateLinkButton } from "../utils/buttons";
@@ -7,12 +7,11 @@ import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
 import e from "express";
 import { MessageBuilderModal as CreateMessageModal } from "../utils/components";
-import { generateId } from "../utils/Id";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
         super({
-            Name: "Quick Edit",
+            Name: "Legacy Quick Edit",
             CanaryCommand: false,
             GuildOnly: false,
             RequiredPermissions: [],
@@ -22,11 +21,9 @@ export default class DeleteThis extends ContextMenu {
     }
 
     public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
-        const WebhookURL = client.Storage.Get(`custom_${interaction.targetMessage.id}`);
-        if (WebhookURL == null) {
+        if (interaction.targetMessage.author.id != client.user.id) {
             return FriendlyInteractionError(interaction, "That message wasn't sent by me");
         };
-        const Webhook = new WebhookClient({ url: WebhookURL });
 
         const isTicketMessage =
             interaction.targetMessage.components[0]?.components != null &&
@@ -36,7 +33,6 @@ export default class DeleteThis extends ContextMenu {
         const isButtonMessage =
             interaction.targetMessage.components.find(e =>
                 e.components.find(e => {
-                    if (e?.customId == null) return;
                     return e.customId.startsWith("button-role:")
                 })
             ) != null;
@@ -57,12 +53,12 @@ export default class DeleteThis extends ContextMenu {
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setLabel("Edit Message")
+                    .setLabel("Edit Embed")
                     .setCustomId(CustomIds.EditEmbed)
                     .setStyle(ButtonStyle.Primary)
                     .setDisabled(!isTicketMessage && !isCustomMessage && !isButtonMessage),
                 new ButtonBuilder()
-                    .setLabel("Move Message")
+                    .setLabel("Move Embed")
                     .setCustomId(CustomIds.MoveEmbed)
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(!isTicketMessage && !isCustomMessage && !isButtonMessage),
@@ -175,7 +171,7 @@ export default class DeleteThis extends ContextMenu {
                     MessageContent: ModalInteraction.fields.getTextInputValue(CustomIds.ContentField)
                 };
 
-                await Webhook.editMessage(interaction.targetMessage.id, {
+                await interaction.targetMessage.edit({
                     content: Fields.MessageContent
                 });
             } else {
@@ -194,7 +190,7 @@ export default class DeleteThis extends ContextMenu {
                 })
                 //@ts-expect-error
                 if (Verifiers.String(Fields.Color)) Embed.setColor(Fields.Color || targetEmbed.hexColor)
-                await Webhook.editMessage(interaction.targetMessage.id, {
+                await interaction.targetMessage.edit({
                     embeds: [
                         Embed
                     ]
@@ -226,21 +222,13 @@ export default class DeleteThis extends ContextMenu {
                 return;
             }
 
-            const CreatedWebhook = await Channel.createWebhook({
-                name: interaction.targetMessage.author.username,
-                avatar: interaction.targetMessage.author.avatarURL()
-            });
-
-            const SentMessage = await CreatedWebhook.send({
+            const SentMessage = await Channel.send({
                 embeds: interaction.targetMessage.embeds,
                 components: interaction.targetMessage.components
             });
 
-            client.Storage.Create(`custom_${SentMessage.id}`, CreatedWebhook.url);
-            client.Storage.Delete(`custom_${interaction.targetMessage.id}`)
-
             await SelectInteraction.reply({
-                content: `${Emojis.Success} Moved message to ${Channel}`,
+                content: `${Emojis.Success} Moved embed to ${Channel}`,
                 ephemeral: true,
                 components: [
                     CreateLinkButton(SentMessage.url, "View Message")
@@ -251,7 +239,6 @@ export default class DeleteThis extends ContextMenu {
                 interaction.targetMessage.components.map(e => {
                     return e.components.map(btn => {
                         if (btn.type != ComponentType.Button) return null;
-                        if (btn?.customId == null && btn.style == ButtonStyle.Link) return btn;
                         if (btn.customId.startsWith("button-role:")) return btn;
                         else return null;
                     })
@@ -262,10 +249,6 @@ export default class DeleteThis extends ContextMenu {
                         .addComponents(
                             e.components.map(btn => {
                                 if (btn.type != ComponentType.Button) return null;
-                                if (btn?.customId == null && btn.style == ButtonStyle.Link) return new ButtonBuilder()
-                                    .setCustomId(`link:${btn.url}`)
-                                    .setLabel(btn.label)
-                                    .setStyle(ButtonStyle.Secondary);
                                 if (btn.customId.startsWith("button-role:")) return ButtonBuilder.from(btn).setCustomId(btn.customId.replace("button-role:", "remove-btn:"));
                                 else return null;
                             })
@@ -285,16 +268,12 @@ export default class DeleteThis extends ContextMenu {
             const FilteredButtons = RawButtons.map(btns => {
                 return new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
-                        btns.filter(bt => {
-                            if (bt.style == ButtonStyle.Link) {
-                                return bt.url != Btn.customId.replace("link:", "");
-                            } else return bt.customId.replace("button-role:", "remove-btn:") != Btn.customId;
-                        })
+                        btns.filter(btn => btn.customId.replace("button-role:", "remove-btn:") != Btn.customId)
                             .map(e => ButtonBuilder.from(e))
                     )
             });
 
-            Webhook.editMessage(interaction.targetMessage.id, {
+            interaction.targetMessage.edit({
                 components: FilteredButtons
             });
 

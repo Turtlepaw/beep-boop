@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandChannelOption } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandChannelOption, SlashCommandStringOption } from "discord.js";
 import Command from "../lib/CommandBuilder";
 import { Embed, Emojis } from "../configuration";
 import { Filter } from "../utils/filter";
@@ -19,16 +19,31 @@ export default class Send extends Command {
             Options: [
                 new SlashCommandChannelOption()
                     .setName("channel")
-                    .setDescription("The channel to send the message.")
+                    .setDescription("The channel to send the message."),
+                new SlashCommandStringOption()
+                    .setName("webhook_name")
+                    .setDescription("The name of the webhook that will send the message."),
+                new SlashCommandStringOption()
+                    .setName("webhook_avatar")
+                    .setDescription("The avatar url of the webhook that will send the message.")
             ]
         });
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
         const Channel = interaction.options.getChannel("channel", false) || interaction.channel;
-
         if (Channel.type != ChannelType.GuildText) return FriendlyInteractionError(interaction, "Channel must be a text channel.")
         if (!Verifiers.TextChannel(Channel)) return FriendlyInteractionError(interaction, "API Channel recived")
+
+        const Webhooks = await Channel.fetchWebhooks();
+
+        if (Webhooks.size == 10) return FriendlyInteractionError(interaction, "There's too many webhooks in this channel, delete one and try again.")
+        const WebhookName = interaction.options.getString("webhook_name", false) || interaction.guild.name;
+        const WebhookAvatar = interaction.options.getString("webhook_avatar", false) || interaction.guild.iconURL();
+        const Webhook = await Channel.createWebhook({
+            name: WebhookName,
+            avatar: WebhookAvatar
+        });
 
         enum CustomId {
             AsMessage = "AS_MESSAGE_CONTENT",
@@ -86,7 +101,7 @@ export default class Send extends Command {
             });
 
             const ModalEmbed = EmbedFrom(Modal);
-            const SentMessage = await Channel.send({
+            const SentMessage = await Webhook.send({
                 embeds: [
                     ModalEmbed
                 ]
@@ -96,6 +111,8 @@ export default class Send extends Command {
                 ...client.Storage.GetArray("custom_messages"),
                 SentMessage.id
             ]);
+
+            client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
 
             await Modal.reply({
                 content: `${Emojis.Success} Successfully sent embed`,
@@ -117,7 +134,7 @@ export default class Send extends Command {
                 MessageContent: Modal.fields.getTextInputValue(CustomId.ContentField)
             };
 
-            const SentMessage = await Channel.send({
+            const SentMessage = await Webhook.send({
                 content: Fields.MessageContent
             });
 
@@ -125,6 +142,8 @@ export default class Send extends Command {
                 ...client.Storage.GetArray("custom_messages"),
                 SentMessage.id
             ]);
+
+            client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
 
             await Modal.reply({
                 content: `${Emojis.Success} Successfully sent message`,

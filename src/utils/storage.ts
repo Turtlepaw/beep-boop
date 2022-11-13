@@ -20,6 +20,10 @@ export class StorageManager {
         this.Storage[key] = value;
     }
 
+    Delete(key: string) {
+        delete this.Storage[key];
+    }
+
     HasInArray(key: string) {
         const value: string[] = this.Storage[key];
         if (value == null) return false;
