@@ -54,7 +54,8 @@ export default class Send extends Command {
 
         const MessageBuilder = MessageBuilderModal(
             CustomId.MessageModal,
-            CustomId.ContentField
+            CustomId.ContentField,
+            null
         );
         const Buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(

@@ -71,7 +71,8 @@ export default class DeleteThis extends ContextMenu {
 
         const MessageBuilderModal = CreateMessageModal(
             CustomIds.MessageBuilderModal,
-            CustomIds.ContentField
+            CustomIds.ContentField,
+            interaction.targetMessage
         );
 
         const EmbedBuilderModal = new ModalBuilder()

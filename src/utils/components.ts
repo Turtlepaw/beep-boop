@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message } from "discord.js"
+import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
 
@@ -9,7 +9,7 @@ export enum EmbedModalFields {
     FooterText = "BUILDER_FOOTER_TEXT_FIELD",
     Color = "BUILDER_COLOR_FIELD"
 }
-export function EmbedModal(CustomId: string = "CONFIGURE_EMBED", Message: Message) {
+export function EmbedModal(CustomId: string = "CONFIGURE_EMBED", Message: GuildMessage) {
     const Fields = {
         Title: new TextInputBuilder()
             .setCustomId(EmbedModalFields.Title)
@@ -111,20 +111,23 @@ export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels:
         )
 }
 
-export function MessageBuilderModal(CustomId: string = "MESSAGE_BUILDER_MODAL", FieldId: string = "MESSAGE_CONTENT_FIELD") {
+export function MessageBuilderModal(CustomId: string = "MESSAGE_BUILDER_MODAL", FieldId: string = "MESSAGE_CONTENT_FIELD", Message: GuildMessage) {
+    const ContentField = new TextInputBuilder()
+        .setCustomId(FieldId)
+        .setLabel("Message Content")
+        .setMaxLength(2000)
+        .setRequired(true)
+        .setStyle(TextInputStyle.Paragraph)
+        .setPlaceholder("Some great message!");
+
+    if (Verifiers.String(Message?.content)) ContentField.setValue(Message.content);
     return new ModalBuilder()
         .setCustomId(CustomId)
         .setTitle("Configuring Message")
         .addComponents(
             new ActionRowBuilder<TextInputBuilder>()
                 .addComponents(
-                    new TextInputBuilder()
-                        .setCustomId(FieldId)
-                        .setLabel("Message Content")
-                        .setMaxLength(2000)
-                        .setRequired(true)
-                        .setStyle(TextInputStyle.Paragraph)
-                        .setPlaceholder("Some great message!")
+                    ContentField
                 )
         );
 }
