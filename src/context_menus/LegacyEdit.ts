@@ -29,7 +29,7 @@ export default class DeleteThis extends ContextMenu {
             interaction.targetMessage.components[0]?.components != null &&
             interaction.targetMessage.components[0].components.find(e => e.customId == "OPEN_TICKET") != null;
         const isCustomMessage =
-            client.Storage.HasInArray(interaction.targetMessage.id);
+            client.Storage.HasInArray("custom_messages", interaction.targetMessage.id);
         const isButtonMessage =
             interaction.targetMessage.components.find(e =>
                 e.components.find(e => {

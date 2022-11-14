@@ -6,7 +6,7 @@ import { CreateLinkButton } from "../utils/buttons";
 import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
 import e from "express";
-import { MessageBuilderModal as CreateMessageModal } from "../utils/components";
+import { EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
 import { generateId } from "../utils/Id";
 
 export default class DeleteThis extends ContextMenu {
@@ -32,7 +32,7 @@ export default class DeleteThis extends ContextMenu {
             interaction.targetMessage.components[0]?.components != null &&
             interaction.targetMessage.components[0].components.find(e => e.customId == "OPEN_TICKET") != null;
         const isCustomMessage =
-            client.Storage.HasInArray(interaction.targetMessage.id);
+            client.Storage.HasInArray("custom_messages", interaction.targetMessage.id);
         const isButtonMessage =
             interaction.targetMessage.components.find(e =>
                 e.components.find(e => {
@@ -47,10 +47,6 @@ export default class DeleteThis extends ContextMenu {
             RemoveButtons = "Remove_BUTTONS",
             ChannelSelect = "SELECT_CHANNEL_MENU",
             MessageBuilderModal = "MESSAGE_BUILDER_MODAL",
-            TitleField = "EMBED_TITLE_FIELD",
-            DescriptionField = "EMBED_DESCRIPTION_FIELD",
-            ColorField = "EMBED_COLOR_FIELD",
-            FooterField = "EMBED_FOOTER_FIELD",
             ContentField = "MESSAGE_CONTENT_FIELD"
         }
 
@@ -78,53 +74,7 @@ export default class DeleteThis extends ContextMenu {
             CustomIds.ContentField
         );
 
-        const EmbedBuilderModal = new ModalBuilder()
-            .setCustomId(CustomIds.MessageBuilderModal)
-            .setTitle("Configuring Embed")
-            .addComponents(
-                new ActionRowBuilder<TextInputBuilder>()
-                    .addComponents(
-                        new TextInputBuilder()
-                            .setCustomId(CustomIds.TitleField)
-                            .setLabel("Title")
-                            .setMaxLength(256)
-                            .setRequired(false)
-                            .setStyle(TextInputStyle.Short)
-                            .setPlaceholder("Tickets")
-                    ),
-                new ActionRowBuilder<TextInputBuilder>()
-                    .addComponents(
-                        new TextInputBuilder()
-                            .setCustomId(CustomIds.DescriptionField)
-                            .setLabel("Description")
-                            .setMaxLength(4000)
-                            .setRequired(false)
-                            .setStyle(TextInputStyle.Paragraph)
-                            .setPlaceholder("Hello...")
-                    ),
-                new ActionRowBuilder<TextInputBuilder>()
-                    .addComponents(
-                        new TextInputBuilder()
-                            .setCustomId(CustomIds.FooterField)
-                            .setLabel("Footer")
-                            .setMaxLength(2048)
-                            .setRequired(false)
-                            .setStyle(TextInputStyle.Short)
-                            .setPlaceholder("Staff Team")
-                    ),
-                new ActionRowBuilder<TextInputBuilder>()
-                    .addComponents(
-                        new TextInputBuilder()
-                            .setCustomId(CustomIds.ColorField)
-                            .setLabel("Color")
-                            .setMaxLength(7)
-                            .setMinLength(3)
-                            .setRequired(false)
-                            .setStyle(TextInputStyle.Short)
-                            .setPlaceholder("#5865f2")
-                            .setValue("#5865f2")
-                    )
-            );
+        const EmbedBuilderModal = EmbedModal(CustomIds.MessageBuilderModal, interaction.targetMessage);
         const ChannelSelect = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(
                 new SelectMenuBuilder()
@@ -179,21 +129,7 @@ export default class DeleteThis extends ContextMenu {
                     content: Fields.MessageContent
                 });
             } else {
-                const Fields = {
-                    Title: ModalInteraction.fields.getTextInputValue(CustomIds.TitleField),
-                    Description: ModalInteraction.fields.getTextInputValue(CustomIds.DescriptionField),
-                    Footer: ModalInteraction.fields.getTextInputValue(CustomIds.FooterField),
-                    Color: ModalInteraction.fields.getTextInputValue(CustomIds.ColorField)
-                }
-
-                const Embed = new EmbedBuilder()
-                if (Verifiers.String(Fields.Title)) Embed.setTitle(Fields.Title || targetEmbed.title)
-                if (Verifiers.String(Fields.Description)) Embed.setDescription(Fields.Description || targetEmbed.description)
-                if (Verifiers.String(Fields.Footer)) Embed.setFooter({
-                    text: Fields.Footer || targetEmbed.footer?.text
-                })
-                //@ts-expect-error
-                if (Verifiers.String(Fields.Color)) Embed.setColor(Fields.Color || targetEmbed.hexColor)
+                const Embed = EmbedFrom(ModalInteraction)
                 await Webhook.editMessage(interaction.targetMessage.id, {
                     embeds: [
                         Embed
@@ -206,8 +142,7 @@ export default class DeleteThis extends ContextMenu {
                 ephemeral: true
             })
         } else if (ButtonInteraction.customId == CustomIds.MoveEmbed) {
-            await ButtonInteraction.reply({
-                ephemeral: true,
+            await ButtonInteraction.update({
                 content: `${Emojis.TextChannel} Select a channel below`,
                 components: [ChannelSelect]
             });
@@ -236,12 +171,13 @@ export default class DeleteThis extends ContextMenu {
                 components: interaction.targetMessage.components
             });
 
+            if (interaction.targetMessage.deletable) interaction.targetMessage.delete();
+
             client.Storage.Create(`custom_${SentMessage.id}`, CreatedWebhook.url);
             client.Storage.Delete(`custom_${interaction.targetMessage.id}`)
 
-            await SelectInteraction.reply({
+            await SelectInteraction.update({
                 content: `${Emojis.Success} Moved message to ${Channel}`,
-                ephemeral: true,
                 components: [
                     CreateLinkButton(SentMessage.url, "View Message")
                 ]

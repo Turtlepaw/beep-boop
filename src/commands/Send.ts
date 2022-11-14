@@ -93,7 +93,7 @@ export default class Send extends Command {
 
         if (Button.customId == CustomId.AsEmbed) {
             await Button.showModal(
-                EmbedModal()
+                EmbedModal("EMBED_MODAL", Message)
             );
 
             const Modal = await Button.awaitModalSubmit({

@@ -24,8 +24,8 @@ export class StorageManager {
         delete this.Storage[key];
     }
 
-    HasInArray(key: string) {
-        const value: string[] = this.Storage[key];
+    HasInArray(ArrayKey: string, key: string) {
+        const value: string[] = this.Storage[ArrayKey];
         if (value == null) return false;
         return value.find(e => e == key) != null;
     }
