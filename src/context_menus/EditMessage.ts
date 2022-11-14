@@ -232,7 +232,7 @@ export default class DeleteThis extends ContextMenu {
             });
 
             Webhook.editMessage(interaction.targetMessage.id, {
-                components: FilteredButtons
+                components: FilteredButtons[0].components.length == 0 ? [] : FilteredButtons
             });
 
             Btn.update({
