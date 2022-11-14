@@ -2,7 +2,7 @@ import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, Client, ComponentType, ContextMenuCommandType, InteractionType, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, WebhookClient } from "discord.js";
 import { Filter } from "../utils/filter";
 import { Emojis } from "../configuration";
-import { ButtonBuilderModal } from "../utils/components";
+import { ButtonBuilderModal, GetTextInput } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
 
 export default class DeleteThis extends ContextMenu {
@@ -182,9 +182,9 @@ export default class DeleteThis extends ContextMenu {
             });
 
             const Fields = {
-                Label: Modal.fields.getTextInputValue(ModalId.LabelField),
-                Emoji: Modal.fields.getTextInputValue(ModalId.EmojiField),
-                Link: Modal.fields.getTextInputValue(ModalId.LinkField)
+                Label: GetTextInput(ModalId.LabelField, Modal),
+                Emoji: GetTextInput(ModalId.EmojiField, Modal),
+                Link: GetTextInput(ModalId.LinkField, Modal)
             }
 
             Button.setLabel(Fields.Label)
