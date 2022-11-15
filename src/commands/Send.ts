@@ -32,7 +32,7 @@ export default class Send extends Command {
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
         const Channel = interaction.options.getChannel("channel", false) || interaction.channel;
-        if (Channel.type != ChannelType.GuildText) return FriendlyInteractionError(interaction, "Channel must be a text channel.")
+        if (!Verifiers.GuildText(Channel)) return FriendlyInteractionError(interaction, "Channel must be a text channel.")
         if (!Verifiers.TextChannel(Channel)) return FriendlyInteractionError(interaction, "API Channel recived")
 
         const Webhooks = await Channel.fetchWebhooks();

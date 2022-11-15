@@ -1,4 +1,4 @@
-import { Channel, ColorResolvable, GuildTextBasedChannel } from "discord.js";
+import { Channel, ColorResolvable, GuildTextBasedChannel, NewsChannel, TextChannel as GuildTextChannel } from "discord.js";
 import fetch from "axios";
 
 function isHexColor(str: string): str is `#${string}` {
@@ -32,10 +32,16 @@ async function InviteLink(str: string) {
 function TextChannel(channel: any): channel is GuildTextBasedChannel {
     return channel?.send != null;
 }
+
+function GuildText(channel: any): channel is (NewsChannel | GuildTextChannel) {
+    return channel?.send != null;
+}
+
 export const Verifiers = {
     isHexColor,
     String,
     InviteLink,
     Link,
-    TextChannel
+    TextChannel,
+    GuildText
 }
