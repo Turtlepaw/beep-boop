@@ -17,6 +17,10 @@ export const Logs: Logging = {
 export const guildId = "1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.3";
+export const Website = "https://beep.trtle.xyz"
+export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
+    return `${Website}/dashboard/${GuildId}/transcription/${ChannelId}`
+}
 export const Status: ActivityOptions = {
     type: ActivityType.Listening,
     name: `commands`

@@ -113,6 +113,10 @@ export default class CreateTicket extends Button {
             embeds: [
                 new Embed()
                     .setTitle(`Ticket`)
+                    .setAuthor({
+                        name: `Created By ${interaction.user.username}`,
+                        iconURL: interaction.user.avatarURL()
+                    })
                     .addFields([{
                         name: "Created At",
                         value: time(new Date(), TimestampStyles.RelativeTime),

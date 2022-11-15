@@ -2,12 +2,13 @@ import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonSt
 import { SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis } from "../configuration";
+import { Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../utils/Id";
 import { Ticket } from "./CreateTicket";
 import { Filter } from "../utils/filter";
+import { CreateLinkButton } from "../utils/buttons";
 
 export default class CloseTicket extends Button {
     constructor() {
@@ -133,6 +134,12 @@ export default class CloseTicket extends Button {
                         value: `${ticket.Reason}`,
                         inline: true
                     }])
+            ],
+            components: [
+                CreateLinkButton(
+                    GenerateTranscriptionURL(interaction.guild.id, interaction.channel.id),
+                    "Transcription"
+                )
             ]
         });
 
