@@ -16,7 +16,7 @@ export const Logs: Logging = {
 }
 export const guildId = "1028789308401918004";
 export const color = "#FF6060";
-export const Version = "v2.2";
+export const Version = "v2.3";
 export const Status: ActivityOptions = {
     type: ActivityType.Listening,
     name: `commands`
@@ -41,7 +41,8 @@ export enum Emojis {
     Role = "<:IconRole:1040823556726083634>",
     Tag = "<:Tag:1040733256028520579>",
     Search = "<:Search:1040733272021405866>",
-    ChannelThread = "<:ChannelThread:1041851898313052230>"
+    ChannelThread = "<:ChannelThread:1041851898313052230>",
+    ModerationAction = "<:moderation_action:1039610597618221076>"
 }
 
 export class Embed extends EmbedBuilder {

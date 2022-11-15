@@ -125,6 +125,10 @@ export default class CreateTicket extends Button {
                         name: "Reason",
                         value: Reason,
                         inline: true
+                    }, {
+                        name: "Claimed By",
+                        value: "No one has claimed this ticket yet.",
+                        inline: true
                     }])
             ],
             components: [

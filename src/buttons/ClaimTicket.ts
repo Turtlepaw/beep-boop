@@ -35,6 +35,16 @@ export default class ClaimTicket extends Button {
                             .setCustomId("CLAIM_TICKET")
                             .setDisabled(true)
                     )
+            ],
+            embeds: [
+                new EmbedBuilder(interaction.message.embeds[0].data)
+                    .setFields([
+                        ...interaction.message.embeds[0].data.fields.filter(e => e.name != "Claimed By"), {
+                            name: "Claimed By",
+                            value: interaction.user.toString(),
+                            inline: true
+                        }
+                    ])
             ]
         });
 

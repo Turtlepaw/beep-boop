@@ -63,7 +63,7 @@ export default class BlockAppealUser extends Button {
 
         const Channel = await User.user.createDM(true);
         Channel.send({
-            content: `😢 You've been blocked from appealing, here's what I know:\n\n\`\`\`${Reason}\`\`\``
+            content: `${Emojis.ModerationAction} You've been blocked from appealing, here's what we know:\n\n\`\`\`${Reason}\`\`\``
         });
     }
 }

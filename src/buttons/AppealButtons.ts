@@ -84,7 +84,7 @@ export default class AppealButtons extends Button {
             });
 
             Channel.send({
-                content: `😢 Your appeal was denied, here's what I know:\n\n\`\`\`${Reason}\`\`\``
+                content: `${Emojis.ModerationAction} Your appeal was denied, here's what we know:\n\n\`\`\`${Reason}\`\`\``
             });
         } else {
             interaction.reply({
