@@ -189,7 +189,7 @@ export default class DeleteThis extends ContextMenu {
                     return e.components.map(btn => {
                         if (btn.type != ComponentType.Button) return null;
                         if (btn?.customId == null && btn.style == ButtonStyle.Link) return btn;
-                        if (btn.customId.startsWith("button-role:")) return btn;
+                        if (btn.customId.startsWith("button-role:") || btn.customId == "OPEN_TICKET") return btn;
                         else return null;
                     })
                 }).filter(e => e != null)
@@ -203,7 +203,8 @@ export default class DeleteThis extends ContextMenu {
                                     .setCustomId(`link:${btn.url}`)
                                     .setLabel(btn.label)
                                     .setStyle(ButtonStyle.Secondary);
-                                if (btn.customId.startsWith("button-role:")) return ButtonBuilder.from(btn).setCustomId(btn.customId.replace("button-role:", "remove-btn:"));
+                                if (btn.customId.startsWith("button-role:") || btn.customId == "OPEN_TICKET") return ButtonBuilder.from(btn)
+                                    .setCustomId(btn.customId == "OPEN_TICKET" ? `remove-role:OPEN_TICKET` : btn.customId.replace("button-role:", "remove-btn:"));
                                 else return null;
                             })
                         )
@@ -225,6 +226,8 @@ export default class DeleteThis extends ContextMenu {
                         btns.filter(bt => {
                             if (bt.style == ButtonStyle.Link) {
                                 return bt.url != Btn.customId.replace("link:", "");
+                            } else if (bt.customId.includes("OPEN_TICKET")) {
+                                return bt.customId != Btn.customId.replace("remove-role:", "")
                             } else return bt.customId.replace("button-role:", "remove-btn:") != Btn.customId;
                         })
                             .map(e => ButtonBuilder.from(e))

@@ -126,6 +126,25 @@ async function StartContextMenuService(client: Client) {
     }
 }
 
+export async function StartAutocompleteService(client: Client) {
+    try {
+        //Handle autocomplete interactions
+        client.on(ClientEvents.InteractionCreate, async (interaction) => {
+            if (interaction.isAutocomplete()) {
+                const command = client.commands.get(interaction.commandName);
+
+                try {
+                    await command?.ExecuteAutocompleteRequest(interaction, client);
+                } catch (e) {
+                    console.log(`Error`.red, e);
+                }
+            }
+        })
+    } catch (e) {
+        console.log("Error:".red, e);
+    }
+}
+
 export async function StartService(client: Client) {
     try {
         //Handle command interactions
@@ -149,7 +168,11 @@ export async function StartService(client: Client) {
                     }
                 }
 
-                command?.ExecuteCommand(interaction, client);
+                try {
+                    await command?.ExecuteCommand(interaction, client);
+                } catch (e) {
+                    console.log(`Error`.red, e);
+                }
             }
         })
     } catch (e) {
@@ -159,5 +182,6 @@ export async function StartService(client: Client) {
     //Start other services
     StartButtonService(client);
     StartEventService(client);
+    StartAutocompleteService(client);
     StartContextMenuService(client);
 }

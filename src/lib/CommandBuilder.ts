@@ -1,5 +1,6 @@
 import { SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandOptionsOnlyBuilder, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
-import { ApplicationCommandOptionType, AutocompleteInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { BuilderOptions, CommandBuilderType } from "./Builder";
 
 export type SlashCommandOption = SlashCommandRoleOption |
     SlashCommandAttachmentOption |
@@ -10,7 +11,7 @@ export type SlashCommandOption = SlashCommandRoleOption |
     SlashCommandNumberOption |
     SlashCommandStringOption;
 
-export type CommandBuilderOptions = {
+export interface CommandBuilderOptions {
     /**
      * Required permissions to execute this command.
      */
@@ -51,6 +52,7 @@ export default class Command {
     public CanaryCommand: boolean = false;
     public GuildOnly: boolean = true;
     public Options: SharedSlashCommandOptions;
+    public BuilderType: CommandBuilderType;
 
     constructor(options: CommandBuilderOptions) {
         //Setting Permissions
@@ -61,6 +63,7 @@ export default class Command {
         this.Description = options.Description;
         this.CanaryCommand = options.CanaryCommand;
         this.GuildOnly = options.GuildOnly;
+        this.BuilderType = CommandBuilderType.ChatInput;
         //Set stuff on the builder
         this.Builder
             .setName(this.Name)
@@ -86,12 +89,12 @@ export default class Command {
     }
 
     public async ExecuteCommand(
-        interaction: CommandInteraction,
+        interaction: ChatInputCommandInteraction,
         client: Client
-    ): Promise<void> { }
+    ): Promise<any> { }
 
     public async ExecuteAutocompleteRequest(
         interaction: AutocompleteInteraction,
         client: Client
-    ): Promise<void> { }
+    ): Promise<any> { }
 }

@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
 import { Filter } from "../utils/filter";
 import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis } from "../configuration";
@@ -15,6 +15,30 @@ export default class SetupAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        const CurrentSettings = client.storage[`${interaction.guild.id}_appeal_channel`];
+        let Button: ButtonInteraction;
+        const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+                new ButtonBuilder()
+                    .setLabel("Continue")
+                    .setStyle(ButtonStyle.Danger)
+                    .setCustomId("CONTINUE")
+            )
+
+        if (CurrentSettings != null) {
+            const ActionMessage = await interaction.reply({
+                content: "If you continue you'll overwrite your current settings, are you sure you want to continue?",
+                components: [ActionButtons],
+                fetchReply: true
+            });
+
+            Button = await ActionMessage.awaitMessageComponent({
+                time: 0,
+                filter: Filter(interaction.member, "CONTINUE"),
+                componentType: ComponentType.Button
+            });
+        };
+
         const Menu = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(
                 new SelectMenuBuilder()
@@ -29,7 +53,7 @@ export default class SetupAppeals extends Button {
                     )
             )
 
-        await interaction.reply({
+        await (interaction.replied ? Button : interaction).reply({
             content: "Let's start with where you want to have the appeals go",
             components: [Menu]
         });

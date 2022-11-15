@@ -36,8 +36,10 @@ export default class ModeratorGuildSettings extends Button {
         const Max = 5;
         let At = 0;
         let CurrentEmbed = new EmbedBuilder(BaseEmbed.data);
+        let FieldsAdded = 0;
         for (const ErrorMessage of AllErrors) {
             if (At == Max) {
+                At = 0;
                 PageEmbeds.push(CurrentEmbed)
                 CurrentEmbed = new EmbedBuilder(BaseEmbed.data);
                 continue;
@@ -48,7 +50,9 @@ export default class ModeratorGuildSettings extends Button {
                 value: `This Effects: ${ErrorMessage.Effects}`
             }]);
 
-            if (AllErrors.length < Max && (At + 1) == AllErrors.length) {
+            FieldsAdded++
+
+            if (FieldsAdded == (AllErrors.length - 1)) {
                 PageEmbeds.push(CurrentEmbed);
             }
 

@@ -1,4 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
+import { ActivityOptions, ActivityType } from "discord.js";
 import { Logging } from "./@types/config";
 
 //export const token = process.env.TOKEN;
@@ -15,6 +16,11 @@ export const Logs: Logging = {
 }
 export const guildId = "1028789308401918004";
 export const color = "#FF6060";
+export const Version = "v2.2";
+export const Status: ActivityOptions = {
+    type: ActivityType.Listening,
+    name: `commands`
+};
 export enum Emojis {
     TextChannel = "<:ChannelText:1034911639243345960>",
     Tada = "<a:tada:1034912799853383731>",
@@ -34,7 +40,8 @@ export enum Emojis {
     Toolbox = "<:Toolbox:1040733188470874112>",
     Role = "<:IconRole:1040823556726083634>",
     Tag = "<:Tag:1040733256028520579>",
-    Search = "<:Search:1040733272021405866>"
+    Search = "<:Search:1040733272021405866>",
+    ChannelThread = "<:ChannelThread:1041851898313052230>"
 }
 
 export class Embed extends EmbedBuilder {

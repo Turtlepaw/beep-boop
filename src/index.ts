@@ -1,5 +1,5 @@
 //Import packages
-import { Client, IntentsBitField, Partials, Events } from "discord.js";
+import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
@@ -11,6 +11,7 @@ import { API } from "./utils/api";
 import { Levels } from "./utils/levels";
 import { StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
+import { Status } from "./configuration";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -69,6 +70,11 @@ client.on(Events.ClientReady, async () => {
 
     // The client is ready
     console.log("Ready".green);
+
+    // Set client status
+    if (Status != null) {
+        client.user.setActivity(Status);
+    }
 });
 
 client.login(TOKEN);
