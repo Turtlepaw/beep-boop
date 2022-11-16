@@ -1,5 +1,5 @@
 import { Button, Center } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type Next = () => void;
 export interface SaveProps {
@@ -12,6 +12,11 @@ export function CreateSaveOptions() {
     return useState(false);
 }
 
+export function useSave(Save: (next: Next) => any, next: Next) {
+    if (window != null) next();
+    Save(next);
+};
+
 export function SaveAlert({ Save, setOpen: SetPanel, isOpen: SavePanel }: SaveProps) {
     const [IsSaving, SetSaving] = useState(false);
     const TogglePanel = () => SetPanel(!SavePanel);
@@ -21,7 +26,9 @@ export function SaveAlert({ Save, setOpen: SetPanel, isOpen: SavePanel }: SavePr
     };
     const HandleSave = () => {
         SetSaving(true);
-        Save(Next);
+        setTimeout(() => {
+            useSave(Save, Next)
+        }, 500)
     }
 
     return (

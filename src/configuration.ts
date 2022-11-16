@@ -12,7 +12,8 @@ export const ClientAdministators: string[] = [
 export const Logs: Logging = {
     // This channel needs to be in
     // the `guildId` server (line 16)
-    DM: "1040431450798956594"
+    DM: "1040431450798956594",
+    Error: "1042231033627684904"
 }
 export const guildId = "1028789308401918004";
 export const color = "#FF6060";

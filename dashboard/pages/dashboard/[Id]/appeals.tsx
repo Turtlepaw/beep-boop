@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { AutoCenter } from '../../../components/AutoCenter';
 import { AddIcon, DownIcon } from '../../../components/Icons';
 import { ExternalIcon, Menu } from '../../../components/Menu';
-import { GetAppeals, GetChannels, SetAppeals } from '../../../utils/api';
+import { GetAppeals, GetChannels, SendMessage, SetAppeals } from '../../../utils/api';
 import { DefaultProps, parseUser } from '../../../utils/parse-user';
 import { APIChannel, APIGuild } from '../../../utils/types';
 import { CreateHandler, CreateSelectHandler } from '../../../utils/utils';
@@ -74,9 +74,12 @@ export default function Home(props: Props) {
         SetChannelName(e?.label)
     });
     const SaveSettings = async () => {
-        SetAppeals(guild.Id, Channel)
+        console.log("saving...")
+        SetAppeals(guild.Id, Channel);
+        SendMessage(guild.Id, Channel, "This channel has been set up to recieve appeals.")
     };
     const SaveAll = (next: Next) => {
+        SaveSettings();
         next();
     }
 
@@ -84,7 +87,7 @@ export default function Home(props: Props) {
         <>
             <Menu user={props.user} isDashboard />
             <div className='!flex'>
-                <SideMenu GuildId={guild.Id} user={props.user} />
+                <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
                 <AutoCenter className='text-center'>
                     <div>
                         <Center>

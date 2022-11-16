@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import Select from 'react-select';
 import { Configuration } from '../pages/_app';
-import { DiscordUser } from '../utils/types';
+import { APIGuild, DiscordUser } from '../utils/types';
 import { colourStyles } from './Select';
 
 function MenuItem({ children, href }: {
@@ -24,12 +24,14 @@ function MenuItem({ children, href }: {
     )
 }
 
-export function SideMenu({ GuildId, user }: { GuildId: string; user: DiscordUser | null; }) {
+export function SideMenu({ GuildId, user, GuildName, Guilds }: { GuildName: string, Guilds: APIGuild[], GuildId: string; user: DiscordUser | null; }) {
     if (user == null) return (<div></div>);
-    const options = [{
-        label: "a",
-        value: "a"
-    }];
+    const options = [
+        ...Guilds.map(e => ({
+            label: e.Name,
+            value: e.Id
+        }))
+    ];
     return (
         <div className='SideMenu !w-[15rem] px-8 py-5 overflow-y-auto border-r border-r-[#33353b] mr-10'>
             <a href='/'>
@@ -44,12 +46,12 @@ export function SideMenu({ GuildId, user }: { GuildId: string; user: DiscordUser
                 className="w-[10rem]"
                 placeholder={"Select an option"}
                 defaultValue={{
-                    label: GuildId,
+                    label: GuildName,
                     value: GuildId
                 }}
                 styles={colourStyles}
             />
-            <MenuItem href={`/dashboard/${GuildId}/appeals`}>View All</MenuItem>
+            <MenuItem href={`/dashboard/${GuildId}/`}>Home</MenuItem>
             <MenuItem href={`/dashboard/${GuildId}/appeals`}>Appeal Settings</MenuItem>
         </div>
     );

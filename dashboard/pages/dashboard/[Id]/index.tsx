@@ -4,6 +4,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import React, { useState } from 'react';
 import { AutoCenter } from '../../../components/AutoCenter';
+import { Experimental } from '../../../components/Beta';
 import { AddIcon, DownIcon } from '../../../components/Icons';
 import { ExternalIcon, Menu } from '../../../components/Menu';
 import { SideMenu } from '../../../components/SideMenu';
@@ -53,6 +54,7 @@ export default function Home(props: Props) {
             </AutoCenter>
         </div>
     );
+
     const [SavePanel, SetPanel] = useState(false);
     const [IsSaving, SetSaving] = useState(false);
     const [Channel, SetChannel] = useState("");
@@ -69,7 +71,7 @@ export default function Home(props: Props) {
         <>
             <Menu user={props.user} isDashboard />
             <div className='!flex'>
-                <SideMenu GuildId={guild.Id} user={props.user} />
+                <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
                 <AutoCenter className='text-center'>
                     <div>
                         <Center>

@@ -4,7 +4,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { AutoCenter } from '../components/AutoCenter';
 import { Feature, FeatureDescription, FeatureIcon, FeatureText, FeatureTitle } from '../components/Feature';
-import { Menu } from '../components/Menu';
+import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
 
@@ -23,10 +23,22 @@ export default function Home(props: DefaultProps) {
           <Center>
             <p className='max-w-sm text-lg'>{Configuration.Description}</p>
           </Center>
+          <Center className='mt-5'>
+            <a href='/add'>
+              <Button variant="primary" className='mx-1.5'>
+                Add to Server
+              </Button>
+            </a>
+            <a href='/support'>
+              <Button variant="secondary" className='mx-1.5'>
+                Support Server
+              </Button>
+            </a>
+          </Center>
         </div>
         <div>
           <Center>
-            <h1 className='text-center font-bold text-2xl pt-4'>What you're getting</h1>
+            <h1 className='text-center font-bold text-2xl pt-10'>What you're getting</h1>
           </Center>
           <div className='FlexContainer'>
             <Feature>
@@ -48,6 +60,20 @@ export default function Home(props: DefaultProps) {
               <FeatureText>
                 <FeatureTitle>Appeals</FeatureTitle>
                 <FeatureDescription>Give users a second chance with in-app appeals.</FeatureDescription>
+              </FeatureText>
+            </Feature>
+            <Feature>
+              <FeatureIcon Icon='/Icons/Reward.svg' />
+              <FeatureText>
+                <FeatureTitle>Levels</FeatureTitle>
+                <FeatureDescription>Reward your members for being active with levels.</FeatureDescription>
+              </FeatureText>
+            </Feature>
+            <Feature>
+              <FeatureIcon Icon='/Icons/Gift.svg' />
+              <FeatureText>
+                <FeatureTitle>Advanced Giveaways</FeatureTitle>
+                <FeatureDescription>Create advanced giveaways with tons of requirements.</FeatureDescription>
               </FeatureText>
             </Feature>
           </div>

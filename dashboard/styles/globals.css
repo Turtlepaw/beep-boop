@@ -29,8 +29,13 @@ a {
 
   body {
     color: white;
-    background: black;
+    background: #24262b;
   }
+}
+
+.ModalBackground {
+  background-color: #24262b !important;
+  color: white !important;
 }
 
 .Background {

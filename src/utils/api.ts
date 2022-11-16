@@ -1,4 +1,4 @@
-import { ChannelType, Client, PermissionFlagsBits } from "discord.js";
+import { ChannelType, Client, PermissionFlagsBits, TextChannel } from "discord.js";
 import express from "express";
 import bodyParser from "body-parser";
 
@@ -8,7 +8,8 @@ export enum Routes {
     Index = "/",
     OAuth = "/oauth",
     GuildsWith = "/guilds",
-    Channels = "/channels"
+    Channels = "/channels",
+    CreateMessage = "/message/create"
 }
 
 enum Status {
@@ -264,6 +265,29 @@ export async function API(client: Client, token: string) {
 
         res.send(Channels);
     });
+
+    app.post(Routes.CreateMessage, async (req, res) => {
+        const GuildId = req.body?.id;
+        const ChannelId = req.body?.channel;
+        const MessageContent = req.body?.content;
+
+        if (VerifyStringNumber(GuildId, 19)) return res.send(GetMessage(
+            Message(Messages.Error, "Invalid Guild Id")
+        ));
+
+        if (VerifyStringNumber(ChannelId, 19)) return res.send(GetMessage(
+            Message(Messages.Error, "Invalid Channel Id")
+        ));
+
+        const Guild = await client.guilds.fetch(GuildId);
+        const Channel = await Guild.channels.fetch(ChannelId);
+
+        (Channel as TextChannel).send({
+            content: MessageContent
+        });
+
+        res.send(Messages.Success);
+    })
 
     app.listen(4000, () => console.log("API Ready".green, "https://localhost:4000/".gray))
 }

@@ -1,9 +1,11 @@
-import { Client, Events as ClientEvents, InteractionReplyOptions } from "discord.js";
+import { ChannelType, Client, Events as ClientEvents, Guild, InteractionReplyOptions, TextChannel } from "discord.js";
 import klawSync from "klaw-sync";
-import { Emojis } from "../configuration";
+import { Embed, Emojis, guildId, Logs } from "../configuration";
 import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import EventBuilder from "../lib/Event";
+import { CreateLinkButton } from "./buttons";
+import { SendError } from "./error";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
     content: `${Emojis.Error} You don't have the required permissions to run this command.`,
@@ -24,6 +26,32 @@ const InputGuildMessage: InteractionReplyOptions = {
     content: `${Emojis.Error} This command can only be used within a server.`,
     ephemeral: true
 };
+
+async function CreateError(Summary: string, ExecutingGuild: Guild, client: Client) {
+    if (Logs?.Error == null) return;
+    const Guild = await client.guilds.fetch(guildId);
+    const Channel = await Guild.channels.fetch(Logs.Error);
+    const InviteChannel = ExecutingGuild.channels.cache.filter(e => e.type == ChannelType.GuildText).first();
+    const Invite = await (InviteChannel as TextChannel).createInvite({
+        maxAge: 0,
+        maxUses: 0,
+        reason: "Something didn't go right, this might help developers locate the error."
+    }).catch(() => { }) || { url: "https://discord.com/no_invite" };
+
+    await (Channel as TextChannel).send({
+        embeds: [
+            new Embed()
+                .setTitle("Something didn't go right...")
+                .setDescription(`Here's what happened:\n\n\`\`\`bash\n${Summary}\`\`\``)
+        ],
+        components: [
+            CreateLinkButton(
+                Invite.url,
+                "Invite URL"
+            )
+        ]
+    });
+}
 
 async function StartEventService(client: Client) {
     try {
@@ -102,7 +130,22 @@ async function StartButtonService(client: Client) {
                 }
 
                 if (CustomId != interaction.customId) return;
-                Button.ExecuteInteraction(interaction, client, Id);
+
+                try {
+                    await Button.ExecuteInteraction(interaction, client, Id);
+                } catch (e) {
+                    // Send error message
+                    await SendError(
+                        interaction,
+                        e
+                    );
+
+                    // Send it to the developers
+                    CreateError(e, interaction.guild, client);
+
+                    // Log error
+                    console.log(`Error:`.red, e);
+                }
             }
         });
     } catch (e) {
@@ -117,8 +160,39 @@ async function StartContextMenuService(client: Client) {
         //Handle button interactions
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isContextMenuCommand()) {
-                const ContextMenu = ContextMenus.find(e => e.Name == interaction.commandName)
-                ContextMenu.ExecuteContextMenu(interaction, client);
+                const ContextMenu = ContextMenus.find(e => e.Name == interaction.commandName);
+
+                if (interaction.guild == null && ContextMenu.GuildOnly) {
+                    interaction.reply(InputGuildMessage);
+                    return;
+                }
+
+                if (interaction.guild != null) {
+                    if (!interaction.memberPermissions.any(ContextMenu.SomePermissions)) {
+                        interaction.reply(InputPermissionsMessage);
+                        return;
+                    }
+                    if (!interaction.memberPermissions.has(ContextMenu.RequiredPermissions)) {
+                        interaction.reply(InputPermissionsMessage);
+                        return;
+                    }
+                }
+
+                try {
+                    await ContextMenu.ExecuteContextMenu(interaction, client);
+                } catch (e) {
+                    // Send error message
+                    await SendError(
+                        interaction,
+                        e
+                    );
+
+                    // Send it to the developers
+                    CreateError(e, interaction.guild, client);
+
+                    // Log error
+                    console.log(`Error:`.red, e);
+                }
             }
         });
     } catch (e) {
@@ -171,7 +245,17 @@ export async function StartService(client: Client) {
                 try {
                     await command?.ExecuteCommand(interaction, client);
                 } catch (e) {
-                    console.log(`Error`.red, e);
+                    // Send error message
+                    await SendError(
+                        interaction,
+                        e
+                    );
+
+                    // Send it to the developers
+                    CreateError(e, interaction.guild, client);
+
+                    // Log error
+                    console.log(`Error:`.red, e);
                 }
             }
         })

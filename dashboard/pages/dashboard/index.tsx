@@ -3,12 +3,14 @@ import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import Image from 'next/image'
 import { AutoCenter } from '../../components/AutoCenter';
+import { Experimental } from '../../components/Beta';
 import { AddIcon } from '../../components/Icons';
 import { ExternalIcon, Menu } from '../../components/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
 import { Configuration } from '../_app';
 
 export default function Home(props: DefaultProps) {
+    return Experimental();
     return (
         <div>
             <AutoCenter className='text-center'>
