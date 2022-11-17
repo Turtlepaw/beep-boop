@@ -7,6 +7,7 @@ import { FriendlyInteractionError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { CreateLinkButton } from "../utils/buttons";
 import Jimp from "jimp";
+import Canvas, { createCanvas } from "canvas";
 
 export default class Send extends Command {
     constructor() {
@@ -25,14 +26,23 @@ export default class Send extends Command {
         await interaction.reply({
             content: "✨ Snowifying your avatar..."
         })
-        const Image = await Jimp.read(interaction.user.avatarURL({
-            extension: ImageFormat.PNG,
-            size: 1024
-        }));
 
-        const Overlay = await Jimp.read("./src/images/snow.png");
-        Image.blit(Overlay, 0, 0);
-        const PNG = await Image.getBufferAsync(Jimp.MIME_PNG);
+        const canvas = createCanvas(200, 200)
+        const ctx = canvas.getContext('2d')
+
+        // Load images
+        const Avatar = await Canvas.loadImage(interaction.user.avatarURL({
+            extension: ImageFormat.PNG,
+            size: 2048
+        }));
+        const Overlay = await Canvas.loadImage("./src/images/snow.png");
+
+        // Draw images
+        ctx.drawImage(Avatar, 0, 0, 200, 200);
+        ctx.drawImage(Overlay, 0, 0, 200, 200);
+
+        // Get image as PNG
+        const PNG = canvas.toBuffer();
 
         const attachment = new AttachmentBuilder(PNG, { name: 'profile.png' });
 
