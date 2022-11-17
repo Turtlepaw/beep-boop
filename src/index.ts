@@ -30,7 +30,7 @@ export function SetClientValues(client: Client) {
     client.Levels = new Levels(client.storage);
 }
 
-//Create Discord.js client
+// Create Discord.js client
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -47,7 +47,7 @@ const client = new Client({
     ]
 });
 
-//Get everything ready...
+// Get everything ready...
 client.on(Events.ClientReady, async () => {
     // Getting the bot ready
     console.log("Getting everything ready...".green);
