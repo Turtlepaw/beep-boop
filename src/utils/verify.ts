@@ -37,11 +37,19 @@ function GuildText(channel: any): channel is (NewsChannel | GuildTextChannel) {
     return channel?.send != null;
 }
 
+function Emoji(emoji: string, animated: boolean = false) {
+    if (!String(emoji)) return false;
+    return (
+        emoji.startsWith("<:") || (animated == true ? emoji.startsWith("<a:") : false)
+    ) && emoji.endsWith(">") && emoji.length >= 20;
+}
+
 export const Verifiers = {
     isHexColor,
     String,
     InviteLink,
     Link,
     TextChannel,
-    GuildText
+    GuildText,
+    Emoji
 }

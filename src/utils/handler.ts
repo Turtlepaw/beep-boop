@@ -134,17 +134,17 @@ async function StartButtonService(client: Client) {
                 try {
                     await Button.ExecuteInteraction(interaction, client, Id);
                 } catch (e) {
-                    // Send error message
-                    await SendError(
-                        interaction,
-                        e
-                    );
-
                     // Send it to the developers
                     CreateError(e, interaction.guild, client);
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Send error message
+                    SendError(
+                        interaction,
+                        e
+                    );
                 }
             }
         });
@@ -181,17 +181,17 @@ async function StartContextMenuService(client: Client) {
                 try {
                     await ContextMenu.ExecuteContextMenu(interaction, client);
                 } catch (e) {
-                    // Send error message
-                    await SendError(
-                        interaction,
-                        e
-                    );
-
                     // Send it to the developers
                     CreateError(e, interaction.guild, client);
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Send error message
+                    SendError(
+                        interaction,
+                        e
+                    );
                 }
             }
         });
@@ -245,17 +245,17 @@ export async function StartService(client: Client) {
                 try {
                     await command?.ExecuteCommand(interaction, client);
                 } catch (e) {
-                    // Send error message
-                    await SendError(
-                        interaction,
-                        e
-                    );
-
                     // Send it to the developers
                     CreateError(e, interaction.guild, client);
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Send error message
+                    SendError(
+                        interaction,
+                        e
+                    );
                 }
             }
         })

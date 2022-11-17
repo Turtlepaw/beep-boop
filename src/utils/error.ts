@@ -50,17 +50,25 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
                     .setLabel("Learn More")
                     .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
-                    .setLabel("Developer Options")
+                    .setLabel("Error Information")
                     .setCustomId(CustomId.DeveloperOptions)
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(false)
             );
 
-        const Message = await interaction.reply({
+        const payload = {
             content: "Something didn't quite go right.",
             components: [Buttons],
             fetchReply: true
-        });
+        }
+
+        if (interaction.replied || interaction.deferred) {
+            await interaction.editReply(payload);
+        } else {
+            await interaction.reply(payload);
+        }
+
+        const Message = await interaction.fetchReply();
 
         await Message.awaitMessageComponent({
             componentType: ComponentType.Button,
@@ -76,9 +84,15 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
 
 export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string) {
     if (interaction.isRepliable()) {
-        await interaction.reply({
-            content: `${Emojis.Error} ` + errorMessage,
-            ephemeral: true
-        });
+        if (interaction.deferred || interaction.replied) {
+            await interaction.editReply({
+                content: `${Emojis.Error} ` + errorMessage
+            });
+        } else {
+            await interaction.reply({
+                content: `${Emojis.Error} ` + errorMessage,
+                ephemeral: true
+            });
+        }
     }
 }

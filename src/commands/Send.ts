@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandChannelOption, SlashCommandStringOption } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, Webhook, WebhookClient } from "discord.js";
 import Command from "../lib/CommandBuilder";
 import { Embed, Emojis } from "../configuration";
 import { Filter } from "../utils/filter";
@@ -24,13 +24,23 @@ export default class Send extends Command {
                     .setName("webhook_name")
                     .setDescription("The name of the webhook that will send the message."),
                 new SlashCommandStringOption()
+                    .setName("webhook_avatar_url")
+                    .setDescription("The avatar url of the webhook that will send the message."),
+                new SlashCommandStringOption()
+                    .setName("webhook_avatar_emoji")
+                    .setDescription("Use a custom Discord emoji as the webhook's url."),
+                new SlashCommandAttachmentOption()
                     .setName("webhook_avatar")
-                    .setDescription("The avatar url of the webhook that will send the message.")
+                    .setDescription("Drag and drop the avatar for the webhook"),
+                /*new SlashCommandStringOption()
+                    .setName("webhook_url")
+                    .setDescription("If you already have a webhook url ready, paste it here!")*/
             ]
         });
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+        const Message = await interaction.deferReply({ ephemeral: true, fetchReply: true });
         const Channel = interaction.options.getChannel("channel", false) || interaction.channel;
         if (!Verifiers.GuildText(Channel)) return FriendlyInteractionError(interaction, "Channel must be a text channel.")
         if (!Verifiers.TextChannel(Channel)) return FriendlyInteractionError(interaction, "API Channel recived")
@@ -39,11 +49,35 @@ export default class Send extends Command {
 
         if (Webhooks.size == 10) return FriendlyInteractionError(interaction, "There's too many webhooks in this channel, delete one and try again.")
         const WebhookName = interaction.options.getString("webhook_name", false) || interaction.guild.name;
-        const WebhookAvatar = interaction.options.getString("webhook_avatar", false) || interaction.guild.iconURL();
-        const Webhook = await Channel.createWebhook({
-            name: WebhookName,
-            avatar: WebhookAvatar
-        });
+        const WebhookURL = interaction.options.getString("webhook_url", false);
+        let Webhook: WebhookClient | Webhook;
+        // to-do: show them the webhook url and tell them to save it
+        // so than they can put it in `webhook_url`
+        // oh and verify that it was created by beep boop
+        // so than the buttons work
+        if (WebhookURL == null) {
+            const AvatarEmoji = interaction.options.getString("webhook_avatar_emoji", false);
+            const AvatarImage = interaction.options.getAttachment("webhook_avatar", false);
+            const AvatarURL = interaction.options.getString("webhook_avatar_url", false);
+            const isEmoji = !Verifiers.String(AvatarURL) && AvatarImage == null;
+            const isURL = !Verifiers.String(AvatarEmoji) && AvatarImage == null;
+            if (isEmoji && !Verifiers.Emoji(AvatarEmoji)) return FriendlyInteractionError(interaction, "The emoji must be a custom emoji.");
+            if (isURL && !Verifiers.Link(AvatarURL)) return FriendlyInteractionError(interaction, "Invalid avatar URL.");
+            let emoji: string = null;
+            if (isEmoji) {
+                const url = await interaction.guild.emojis.fetch(
+                    AvatarEmoji.substring(AvatarEmoji.lastIndexOf(":") + 1, AvatarEmoji.length - 1)
+                );
+                emoji = url.url;
+            }
+            const WebhookAvatar = (emoji || AvatarURL || AvatarImage.url) || interaction.guild.iconURL();
+            Webhook = await Channel.createWebhook({
+                name: WebhookName,
+                avatar: WebhookAvatar
+            });
+        } else {
+            Webhook = new WebhookClient({ url: WebhookURL });
+        }
 
         enum CustomId {
             AsMessage = "AS_MESSAGE_CONTENT",
@@ -57,6 +91,7 @@ export default class Send extends Command {
             CustomId.ContentField,
             null
         );
+
         const Buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
@@ -69,11 +104,11 @@ export default class Send extends Command {
                     .setLabel("As Embed"),
             );
 
-        const Message = await interaction.reply({
+        await interaction.editReply({
             content: "Select an option below.",
             components: [Buttons],
-            fetchReply: true,
-            ephemeral: true
+            //fetchReply: true,
+            //ephemeral: true
         });
 
         const Button = await Message.awaitMessageComponent({
@@ -82,7 +117,7 @@ export default class Send extends Command {
             filter: Filter(interaction.member, CustomId.AsMessage, CustomId.AsEmbed)
         });
 
-        interaction.editReply({
+        await interaction.editReply({
             components: [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
@@ -106,7 +141,7 @@ export default class Send extends Command {
                 embeds: [
                     ModalEmbed
                 ]
-            });
+            }) as Message;
 
             client.Storage.Create("custom_messages", [
                 ...client.Storage.GetArray("custom_messages"),
@@ -115,6 +150,7 @@ export default class Send extends Command {
 
             client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
 
+            await interaction.deleteReply();
             await Modal.reply({
                 content: `${Emojis.Success} Successfully sent embed`,
                 ephemeral: true,
@@ -137,7 +173,7 @@ export default class Send extends Command {
 
             const SentMessage = await Webhook.send({
                 content: Fields.MessageContent
-            });
+            }) as Message;
 
             client.Storage.Create("custom_messages", [
                 ...client.Storage.GetArray("custom_messages"),
@@ -146,6 +182,7 @@ export default class Send extends Command {
 
             client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
 
+            await interaction.deleteReply();
             await Modal.reply({
                 content: `${Emojis.Success} Successfully sent message`,
                 ephemeral: true,
