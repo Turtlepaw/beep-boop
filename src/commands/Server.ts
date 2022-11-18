@@ -48,6 +48,11 @@ export default class Server extends Command {
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
                         new ButtonBuilder()
+                            .setCustomId("AUTO_DELETE_SETTINGS")
+                            .setLabel("Setup Auto Deleting")
+                            .setEmoji("🗑️")
+                            .setStyle(ButtonStyle.Secondary),
+                        new ButtonBuilder()
                             .setLabel("Error Logs")
                             .setEmoji("⚠️")
                             .setCustomId("ERROR_LOG")

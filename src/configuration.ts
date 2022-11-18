@@ -47,7 +47,8 @@ export enum Emojis {
     Tag = "<:Tag:1040733256028520579>",
     Search = "<:Search:1040733272021405866>",
     ChannelThread = "<:ChannelThread:1041851898313052230>",
-    ModerationAction = "<:moderation_action:1039610597618221076>"
+    ModerationAction = "<:moderation_action:1039610597618221076>",
+    Trash = "<:trash:1039610613866963035>"
 }
 
 export class Embed extends EmbedBuilder {
