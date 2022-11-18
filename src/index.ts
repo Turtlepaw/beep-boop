@@ -12,6 +12,7 @@ import { Levels } from "./utils/levels";
 import { StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
+import { StartAutoDeleteService } from "./utils/AutoDelete";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -59,15 +60,18 @@ client.on(Events.ClientReady, async () => {
 
     // Deploy slash commands
     console.log("Deploying commands...".grey);
-    await Deploy(client).then(() => console.log("Registered all commands successfully.".green));
+    Deploy(client).then(() => console.log("Registered all commands successfully.".green));
 
     // Start command handler
     console.log("Starting handler service...".grey);
-    await StartService(client)
+    StartService(client)
+
+    // Start auto delete service
+    StartAutoDeleteService(client);
 
     // Start API
     console.log("Starting API...".grey);
-    await API(client, API_TOKEN);
+    API(client, API_TOKEN);
 
     // The client is ready
     console.log("Ready".green);

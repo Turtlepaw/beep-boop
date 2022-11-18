@@ -39,7 +39,7 @@ export enum Emojis {
     Link = "<:link:966750307143024700>",
     Disabled = "<:offswitch:959903558214508564>",
     Enabled = "<:onswitch:959903558310961243>",
-    Reason = "<:Reason:1039750995934195762>",
+    Reason = "<:Request:1043020806499868782>",
     Information = "<:information:1040450538266964018>",
     Up = "<:up:966750323446263949>",
     Toolbox = "<:Toolbox:1040733188470874112>",

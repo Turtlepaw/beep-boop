@@ -1,8 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
 import { Filter } from "../utils/filter";
 import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
+import ms from "ms";
+import { StartAutoDeleteService, StopAutoDeleteService } from "../utils/AutoDelete";
 
 export default class SetupAppeals extends Button {
     constructor() {
@@ -23,6 +25,22 @@ export default class SetupAppeals extends Button {
                     .setLabel("Continue")
                     .setStyle(ButtonStyle.Danger)
                     .setCustomId("CONTINUE")
+            )
+
+        const Type = new ActionRowBuilder<SelectMenuBuilder>()
+            .addComponents(
+                new SelectMenuBuilder()
+                    .addOptions([
+                        new SelectMenuOptionBuilder()
+                            .setLabel("After specific time")
+                            .setValue("AFTER_TIME"),
+                        new SelectMenuOptionBuilder()
+                            .setLabel("After member leaves")
+                            .setValue("AFTER_LEAVE"),
+                    ])
+                    .setCustomId("TYPE_SELECT")
+                    .setMinValues(1)
+                    .setMaxValues(2)
             )
 
         if (CurrentSettings != null) {
@@ -55,26 +73,75 @@ export default class SetupAppeals extends Button {
                     )
             )
 
-        await (interaction.replied ? Button : interaction).reply({
+        const Message = await (interaction.replied ? Button : interaction).reply({
             content: "Let's start with the auto deleting channels.",
-            components: [Menu]
+            components: [Menu],
+            fetchReply: true
         });
 
-        const Message = await interaction.fetchReply();
+        //const Message = await interaction.fetchReply();
 
         const SelectMenuInteraction = await Message.awaitMessageComponent({
-            componentType: ComponentType.SelectMenu,
+            componentType: ComponentType.StringSelect,
             time: 0,
             filter: Filter(interaction.member, "CHANNEL_SELECT")
         });
 
-        client.Storage.Create(`${interaction.guild.id}_auto_deleting`, SelectMenuInteraction.values);
-        await SelectMenuInteraction.reply({
+        await SelectMenuInteraction.update({
+            components: [Type],
+            content: "When should the message be deleted?"
+        });
+
+        const TypeInteraction = await Message.awaitMessageComponent({
+            componentType: ComponentType.StringSelect,
+            time: 0,
+            filter: Filter(interaction.member, "TYPE_SELECT")
+        });
+
+        let int: RepliableInteraction = TypeInteraction;
+        if (TypeInteraction.values.includes("AFTER_TIME")) {
+            await TypeInteraction.showModal(
+                new ModalBuilder()
+                    .setTitle("Selecting Time")
+                    .setCustomId("TIME_MODAL")
+                    .setComponents(
+                        new ActionRowBuilder<TextInputBuilder>()
+                            .setComponents(
+                                new TextInputBuilder()
+                                    .setCustomId("TIME")
+                                    .setLabel("Time (e.g. 5m 2s)")
+                                    .setPlaceholder("5m 2s")
+                                    .setStyle(TextInputStyle.Short)
+                                    .setRequired(true)
+                                    .setMinLength(2)
+                            )
+                    )
+            );
+
+            int = await TypeInteraction.awaitModalSubmit({
+                time: 0
+            });
+        }
+
+        client.Storage.Create(`${interaction.guild.id}_auto_deleting`, {
+            Channels: SelectMenuInteraction.values,
+            AfterTime: int.isModalSubmit() ? ms(int.fields.getTextInputValue("TIME")) : null
+        });
+
+        await int.reply({
             embeds: [
                 new Embed()
                     .setTitle(`${Emojis.Tada} You're all set!`)
-                    .setDescription("Auto deleting has been set up! When members leave and they've sent a message in one or more of those channels, it will be deleted.")
+                    .setDescription(`Auto deleting has been set up! When members leave and they've sent a message in one or more of those channels, it will be deleted.`)
+                    .addFields([{
+                        name: "Setup",
+                        value: `Set channels to: ${SelectMenuInteraction.values.map(e => `<#${e}>`)}`
+                    }])
             ]
-        })
+        });
+
+        // Restart auto delete service
+        StopAutoDeleteService();
+        StartAutoDeleteService(client);
     }
 }
