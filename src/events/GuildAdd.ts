@@ -16,8 +16,7 @@ export default class DMService extends Event {
         const UpdatesGuild = await client.guilds.fetch(guildId);
         const UpdatesChannel = await UpdatesGuild.channels.fetch(NewsChannel) as GuildNewsChannel;
         const PublicUpdatesChannel = Guild.publicUpdatesChannel;
+        if (PublicUpdatesChannel == null) return;
         await UpdatesChannel.addFollower(PublicUpdatesChannel);
-
-
     }
 }

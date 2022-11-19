@@ -1,5 +1,4 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import { ActivityOptions, ActivityType } from "discord.js";
+import { ActivityOptions, ActivityType, EmbedBuilder } from "discord.js";
 import { Logging } from "./@types/config";
 
 //export const token = process.env.TOKEN;
@@ -28,6 +27,10 @@ export const Status: ActivityOptions = {
     type: ActivityType.Listening,
     name: `commands`
 };
+
+/**
+ * @deprecated use `Icons` instead
+ */
 export enum Emojis {
     TextChannel = "<:ChannelText:1034911639243345960>",
     Tada = "<a:tada:1034912799853383731>",
@@ -50,7 +53,24 @@ export enum Emojis {
     Search = "<:Search:1040733272021405866>",
     ChannelThread = "<:ChannelThread:1041851898313052230>",
     ModerationAction = "<:moderation_action:1039610597618221076>",
-    Trash = "<:trash:1039610613866963035>"
+    Trash = "<:trash:1039610613866963035>",
+}
+
+export enum Icons {
+    Clock = "<:Clock:1043579937690497044>",
+    MemberAdd = "<:MemberAdd:1043579947639386292>",
+    Flag = "<:Flag:1043584066068422747>",
+    FlagBrilliance = "<:brilliance:1043588508884938822>",
+    FlagBravery = "<:bravery:1043588493693173800>",
+    FlagBalance = "<:balance:1043588524567437373>",
+    FlagVerifiedBot = "<:VerifiedBot:1043595400701022350><:VerifiedBot:1043595399669231746>",
+    Badge = "<:Badge:1043599252414275634>",
+    Globe = "<:Globe:1043599254125563925>"
+}
+
+export enum Colors {
+    Transparent = "#2F3136",
+    BrandColor = "#FF605E"
 }
 
 export class Embed extends EmbedBuilder {
