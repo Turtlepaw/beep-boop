@@ -99,7 +99,9 @@ export default class SetupAppeals extends Button {
         });
 
         let int: RepliableInteraction = TypeInteraction;
-        if (TypeInteraction.values.includes("AFTER_TIME")) {
+        const isAfterTime = TypeInteraction.values.includes("AFTER_TIME");
+        const isAfterLeave = TypeInteraction.values.includes("AFTER_LEAVE");
+        if (isAfterTime) {
             await TypeInteraction.showModal(
                 new ModalBuilder()
                     .setTitle("Selecting Time")
@@ -123,9 +125,10 @@ export default class SetupAppeals extends Button {
             });
         }
 
+        const AfterTime = int.isModalSubmit() ? ms(int.fields.getTextInputValue("TIME")) : null;
         client.Storage.Create(`${interaction.guild.id}_auto_deleting`, {
             Channels: SelectMenuInteraction.values,
-            AfterTime: int.isModalSubmit() ? ms(int.fields.getTextInputValue("TIME")) : null
+            AfterTime
         });
 
         await int.reply({
@@ -135,7 +138,9 @@ export default class SetupAppeals extends Button {
                     .setDescription(`Auto deleting has been set up! When members leave and they've sent a message in one or more of those channels, it will be deleted.`)
                     .addFields([{
                         name: "Setup",
-                        value: `Set channels to: ${SelectMenuInteraction.values.map(e => `<#${e}>`)}`
+                        value: `Messages in ${SelectMenuInteraction.values.map(e => `<#${e}>`)} will be deleted ${isAfterTime ? `after ${ms(AfterTime)}` : ``} ${isAfterLeave ? (
+                            isAfterTime ? `and ` : ``
+                        ) : ``}${isAfterLeave ? `after the author leaves` : ``}`
                     }])
             ]
         });
