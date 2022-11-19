@@ -26,7 +26,6 @@ export default class ModeratorGuildSettings extends Button {
         let AlreadySubscribed = 0;
         for (const guild of guilds.values()) {
             const Guild = await guild.fetch();
-            console.log(Guild.name)
             const Channels = await Guild.channels.fetch();
             const UpdatesGuild = await client.guilds.fetch(guildId);
             const UpdatesChannel = await UpdatesGuild.channels.fetch(NewsChannel) as GuildNewsChannel;
