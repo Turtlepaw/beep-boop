@@ -17,7 +17,7 @@ export default class LeaveAppealMessage extends Event {
 
     async ExecuteEvent(client: Client, message: Message) {
         const Channels: AutoDelete = client.Storage.Get(`${message.guild.id}_auto_deleting`);
-        if (Channels == null) return;
+        if (Channels == null || Channels?.Channels == null) return;
         if (!Channels.Channels.includes(message.channel.id)) return;
         if (message.author.bot) return;
         client.Storage.Create(`${message.author.id}_${message.guild.id}_auto_delete`, [
