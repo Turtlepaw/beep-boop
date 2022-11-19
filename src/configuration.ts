@@ -5,6 +5,8 @@ import { Logging } from "./@types/config";
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
 export const SupportServerInvite = "https://discord.gg/G59JT7VbxZ";
+// The channel that you post updates about your bot
+export const NewsChannel = "1030689173784510504";
 export const ClientAdministators: string[] = [
     "820465204411236362",
     //...

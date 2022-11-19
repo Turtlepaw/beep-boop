@@ -33,7 +33,19 @@ export default class Developer extends Command {
                         .setEmoji("📦")
                         .setCustomId("EVAL_CODE")
                         .setStyle(ButtonStyle.Danger)
-                        .setDisabled(interaction.user.id != "820465204411236362")
+                        .setDisabled(interaction.user.id != "820465204411236362"),
+                    new ButtonBuilder()
+                        .setLabel("Refresh Update Channels")
+                        .setEmoji("☁️")
+                        .setCustomId("REFRESH_UPDATE_CHANNELS")
+                        .setStyle(ButtonStyle.Success)
+                        .setDisabled(interaction.user.id != "820465204411236362"),
+                    new ButtonBuilder()
+                        .setLabel("Restart")
+                        .setEmoji("🔃")
+                        .setCustomId("REFRESH_BOT")
+                        .setStyle(ButtonStyle.Danger)
+                        .setDisabled(interaction.user.id != "820465204411236362"),
                 );
 
             await interaction.reply({
