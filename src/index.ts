@@ -40,13 +40,14 @@ const client = new Client({
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.DirectMessages,
         IntentsBitField.Flags.GuildMembers,
+        IntentsBitField.Flags.GuildPresences
     ],
     partials: [
         Partials.Channel,
         Partials.GuildMember,
         Partials.GuildScheduledEvent,
         Partials.ThreadMember,
-        Partials.User
+        Partials.User,
     ]
 });
 

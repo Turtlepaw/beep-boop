@@ -67,6 +67,8 @@ export enum Icons {
     FlagBalance = "<:balance:1043717302564171846>",
     FlagVerifiedBot = "<:VerifiedBot:1043595400701022350><:VerifiedBot:1043595399669231746>",
     FlagBot = "<:Bot:1040733154656403616>",
+    FlagOffline = "<:StatusOffline:1044019373775540276>",
+    FlagOnline = "<:StatusOnline:1044019293307801680>",
     Tag = "<:Tag:1040733256028520579>",
     Badge = "<:Badge:1043599252414275634>",
     Globe = "<:Globe:1043599254125563925>",
@@ -78,7 +80,8 @@ export enum Icons {
     Color = "<:Color:1043579942811750410>",
     Link = "<:Link:1043579945777119242>",
     Error = "<:Close:1043579939267551282>",
-    Success = "<:Success:1043579936016965642>"
+    Success = "<:Success:1043579936016965642>",
+    Members = "<:Members:1044023938591756370>"
 }
 
 export enum Colors {

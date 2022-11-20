@@ -11,7 +11,8 @@ import {
     ButtonStyle,
     inlineCode,
     ChannelType,
-    Locale
+    Locale,
+    PresenceUpdateStatus
 } from "discord.js";
 import { Colors, Embed, Emojis, Icons } from "../configuration";
 
@@ -208,6 +209,9 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                 .setThumbnail(AvatarURL)
                 .setTitle(`Server Information`)
                 .addFields([{
+                    name: `${Icons.Members} Members`,
+                    value: `${Guild.members.cache.size} members`
+                }, {
                     name: `${Icons.MemberAdd} Member Since`,
                     value: `${time(Member.joinedAt, TimestampStyles.LongDateTime)}${Or}${time(Member.joinedAt, TimestampStyles.RelativeTime)}`,
                     inline: false
@@ -217,7 +221,9 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                     inline: false
                 }, {
                     name: `${Icons.Flag} Roles`,
-                    value: Guild.roles.cache.size >= 1 ? Guild.roles.cache.filter(e => e.name != "@everyone").size.toString() : "No roles.",
+                    value: Guild.roles.cache.size >= 1 ? `${(
+                        Guild.roles.cache.filter(e => e.name != "@everyone").size.toString()
+                    )} roles` : "No roles.",
                     inline: false
                 }, {
                     name: `${Icons.Globe} Language`,
@@ -229,20 +235,21 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                     inline: false
                 }, {
                     name: `${Icons.Emoji} Emojis`,
-                    value: `${Icons.Emoji} (emojis) ${Guild.emojis.cache.size} | ${Icons.Image} (stickers) ${Guild.stickers.cache.size}`
+                    value: `${Icons.Emoji}(emojis) ${Guild.emojis.cache.size} | ${Icons.Image}(stickers) ${Guild.stickers.cache.size}`
                 }, {
                     name: `${Icons.Channel} Channels`,
-                    value: `${Icons.Folder} (categories) ${(
+                    value: `${Icons.Folder}(categories) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildCategory)
-                    ).size} | ${Icons.Channel} (channels) ${(
+                    ).size} | ${Icons.Channel}(channels) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildText || e.type == ChannelType.GuildAnnouncement)
                     ).size} | ${Icons.Voice} (voice) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildVoice || e.type == ChannelType.GuildStageVoice)
-                    ).size}`
+                    ).size
+                        } `
                 }])
                 .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)
                 .setFooter({
-                    text: `ID: ${Guild.id}`
+                    text: `ID: ${Guild.id} `
                 })
         ],
         components: [
@@ -256,7 +263,7 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                         .setStyle(ButtonStyle.Link)
                         .setURL(hasBanner ? BannerURL : "https://bop.trtle.xyz/")
                         .setDisabled(!hasBanner)
-                        .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"}`)
+                        .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"} `)
                 )
         ],
         ephemeral: hidden
