@@ -11,6 +11,7 @@ export default class LeaveAppealMessage extends Event {
     }
 
     async ExecuteEvent(client: Client, message: Message) {
+        if (message.guild?.id == null) return; //dm
         const Server: ServerSettings = client.Storage.Get(`${message.guild.id}_server_settings`);
         if (Server == null || Server?.WelcomeDelete == null || Server.WelcomeDelete == false)
             return;

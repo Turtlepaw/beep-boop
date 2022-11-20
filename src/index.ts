@@ -13,6 +13,7 @@ import { StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
+import { Refresh } from "./utils/reminders";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -68,6 +69,9 @@ client.on(Events.ClientReady, async () => {
 
     // Start auto delete service
     StartAutoDeleteService(client);
+
+    // Refresh reminders
+    Refresh(client);
 
     // Start API
     console.log("Starting API...".grey);

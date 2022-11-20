@@ -8,7 +8,7 @@ export interface AutoDelete {
     AfterTime: string;
 }
 
-export default class LeaveAppealMessage extends Event {
+export default class AutoDeleteMessageCreateEvent extends Event {
     constructor() {
         super({
             EventName: Events.MessageCreate
@@ -16,10 +16,11 @@ export default class LeaveAppealMessage extends Event {
     }
 
     async ExecuteEvent(client: Client, message: Message) {
+        if (message.guild?.id == null) return; //dm
         const Channels: AutoDelete = client.Storage.Get(`${message.guild.id}_auto_deleting`);
         if (Channels == null || Channels?.Channels == null) return;
         if (!Channels.Channels.includes(message.channel.id)) return;
-        if (message.author.bot) return;
+        //if (message.author.bot) return;
         client.Storage.Create(`${message.author.id}_${message.guild.id}_auto_delete`, [
             ...client.Storage.GetArray(`${message.author.id}_${message.guild.id}_auto_delete`), {
                 MessageId: message.id,

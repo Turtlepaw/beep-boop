@@ -17,6 +17,7 @@ export default class DMService extends Event {
         const Guild = await client.guilds.fetch(guildId);
         const Channel = await Guild.channels.fetch(Logs.DM);
         if (Channel.type != ChannelType.GuildText) throw Error("Logs.DM must be a text channel id");
+        if (Message.author.id == client.user.id) return;
 
         await Channel.send({
             embeds: [

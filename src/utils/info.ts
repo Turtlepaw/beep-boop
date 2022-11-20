@@ -88,6 +88,10 @@ export function Language(locale: string, emoji: boolean = false) {
 const Or = " or ";
 export async function MemberInformation(interaction: RepliableInteraction, targetUser: User, hidden: boolean = false) {
     const { guild } = interaction;
+    if (guild == null) return interaction.reply({
+        ephemeral: true,
+        content: `There's not enough information, try executing this within a server.`
+    });
     const Member = await guild.members.fetch(targetUser.id);
     const User = await targetUser.fetch();
     const AvatarURL = Member.displayAvatarURL({
@@ -112,6 +116,8 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     //@ts-expect-error
     if (User.bot) flags.push("Bot");
 
+    // to do - add support for dms
+    // like without guild required
     await interaction.reply({
         embeds: [
             new Embed()
@@ -170,6 +176,10 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
 
 export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden: boolean = false) {
     const { guild } = interaction;
+    if (guild == null) return interaction.reply({
+        ephemeral: true,
+        content: `There's not enough information, try executing this within a server.`
+    });
     const Guild = await targetGuild.fetch();
     const Member = await Guild.members.fetch(interaction.user.id);
     const AvatarURL = Guild.iconURL({

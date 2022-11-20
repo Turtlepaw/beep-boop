@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 import { ButtonStyle, ComponentType, Guild, Interaction, RequestManager } from "discord.js";
-import { Emojis, SupportServerInvite } from "../configuration";
+import { Emojis, Icons, SupportServerInvite } from "../configuration";
 import { generateId, generatePassword } from "./Id";
 
 export interface ErrorMessage {
@@ -86,11 +86,11 @@ export async function FriendlyInteractionError(interaction: Interaction, errorMe
     if (interaction.isRepliable()) {
         if (interaction.deferred || interaction.replied) {
             await interaction.editReply({
-                content: `${Emojis.Error} ` + errorMessage
+                content: `${Icons.Error} ` + errorMessage
             });
         } else {
             await interaction.reply({
-                content: `${Emojis.Error} ` + errorMessage,
+                content: `${Icons.Error} ` + errorMessage,
                 ephemeral: true
             });
         }

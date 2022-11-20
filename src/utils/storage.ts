@@ -10,13 +10,13 @@ export class StorageManager {
         return this.Storage[key];
     }
 
-    GetArray(key: string) {
-        const value: string[] = this.Storage[key];
+    GetArray<type = any>(key: string): type[] {
+        const value: type[] = this.Storage[key];
         if (value == null) return [];
         return value;
     }
 
-    Create(key: string, value: any) {
+    Create<type = any>(key: string, value: type) {
         this.Storage[key] = value;
     }
 

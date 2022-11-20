@@ -1,6 +1,6 @@
 import { ChannelType, Client, Events as ClientEvents, Guild, InteractionReplyOptions, TextChannel } from "discord.js";
 import klawSync from "klaw-sync";
-import { Embed, Emojis, guildId, Logs } from "../configuration";
+import { Embed, Emojis, guildId, Icons, Logs } from "../configuration";
 import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import EventBuilder from "../lib/Event";
@@ -8,22 +8,22 @@ import { CreateLinkButton } from "./buttons";
 import { SendError } from "./error";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
-    content: `${Emojis.Error} You don't have the required permissions to run this command.`,
+    content: `${Icons.Error} You don't have the required permissions to run this command.`,
     ephemeral: true
 };
 
 const ButtonPermissionsMessage: InteractionReplyOptions = {
-    content: `${Emojis.Error} You don't have the required permissions to use this button.`,
+    content: `${Icons.Error} You don't have the required permissions to use this button.`,
     ephemeral: true
 };
 
 const ButtonGuildMessage: InteractionReplyOptions = {
-    content: `${Emojis.Error} This button can only be used within a server.`,
+    content: `${Icons.Error} This button can only be used within a server.`,
     ephemeral: true
 };
 
 const InputGuildMessage: InteractionReplyOptions = {
-    content: `${Emojis.Error} This command can only be used within a server.`,
+    content: `${Icons.Error} This command can only be used within a server.`,
     ephemeral: true
 };
 

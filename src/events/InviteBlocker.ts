@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
 import { ModeratorSettings } from "../buttons/ModeratorSettings";
-import { Emojis } from "../configuration";
+import { Emojis, Icons } from "../configuration";
 import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
 import { Verifiers } from "../utils/verify";
@@ -19,7 +19,7 @@ export default class InviteBlocker extends Event {
         if (Settings?.BlockInvites == true && isInviteLink) {
             Message.delete();
             Message.author.send({
-                content: `${Emojis.Link} Invite links aren't allowed in this community.`
+                content: `${Icons.Link} Invite links aren't allowed in this community.`
             });
 
             /*const Messages = await Message.channel.messages.fetch();

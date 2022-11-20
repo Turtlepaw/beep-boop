@@ -75,7 +75,10 @@ export enum Icons {
     Channel = "<:Channel:1043584064751423608>",
     Folder = "<:Folder:1043718871422615612>",
     Voice = "<:Voice:1043733614589902878>",
-    Color = "<:Color:1043579942811750410>"
+    Color = "<:Color:1043579942811750410>",
+    Link = "<:Link:1043579945777119242>",
+    Error = "<:Close:1043579939267551282>",
+    Success = "<:Success:1043579936016965642>"
 }
 
 export enum Colors {
