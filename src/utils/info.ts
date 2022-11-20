@@ -104,15 +104,20 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
         HypeSquadOnlineHouse1: Icons.FlagBravery,
         HypeSquadOnlineHouse2: Icons.FlagBrilliance,
         HypeSquadOnlineHouse3: Icons.FlagBalance,
-        VerifiedBot: Icons.FlagVerifiedBot
+        VerifiedBot: Icons.FlagVerifiedBot,
+        Bot: Icons.FlagBot
     };
+
+    const flags = User.flags.toArray();
+    //@ts-expect-error
+    if (User.bot) flags.push("Bot");
 
     await interaction.reply({
         embeds: [
             new Embed()
                 .setAuthor({
                     iconURL: AvatarURL,
-                    name: Member.displayName
+                    name: `${Member.displayName} (${User.tag})`
                 })
                 .setThumbnail(AvatarURL)
                 .setTitle(`Member Information`)
@@ -125,6 +130,9 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                     value: `${time(User.createdAt, TimestampStyles.LongDateTime)}${Or}${time(User.createdAt, TimestampStyles.RelativeTime)}`,
                     inline: false
                 }, {
+                    name: `${Icons.Color} Accent Color`,
+                    value: User.hexAccentColor != null ? inlineCode(User.hexAccentColor) : "No accent color."
+                }, {
                     name: `${Icons.Flag} Roles`,
                     value: Member.roles.cache.size >= 1 ? Member.roles.cache.filter(e => e.name != "@everyone").map(e => e.toString()).join(" ") : "No roles.",
                     inline: false
@@ -134,7 +142,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                     inline: false
                 }, {
                     name: `${Icons.Badge} Badges`,
-                    value: User.flags.toArray().length >= 1 ? User.flags.toArray().map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges.",
+                    value: flags.length >= 1 ? flags.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges.",
                     inline: false
                 }])
                 .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)

@@ -66,6 +66,7 @@ export enum Icons {
     FlagBravery = "<:bravery:1043717218866823291>",
     FlagBalance = "<:balance:1043717302564171846>",
     FlagVerifiedBot = "<:VerifiedBot:1043595400701022350><:VerifiedBot:1043595399669231746>",
+    FlagBot = "<:Bot:1040733154656403616>",
     Tag = "<:Tag:1040733256028520579>",
     Badge = "<:Badge:1043599252414275634>",
     Globe = "<:Globe:1043599254125563925>",
@@ -73,7 +74,8 @@ export enum Icons {
     Emoji = "<:Emoji:1043718870013325394>",
     Channel = "<:Channel:1043584064751423608>",
     Folder = "<:Folder:1043718871422615612>",
-    Voice = "<:Voice:1043733614589902878>"
+    Voice = "<:Voice:1043733614589902878>",
+    Color = "<:Color:1043579942811750410>"
 }
 
 export enum Colors {
