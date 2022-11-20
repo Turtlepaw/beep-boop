@@ -26,7 +26,7 @@ async function Handle(Reminder: Reminder, client: Client) {
             Time: Reminder.Time,
             Title: Reminder.Title,
             CreatedAt: Reminder.CreatedAt
-        }, ...newReminders.filter(e => e.CustomId == Reminder.CustomId)])
+        }, ...newReminders.filter(e => e.CustomId != Reminder.CustomId)])
         await DM.send({
             content: `${Icons.Clock} Times up!`,
             embeds: [
@@ -52,6 +52,7 @@ export async function Refresh(client: Client) {
         }
 
         setTimeout(async () => {
+            if (Reminder.Reminded) return;
             Handle(Reminder, client);
         }, Reminder.Time)
     }
