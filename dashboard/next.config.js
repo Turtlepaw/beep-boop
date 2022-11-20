@@ -18,7 +18,8 @@ const nextConfig = {
         "/add",
         "/invite",
         "/bot"
-      )
+      ),
+      ...MultipleLinks("https://www.craft.do/s/LDE5iUWkkRLnnA", "/privacy", "/tos", "/terms", "/terms-of-serivce", "/privacy-policy", "/policy")
     ]
   }
 }
