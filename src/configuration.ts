@@ -54,6 +54,8 @@ export enum Emojis {
     ChannelThread = "<:ChannelThread:1041851898313052230>",
     ModerationAction = "<:moderation_action:1039610597618221076>",
     Trash = "<:trash:1039610613866963035>",
+    News = "<:ChannelAnnouncements:1038115805377871893>",
+    Community = "<:Community:1043716351447011338>"
 }
 
 export enum Icons {
@@ -61,11 +63,17 @@ export enum Icons {
     MemberAdd = "<:MemberAdd:1043579947639386292>",
     Flag = "<:Flag:1043584066068422747>",
     FlagBrilliance = "<:brilliance:1043588508884938822>",
-    FlagBravery = "<:bravery:1043588493693173800>",
-    FlagBalance = "<:balance:1043588524567437373>",
+    FlagBravery = "<:bravery:1043717218866823291>",
+    FlagBalance = "<:balance:1043717302564171846>",
     FlagVerifiedBot = "<:VerifiedBot:1043595400701022350><:VerifiedBot:1043595399669231746>",
+    Tag = "<:Tag:1040733256028520579>",
     Badge = "<:Badge:1043599252414275634>",
-    Globe = "<:Globe:1043599254125563925>"
+    Globe = "<:Globe:1043599254125563925>",
+    Image = "<:Image:1043718873045811271>",
+    Emoji = "<:Emoji:1043718870013325394>",
+    Channel = "<:Channel:1043584064751423608>",
+    Folder = "<:Folder:1043718871422615612>",
+    Voice = "<:Voice:1043733614589902878>"
 }
 
 export enum Colors {

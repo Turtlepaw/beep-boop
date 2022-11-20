@@ -1,5 +1,5 @@
 import { SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandOptionsOnlyBuilder, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
-import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, CommandInteraction, PermissionsString, SlashCommandUserOption } from "discord.js";
 import { BuilderOptions, CommandBuilderType } from "./Builder";
 
 export type SlashCommandOption = SlashCommandRoleOption |
@@ -40,7 +40,7 @@ export interface CommandBuilderOptions {
      * The subcommands for this command.
      */
     Subcomamnds?: (SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder)[];
-    Options?: SlashCommandOption[];
+    Options?: (SlashCommandOption | SlashCommandUserOption)[];
 }
 
 export default class Command {

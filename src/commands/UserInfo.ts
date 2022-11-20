@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, Webhook, WebhookClient } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandUserOption, Webhook, WebhookClient } from "discord.js";
 import Command from "../lib/CommandBuilder";
 import { Embed, Emojis } from "../configuration";
 import { Filter } from "../utils/filter";
@@ -14,12 +14,20 @@ export default class Send extends Command {
             CanaryCommand: false,
             Description: "Get information.",
             GuildOnly: false,
-            Name: "user",
+            Name: "user-info",
             RequiredPermissions: [],
             SomePermissions: [],
-            Subcomamnds: [
+            Options: [
+                new SlashCommandUserOption()
+                    .setName("member")
+                    .setDescription("The member to get information on."),
+                new SlashCommandBooleanOption()
+                    .setName("hidden")
+                    .setDescription("Make the reply visible only to you and hidden to everyone else.")
+            ]
+            /*Subcomamnds: [
                 new SlashCommandSubcommandBuilder()
-                    .setName("information")
+                    .setName("info")
                     .setDescription("Get information on a user in this server.")
                     .addUserOption(e =>
                         e.setName("member")
@@ -29,7 +37,7 @@ export default class Send extends Command {
                         e.setName("hidden")
                             .setDescription("Make the reply visible only to you and hidden to everyone else.")
                     )
-            ]
+            ]*/
         });
     }
 

@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, Webhook, WebhookClient } from "discord.js";
+import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandUserOption, Webhook, WebhookClient } from "discord.js";
 import Command from "../lib/CommandBuilder";
 import { Embed, Emojis } from "../configuration";
 import { Filter } from "../utils/filter";
@@ -17,24 +17,37 @@ export default class Send extends Command {
             GuildOnly: false,
             Name: "snowify",
             RequiredPermissions: [],
-            SomePermissions: []
+            SomePermissions: [],
+            Options: [
+                new SlashCommandAttachmentOption()
+                    .setName("image")
+                    .setDescription("The image to snowify."),
+                new SlashCommandUserOption()
+                    .setName("member")
+                    .setDescription("The member to snowify.")
+            ]
         });
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
         //await interaction.deferReply();
+        const user = interaction.options.getUser("member", false) || interaction.user;
+        const image = interaction.options.getAttachment("image", false);
+        const text = image != null ? "an image" : (user.id == interaction.user.id ? "your avatar" : `${user}'s avatar`)
         await interaction.reply({
-            content: "✨ Snowifying your avatar..."
+            content: `✨ Snowifying ${text}...`
         })
 
         const canvas = createCanvas(200, 200)
-        const ctx = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d');
 
         // Load images
-        const Avatar = await Canvas.loadImage(interaction.user.avatarURL({
-            extension: ImageFormat.PNG,
-            size: 2048
-        }));
+        const Avatar = await Canvas.loadImage(
+            image == null ? user.avatarURL({
+                extension: ImageFormat.PNG,
+                size: 2048
+            }) : image.url
+        );
         const Overlay = await Canvas.loadImage("./src/images/snow.png");
 
         // Draw images
