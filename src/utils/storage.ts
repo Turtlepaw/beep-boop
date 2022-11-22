@@ -6,7 +6,7 @@ export class StorageManager {
         this.Storage = storage;
     }
 
-    Get(key: string) {
+    Get<type = any>(key: string): type {
         return this.Storage[key];
     }
 
@@ -28,5 +28,14 @@ export class StorageManager {
         const value: string[] = this.Storage[ArrayKey];
         if (value == null) return false;
         return value.find(e => e == key) != null;
+    }
+
+    Edit<value = any>(key: string, newValue: value) {
+        const value: value = this.Get(key);
+        this.Delete(key);
+        this.Create(key, {
+            ...value,
+            ...newValue
+        });
     }
 }

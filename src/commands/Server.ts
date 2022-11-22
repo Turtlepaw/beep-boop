@@ -8,14 +8,14 @@ export default class Server extends Command {
             CanaryCommand: false,
             Description: "Manage the server's settings.",
             GuildOnly: false,
-            Name: "server",
+            Name: "configuration",
             RequiredPermissions: [],
-            SomePermissions: []
+            SomePermissions: ["Administrator", "ManageGuild"]
         });
     }
 
     async ExecuteCommand(interaction: CommandInteraction, client: Client) {
-        if (interaction.inCachedGuild() && interaction.member?.permissions.has(PermissionsBitField.Flags.ManageGuild)) {
+        if (interaction.inCachedGuild() /*&& interaction.member?.permissions.has(PermissionsBitField.Flags.ManageGuild)*/) {
             const Buttons = [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
@@ -51,6 +51,11 @@ export default class Server extends Command {
                             .setCustomId("AUTO_DELETE_SETTINGS")
                             .setLabel("Setup Auto Deleting")
                             .setEmoji("🗑️")
+                            .setStyle(ButtonStyle.Secondary),
+                        new ButtonBuilder()
+                            .setCustomId("REPUTATION_BASED_MODERATION")
+                            .setLabel("Reputation Based Moderation")
+                            .setEmoji("🛡️")
                             .setStyle(ButtonStyle.Secondary),
                         new ButtonBuilder()
                             .setLabel("Error Logs")

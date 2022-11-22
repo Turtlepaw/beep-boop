@@ -23,7 +23,8 @@
     "run": "node ./dist/index.js",
     "dev": "yarn build && yarn run run",
     "dash": "cd dashboard/ && yarn dev",
-    "start": "yarn dev & yarn dash"
+    "start": "yarn dev & yarn dash",
+    "cache": "yarn build"
   },
   "devDependencies": {
     "colors": "^1.4.0",

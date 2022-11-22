@@ -119,11 +119,11 @@ async function StartButtonService(client: Client) {
                 }
 
                 if (interaction.guild != null) {
-                    if (!interaction.memberPermissions.any(Button.SomePermissions)) {
+                    if (Button.SomePermissions.length >= 1 && !interaction.memberPermissions.any(Button.SomePermissions)) {
                         interaction.reply(ButtonPermissionsMessage);
                         return;
                     }
-                    if (!interaction.memberPermissions.has(Button.RequiredPermissions)) {
+                    if (Button.RequiredPermissions.length >= 1 && !interaction.memberPermissions.has(Button.RequiredPermissions)) {
                         interaction.reply(ButtonPermissionsMessage);
                         return;
                     }
@@ -168,11 +168,11 @@ async function StartContextMenuService(client: Client) {
                 }
 
                 if (interaction.guild != null) {
-                    if (!interaction.memberPermissions.any(ContextMenu.SomePermissions)) {
+                    if (ContextMenu.SomePermissions.length >= 1 && !interaction.memberPermissions.any(ContextMenu.SomePermissions)) {
                         interaction.reply(InputPermissionsMessage);
                         return;
                     }
-                    if (!interaction.memberPermissions.has(ContextMenu.RequiredPermissions)) {
+                    if (ContextMenu.RequiredPermissions.length >= 1 && !interaction.memberPermissions.has(ContextMenu.RequiredPermissions)) {
                         interaction.reply(InputPermissionsMessage);
                         return;
                     }
@@ -232,11 +232,11 @@ export async function StartService(client: Client) {
                 }
 
                 if (interaction.guild != null) {
-                    if (!interaction.memberPermissions.any(command.SomePermissions)) {
+                    if (command.SomePermissions.length >= 1 && !interaction.memberPermissions.any(command.SomePermissions)) {
                         interaction.reply(InputPermissionsMessage);
                         return;
                     }
-                    if (!interaction.memberPermissions.has(command.RequiredPermissions)) {
+                    if (command.RequiredPermissions.length >= 1 && !interaction.memberPermissions.has(command.RequiredPermissions)) {
                         interaction.reply(InputPermissionsMessage);
                         return;
                     }

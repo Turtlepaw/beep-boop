@@ -55,7 +55,8 @@ export enum Emojis {
     ModerationAction = "<:moderation_action:1039610597618221076>",
     Trash = "<:trash:1039610613866963035>",
     News = "<:ChannelAnnouncements:1038115805377871893>",
-    Community = "<:Community:1043716351447011338>"
+    Community = "<:Community:1043716351447011338>",
+    Help = "<:HelpCircle:1044458637579518026>"
 }
 
 export enum Icons {
@@ -81,7 +82,9 @@ export enum Icons {
     Link = "<:Link:1043579945777119242>",
     Error = "<:Close:1043579939267551282>",
     Success = "<:Success:1043579936016965642>",
-    Members = "<:Members:1044023938591756370>"
+    Members = "<:Members:1044023938591756370>",
+    Info = "<:Info:1044457273990324264>",
+    Shield = "<:Shield:1044472705845563442>"
 }
 
 export enum Colors {
