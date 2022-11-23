@@ -84,7 +84,9 @@ export enum Icons {
     Success = "<:Success:1043579936016965642>",
     Members = "<:Members:1044023938591756370>",
     Info = "<:Info:1044457273990324264>",
-    Shield = "<:Shield:1044472705845563442>"
+    Shield = "<:Shield:1044472705845563442>",
+    Lock = "<:Lock:1044474659749507082>",
+    Unlock = "<:Unlock:1044474661519495188>"
 }
 
 export enum Colors {
