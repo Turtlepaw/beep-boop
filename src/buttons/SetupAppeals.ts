@@ -53,12 +53,13 @@ export default class SetupAppeals extends Button {
                     )
             )
 
-        await (interaction.replied ? Button : interaction).reply({
+        const Message = await (interaction.replied ? Button : interaction).reply({
             content: "Let's start with where you want to have the appeals go",
-            components: [Menu]
+            components: [Menu],
+            fetchReply: true
         });
 
-        const Message = await interaction.fetchReply();
+        //const Message = await interaction.fetchReply();
 
         const SelectMenuInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.SelectMenu,
