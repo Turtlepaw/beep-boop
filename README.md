@@ -24,6 +24,9 @@ We're working hard on building the future of Beep Boop, here's what's happening.
 - [ ] (later) Translated
 - [ ] (later) Quote message or embed message links?
 
+## Internal Planned Changes
+- [] Polish Reputation-Based Moderation
+
 ### Support
 Click below to join our server for updates, support, and more.
 
