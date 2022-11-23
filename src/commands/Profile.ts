@@ -57,7 +57,7 @@ export default class Send extends Command {
         };
         const Subcommand = interaction.options.getSubcommand() as Subcommands;
         const user = interaction.options.getUser("member") || interaction.user;
-        const ephemeral = interaction.options.getBoolean("hidden") || true;
+        const ephemeral = interaction.options.getBoolean("hidden", false) || true;
 
         if (Subcommand == Subcommands.View) {
             const profile = await ResolveUser(user.id, client);
@@ -98,7 +98,7 @@ export default class Send extends Command {
                 if (button.customId == "INFO") {
                     await button.reply({
                         ephemeral: true,
-                        content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, and when you help people you might get endorsed, you can also endorse other users that you know.`
+                        content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, in some communities, you're required to have a certain amount of endorsements to join. When you help people you might get endorsed, and you can also endorse other users that you know.`
                     });
                 }
             });
@@ -180,7 +180,7 @@ export default class Send extends Command {
                 .setCustomId(Id.DisplayNameModal);
 
             const Message = await interaction.reply({
-                ephemeral: true,
+                ephemeral,
                 fetchReply: true,
                 components: [ActionButtons],
                 embeds: [

@@ -62,6 +62,6 @@ export function SetAccentColor(Id: string, accentColor: ColorResolvable, client:
 export function Endorse(Id: string, client: Client) {
     const rep = FetchUser(Id, client);
     return client.Storage.Edit<Profile>(Id, {
-        reputation: rep.reputation + 1
+        reputation: (rep?.reputation || 0) + 1
     });
 }

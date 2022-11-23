@@ -20,6 +20,7 @@ export default class LeaveAppealMessage extends Event {
         if (Channels == null) return;
         const AutoDeleteMessages: MemberMessage[] = await client.Storage.Get(`${member.id}_${member.guild.id}_auto_delete`);
 
+        if (!Array.isArray(AutoDeleteMessages)) return client.Errors.AddError(`Setting configured improperly`, `Auto Delete Message Remove`, member.guild);
         for (const AutoMessage of AutoDeleteMessages) {
             const Channel = await member.guild.channels.fetch(AutoMessage.ChannelId) as TextChannel;
 
