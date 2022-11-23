@@ -58,6 +58,16 @@ export default class Server extends Command {
                             .setEmoji("🛡️")
                             .setStyle(ButtonStyle.Secondary),
                         new ButtonBuilder()
+                            .setCustomId("MODERATION_LOGS")
+                            .setLabel("Set up logging")
+                            .setEmoji("☁️")
+                            .setStyle(ButtonStyle.Secondary),
+                        new ButtonBuilder()
+                            .setCustomId("GUILD_REPORTS")
+                            .setLabel("Member Reports")
+                            .setEmoji("👆")
+                            .setStyle(ButtonStyle.Secondary),
+                        new ButtonBuilder()
                             .setLabel("Error Logs")
                             .setEmoji("⚠️")
                             .setCustomId("ERROR_LOG")

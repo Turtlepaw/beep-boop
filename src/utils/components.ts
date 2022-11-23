@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage } from "discord.js"
+import { ModalBuilder, TextInputBuilder } from "@discordjs/builders"
+import { ActionRowBuilder, Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
 
@@ -96,18 +96,21 @@ export function GetTextInput(Id: string, interaction: ModalSubmitInteraction) {
 }
 
 export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels: Collection<string, GuildBasedChannel>) {
-    return new ActionRowBuilder<SelectMenuBuilder>()
+    //@ts-expect-error
+    return new ActionRowBuilder<ChannelSelectMenuBuilder>()
         .addComponents(
-            new SelectMenuBuilder()
-                .setCustomId("CHANNEL_SELECT")
-                .addOptions(
-                    Channels.filter(e => e.type == ChannelType.GuildText).map(e =>
-                        new SelectMenuOptionBuilder()
-                            .setLabel(e.name)
-                            .setValue(e.id)
-                            .setEmoji(Emojis.TextChannel)
-                    )
+            new ChannelSelectMenuBuilder({
+                channelTypes: [ChannelType.GuildText],
+                customId: CustomId
+            })
+            /*.addOptions(
+                Channels.filter(e => e.type == ChannelType.GuildText).map(e =>
+                    new SelectMenuOptionBuilder()
+                        .setLabel(e.name)
+                        .setValue(e.id)
+                        .setEmoji(Emojis.TextChannel)
                 )
+            )*/
         )
 }
 

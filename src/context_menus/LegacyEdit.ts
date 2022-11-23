@@ -1,12 +1,12 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Emojis } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
 import { CreateLinkButton } from "../utils/buttons";
 import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
 import e from "express";
-import { MessageBuilderModal as CreateMessageModal } from "../utils/components";
+import { ChannelSelectMenu, MessageBuilderModal as CreateMessageModal } from "../utils/components";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -122,22 +122,7 @@ export default class DeleteThis extends ContextMenu {
                             .setValue("#5865f2")
                     )
             );
-        const ChannelSelect = new ActionRowBuilder<SelectMenuBuilder>()
-            .addComponents(
-                new SelectMenuBuilder()
-                    .addOptions(
-                        interaction.guild.channels.cache
-                            .filter(e => e.type == ChannelType.GuildText)
-                            .map(e =>
-                                new SelectMenuOptionBuilder()
-                                    .setEmoji(Emojis.TextChannel)
-                                    .setLabel(e.name)
-                                    .setValue(e.id)
-                            )
-                    )
-                    .setCustomId(CustomIds.ChannelSelect)
-                    .setPlaceholder("Select a channel")
-            );
+        const ChannelSelect = ChannelSelectMenu(CustomIds.ChannelSelect, interaction.guild.channels.cache);
 
         const Message = await interaction.reply({
             content: `${Emojis.Hide} Select an option below.`,

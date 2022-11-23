@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AnyComponentBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, RepliableInteraction, SelectMenuBuilder, SelectMenuComponent, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextBasedChannel, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextBasedChannel, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
 import { Filter } from "../utils/filter";
 import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis, Icons } from "../configuration";
@@ -17,7 +17,7 @@ export interface RepMod {
 export default class SetupAppeals extends Button {
     constructor() {
         super({
-            CustomId: "REPUTATION_BASED_MODERATION",
+            CustomId: "MODERATION_LOGS",
             GuildOnly: true,
             RequiredPermissions: [],
             SomePermissions: ["Administrator", "ManageGuild"]
@@ -25,7 +25,7 @@ export default class SetupAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const CurrentSettings = client.Storage.Get(`${interaction.guild.id}_rep_mod`);
+        const CurrentSettings = client.Storage.Get(`${interaction.guild.id}_mod_logs`);
         let Button: ButtonInteraction;
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -35,16 +35,19 @@ export default class SetupAppeals extends Button {
                     .setCustomId("CONTINUE")
             )
 
-        const Type = new ActionRowBuilder<AnyComponentBuilder>()
+        const Type = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(
-                new StringSelectMenuBuilder()
+                new SelectMenuBuilder()
                     .addOptions([
                         new SelectMenuOptionBuilder()
-                            .setLabel("Ban")
-                            .setValue("BAN_AFTER"),
+                            .setLabel("Emojis")
+                            .setValue("EMOJIS"),
                         new SelectMenuOptionBuilder()
-                            .setLabel("Warn Moderators")
-                            .setValue("WARN"),
+                            .setLabel("Members")
+                            .setValue("Members"),
+                        new SelectMenuOptionBuilder()
+                            .setLabel("Joins & Leaves")
+                            .setValue("JOINS_LEAVE"),
                     ])
                     .setCustomId("TYPE_SELECT")
                     .setMinValues(1)
