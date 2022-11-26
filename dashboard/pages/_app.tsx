@@ -66,10 +66,25 @@ const theme = extendTheme({
       },
       body: {
         bg: "#18191c"
-      }
+      },
+      input: {
+        //bg: mode('grey.extradark', 'grey.extralight')(props),
+        bg: 'transparent',
+        height: '36px',
+        width: '100%',
+        padding: '0px 9px',
+        border: `2px solid #484b52`,
+        transition: '0.2s',
+        outline: 'none',
+        borderRadius: 3,
+        _focus: { border: `2px solid #61656e` }
+      },
     })
   },
   components: {
+    Input: {
+      defaultProps: { variant: 'normal' }
+    },
     Button: {
       baseStyle: {
         color: 'white',

@@ -1,6 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, Webhook, WebhookClient } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, inlineCode, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, spoiler, Webhook, WebhookClient } from "discord.js";
 import Command from "../lib/CommandBuilder";
-import { Embed, Emojis } from "../configuration";
+import { Embed, Emojis, Icons } from "../configuration";
 import { Filter } from "../utils/filter";
 import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
@@ -59,8 +59,8 @@ export default class Send extends Command {
             const AvatarEmoji = interaction.options.getString("webhook_avatar_emoji", false);
             const AvatarImage = interaction.options.getAttachment("webhook_avatar", false);
             const AvatarURL = interaction.options.getString("webhook_avatar_url", false);
-            const isEmoji = !Verifiers.String(AvatarURL) && AvatarImage == null;
-            const isURL = !Verifiers.String(AvatarEmoji) && AvatarImage == null;
+            const isEmoji = !Verifiers.String(AvatarURL) && AvatarEmoji != null && AvatarImage == null;
+            const isURL = !Verifiers.String(AvatarEmoji) && AvatarURL != null && AvatarImage == null;
             if (isEmoji && !Verifiers.Emoji(AvatarEmoji)) return FriendlyInteractionError(interaction, "The emoji must be a custom emoji.");
             if (isURL && !Verifiers.Link(AvatarURL)) return FriendlyInteractionError(interaction, "Invalid avatar URL.");
             let emoji: string = null;
@@ -70,7 +70,7 @@ export default class Send extends Command {
                 );
                 emoji = url.url;
             }
-            const WebhookAvatar = (emoji || AvatarURL || AvatarImage.url) || interaction.guild.iconURL();
+            const WebhookAvatar = (emoji || AvatarURL || AvatarImage?.url) || interaction.guild.iconURL();
             Webhook = await Channel.createWebhook({
                 name: WebhookName,
                 avatar: WebhookAvatar
@@ -78,6 +78,48 @@ export default class Send extends Command {
         } else {
             Webhook = new WebhookClient({ url: WebhookURL });
         }
+
+        const json = {
+            "messages":
+                [{
+                    "data": {
+                        "content": null,
+                        "embeds": null
+                    }
+                }],
+            "targets": [{
+                "url": Webhook.url.replace("api", "api/v10")
+            }]
+        }
+        await interaction.editReply({
+            embeds: [
+                new Embed()
+                    .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
+                    .setTitle(`${Icons.Success} Webhook Created`)
+                    .addFields([{
+                        name: `${Icons.Flag} Keep this secret!`,
+                        value: `Someone with this URL can send any message they want to ${Channel}, including ${inlineCode(`@everyone`)} mentions.`
+                    }])
+            ],
+            components: [
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setLabel("Open in Discohook")
+                            .setStyle(ButtonStyle.Link)
+                            .setURL(`https://discohook.app/?data=${btoa(JSON.stringify(json))}`)
+                    )
+            ],
+            //ephemeral: true
+        })
+
+        client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
+            ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`),
+            Webhook.url
+        ]);
+
+        //client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
+        return;
 
         enum CustomId {
             AsMessage = "AS_MESSAGE_CONTENT",

@@ -10,8 +10,6 @@ import { DefaultProps, parseUser } from '../../utils/parse-user';
 import { Configuration } from '../_app';
 
 export default function Home(props: DefaultProps) {
-    const key = GetKey();
-    return Experimental(key);
     return (
         <div>
             <AutoCenter className='text-center'>

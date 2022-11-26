@@ -1,9 +1,10 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, Client, ComponentType, ContextMenuCommandType, InteractionType, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageComponentInteraction, MessageContextMenuCommandInteraction, PermissionFlagsBits, RepliableInteraction, Role, SelectMenuBuilder, SelectMenuInteraction, SelectMenuOptionBuilder, WebhookClient } from "discord.js";
 import { Filter } from "../utils/filter";
-import { Emojis } from "../configuration";
+import { Emojis, Icons } from "../configuration";
 import { ButtonBuilderModal, GetTextInput } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
+import { FindWebhook } from "../utils/Webhook";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -30,12 +31,12 @@ export default class DeleteThis extends ContextMenu {
             Label: ModalId.LabelField,
             Link: ModalId.LinkField
         };
-        const WebhookURL = client.Storage.Get(`custom_${Target.id}`);
+        const Webhook = await FindWebhook(interaction.targetMessage.id, interaction.channel.id, client); //client.Storage.Get(`custom_${Target.id}`);
 
-        if (WebhookURL == null)
+        if (Webhook == null)
             return FriendlyInteractionError(interaction, "That message wasn't sent by me")
 
-        const Webhook = new WebhookClient({ url: WebhookURL });
+        //const Webhook = new WebhookClient({ url: WebhookURL });
         const ButtonModal = ButtonBuilderModal(ModalId.Modal, Ids);
         const LinkButtonModal = ButtonBuilderModal(ModalId.Modal, Ids, ButtonStyle.Link);
         let Button: ButtonBuilder = new ButtonBuilder();
@@ -47,17 +48,17 @@ export default class DeleteThis extends ContextMenu {
                     .addOptions(
                         new SelectMenuOptionBuilder()
                             .setLabel("Role Button")
-                            .setEmoji(Emojis.Role)
+                            .setEmoji(Icons.Flag)
                             .setDescription("Creates a button to give or remove a role.")
                             .setValue("ROLE_BUTTON"),
                         new SelectMenuOptionBuilder()
                             .setLabel("Link Button")
-                            .setEmoji(Emojis.Link)
+                            .setEmoji(Icons.Link)
                             .setDescription("Creates a button to link to another website.")
                             .setValue("LINK_BUTTON"),
                         new SelectMenuOptionBuilder()
                             .setLabel("Ticket Button")
-                            .setEmoji(Emojis.ChannelThread)
+                            .setEmoji(Icons.Folder)
                             .setDescription("Creates a button to open a server ticket, if tickets have been set up.")
                             .setValue("TICKET_BUTTON")
                     )
@@ -77,7 +78,7 @@ export default class DeleteThis extends ContextMenu {
             );
 
         const Message = await interaction.reply({
-            content: `${Emojis.Search} Select a button type below`,
+            content: `${Icons.Tag} Select a button type below`,
             components: [
                 ButtonTypeSelector
             ],
@@ -100,7 +101,7 @@ export default class DeleteThis extends ContextMenu {
 
         if (isRoleButton) {
             await ButtonType.update({
-                content: `${Emojis.Role} Select a role below`,
+                content: `${Icons.Flag} Select a role below`,
                 components: [
                     RoleSelector
                 ],
@@ -136,7 +137,7 @@ export default class DeleteThis extends ContextMenu {
                             .setStyle(ButtonStyle.Secondary)
                     )
             ],
-            content: `${Emojis.MessagePin} Select button values`
+            content: `${Icons.Clock} Select button values`
         });
 
         const Value = await Message.awaitMessageComponent({
@@ -192,7 +193,7 @@ export default class DeleteThis extends ContextMenu {
                 );
 
             const StyleMessage = await ReplyTo.update({
-                content: `${Emojis.Tag} Select a button style`,
+                content: `${Icons.Tag} Select a button style`,
                 components: [ButtonStyles]
             });
 
@@ -227,7 +228,7 @@ export default class DeleteThis extends ContextMenu {
         });
 
         const Options = {
-            content: `${Emojis.Success} Successfully created button role.`,
+            content: `${Icons.Success} Successfully created button role.`,
             components: []
         };
 

@@ -302,3 +302,16 @@
 .Item {
   background-color: #1f2023;
 }
+
+.InputBuilder {
+  border-color: #484b52 !important;
+}
+
+.InputBuilder:hover {
+  border-color: #52565e !important;
+}
+
+.InputBuilder:active,
+.InputBuilder:focus {
+  border-color: #61656e !important;
+}
