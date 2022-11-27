@@ -16,7 +16,7 @@ export default class DeleteThis extends ContextMenu {
     constructor() {
         super({
             Name: "Raw Message",
-            CanaryCommand: false,
+            CanaryCommand: true,
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: [],
@@ -39,7 +39,11 @@ export default class DeleteThis extends ContextMenu {
                         new ButtonBuilder()
                             .setCustomId("SHORT")
                             .setLabel("Message Content")
-                            .setStyle(ButtonStyle.Secondary)
+                            .setStyle(ButtonStyle.Secondary),
+                        new ButtonBuilder()
+                            .setCustomId("FIX")
+                            .setLabel("Sync Message")
+                            .setStyle(ButtonStyle.Success)
                     )
             ]
         });
@@ -63,6 +67,17 @@ export default class DeleteThis extends ContextMenu {
                 content: `Coming soon!`,
                 components: []
             });
+        } else if (btn.customId == "FIX") {
+            const WebhookURL = client.Storage.Get<string>(`custom_${interaction.targetMessage.id}`);
+            if (WebhookURL) {
+                btn.update("Couldn't find webhook to sync with.")
+                return;
+            }
+            client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
+                ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`),
+                WebhookURL
+            ]);
+            btn.update("☁️ Synced message with database.");
         } else {
             await btn.update({
                 content: `${codeBlock(interaction.targetMessage.content)}`,

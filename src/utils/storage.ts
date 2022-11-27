@@ -40,7 +40,7 @@ export class StorageManager {
     }
 
     EditArray<value = any[]>(key: string, newValue: value[]) {
-        const value: value[] = this.Get(key);
+        const value: value[] = this.Get(key) || [];
         this.Delete(key);
         this.Create(key, [
             ...value,
