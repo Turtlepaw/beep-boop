@@ -1,13 +1,14 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle, WebhookClient } from "discord.js";
-import { Emojis } from "../configuration";
+import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, inlineCode, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, WebhookClient } from "discord.js";
+import { Embed, Emojis, Icons } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
 import { CreateLinkButton } from "../utils/buttons";
 import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
 import e from "express";
-import { EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
+import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
 import { generateId } from "../utils/Id";
+import { FindWebhook } from "../utils/Webhook";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -22,17 +23,17 @@ export default class DeleteThis extends ContextMenu {
     }
 
     public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
-        const WebhookURL = client.Storage.Get(`custom_${interaction.targetMessage.id}`);
-        if (WebhookURL == null) {
+        //const WebhookURL = client.Storage.Get(`custom_${interaction.targetMessage.id}`);
+        const Webhook = await FindWebhook(interaction.targetId, interaction.channelId, client);
+        if (Webhook == null) {
             return FriendlyInteractionError(interaction, "That message wasn't sent by me");
         };
-        const Webhook = new WebhookClient({ url: WebhookURL });
 
         const isTicketMessage =
             interaction.targetMessage.components[0]?.components != null &&
             interaction.targetMessage.components[0].components.find(e => e.customId == "OPEN_TICKET") != null;
-        const isCustomMessage =
-            client.Storage.HasInArray("custom_messages", interaction.targetMessage.id);
+        const isCustomMessage = true;
+        //client.Storage.HasInArray("custom_messages", interaction.targetMessage.id);
         const isButtonMessage =
             interaction.targetMessage.components.find(e =>
                 e.components.find(e => {
@@ -76,25 +77,9 @@ export default class DeleteThis extends ContextMenu {
         );
 
         const EmbedBuilderModal = EmbedModal(CustomIds.MessageBuilderModal, interaction.targetMessage);
-        const ChannelSelect = new ActionRowBuilder<SelectMenuBuilder>()
-            .addComponents(
-                new SelectMenuBuilder()
-                    .addOptions(
-                        interaction.guild.channels.cache
-                            .filter(e => e.type == ChannelType.GuildText)
-                            .map(e =>
-                                new SelectMenuOptionBuilder()
-                                    .setEmoji(Emojis.TextChannel)
-                                    .setLabel(e.name)
-                                    .setValue(e.id)
-                            )
-                    )
-                    .setCustomId(CustomIds.ChannelSelect)
-                    .setPlaceholder("Select a channel")
-            );
-
+        const ChannelSelect = ChannelSelectMenu(CustomIds.ChannelSelect, interaction.guild.channels.cache);
         const Message = await interaction.reply({
-            content: `${Emojis.Hide} Select an option below.`,
+            content: `${Icons.Flag} Select an option below.`,
             ephemeral: true,
             components: [ActionButtons],
             fetchReply: true
@@ -109,6 +94,41 @@ export default class DeleteThis extends ContextMenu {
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
             const { targetMessage } = interaction;
             const isMessage = targetMessage.content != '';
+            //const Webhook = await FindWebhook(targetMessage.id, interaction.channel.id, client);
+            const json = {
+                "messages":
+                    [{
+                        "data": {
+                            "content": null,
+                            "embeds": null
+                        }
+                    }],
+                "targets": [{
+                    "url": Webhook.url.replace("api", "api/v10")
+                }]
+            }
+            await ButtonInteraction.update({
+                embeds: [
+                    new Embed()
+                        .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
+                        .setTitle(`${Icons.Success} Webhook Found`)
+                        .addFields([{
+                            name: `${Icons.Flag} Keep this secret!`,
+                            value: `Someone with this URL can send any message they want to ${interaction.channel}, including ${inlineCode(`@everyone`)} mentions.`
+                        }])
+                ],
+                components: [
+                    new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setLabel("Open in Discohook")
+                                .setStyle(ButtonStyle.Link)
+                                .setURL(`https://discohook.app/?data=${btoa(JSON.stringify(json))}`)
+                        )
+                ],
+                //ephemeral: true
+            });
+            return;
             await ButtonInteraction.showModal(
                 isMessage ?
                     MessageBuilderModal :

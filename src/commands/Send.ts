@@ -111,7 +111,7 @@ export default class Send extends Command {
                     )
             ],
             //ephemeral: true
-        })
+        });
 
         client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
             ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`),

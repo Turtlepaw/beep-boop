@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage } from "discord.js"
+import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
 
@@ -96,12 +96,14 @@ export function GetTextInput(Id: string, interaction: ModalSubmitInteraction) {
 }
 
 export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels: Collection<string, GuildBasedChannel>) {
+    const channels = Array.from(Channels.filter(e => e.type == ChannelType.GuildText).values()) as TextChannel[];
+    channels.length = 25
     return new ActionRowBuilder<SelectMenuBuilder>()
         .addComponents(
             new SelectMenuBuilder()
                 .setCustomId("CHANNEL_SELECT")
                 .addOptions(
-                    Channels.filter(e => e.type == ChannelType.GuildText).map(e =>
+                    channels.map(e =>
                         new SelectMenuOptionBuilder()
                             .setLabel(e.name)
                             .setValue(e.id)
