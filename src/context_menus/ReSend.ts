@@ -25,6 +25,7 @@ export default class DeleteThis extends ContextMenu {
     }
 
     public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
+        await interaction.deferReply({ ephemeral: true })
         const Webhook = await (interaction.channel as TextChannel).createWebhook({
             name: interaction.targetMessage.author.username,
             avatar: interaction.targetMessage.author.avatarURL({ extension: ImageFormat.PNG, size: 2048 })
@@ -43,7 +44,7 @@ export default class DeleteThis extends ContextMenu {
         })
 
         const url = await ShortenURL(wbMessge, Webhook);
-        await interaction.reply({
+        await interaction.editReply({
             embeds: [
                 new Embed()
                     .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
@@ -64,7 +65,7 @@ export default class DeleteThis extends ContextMenu {
                             )
                     )
             ],
-            ephemeral: true
+            //ephemeral: true
         });
     }
 }
