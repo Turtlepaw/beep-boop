@@ -197,6 +197,7 @@ export default class DeleteThis extends ContextMenu {
                 CreatedWebhook.url
             ]);
 
+            const url = await ShortenURL(SentMessage, Webhook);
             await SelectInteraction.update({
                 content: `${Emojis.Success} Moved message to ${Channel}`,
                 components: [
@@ -208,7 +209,7 @@ export default class DeleteThis extends ContextMenu {
                                 .setStyle(ButtonStyle.Link),
                             new ButtonBuilder()
                                 .setURL(
-                                    GenerateURL({ Webhook })
+                                    url.url//GenerateURL({ Webhook })
                                 )
                                 .setStyle(ButtonStyle.Link)
                                 .setLabel("Edit in Discohook")
