@@ -93,6 +93,7 @@ export default class DeleteThis extends ContextMenu {
         });
 
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
+            ButtonInteraction.deferReply({ ephemeral: true })
             const { targetMessage } = interaction;
             const isMessage = targetMessage.content != '';
             //const Webhook = await FindWebhook(targetMessage.id, interaction.channel.id, client);
@@ -101,7 +102,7 @@ export default class DeleteThis extends ContextMenu {
             // date.setDate(date.getDate() + 7);
             const URL = await ShortenURL(interaction.targetMessage, Webhook)
             const date = new Date(URL.expires);
-            await ButtonInteraction.update({
+            await ButtonInteraction.editReply({
                 embeds: [
                     new Embed()
                         .setDescription(`${URL.url}`)
