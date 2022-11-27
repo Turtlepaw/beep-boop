@@ -1,5 +1,5 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, inlineCode, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, WebhookClient } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, inlineCode, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, time, TimestampStyles, WebhookClient } from "discord.js";
 import { Embed, Emojis, Icons } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
 import { CreateLinkButton } from "../utils/buttons";
@@ -9,6 +9,7 @@ import e from "express";
 import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
 import { generateId } from "../utils/Id";
 import { FindWebhook } from "../utils/Webhook";
+import { GenerateURL, ShortenURL } from "../utils/Discohook";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -95,26 +96,19 @@ export default class DeleteThis extends ContextMenu {
             const { targetMessage } = interaction;
             const isMessage = targetMessage.content != '';
             //const Webhook = await FindWebhook(targetMessage.id, interaction.channel.id, client);
-            const json = {
-                "messages":
-                    [{
-                        "data": {
-                            "content": null,
-                            "embeds": null
-                        }
-                    }],
-                "targets": [{
-                    "url": Webhook.url.replace("api", "api/v10")
-                }]
-            }
+
+            // const date = new Date();
+            // date.setDate(date.getDate() + 7);
+            const URL = await ShortenURL(interaction.targetMessage, Webhook)
+            const date = new Date(URL.expires);
             await ButtonInteraction.update({
                 embeds: [
                     new Embed()
-                        .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
-                        .setTitle(`${Icons.Success} Webhook Found`)
+                        .setDescription(`${URL.url}`)
+                        .setTitle(`${Icons.Success} Generated URL`)
                         .addFields([{
-                            name: `${Icons.Flag} Keep this secret!`,
-                            value: `Someone with this URL can send any message they want to ${interaction.channel}, including ${inlineCode(`@everyone`)} mentions.`
+                            name: `${Icons.Clock} Expires`,
+                            value: `${time(date, TimestampStyles.RelativeTime)} or ${time(date, TimestampStyles.LongDate)}`
                         }])
                 ],
                 components: [
@@ -123,7 +117,9 @@ export default class DeleteThis extends ContextMenu {
                             new ButtonBuilder()
                                 .setLabel("Open in Discohook")
                                 .setStyle(ButtonStyle.Link)
-                                .setURL(`https://discohook.app/?data=${btoa(JSON.stringify(json))}`)
+                                .setURL(
+                                    URL.url //GenerateURL({ Webhook })
+                                )
                         )
                 ],
                 //ephemeral: true
@@ -168,8 +164,8 @@ export default class DeleteThis extends ContextMenu {
                 components: [ChannelSelect]
             });
 
-            const SelectInteraction = await interaction.channel.awaitMessageComponent({
-                componentType: ComponentType.SelectMenu,
+            const SelectInteraction = await Message.awaitMessageComponent({
+                componentType: ComponentType.StringSelect,
                 time: 0,
                 filter: Filter(interaction.member, CustomIds.ChannelSelect)
             });
@@ -194,13 +190,29 @@ export default class DeleteThis extends ContextMenu {
 
             if (interaction.targetMessage.deletable) interaction.targetMessage.delete();
 
-            client.Storage.Create(`custom_${SentMessage.id}`, CreatedWebhook.url);
-            client.Storage.Delete(`custom_${interaction.targetMessage.id}`)
+            // client.Storage.Create(`custom_${SentMessage.id}`, CreatedWebhook.url);
+            // client.Storage.Delete(`custom_${interaction.targetMessage.id}`)
+            client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
+                ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`).filter(e => e == Webhook.url),
+                CreatedWebhook.url
+            ]);
 
             await SelectInteraction.update({
                 content: `${Emojis.Success} Moved message to ${Channel}`,
                 components: [
-                    CreateLinkButton(SentMessage.url, "View Message")
+                    new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setURL(SentMessage.url)
+                                .setLabel("View Message")
+                                .setStyle(ButtonStyle.Link),
+                            new ButtonBuilder()
+                                .setURL(
+                                    GenerateURL({ Webhook })
+                                )
+                                .setStyle(ButtonStyle.Link)
+                                .setLabel("Edit in Discohook")
+                        )
                 ]
             });
         } else if (ButtonInteraction.customId == CustomIds.RemoveButtons) {

@@ -101,7 +101,7 @@ export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels:
     return new ActionRowBuilder<SelectMenuBuilder>()
         .addComponents(
             new SelectMenuBuilder()
-                .setCustomId("CHANNEL_SELECT")
+                .setCustomId(CustomId)
                 .addOptions(
                     channels.map(e =>
                         new SelectMenuOptionBuilder()

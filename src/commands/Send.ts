@@ -6,6 +6,7 @@ import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components"
 import { FriendlyInteractionError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { CreateLinkButton } from "../utils/buttons";
+import { GenerateURL } from "../utils/Discohook";
 
 export default class Send extends Command {
     constructor() {
@@ -79,18 +80,6 @@ export default class Send extends Command {
             Webhook = new WebhookClient({ url: WebhookURL });
         }
 
-        const json = {
-            "messages":
-                [{
-                    "data": {
-                        "content": null,
-                        "embeds": null
-                    }
-                }],
-            "targets": [{
-                "url": Webhook.url.replace("api", "api/v10")
-            }]
-        }
         await interaction.editReply({
             embeds: [
                 new Embed()
@@ -107,7 +96,9 @@ export default class Send extends Command {
                         new ButtonBuilder()
                             .setLabel("Open in Discohook")
                             .setStyle(ButtonStyle.Link)
-                            .setURL(`https://discohook.app/?data=${btoa(JSON.stringify(json))}`)
+                            .setURL(
+                                GenerateURL({ Webhook })
+                            )
                     )
             ],
             //ephemeral: true
