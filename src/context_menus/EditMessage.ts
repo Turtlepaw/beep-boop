@@ -185,7 +185,9 @@ export default class DeleteThis extends ContextMenu {
 
             const SentMessage = await CreatedWebhook.send({
                 embeds: interaction.targetMessage.embeds,
-                components: interaction.targetMessage.components
+                components: interaction.targetMessage.components,
+                files: Array.from(interaction.targetMessage.attachments.values()),
+                content: interaction.targetMessage.content
             });
 
             if (interaction.targetMessage.deletable) interaction.targetMessage.delete();
