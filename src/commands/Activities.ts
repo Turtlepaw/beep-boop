@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Colors, CommandInteraction, GuildMember, PermissionsBitField, SlashCommandSubcommandBuilder } from "discord.js";
-import Command from "../lib/CommandBuilder";
+import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
 import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
 import { SendError } from "../utils/error";
@@ -13,6 +13,7 @@ export default class Activities extends Command {
             Name: "activity",
             RequiredPermissions: [],
             SomePermissions: [],
+            Category: Categories.Activites,
             Subcomamnds: [
                 new SlashCommandSubcommandBuilder()
                     .setName("rock_paper_scissors")

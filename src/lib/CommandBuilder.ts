@@ -11,6 +11,15 @@ export type SlashCommandOption = SlashCommandRoleOption |
     SlashCommandNumberOption |
     SlashCommandStringOption;
 
+export enum Categories {
+    Server = "Server",
+    Images = "Image Generation",
+    Information = "Information",
+    Profiles = "Profiles (beta)",
+    Activites = "Actvities",
+    Other = "Other"
+}
+
 export interface CommandBuilderOptions {
     /**
      * Required permissions to execute this command.
@@ -41,6 +50,7 @@ export interface CommandBuilderOptions {
      */
     Subcomamnds?: (SlashCommandSubcommandBuilder | SlashCommandSubcommandGroupBuilder)[];
     Options?: (SlashCommandOption | SlashCommandUserOption)[];
+    Category: Categories;
 }
 
 export default class Command {
@@ -53,6 +63,7 @@ export default class Command {
     public GuildOnly: boolean = true;
     public Options: SharedSlashCommandOptions;
     public BuilderType: CommandBuilderType;
+    public Category: Categories;
 
     constructor(options: CommandBuilderOptions) {
         //Setting Permissions
@@ -64,6 +75,7 @@ export default class Command {
         this.CanaryCommand = options.CanaryCommand;
         this.GuildOnly = options.GuildOnly;
         this.BuilderType = CommandBuilderType.ChatInput;
+        this.Category = options.Category
         //Set stuff on the builder
         this.Builder
             .setName(this.Name)

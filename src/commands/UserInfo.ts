@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandUserOption, Webhook, WebhookClient } from "discord.js";
-import Command from "../lib/CommandBuilder";
+import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Emojis } from "../configuration";
 import { Filter } from "../utils/filter";
 import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
@@ -17,6 +17,7 @@ export default class Send extends Command {
             Name: "user-info",
             RequiredPermissions: [],
             SomePermissions: [],
+            Category: Categories.Information,
             Options: [
                 new SlashCommandUserOption()
                     .setName("member")

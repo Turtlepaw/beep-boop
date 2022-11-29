@@ -15,7 +15,7 @@ import fetch from "node-fetch";
 export default class DeleteThis extends ContextMenu {
     constructor() {
         super({
-            Name: "Copy Message - Re-send message",
+            Name: "Copy Message",
             CanaryCommand: false,
             GuildOnly: false,
             RequiredPermissions: [],

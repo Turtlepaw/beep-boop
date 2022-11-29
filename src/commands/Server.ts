@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Colors, CommandInteraction, PermissionsBitField } from "discord.js";
-import Command from "../lib/CommandBuilder";
+import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
 
 export default class Server extends Command {
@@ -10,7 +10,8 @@ export default class Server extends Command {
             GuildOnly: false,
             Name: "configuration",
             RequiredPermissions: [],
-            SomePermissions: ["Administrator", "ManageGuild"]
+            SomePermissions: ["Administrator", "ManageGuild"],
+            Category: Categories.Server
         });
     }
 

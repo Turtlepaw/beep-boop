@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, EmbedBuilder, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandUserOption, time, TimestampStyles, Webhook, WebhookClient } from "discord.js";
-import Command from "../lib/CommandBuilder";
+import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Emojis, Icons } from "../configuration";
 import { Filter } from "../utils/filter";
 import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
@@ -22,6 +22,7 @@ export default class Send extends Command {
             Name: "reminders",
             RequiredPermissions: [],
             SomePermissions: [],
+            Category: Categories.Other,
             Subcomamnds: [
                 new SlashCommandSubcommandBuilder()
                     .setName("list")

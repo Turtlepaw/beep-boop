@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, CommandInteraction } from "discord.js";
-import Command from "../lib/CommandBuilder";
+import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
 
 export default class WhatsNew extends Command {
@@ -10,7 +10,8 @@ export default class WhatsNew extends Command {
             GuildOnly: false,
             Name: "whats_new",
             RequiredPermissions: [],
-            SomePermissions: []
+            SomePermissions: [],
+            Category: Categories.Other
         });
     }
 
