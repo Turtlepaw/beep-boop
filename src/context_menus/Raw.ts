@@ -10,7 +10,7 @@ import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuil
 import { generateId } from "../utils/Id";
 import { FindWebhook } from "../utils/Webhook";
 import { GenerateURL, ShortenURL } from "../utils/Discohook";
-import fetch from "node-fetch";
+import { CreatePaste } from "../utils/Vaultbin";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -54,17 +54,9 @@ export default class DeleteThis extends ContextMenu {
         });
 
         if (btn.customId == "FULL") {
-            /*const res = await fetch("https://vaultb.in/api/pastes", {
-                method: "post",
-                body: JSON.stringify({
-                    content: interaction.targetMessage.toJSON(),
-                    language: "json"
-                })
-            });
-            //const res = await raw.json();
-            console.log(res)*/
+            const res = await CreatePaste(JSON.stringify(interaction.targetMessage.toJSON()), "json")
             await btn.update({
-                content: `Coming soon!`,
+                content: `${JSON.stringify(res)}`,
                 components: []
             });
         } else if (btn.customId == "FIX") {
