@@ -67,6 +67,8 @@ export enum Icons {
     FlagBravery = "<:bravery:1043717218866823291>",
     FlagBalance = "<:balance:1043717302564171846>",
     FlagVerifiedBot = "<:VerifiedBot:1043595400701022350><:VerifiedBot:1043595399669231746>",
+    FlagActiveDeveloper = "<:ActiveDeveloper:1049873261615382668>",
+    FlagServerOwner = "<:ServerOwner:1049873748397936652>",
     FlagBot = "<:Bot:1040733154656403616>",
     FlagOffline = "<:StatusOffline:1044019373775540276>",
     FlagOnline = "<:StatusOnline:1044019293307801680>",
@@ -86,7 +88,15 @@ export enum Icons {
     Info = "<:Info:1044457273990324264>",
     Shield = "<:Shield:1044472705845563442>",
     Lock = "<:Lock:1044474659749507082>",
-    Unlock = "<:Unlock:1044474661519495188>"
+    Unlock = "<:Unlock:1044474661519495188>",
+    Configure = "<:Configure:1046915276043726890>",
+    Discover = "<:Discover:1046915294624501821>",
+    AdvancedConfiguration = "<:ConfigureAdvanced:1046915256225640600>",
+    Gift = "<:Gift:1046915229453406310>",
+    Zap = "<:Zap:1046915192191197214>",
+    Trash = "<:Trash:1043579951586213888>",
+    Enabled = "<:Enabled:1049904633939763211>",
+    Disabled = "<:Disabled:1049904650989600849>"
 }
 
 export enum Colors {

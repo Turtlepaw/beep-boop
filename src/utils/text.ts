@@ -5,3 +5,10 @@ export function FormatCommandName(text: string) {
         return e.substring(0, 1).toUpperCase() + e.substring(1, e.length)
     }).join(" ");
 }
+
+export function FormatUsername(text: string) {
+    const words = text.split("_");
+    return words.map(e => {
+        return e.substring(0, 1).toUpperCase() + e.substring(1, e.length)
+    }).join(" ");
+}

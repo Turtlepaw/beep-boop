@@ -1,5 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
+import { ActionRowBuilder, ButtonBuilder, codeBlock } from "@discordjs/builders";
 import { ButtonStyle, ComponentType, Guild, Interaction, RequestManager } from "discord.js";
+import { DEVELOPER_BUILD } from "../index";
 import { Emojis, Icons, SupportServerInvite } from "../configuration";
 import { generateId, generatePassword } from "./Id";
 
@@ -56,7 +57,9 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
                     .setDisabled(false)
             );
 
-        const payload = {
+        const payload = DEVELOPER_BUILD ? {
+            content: codeBlock("js", errorMessage)
+        } : {
             content: "Something didn't quite go right.",
             components: [Buttons],
             fetchReply: true

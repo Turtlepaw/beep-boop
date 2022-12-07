@@ -110,13 +110,18 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
         HypeSquadOnlineHouse2: Icons.FlagBrilliance,
         HypeSquadOnlineHouse3: Icons.FlagBalance,
         VerifiedBot: Icons.FlagVerifiedBot,
-        Bot: Icons.FlagBot
+        Bot: Icons.FlagBot,
+        ActiveDeveloper: Icons.FlagActiveDeveloper,
+        ServerOwner: Icons.FlagServerOwner
     };
 
     const flags = User.flags.toArray();
     //@ts-expect-error
     if (User.bot) flags.push("Bot");
+    //@ts-expect-error
+    if (interaction.guild.ownerId == User.id) flags.push("ServerOwner");
 
+    const MemberRoles = Member.roles.cache.filter(e => e.name != "@everyone");
     // to do - add support for dms
     // like without guild required
     await interaction.reply({
@@ -141,7 +146,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                     value: User.hexAccentColor != null ? inlineCode(User.hexAccentColor) : "No accent color."
                 }, {
                     name: `${Icons.Flag} Roles`,
-                    value: Member.roles.cache.size >= 1 ? Member.roles.cache.filter(e => e.name != "@everyone").map(e => e.toString()).join(" ") : "No roles.",
+                    value: MemberRoles.size >= 1 ? MemberRoles.map(e => e.toString()).join(" ") : "No roles.",
                     inline: false
                 }, {
                     name: `${Icons.Globe} Language`,

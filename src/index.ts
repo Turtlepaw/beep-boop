@@ -21,6 +21,7 @@ import { Refresh } from "./utils/reminders";
 export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
+export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
 
 export function SetClientValues(client: Client) {
     client.storage = KeyFileStorage("storage", false)

@@ -1,11 +1,13 @@
 import { ChannelType, Client, Events as ClientEvents, Guild, InteractionReplyOptions, TextChannel } from "discord.js";
 import klawSync from "klaw-sync";
+import { DEVELOPER_BUILD } from "../index";
 import { Embed, Emojis, guildId, Icons, Logs } from "../configuration";
 import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import EventBuilder from "../lib/Event";
 import { CreateLinkButton } from "./buttons";
 import { SendError } from "./error";
+import SelectOptionBuilder from "src/lib/SelectMenuBuilder";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
     content: `${Icons.Error} You don't have the required permissions to run this command.`,
@@ -29,6 +31,7 @@ const InputGuildMessage: InteractionReplyOptions = {
 
 async function CreateError(Summary: string, ExecutingGuild: Guild, client: Client) {
     if (Logs?.Error == null) return;
+    if (DEVELOPER_BUILD == true) return;
     const Guild = await client.guilds.fetch(guildId);
     const Channel = await Guild.channels.fetch(Logs.Error);
     const InviteChannel = ExecutingGuild.channels.cache.filter(e => e.type == ChannelType.GuildText).first();
@@ -133,6 +136,65 @@ async function StartButtonService(client: Client) {
 
                 try {
                     await Button.ExecuteInteraction(interaction, client, Id);
+                } catch (e) {
+                    // Send it to the developers
+                    CreateError(e, interaction.guild, client);
+
+                    // Log error
+                    console.log(`Error:`.red, e);
+
+                    // Send error message
+                    SendError(
+                        interaction,
+                        e
+                    );
+                }
+            }
+        });
+    } catch (e) {
+        console.log("Error:".red, e);
+    }
+}
+
+async function StartSelectMenuService(client: Client) {
+    try {
+        //Find the button files
+        const Files = klawSync("./dist/select_menus", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const SelectOptions: SelectOptionBuilder[] = [];
+        for (const File of Files) {
+            const OriginalFile = require(File.path);
+            const SelectOption: SelectOptionBuilder = new OriginalFile.default();
+            SelectOptions.push(SelectOption);
+        }
+
+        //Handle button interactions
+        client.on(ClientEvents.InteractionCreate, async (interaction) => {
+            if (interaction.isAnySelectMenu()) {
+                let Values = interaction.values;
+                let CustomId: string = "";
+                const SelectOption = SelectOptions.find(e => Values.includes(e.Value));
+
+                if (SelectOption == null) return;
+                if (interaction.guild == null && SelectOption.GuildOnly) {
+                    interaction.reply(ButtonGuildMessage);
+                    return;
+                }
+
+                if (interaction.guild != null) {
+                    if (SelectOption.SomePermissions.length >= 1 && !interaction.memberPermissions.any(SelectOption.SomePermissions)) {
+                        interaction.reply(ButtonPermissionsMessage);
+                        return;
+                    }
+                    if (SelectOption.RequiredPermissions.length >= 1 && !interaction.memberPermissions.has(SelectOption.RequiredPermissions)) {
+                        interaction.reply(ButtonPermissionsMessage);
+                        return;
+                    }
+                }
+
+                if (!Values.includes(SelectOption.Value)) return;
+
+                try {
+                    await SelectOption.ExecuteInteraction(interaction, client, Values);
                 } catch (e) {
                     // Send it to the developers
                     CreateError(e, interaction.guild, client);
@@ -264,6 +326,7 @@ export async function StartService(client: Client) {
     }
 
     //Start other services
+    StartSelectMenuService(client);
     StartButtonService(client);
     StartEventService(client);
     StartAutocompleteService(client);
