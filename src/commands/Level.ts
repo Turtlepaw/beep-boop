@@ -19,7 +19,7 @@ export default class Activities extends Command {
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
-        const Level = client.Levels.Level(interaction.user.id, interaction.guild.id);
+        const Level = await client.Levels.Level(interaction.user.id, interaction.guild.id);
         const Settings: ServerSettings = client.storage[`${interaction.guild.id}_server_settings`]
         if (Settings?.Levels == null || Settings?.Levels == false)
             return FriendlyInteractionError(interaction, "Levels haven't been configured in this community yet.")

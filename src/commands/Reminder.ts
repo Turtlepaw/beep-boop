@@ -72,16 +72,14 @@ export default class Send extends Command {
             const Time = ms(TimeRaw);
             const In = new Date(Date.now() + Time);
             const Id = generateId();
-            client.Storage.Create<Reminder[]>(`reminders`, [{
+            client.Storage.Reminders.Create({
                 Id: interaction.user.id,
                 Title,
                 Time,
                 CustomId: Id,
                 Reminded: false,
                 CreatedAt: Date.now()
-            },
-            ...(client.Storage.GetArray<Reminder>("reminders"))
-            ]);
+            });
 
             await interaction.reply({
                 content: `${Icons.Success} Created a reminder, you'll be reminded ${time(In, TimestampStyles.RelativeTime)}`,
@@ -104,7 +102,7 @@ export default class Send extends Command {
                 ephemeral: true
             });
         } else if (Subcommand == Subcommands.List) {
-            const Reminders = FormatAll(client);
+            const Reminders = await FormatAll(client);
 
             if (Reminders == null || Reminders.length == 0) {
                 await FriendlyInteractionError(interaction, "You don't have any reminders yet, try creating one!")

@@ -4,6 +4,7 @@ import Event from "../lib/Event";
 import { ResolveUser } from "../utils/Profile";
 import { RepMod } from "../buttons/RepMod";
 import { Colors, Embed } from "../configuration";
+import { ReputationBasedModerationType } from "src/models/Configuration";
 
 export default class RepModJoin extends Event {
     constructor() {
@@ -14,11 +15,11 @@ export default class RepModJoin extends Event {
 
     async ExecuteEvent(client: Client, member: GuildMember) {
         const Profile = await ResolveUser(member.id, client);
-        const Settings = client.Storage.Get<RepMod>(`${member.guild.id}_rep_mod`);
+        const Settings = await client.Storage.Configuration.forGuild(member.guild);
         if (Settings == null) return;
 
-        if (Settings.isWarn && Profile.reputation < 1) {
-            const WarnChannel = await member.guild.channels.fetch(Settings.WarnChannel) as TextBasedChannel;
+        if (Settings.ModerationType.includes(ReputationBasedModerationType.AsWarn) && Profile.reputation < 1) {
+            const WarnChannel = await member.guild.channels.fetch(Settings.ModerationChannel) as TextBasedChannel;
 
             WarnChannel.send({
                 embeds: [
@@ -46,10 +47,19 @@ export default class RepModJoin extends Event {
             });
         }
 
-        if (Settings.isBan && Profile.reputation < Settings.BanAfter) {
-            member.ban({
-                reason: `(Reputation-Based Moderation) Member had less than ${Settings.BanAfter} (${Profile.reputation})`
-            });
+        if ((
+            Settings.ModerationType.includes(ReputationBasedModerationType.AsBan) ||
+            Settings.ModerationType.includes(ReputationBasedModerationType.AsKick)
+        ) && Profile.reputation < Settings.MaxReputation) {
+            const reason = `(Reputation-Based Moderation) Member had less than ${Settings.MaxReputation} (${Profile.reputation})`;
+            if (Settings.ModerationType.includes(ReputationBasedModerationType.AsBan)) {
+                member.ban({
+                    reason
+                });
+            } else if (Settings.ModerationType.includes(ReputationBasedModerationType.AsKick)) {
+                member.kick(reason);
+            }
+
         }
     }
 }

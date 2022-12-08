@@ -6,6 +6,7 @@ import Button from "../lib/ButtonBuilder";
 import ms from "ms";
 import { StartAutoDeleteService, StopAutoDeleteService } from "../utils/AutoDelete";
 import { ChannelSelectMenu } from "../utils/components";
+import { ReputationBasedModerationType } from "src/models/Configuration";
 
 export interface RepMod {
     WarnChannel: string;
@@ -25,7 +26,7 @@ export default class SetupAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const CurrentSettings = client.Storage.Get(`${interaction.guild.id}_rep_mod`);
+        const CurrentSettings = await client.Storage.Configuration.forGuild(interaction.guild);
         let Button: ButtonInteraction;
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -64,22 +65,6 @@ export default class SetupAppeals extends Button {
                 componentType: ComponentType.Button
             });
         };
-
-        // const Menu = new ActionRowBuilder<SelectMenuBuilder>()
-        //     .addComponents(
-        //         new SelectMenuBuilder()
-        //             .setCustomId("CHANNEL_SELECT")
-        //             .setMaxValues(10)
-        //             .setMinValues(1)
-        //             .addOptions(
-        //                 interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText).map(e =>
-        //                     new SelectMenuOptionBuilder()
-        //                         .setLabel(e.name)
-        //                         .setValue(e.id)
-        //                         .setEmoji(Emojis.TextChannel)
-        //                 )
-        //             )
-        //     )
 
         const ChannelMenu = ChannelSelectMenu("CHANNEL_SELECT", interaction.guild.channels.cache);
 
@@ -148,11 +133,13 @@ export default class SetupAppeals extends Button {
 
         let int: RepliableInteraction = btn;
 
-        client.Storage.Create<RepMod>(`${interaction.guild.id}_rep_mod`, {
-            WarnChannel,
-            BanAfter: Number(Ban),
-            isBan,
-            isWarn
+        client.Storage.Configuration.Create({
+            ModerationChannel: WarnChannel,
+            MaxReputation: Number(Ban),
+            ModerationType: [
+                ...(isBan ? [ReputationBasedModerationType.AsBan] : []),
+                ...(isWarn ? [ReputationBasedModerationType.AsWarn] : []),
+            ]
         });
 
         await int.reply({

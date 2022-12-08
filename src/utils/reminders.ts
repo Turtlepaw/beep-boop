@@ -17,16 +17,12 @@ async function Handle(Reminder: Reminder, client: Client) {
     try {
         if (Reminder.Reminded) return;
         const DM = await user.createDM(true);
-        const newReminders = client.Storage.GetArray<Reminder>("reminders");
-        client.Storage.Delete("reminders");
-        client.Storage.Create<Reminder[]>("reminders", [{
-            CustomId: Reminder.CustomId,
-            Id: Reminder.Id,
-            Reminded: true,
-            Time: Reminder.Time,
-            Title: Reminder.Title,
-            CreatedAt: Reminder.CreatedAt
-        }, ...newReminders.filter(e => e.CustomId != Reminder.CustomId)])
+        client.Storage.Reminders.Edit({
+            CustomId: Reminder.CustomId
+        }, {
+            Reminded: true
+        });
+
         await DM.send({
             content: `${Icons.Clock} Times up!`,
             embeds: [
@@ -40,7 +36,7 @@ async function Handle(Reminder: Reminder, client: Client) {
 }
 
 export async function Refresh(client: Client) {
-    const Reminders = client.Storage.GetArray<Reminder>("reminders");
+    const Reminders = await client.Storage.Reminders.GetAll();
 
     for (const Reminder of Reminders) {
         if (Reminder.Reminded) continue;
@@ -59,15 +55,13 @@ export async function Refresh(client: Client) {
 }
 
 export function Delete(customId: string, client: Client) {
-    const newReminders = client.Storage.GetArray<Reminder>("reminders");
-    client.Storage.Delete("reminders");
-    client.Storage.Create<Reminder[]>("reminders", [
-        ...newReminders.filter(e => e.CustomId == customId)
-    ]);
+    client.Storage.Reminders.Delete({
+        CustomId: customId
+    });
 }
 
-export function FormatAll(client: Client) {
-    const Reminders = client.Storage.GetArray<Reminder>("reminders");
+export async function FormatAll(client: Client) {
+    const Reminders = await client.Storage.Reminders.GetAll();
 
     return Reminders;
 }

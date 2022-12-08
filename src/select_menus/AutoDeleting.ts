@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, Client, Colors, CommandInteraction, inlineCode, PermissionsBitField, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
+import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, Client, Colors, CommandInteraction, inlineCode, ModalBuilder, PermissionsBitField, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Icons } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
@@ -26,7 +26,9 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
         enum Id {
             TimedCleanup = "timed_cleanup",
             MessageCleanup = "message_cleanup",
-            SystemCleanup = "system_cleanup"
+            SystemCleanup = "system_cleanup",
+            TimeModal = "timer_modal",
+            TimeField = "timer_field"
         }
 
         const Message = await interaction.update({
@@ -77,8 +79,42 @@ ${TextBoolean(TimedCleanup, "Timed Cleanup")}
             filter: Filter(interaction.member, Id.MessageCleanup, Id.SystemCleanup, Id.TimedCleanup)
         });
 
+        function HandleToggle(id: Id) {
+            if (id == Id.MessageCleanup) {
+                MessageCleanup = !MessageCleanup
+            } else if (id == Id.SystemCleanup) {
+                SystemCleanup = !SystemCleanup
+            }
+        }
         Collector.on("collect", async button => {
+            if (button.customId == Id.MessageCleanup) {
 
+            } else if (button.customId == Id.SystemCleanup) {
+
+            } else if (button.customId == Id.TimedCleanup) {
+                const TimerField = new TextInputBuilder()
+                    .setLabel("Time to delete")
+                    .setPlaceholder("1m 6s")
+                    .setCustomId(Id.TimeField)
+                    .setStyle(TextInputStyle.Short)
+                    .setRequired(true);
+
+                await button.showModal(
+                    new ModalBuilder()
+                        .setTitle("Timed Cleanup")
+                        .setCustomId(Id.TimeModal)
+                        .addComponents(
+                            new ActionRowBuilder<TextInputBuilder>()
+                                .addComponents(
+                                    TimerField
+                                )
+                        )
+                );
+
+                const ModalInteraction = await button.awaitModalSubmit({
+                    time: 0
+                });
+            }
         });
 
         Collector.on("end", async () => {
@@ -89,7 +125,7 @@ ${TextBoolean(TimedCleanup, "Timed Cleanup")}
                             DisableButtons(Message.components[0].components)
                         )
                 ]
-            })
+            });
         });
     }
 }

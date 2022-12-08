@@ -9,7 +9,7 @@ dotenv.config()
 import "colors";
 import { API } from "./utils/api";
 import { Levels } from "./utils/levels";
-import { StorageManager } from "./utils/storage";
+import { InitializeProvider, StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
@@ -23,14 +23,14 @@ export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
 
-export function SetClientValues(client: Client) {
-    client.storage = KeyFileStorage("storage", false)
+export async function SetClientValues(client: Client) {
+    await InitializeProvider(client) //KeyFileStorage("storage", false)
     client.commands = new Map();
     client.ContextMenus = new Map();
     client.DetailedCommands = [];
-    client.Storage = new StorageManager(client.storage);
     client.Errors = new ErrorManager();
     client.Levels = new Levels(client.storage);
+    client.LegacyStorage = KeyFileStorage("storage", false);
 }
 
 // Create Discord.js client

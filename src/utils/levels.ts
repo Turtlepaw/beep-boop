@@ -1,3 +1,6 @@
+import { MemberRanking } from "../models/MemberRanking";
+import { DataSource, Repository } from "typeorm";
+
 export interface Member {
     Level?: number;
     LastUpdated?: Date;
@@ -10,41 +13,41 @@ export interface Storage {
     [key: string]: Member | null;
 }
 
+const RankingRepository = "GuildRankings";
+
 export class Levels {
-    public storage: Storage;
-    constructor(storage: Storage) {
+    public storage: DataSource;
+    public repo: Repository<MemberRanking>;
+    constructor(storage: DataSource) {
         this.storage = storage;
+        this.repo = storage.getRepository(RankingRepository);
     }
 
     CreateMember(Id: string, GuildId: string) {
         const Item = {
             GuildId,
-            Id,
+            MemberId: Id,
             LastUpdated: new Date(),
             Level: 1,
             XP: 0
         };
 
-        this.storage[
-            this.CreateId(Id, GuildId)
-        ] = Item;
-
-        return Item;
+        return this.repo.create({
+            CustomId: this.CreateId(Id, GuildId),
+            ...Item
+        });
     }
 
     SetLevel(Id: string, GuildId: string, Level: number) {
-        let Current = this.Level(Id, GuildId);
-        this.storage[
-            this.CreateId(Id, GuildId)
-        ] = {
-            ...(Current || {}),
+        //let Current = this.Level(Id, GuildId);
+        this.repo.update(this.CreateId(Id, GuildId), {
             LastUpdated: new Date(),
             Level: Level
-        };
+        });
     }
 
-    AddXP(Id: string, GuildId: string, xp: number) {
-        let Current = this.Level(Id, GuildId);
+    async AddXP(Id: string, GuildId: string, xp: number) {
+        let Current = await this.Level(Id, GuildId);
         //const NewLevel = Math.floor(0.1 * Math.sqrt(xp));
         let NewLevel = xp >= 100 ? (Current.Level + 1) : Current.Level;
         let NewXP = (NewLevel > Current.Level) ? 0 : (xp + Current.XP); //old: xp + parseInt(xp.toString(), 10);
@@ -54,14 +57,12 @@ export class Levels {
             NewLevel = Current.Level + 1;
         };
 
-        this.storage[
-            this.CreateId(Id, GuildId)
-        ] = {
-            ...(Current || {}),
+        this.repo.update(this.CreateId(Id, GuildId), {
             LastUpdated: new Date(),
             Level: NewLevel,
             XP: NewXP
-        };
+        })
+
         return {
             HasLeveledUp: NewLevel > Current.Level,
             CurrentXP: NewXP,
@@ -69,14 +70,15 @@ export class Levels {
         };
     }
 
-    Level(Id: string, GuildId: string): Member {
-        let Current = this.storage[
-            this.CreateId(Id, GuildId)
-        ];
+    async Level(Id: string, GuildId: string): Promise<Member> {
+        let Current = await this.repo.findOneBy({
+            CustomId: this.CreateId(Id, GuildId)
+        });
+
         if (Current == null) Current = this.CreateMember(Id, GuildId);
         return {
             GuildId: Current.GuildId,
-            Id: Current.Id,
+            Id: Current.CustomId,
             LastUpdated: new Date(Current.LastUpdated),
             Level: Current.Level,
             XP: Current.XP

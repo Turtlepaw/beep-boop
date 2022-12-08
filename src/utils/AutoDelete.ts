@@ -18,12 +18,16 @@ export async function StartAutoDeleteService(client: Client) {
     if (stop) return;
     for (let Guild of Guilds.values()) {
         const ResolvedGuild = await Guild.fetch();
-        const Channels: AutoDelete = client.Storage.Get(`${Guild.id}_auto_deleting`);
+        const Configuration = await client.Storage.Configuration.Get({
+            Id: Guild.id
+        });
 
-        if (Channels?.AfterTime == null) continue;
+        const Channels = Configuration.CleanupChannels;
+
+        if (Configuration.CleanupTimer == null) continue;
         if (stop) return;
 
-        for (const Channel of Channels.Channels) {
+        for (const Channel of Channels) {
             const ResolvedChannel = await ResolvedGuild.channels.fetch(Channel);
             if (stop) return;
             if (ResolvedChannel?.type != ChannelType.GuildText) return;
@@ -36,7 +40,7 @@ export async function StartAutoDeleteService(client: Client) {
                 setTimeout(() => {
                     if (stop) return;
                     AutoDeleteMessageService(message);
-                }, Number(Channels.AfterTime));
+                }, Number(Configuration.CleanupTimer));
             });
         }
     }

@@ -2,6 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMemb
 import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
 import { ServerSettings } from "../buttons/ServerSettings";
+import { CleanupType } from "src/models/Configuration";
 
 export interface MemberMessage {
     MessageId: string;
@@ -16,10 +17,12 @@ export default class LeaveAppealMessage extends Event {
     }
 
     async ExecuteEvent(client: Client, member: GuildMember) {
-        const Server: ServerSettings = client.Storage.Get(`${member.guild.id}_server_settings`);
-        if (Server == null || Server?.WelcomeDelete == null || Server.WelcomeDelete == false)
+        const Server = await client.Storage.Configuration.forGuild(member.guild);
+        if (Server == null || Server.CleanupType.includes(CleanupType.System))
             return;
-        const JoinMessage: MemberMessage = await client.Storage.Get(`${member.guild.id}_add_${member.id}`);
+        const JoinMessage: MemberMessage = await client.Storage.Messages.Get({
+            CustomId: `${member.guild.id}_add_${member.id}`
+        });
         const Channel = await member.guild.channels.fetch(JoinMessage.ChannelId) as TextChannel;
 
         try {

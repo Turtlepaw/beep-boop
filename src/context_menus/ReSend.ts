@@ -31,10 +31,10 @@ export default class DeleteThis extends ContextMenu {
             avatar: interaction.targetMessage.author.avatarURL({ extension: ImageFormat.PNG, size: 2048 })
         });
 
-        client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
-            ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`),
-            Webhook.url
-        ]);
+        client.Storage.CustomWebhooks.Create({
+            channelId: interaction.channel.id,
+            url: Webhook.url
+        });
 
         const wbMessge = await Webhook.send({
             content: interaction.targetMessage.content,
