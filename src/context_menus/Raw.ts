@@ -8,7 +8,7 @@ import { Filter } from "../utils/filter";
 import e from "express";
 import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
 import { generateId } from "../utils/Id";
-import { FindWebhook } from "../utils/Webhook";
+import { FindLegacyWebhook, FindWebhook } from "../utils/Webhook";
 import { GenerateURL, ShortenURL } from "../utils/Discohook";
 import { CreatePaste } from "../utils/Vaultbin";
 
@@ -60,15 +60,15 @@ export default class DeleteThis extends ContextMenu {
                 components: []
             });
         } else if (btn.customId == "FIX") {
-            const WebhookURL = client.Storage.Get<string>(`custom_${interaction.targetMessage.id}`);
-            if (WebhookURL) {
+            const webhook = await FindLegacyWebhook(interaction.targetId, interaction.channel.id, client);
+            if (webhook == null) {
                 btn.update("Couldn't find webhook to sync with.")
                 return;
             }
-            client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
-                ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`),
-                WebhookURL
-            ]);
+            client.Storage.CustomWebhooks.Create({
+                channelId: interaction.channel.id,
+                url: webhook.url
+            })
             btn.update("☁️ Synced message with database.");
         } else {
             await btn.update({

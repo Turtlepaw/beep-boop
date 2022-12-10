@@ -18,9 +18,9 @@ export default class LevelService extends Event {
         const Settings: ServerSettings = client.storage[`${Message.guild.id}_server_settings`]
         if (Settings?.Levels == null || Settings?.Levels == false) return;
         const Levels = client.Levels;
-        const Current = Levels.Level(Message.author.id, Message.guild.id);
+        const Current = await Levels.Level(Message.author.id, Message.guild.id);
         const AddedXP = Levels.TargetXP(Current.Level);
-        const LevelUp = Levels.AddXP(Message.author.id, Message.guild.id, AddedXP);
+        const LevelUp = await Levels.AddXP(Message.author.id, Message.guild.id, AddedXP);
 
         if (LevelUp.HasLeveledUp) {
             Message.reply({

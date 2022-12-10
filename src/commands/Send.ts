@@ -105,10 +105,10 @@ export default class Send extends Command {
             //ephemeral: true
         });
 
-        client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
-            ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`),
-            Webhook.url
-        ]);
+        client.Storage.CustomWebhooks.Create({
+            channelId: interaction.channel.id,
+            url: Webhook.url
+        });
 
         //client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
         return;
@@ -120,7 +120,7 @@ export default class Send extends Command {
             MessageModal = "MESSAGE_BUILDER_MODAL"
         }
 
-        const MessageBuilder = MessageBuilderModal(
+        /*const MessageBuilder = MessageBuilderModal(
             CustomId.MessageModal,
             CustomId.ContentField,
             null
@@ -224,6 +224,6 @@ export default class Send extends Command {
                     CreateLinkButton(SentMessage.url, "Message")
                 ]
             });
-        }
+        }*/
     }
 }

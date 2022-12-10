@@ -50,8 +50,13 @@ export function randomNumber() {
     return numbers[n];
 }
 
-export function generateId() {
-    return `${randomNumber()}${randomNumber()}${randomNumber()}${randomNumber()}${randomNumber()}`;
+export function generateId(length: number = 5) {
+    let Id = "";
+    for (let index = 0; index < length; index++) {
+        Id += `${randomNumber()}`
+    }
+
+    return Id;
 }
 
 export function randomBoolean() {
@@ -75,9 +80,9 @@ export function generatePassword(width: number = 10) {
             password += randomNumber();
         } else {
             if (shouldBeUpperCase) {
-                password += randomLetter.toString().toUpperCase();
+                password += randomLetter().toString().toUpperCase();
             } else {
-                password += randomLetter;
+                password += randomLetter();
             }
         }
     }

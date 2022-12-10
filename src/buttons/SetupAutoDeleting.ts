@@ -17,7 +17,7 @@ export default class SetupAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const CurrentSettings = client.Storage.Get(`${interaction.guild.id}_auto_deleting`);
+        const CurrentSettings = client.Storage.Configuration.forGuild(interaction.guild);
         let Button: ButtonInteraction;
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -126,10 +126,12 @@ export default class SetupAppeals extends Button {
         }
 
         const AfterTime = int.isModalSubmit() ? ms(int.fields.getTextInputValue("TIME")) : null;
-        client.Storage.Create(`${interaction.guild.id}_auto_deleting`, {
-            Channels: SelectMenuInteraction.values,
-            AfterTime
-        });
+        if (SelectMenuInteraction?.values.length >= 1) client.Storage.Configuration.AddChannel(SelectMenuInteraction.values, interaction.guild.id);
+        if (AfterTime != null) {
+            client.Storage.Configuration.Edit({ Id: interaction.guild.id }, {
+                CleanupTimer: AfterTime
+            })
+        }
 
         await int.reply({
             embeds: [

@@ -195,10 +195,14 @@ export default class DeleteThis extends ContextMenu {
 
             // client.Storage.Create(`custom_${SentMessage.id}`, CreatedWebhook.url);
             // client.Storage.Delete(`custom_${interaction.targetMessage.id}`)
-            client.Storage.EditArray<string[]>(`custom_webhooks_${interaction.channel.id}`, [
-                ...client.Storage.GetArray(`custom_webhooks_${interaction.channel.id}`).filter(e => e == Webhook.url),
-                CreatedWebhook.url
-            ]);
+            client.Storage.CustomWebhooks.Delete({
+                url: Webhook.url
+            });
+
+            client.Storage.CustomWebhooks.Create({
+                channelId: Channel.id,
+                url: CreatedWebhook.url
+            });
 
             const url = await ShortenURL(SentMessage, Webhook);
             await SelectInteraction.update({

@@ -9,11 +9,12 @@ dotenv.config()
 import "colors";
 import { API } from "./utils/api";
 import { Levels } from "./utils/levels";
-import { StorageManager } from "./utils/storage";
+import { InitializeProvider, StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
+import { StartCustomBots } from "./utils/customBot";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -22,19 +23,7 @@ export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
-
-export function SetClientValues(client: Client) {
-    client.storage = KeyFileStorage("storage", false)
-    client.commands = new Map();
-    client.ContextMenus = new Map();
-    client.DetailedCommands = [];
-    client.Storage = new StorageManager(client.storage);
-    client.Errors = new ErrorManager();
-    client.Levels = new Levels(client.storage);
-}
-
-// Create Discord.js client
-const client = new Client({
+export const DEFAULT_CLIENT_OPTIONS = {
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
@@ -50,30 +39,52 @@ const client = new Client({
         Partials.ThreadMember,
         Partials.User,
     ]
-});
+}
+
+export async function SetClientValues(client: Client) {
+    await InitializeProvider(client) //KeyFileStorage("storage", false)
+    client.commands = new Map();
+    client.ContextMenus = new Map();
+    client.DetailedCommands = [];
+    client.Errors = new ErrorManager();
+    client.Levels = new Levels(client.storage);
+    client.LegacyStorage = KeyFileStorage("storage", false);
+}
+
+// Create Discord.js client
+const client = new Client(DEFAULT_CLIENT_OPTIONS);
 
 // Get everything ready...
-client.on(Events.ClientReady, async () => {
-    // Getting the bot ready
-    console.log("Getting everything ready...".green);
+client.on(Events.ClientReady, HandleBotStart);
 
+export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true) {
     // Set client values
     console.log("Setting client values...".grey);
-    SetClientValues(client);
+    await SetClientValues(ProvidedClient);
 
     // Deploy slash commands
-    console.log("Deploying commands...".grey);
-    Deploy(client).then(() => console.log("Registered all commands successfully.".green));
+    if (!isCustom) console.log("Deploying commands...".grey);
+    Deploy(ProvidedClient, !isCustom).then(() => isCustom ? console.log("Registered all commands successfully.".green) : null);
 
     // Start command handler
     console.log("Starting handler service...".grey);
-    StartService(client)
+    StartService(ProvidedClient)
+}
+
+export async function HandleBotStart() {
+    // Getting the bot ready
+    console.log("Getting everything ready...".green);
+
+    await HandleAnyBotStart(client, false);
 
     // Start auto delete service
     StartAutoDeleteService(client);
 
     // Refresh reminders
     Refresh(client);
+
+    // Start Custom Bots
+    StartCustomBots(client);
 
     // Start API
     console.log("Starting API...".grey);
@@ -86,6 +97,6 @@ client.on(Events.ClientReady, async () => {
     if (Status != null) {
         client.user.setActivity(Status);
     }
-});
+}
 
 client.login(TOKEN);

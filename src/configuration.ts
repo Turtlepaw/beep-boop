@@ -16,7 +16,7 @@ export const Logs: Logging = {
     DM: "1040431450798956594",
     Error: "1042231033627684904"
 }
-export const guildId = "1028789308401918004";
+export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.3";
 export const Website = "https://beep.trtle.xyz"
@@ -96,12 +96,14 @@ export enum Icons {
     Zap = "<:Zap:1046915192191197214>",
     Trash = "<:Trash:1043579951586213888>",
     Enabled = "<:Enabled:1049904633939763211>",
-    Disabled = "<:Disabled:1049904650989600849>"
+    Disabled = "<:Disabled:1049904650989600849>",
+    ProUser = "<:ProUser:1051214860119191634>"
 }
 
 export enum Colors {
     Transparent = "#2F3136",
-    BrandColor = "#FF605E"
+    BrandColor = "#FF605E",
+    SuccessButton = "#2d7d46"
 }
 
 export class Embed extends EmbedBuilder {
