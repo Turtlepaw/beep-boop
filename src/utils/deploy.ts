@@ -3,11 +3,13 @@ import { guildId } from "../configuration";
 import klawSync from "klaw-sync";
 import CommandBuilder from "../lib/CommandBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { CLIENT_ID as clientId, TOKEN as token } from "../index";
+import { CLIENT_ID, TOKEN } from "../index";
 
 export async function Deploy(client: Client) {
     const DeveloperCommands: any[] = [];
     const PublicCommands: any[] = [];
+    const clientId = client.user.id;
+    const token = client.token;
 
     const Files = klawSync("./dist/commands", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
 

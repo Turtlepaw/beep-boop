@@ -8,6 +8,7 @@ import { Verifiers } from "../utils/verify";
 import { CreateLinkButton } from "../utils/buttons";
 import { GuildInformation, MemberInformation } from "../utils/info";
 import { Endorse, FetchUser, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
+import { Subscriptions } from "../models/Profile";
 
 export default class Send extends Command {
     constructor() {
@@ -62,6 +63,13 @@ export default class Send extends Command {
 
         if (Subcommand == Subcommands.View) {
             const profile = await ResolveUser(user.id, client);
+            const Badges = {
+                Pro: Icons.ProUser
+            }
+            const OwnedBadges = [
+                ...(profile.subscription == Subscriptions.Pro ? [Badges.Pro] : [])
+            ]
+
             const Message = await interaction.reply({
                 ephemeral,
                 fetchReply: true,
@@ -76,6 +84,9 @@ export default class Send extends Command {
                         }, {
                             name: `Reputation (endorsements)`,
                             value: profile.reputation.toString()
+                        }, {
+                            name: "Badges",
+                            value: `${OwnedBadges.length <= 0 ? "None." : OwnedBadges.join(" ")}`
                         }])
                 ],
                 components: [

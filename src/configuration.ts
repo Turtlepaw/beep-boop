@@ -96,12 +96,14 @@ export enum Icons {
     Zap = "<:Zap:1046915192191197214>",
     Trash = "<:Trash:1043579951586213888>",
     Enabled = "<:Enabled:1049904633939763211>",
-    Disabled = "<:Disabled:1049904650989600849>"
+    Disabled = "<:Disabled:1049904650989600849>",
+    ProUser = "<:ProUser:1051214860119191634>"
 }
 
 export enum Colors {
     Transparent = "#2F3136",
-    BrandColor = "#FF605E"
+    BrandColor = "#FF605E",
+    SuccessButton = "#2d7d46"
 }
 
 export class Embed extends EmbedBuilder {

@@ -1,5 +1,5 @@
 import { HexColorString } from 'discord.js';
-import { JSONArray } from 'src/utils/jsonArray';
+import { JSONArray } from '../utils/jsonArray';
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
 
 export enum CleanupType {
@@ -16,7 +16,10 @@ export enum ReputationBasedModerationType {
 
 @Entity()
 export class GuildConfiguration {
-    @PrimaryColumn()
+    // @PrimaryGeneratedColumn()
+    // GeneratedId: number;
+
+    @PrimaryColumn({ unique: false })
     Id: string;
 
     // Premium

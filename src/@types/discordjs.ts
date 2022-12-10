@@ -10,6 +10,8 @@ import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
 import { Reminder } from "../models/Reminders";
 import { Message } from "../models/Message";
+import { CustomBot } from "../models/CustomBot";
+import { Gift } from "../models/Gift";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -17,6 +19,8 @@ export interface StorageManagers {
     Reminders: StorageManager<Reminder>;
     CustomWebhooks: StorageManager<CustomWebhook>;
     Messages: StorageManager<Message>;
+    CustomBots: StorageManager<CustomBot>;
+    Gifts: StorageManager<Gift>;
 }
 
 declare module 'discord.js' {

@@ -9,7 +9,9 @@ import { CustomWebhook } from "../models/Webhook";
 import { Reminder } from "../models/Reminders";
 import { MemberRanking } from "../models/MemberRanking";
 import { Message } from "../models/Message";
+import { CustomBot } from "../models/CustomBot";
 import { JSONArray } from "./jsonArray";
+import { Gift } from "../models/Gift";
 
 export class ResolvedGuildConfiguration extends GuildConfiguration {
     constructor(options?: any) {
@@ -31,7 +33,7 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 }
 
-const entities = [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message];
+const entities = [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message, CustomBot, Gift];
 export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "database.sqlite",
@@ -49,7 +51,9 @@ export async function InitializeProvider(client: Client) {
         Reminders: new StorageManager(client.storage, Reminder.name),
         Profiles: new StorageManager(client.storage, Profile.name),
         CustomWebhooks: new StorageManager(client.storage, CustomWebhook.name),
-        Messages: new StorageManager(client.storage, Message.name)
+        Messages: new StorageManager(client.storage, Message.name),
+        CustomBots: new StorageManager(client.storage, CustomBot.name),
+        Gifts: new StorageManager(client.storage, Gift.name)
     }
 }
 
@@ -61,11 +65,11 @@ export class StorageManager<repo = any> {
         this.Repository = storage.getRepository(repository);
     }
 
-    GetAll() {
+    GetAll(): Promise<repo[]> {
         try {
             return this.Repository.find();
         } catch (e) {
-            return [];
+            return Promise.resolve<repo[]>([]);
         }
     }
 
@@ -123,6 +127,7 @@ export class StorageManager<repo = any> {
 }
 
 export class GuildConfigurationManager extends StorageManager<GuildConfiguration> {
+    public CreatedGuilds: string[] = [];
     constructor(storage: DataSource, repository: string) {
         super(storage, repository)
     }
@@ -139,30 +144,33 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
         });
     }
 
+    async CreateConfiguration(guild: Guild) {
+        if (this.CreatedGuilds.includes(guild.id)) return;
+        const EmptyArray = JSON.stringify({
+            array: []
+        });
+        this.CreatedGuilds.push(guild.id);
+        this.Create({
+            CleanupChannels: EmptyArray,
+            CleanupTimer: null,
+            CleanupType: EmptyArray,
+            Color: null,
+            Id: guild.id,
+            MaxReputation: 5,
+            ModerationChannel: null,
+            ModerationType: EmptyArray,
+            ReputationMod: false
+        })
+    }
+
     async forGuild(guild: Guild): Promise<ResolvedGuildConfiguration> {
         const config = await this.Get({
             Id: guild.id
         });
 
-        const EmptyArray = JSON.stringify({
-            array: []
-        });
-
         const EmptyResolvableArray = () => new JSONArray();
 
-        if (config == null) {
-            this.Create({
-                CleanupChannels: EmptyArray,
-                CleanupTimer: null,
-                CleanupType: EmptyArray,
-                Color: null,
-                Id: guild.id,
-                MaxReputation: 5,
-                ModerationChannel: null,
-                ModerationType: EmptyArray,
-                ReputationMod: false
-            })
-        }
+        if (config == null) this.CreateConfiguration(guild);
 
         return new ResolvedGuildConfiguration({
             CleanupChannels: config?.CleanupChannels == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupChannels),

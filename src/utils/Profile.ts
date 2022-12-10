@@ -1,4 +1,5 @@
 import { Client, ColorResolvable, HexColorString, User } from "discord.js";
+import { Subscriptions } from "../models/Profile";
 import { Colors } from "../configuration";
 
 export interface Profile {
@@ -7,6 +8,8 @@ export interface Profile {
     displayName?: string;
     reputation?: number;
     accentColor?: ColorResolvable;
+    subscription?: Subscriptions;
+    expires?: Date;
 }
 
 export function CreateUser(user: User, client: Client) {
@@ -15,7 +18,9 @@ export function CreateUser(user: User, client: Client) {
         bio: null,
         displayName: user.username,
         reputation: 0,
-        userId: user.id
+        userId: user.id,
+        subscription: Subscriptions.None,
+        expires: null
     })
 }
 
@@ -33,7 +38,9 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
         bio: user?.bio || "This user has no bio.",
         displayName: user?.displayName || ResolvedUser.username,
         reputation: user?.reputation || 0,
-        userId: user?.userId || ResolvedUser.id
+        userId: user?.userId || ResolvedUser.id,
+        subscription: user?.subscription || Subscriptions.None,
+        expires: new Date(user?.expires) || null
     }
 }
 
@@ -57,6 +64,13 @@ export function SetDisplayName(Id: string, displayName: string, client: Client) 
 export function SetAccentColor(Id: string, accentColor: string, client: Client) {
     return client.Storage.Profiles.Edit(Id, {
         accentColor
+    });
+}
+
+export function SetSubscription(Id: string, subscription: Subscriptions, expires: Date, client: Client) {
+    return client.Storage.Profiles.Edit(Id, {
+        subscription,
+        expires: expires.toDateString()
     });
 }
 

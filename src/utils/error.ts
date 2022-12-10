@@ -85,16 +85,16 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
     }
 }
 
-export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string) {
+export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string, ephemeral: boolean = true) {
     if (interaction.isRepliable()) {
         if (interaction.deferred || interaction.replied) {
             await interaction.editReply({
-                content: `${Icons.Error} ` + errorMessage
+                content: `${Icons.Error} ` + errorMessage,
             });
         } else {
             await interaction.reply({
                 content: `${Icons.Error} ` + errorMessage,
-                ephemeral: true
+                ephemeral
             });
         }
     }
