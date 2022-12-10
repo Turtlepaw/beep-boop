@@ -4,7 +4,7 @@ import { Embed, Icons } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
-import { Filter } from "src/utils/filter";
+import { Filter } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 
 export default class AutonomousCleaning extends SelectOptionBuilder {

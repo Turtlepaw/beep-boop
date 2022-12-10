@@ -59,7 +59,7 @@ client.on(Events.ClientReady, async () => {
 
     // Set client values
     console.log("Setting client values...".grey);
-    SetClientValues(client);
+    await SetClientValues(client);
 
     // Deploy slash commands
     console.log("Deploying commands...".grey);

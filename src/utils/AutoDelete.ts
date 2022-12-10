@@ -22,8 +22,9 @@ export async function StartAutoDeleteService(client: Client) {
             Id: Guild.id
         });
 
-        const Channels = Configuration.CleanupChannels;
+        const Channels = Configuration?.CleanupChannels;
 
+        if (Channels == null) continue;
         if (Configuration.CleanupTimer == null) continue;
         if (stop) return;
 

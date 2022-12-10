@@ -16,5 +16,5 @@ export class Profile {
     reputation: number;
 
     @Column()
-    accentColor: ColorResolvable;
+    accentColor: string;
 }

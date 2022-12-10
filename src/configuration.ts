@@ -16,7 +16,7 @@ export const Logs: Logging = {
     DM: "1040431450798956594",
     Error: "1042231033627684904"
 }
-export const guildId = "1028789308401918004";
+export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.3";
 export const Website = "https://beep.trtle.xyz"

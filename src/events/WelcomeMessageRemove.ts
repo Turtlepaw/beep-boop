@@ -2,7 +2,8 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMemb
 import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
 import { ServerSettings } from "../buttons/ServerSettings";
-import { CleanupType } from "src/models/Configuration";
+import { CleanupType } from "../models/Configuration";
+import { JSONArray } from "../utils/jsonArray";
 
 export interface MemberMessage {
     MessageId: string;
@@ -18,7 +19,7 @@ export default class LeaveAppealMessage extends Event {
 
     async ExecuteEvent(client: Client, member: GuildMember) {
         const Server = await client.Storage.Configuration.forGuild(member.guild);
-        if (Server == null || Server.CleanupType.includes(CleanupType.System))
+        if (Server == null || (JSONArray.isArray(Server.CleanupType) && Server.CleanupType.includes(CleanupType.System)))
             return;
         const JoinMessage: MemberMessage = await client.Storage.Messages.Get({
             CustomId: `${member.guild.id}_add_${member.id}`

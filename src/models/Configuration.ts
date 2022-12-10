@@ -20,13 +20,13 @@ export class GuildConfiguration {
     Id: string;
 
     // Premium
-    @Column()
-    Color: HexColorString;
+    @Column({ nullable: true })
+    Color: HexColorString | string;
 
     // Autonomous Cleaning
     @Column()
-    CleanupType: string | CleanupType[] | JSONArray<CleanupType> | undefined[]; //CleanupType[];
-    @Column()
+    CleanupType: string // | CleanupType[] | JSONArray<CleanupType> | undefined[]; //CleanupType[];
+    @Column({ nullable: true })
     CleanupTimer: number;
     @Column()
     CleanupChannels: string;
@@ -37,18 +37,9 @@ export class GuildConfiguration {
     @Column()
     MaxReputation: number;
     @Column()
-    ModerationType: string | ReputationBasedModerationType[] | JSONArray<ReputationBasedModerationType> | undefined[]; //ReputationBasedModerationType[];
+    ModerationType: string // | JSONArray<ReputationBasedModerationType> | undefined[]; //ReputationBasedModerationType[];
 
     // Logs
-    @Column()
-    ModerationChannel: string;
-}
-
-export class ResolvedGuildConfiguration extends GuildConfiguration {
-    constructor() {
-        super()
-    }
-
-    declare public CleanupType: CleanupType[];
-    declare ModerationType: ReputationBasedModerationType[];
+    @Column({ nullable: true })
+    ModerationChannel: string | null;
 }

@@ -19,9 +19,9 @@
     "node-fetch": "^2.6.7",
     "puppeteer": "^19.3.0",
     "reflect-metadata": "^0.1.13",
-    "sqlite3": "^5.1.2",
+    "sqlite3": "^5.0.2",
     "storage-async": "^1.0.1",
-    "typeorm": "^0.3.11",
+    "typeorm": "^0.3.4",
     "utilsfordiscordjs": "^1.1.8"
   },
   "scripts": {

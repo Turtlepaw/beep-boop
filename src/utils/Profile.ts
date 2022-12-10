@@ -28,6 +28,7 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
     }
 
     return {
+        //@ts-expect-error
         accentColor: user?.accentColor || ResolvedUser.hexAccentColor || Colors.Transparent,
         bio: user?.bio || "This user has no bio.",
         displayName: user?.displayName || ResolvedUser.username,
@@ -53,7 +54,7 @@ export function SetDisplayName(Id: string, displayName: string, client: Client) 
     });
 }
 
-export function SetAccentColor(Id: string, accentColor: ColorResolvable, client: Client) {
+export function SetAccentColor(Id: string, accentColor: string, client: Client) {
     return client.Storage.Profiles.Edit(Id, {
         accentColor
     });

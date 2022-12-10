@@ -6,7 +6,8 @@ import Button from "../lib/ButtonBuilder";
 import ms from "ms";
 import { StartAutoDeleteService, StopAutoDeleteService } from "../utils/AutoDelete";
 import { ChannelSelectMenu } from "../utils/components";
-import { ReputationBasedModerationType } from "src/models/Configuration";
+import { ReputationBasedModerationType } from "../models/Configuration";
+import { JSONArray } from "../utils/jsonArray";
 
 export interface RepMod {
     WarnChannel: string;
@@ -136,10 +137,10 @@ export default class SetupAppeals extends Button {
         client.Storage.Configuration.Create({
             ModerationChannel: WarnChannel,
             MaxReputation: Number(Ban),
-            ModerationType: [
+            ModerationType: new JSONArray().push([
                 ...(isBan ? [ReputationBasedModerationType.AsBan] : []),
                 ...(isWarn ? [ReputationBasedModerationType.AsWarn] : []),
-            ]
+            ]).toJSON()
         });
 
         await int.reply({

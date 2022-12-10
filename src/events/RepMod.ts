@@ -4,7 +4,8 @@ import Event from "../lib/Event";
 import { ResolveUser } from "../utils/Profile";
 import { RepMod } from "../buttons/RepMod";
 import { Colors, Embed } from "../configuration";
-import { ReputationBasedModerationType } from "src/models/Configuration";
+import { ReputationBasedModerationType } from "../models/Configuration";
+import { JSONArray } from "../utils/jsonArray";
 
 export default class RepModJoin extends Event {
     constructor() {
@@ -18,7 +19,7 @@ export default class RepModJoin extends Event {
         const Settings = await client.Storage.Configuration.forGuild(member.guild);
         if (Settings == null) return;
 
-        if (Settings.ModerationType.includes(ReputationBasedModerationType.AsWarn) && Profile.reputation < 1) {
+        if (JSONArray.isArray(Settings.ModerationType) && Settings.ModerationType.includes(ReputationBasedModerationType.AsWarn) && Profile.reputation < 1) {
             const WarnChannel = await member.guild.channels.fetch(Settings.ModerationChannel) as TextBasedChannel;
 
             WarnChannel.send({
@@ -47,7 +48,7 @@ export default class RepModJoin extends Event {
             });
         }
 
-        if ((
+        if (JSONArray.isArray(Settings.ModerationType) && (
             Settings.ModerationType.includes(ReputationBasedModerationType.AsBan) ||
             Settings.ModerationType.includes(ReputationBasedModerationType.AsKick)
         ) && Profile.reputation < Settings.MaxReputation) {

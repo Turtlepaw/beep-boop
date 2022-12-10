@@ -1,7 +1,7 @@
 import { Client, Guild } from "discord.js";
 import { KeyFileStorage } from "key-file-storage/dist/src/key-file-storage";
 import "reflect-metadata"
-import { CleanupType, GuildConfiguration, ResolvedGuildConfiguration as RGC } from "../models/Configuration";
+import { CleanupType, GuildConfiguration } from "../models/Configuration";
 import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { Profile } from "../models/Profile";
@@ -18,10 +18,11 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 
     isReputationModeration() {
-        return this.ReputationMod;
+        return this?.ReputationMod ?? false;
     }
 
     isCleanup(type: CleanupType) {
+        if (!JSONArray.isArray(this.CleanupType)) return;
         return this.CleanupType.includes(type);
     }
 
@@ -30,12 +31,13 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 }
 
+const entities = [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message];
 export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "database.sqlite",
     synchronize: true,
     logging: false,
-    entities: [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message],
+    entities: entities,
     migrations: [],
     subscribers: [],
 }).initialize();
@@ -43,11 +45,11 @@ export const AppDataSource = new DataSource({
 export async function InitializeProvider(client: Client) {
     client.storage = await AppDataSource;
     client.Storage = {
-        Configuration: new GuildConfigurationManager(client.storage, "config"),
-        Reminders: new StorageManager(client.storage, "reminders"),
-        Profiles: new StorageManager(client.storage, "profiles"),
-        CustomWebhooks: new StorageManager(client.storage, "custom_webhooks"),
-        Messages: new StorageManager(client.storage, "messages")
+        Configuration: new GuildConfigurationManager(client.storage, GuildConfiguration.name),
+        Reminders: new StorageManager(client.storage, Reminder.name),
+        Profiles: new StorageManager(client.storage, Profile.name),
+        CustomWebhooks: new StorageManager(client.storage, CustomWebhook.name),
+        Messages: new StorageManager(client.storage, Message.name)
     }
 }
 
@@ -60,7 +62,11 @@ export class StorageManager<repo = any> {
     }
 
     GetAll() {
-        return this.Repository.find();
+        try {
+            return this.Repository.find();
+        } catch (e) {
+            return [];
+        }
     }
 
     FindBy(options: FindOptionsWhere<repo> | FindOptionsWhere<repo>[]) {
@@ -138,15 +144,35 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             Id: guild.id
         });
 
+        const EmptyArray = JSON.stringify({
+            array: []
+        });
+
+        const EmptyResolvableArray = () => new JSONArray();
+
+        if (config == null) {
+            this.Create({
+                CleanupChannels: EmptyArray,
+                CleanupTimer: null,
+                CleanupType: EmptyArray,
+                Color: null,
+                Id: guild.id,
+                MaxReputation: 5,
+                ModerationChannel: null,
+                ModerationType: EmptyArray,
+                ReputationMod: false
+            })
+        }
+
         return new ResolvedGuildConfiguration({
-            CleanupChannels: config?.CleanupChannels == null ? [] : JSONArray.from(config?.CleanupChannels),
+            CleanupChannels: config?.CleanupChannels == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupChannels),
             CleanupTimer: config?.CleanupTimer || null,
-            CleanupType: config?.CleanupType == null ? [] : JSONArray.from(config?.CleanupType),
+            CleanupType: config?.CleanupType == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupType),
             Color: config?.Color || null,
-            Id: config.Id,
+            Id: config?.Id ?? guild.id,
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,
-            ModerationType: config?.ModerationType == null ? [] : JSONArray.from(config?.ModerationType),
+            ModerationType: config?.ModerationType == null ? EmptyResolvableArray() : JSONArray.from(config?.ModerationType),
             ReputationMod: config?.ReputationMod || false
         });
     }
