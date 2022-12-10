@@ -19,7 +19,8 @@ const nextConfig = {
         "/invite",
         "/bot"
       ),
-      ...MultipleLinks("https://www.craft.do/s/LDE5iUWkkRLnnA", "/privacy", "/tos", "/terms", "/terms-of-serivce", "/privacy-policy", "/policy")
+      ...MultipleLinks("https://www.craft.do/s/LDE5iUWkkRLnnA", "/privacy", "/tos", "/terms", "/terms-of-serivce", "/privacy-policy", "/policy"),
+      ...MultipleLinks("https://docs.trtle.xyz/pro/custom-bots", "/learn/custom-bots", "/learn/custom-bot", "/learn/custom")
     ]
   }
 }

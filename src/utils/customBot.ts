@@ -1,5 +1,5 @@
 import { ChannelType, Client, Events, PermissionFlagsBits, TextChannel } from "discord.js";
-import { DEFAULT_CLIENT_OPTIONS, HandleBotStart } from "..";
+import { DEFAULT_CLIENT_OPTIONS, HandleAnyBotStart, HandleBotStart } from "..";
 
 export async function StartCustomBot(botToken: string) {
     // Create Discord.js client
@@ -7,6 +7,7 @@ export async function StartCustomBot(botToken: string) {
 
     // Get everything ready...
     CustomClient.on(Events.ClientReady, async () => {
+        HandleAnyBotStart(CustomClient);
         const Guild = CustomClient.guilds.cache.first();
         const Channel = Guild.channels.cache.filter(e => e.type == ChannelType.GuildText && e.permissionsFor(Guild.members.me).has(PermissionFlagsBits.SendMessages)).first() as TextChannel;
         await Channel.send({

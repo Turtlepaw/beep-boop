@@ -57,25 +57,25 @@ const client = new Client(DEFAULT_CLIENT_OPTIONS);
 // Get everything ready...
 client.on(Events.ClientReady, HandleBotStart);
 
-export async function HandleAnyBotStart(ProvidedClient: Client) {
+export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true) {
     // Set client values
     console.log("Setting client values...".grey);
     await SetClientValues(ProvidedClient);
 
     // Deploy slash commands
-    console.log("Deploying commands...".grey);
-    Deploy(client).then(() => console.log("Registered all commands successfully.".green));
+    if (!isCustom) console.log("Deploying commands...".grey);
+    Deploy(ProvidedClient, !isCustom).then(() => isCustom ? console.log("Registered all commands successfully.".green) : null);
+
+    // Start command handler
+    console.log("Starting handler service...".grey);
+    StartService(ProvidedClient)
 }
 
 export async function HandleBotStart() {
     // Getting the bot ready
     console.log("Getting everything ready...".green);
 
-    await HandleAnyBotStart(client);
-
-    // Start command handler
-    console.log("Starting handler service...".grey);
-    StartService(client)
+    await HandleAnyBotStart(client, false);
 
     // Start auto delete service
     StartAutoDeleteService(client);

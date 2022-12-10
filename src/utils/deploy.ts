@@ -5,7 +5,7 @@ import CommandBuilder from "../lib/CommandBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { CLIENT_ID, TOKEN } from "../index";
 
-export async function Deploy(client: Client) {
+export async function Deploy(client: Client, logs = true) {
     const DeveloperCommands: any[] = [];
     const PublicCommands: any[] = [];
     const clientId = client.user.id;
@@ -42,11 +42,11 @@ export async function Deploy(client: Client) {
         }
     })
 
-    const rest = new REST({ version: '10' }).setToken(token);
+    const rest = new REST({ version: '10' }).setToken(client.token) //token);
 
     rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: DeveloperCommands })
         .then((data: any) => {
-            console.log(`Successfully registered ${data?.length} dev application commands.`)
+            if (logs) console.log(`Successfully registered ${data?.length} dev application commands.`)
             for (const CommandData of data) {
                 client.DetailedCommands.push({
                     Id: CommandData.id,
@@ -58,7 +58,7 @@ export async function Deploy(client: Client) {
 
     rest.put(Routes.applicationCommands(clientId), { body: PublicCommands })
         .then((data: any) => {
-            console.log(`Successfully registered ${data?.length} public application commands.`)
+            if (logs) console.log(`Successfully registered ${data?.length} public application commands.`)
             for (const CommandData of data) {
                 client.DetailedCommands.push({
                     Id: CommandData.id,
