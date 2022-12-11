@@ -64,7 +64,7 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
 
     // Deploy slash commands
     if (!isCustom) console.log("Deploying commands...".grey);
-    Deploy(ProvidedClient, !isCustom).then(() => isCustom ? console.log("Registered all commands successfully.".green) : null);
+    Deploy(ProvidedClient, !isCustom).then(() => !isCustom ? console.log("Registered all commands successfully.".green) : null);
 
     // Start command handler
     if (!isCustom) console.log("Starting handler service...".grey);

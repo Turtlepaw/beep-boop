@@ -20,6 +20,7 @@ export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.3";
 export const Website = "https://beep.trtle.xyz"
+export const WebsiteLink = (path: string) => Website + path;
 export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
     return `${Website}/dashboard/${GuildId}/transcription/${ChannelId}`
 }

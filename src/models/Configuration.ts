@@ -45,4 +45,7 @@ export class GuildConfiguration {
     // Logs
     @Column({ nullable: true })
     ModerationChannel: string | null;
+
+    @Column({ nullable: true, default: false })
+    InviteBlocker: boolean;
 }

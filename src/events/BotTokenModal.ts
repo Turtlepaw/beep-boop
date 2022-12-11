@@ -3,7 +3,7 @@ import { Filter } from "../utils/filter";
 import { Embed, Icons } from "../configuration";
 import Event from "../lib/Event";
 import { CustomBrandingModal } from "../buttons/ActivateBranding";
-import { CustomBotOptions, StartCustomBot } from "../utils/customBot";
+import { CustomBotOptions, HandleBot, StartCustomBot } from "../utils/customBot";
 import { ChannelSelectMenu } from "../utils/components";
 import { Verifiers } from "@airdot/verifiers";
 import { FriendlyInteractionError } from "../utils/error";
@@ -58,11 +58,12 @@ export default class AppealModal extends Event {
         const SelectedChannel = ChannelInteraction.channels.first();
         if (!Verifiers.Discord.TextChannel(SelectedChannel, false)) return FriendlyInteractionError(ChannelInteraction, "Invalid channel")
 
-        StartCustomBot(Fields.BotToken, client, {
+        await HandleBot({
             owner: ModalInteraction.user,
             guild: ModalInteraction.guild,
             client,
-            channel: SelectedChannel
+            channel: SelectedChannel,
+            botToken: Fields.BotToken
         });
 
         await ChannelInteraction.editReply({

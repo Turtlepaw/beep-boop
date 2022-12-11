@@ -40,11 +40,11 @@ export default class CustomBranding extends Button {
                             .setCustomId("SELECT_TYPE")
                             .setOptions(
                                 new SelectMenuOptionBuilder()
-                                    .setLabel("Pro")
-                                    .setValue(Subscriptions.Pro),
+                                    .setLabel("Basic")
+                                    .setValue(Subscriptions.Basic),
                                 new SelectMenuOptionBuilder()
-                                    .setLabel("Plus")
-                                    .setValue(Subscriptions.Plus)
+                                    .setLabel("Pro")
+                                    .setValue(Subscriptions.Pro)
                             )
                     )
             ]

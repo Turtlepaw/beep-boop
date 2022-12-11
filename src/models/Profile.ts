@@ -2,8 +2,8 @@ import { ColorResolvable, HexColorString } from 'discord.js';
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
 
 export enum Subscriptions {
-    Plus = "PRO_PLUS",
     Pro = "PRO",
+    Basic = "PRO_BASIC",
     None = "NONE"
 }
 

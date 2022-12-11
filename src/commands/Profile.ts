@@ -1,4 +1,4 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, Webhook, WebhookClient } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, InteractionType, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, User, UserContextMenuCommandInteraction, Webhook, WebhookClient } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Emojis, Icons } from "../configuration";
 import { Filter } from "../utils/filter";
@@ -9,6 +9,63 @@ import { CreateLinkButton } from "../utils/buttons";
 import { GuildInformation, MemberInformation } from "../utils/info";
 import { Endorse, FetchUser, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
+
+export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral: boolean = true, user?: User) {
+    if (user == null && interaction.isContextMenuCommand()) user = interaction.targetUser;
+    const { client } = interaction;
+    const profile = await ResolveUser(user.id, client);
+    const Badges = {
+        Pro: Icons.ProUser
+    }
+    const OwnedBadges = [
+        ...(profile.subscription == Subscriptions.Pro ? [Badges.Pro] : [])
+    ]
+
+    const Message = await interaction.reply({
+        ephemeral,
+        fetchReply: true,
+        embeds: [
+            new Embed()
+                .setTitle(`${profile.displayName}'s Profile`)
+                .setColor(profile.accentColor)
+                .setThumbnail(user.avatarURL())
+                .addFields([{
+                    name: `About me`,
+                    value: profile.bio
+                }, {
+                    name: `Reputation (endorsements)`,
+                    value: profile.reputation.toString()
+                }, {
+                    name: "Badges",
+                    value: `${OwnedBadges.length <= 0 ? "None." : OwnedBadges.join(" ")}`
+                }])
+        ],
+        components: [
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setEmoji(Emojis.Help)
+                        .setCustomId("INFO")
+                        .setStyle(ButtonStyle.Secondary)
+                )
+        ]
+    });
+
+    const Collector = Message.createMessageComponentCollector({
+        time: 0,
+        max: 0,
+        componentType: ComponentType.Button
+    });
+
+    Collector.on('collect', async button => {
+        if (button.customId == "INFO") {
+            await button.reply({
+                ephemeral: true,
+                content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, in some communities, you're required to have a certain amount of endorsements to join. When you help people you might get endorsed, and you can also endorse other users that you know.`
+            });
+        }
+    });
+}
 
 export default class Send extends Command {
     constructor() {
@@ -62,58 +119,7 @@ export default class Send extends Command {
         const ephemeral = interaction.options.getBoolean("hidden", false) || true;
 
         if (Subcommand == Subcommands.View) {
-            const profile = await ResolveUser(user.id, client);
-            const Badges = {
-                Pro: Icons.ProUser
-            }
-            const OwnedBadges = [
-                ...(profile.subscription == Subscriptions.Pro ? [Badges.Pro] : [])
-            ]
-
-            const Message = await interaction.reply({
-                ephemeral,
-                fetchReply: true,
-                embeds: [
-                    new Embed()
-                        .setTitle(`${profile.displayName}'s Profile`)
-                        .setColor(profile.accentColor)
-                        .setThumbnail(user.avatarURL())
-                        .addFields([{
-                            name: `About me`,
-                            value: profile.bio
-                        }, {
-                            name: `Reputation (endorsements)`,
-                            value: profile.reputation.toString()
-                        }, {
-                            name: "Badges",
-                            value: `${OwnedBadges.length <= 0 ? "None." : OwnedBadges.join(" ")}`
-                        }])
-                ],
-                components: [
-                    new ActionRowBuilder<ButtonBuilder>()
-                        .addComponents(
-                            new ButtonBuilder()
-                                .setEmoji(Emojis.Help)
-                                .setCustomId("INFO")
-                                .setStyle(ButtonStyle.Secondary)
-                        )
-                ]
-            });
-
-            const Collector = Message.createMessageComponentCollector({
-                time: 0,
-                max: 0,
-                componentType: ComponentType.Button
-            });
-
-            Collector.on('collect', async button => {
-                if (button.customId == "INFO") {
-                    await button.reply({
-                        ephemeral: true,
-                        content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, in some communities, you're required to have a certain amount of endorsements to join. When you help people you might get endorsed, and you can also endorse other users that you know.`
-                    });
-                }
-            });
+            ViewProfile(interaction, ephemeral, user);
         } else if (Subcommand == Subcommands.Endorse) {
             if (user.id == interaction.user.id) return FriendlyInteractionError(interaction, "You can't endorse yourself.")
             Endorse(user.id, client);

@@ -14,19 +14,24 @@ export default class InviteBlocker extends Event {
 
     async ExecuteEvent(client: Client, Message: GuildMessage) {
         if (Message.guild == null) return;
-        const Settings: ModeratorSettings = client.storage[`${Message.guild.id}_mod_settings`];
-        const isInviteLink = await Verifiers.InviteLink(Message.content);
-        if (Settings?.BlockInvites == true && isInviteLink) {
-            Message.delete();
-            Message.author.send({
-                content: `${Icons.Link} Invite links aren't allowed in this community.`
-            });
+        //const Settings: ModeratorSettings = client.storage[`${Message.guild.id}_mod_settings`];
+        const Configuration = await client.Storage.Configuration.forGuild(Message.guild);
+        try {
+            const isInviteLink = await Verifiers.InviteLink(Message.content);
+            if (Configuration?.InviteBlocker == true && isInviteLink) {
+                Message.delete();
+                Message.author.send({
+                    content: `${Icons.Link} Invite links aren't allowed in this community.`
+                });
 
-            /*const Messages = await Message.channel.messages.fetch();
-            Messages.forEach(async (message: GuildMessage) => {
-                const InviteLink = Verifiers.InviteLink(message.content);
-                if (InviteLink) message.delete()
-            })*/
+                /*const Messages = await Message.channel.messages.fetch();
+                Messages.forEach(async (message: GuildMessage) => {
+                    const InviteLink = Verifiers.InviteLink(message.content);
+                    if (InviteLink) message.delete()
+                })*/
+            }
+        } catch (e) {
+
         }
     }
 }

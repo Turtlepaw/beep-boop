@@ -16,7 +16,7 @@ export default class Send extends Command {
             CanaryCommand: false,
             Description: "Manage your pro subscription.",
             GuildOnly: false,
-            Name: "pro",
+            Name: "subscription",
             RequiredPermissions: [],
             SomePermissions: [],
             Category: Categories.Images,
