@@ -7,7 +7,7 @@ export function GenerateGiftCode() {
     return `${generatePassword(4)}-${generatePassword(4)}-${generatePassword(4)}`
 }
 
-export async function CreateGift(from: User, sub: Subscriptions = Subscriptions.Pro) {
+export async function CreateGift(from: User, sub: Subscriptions) {
     const { client } = from;
     const GiftCode = GenerateGiftCode();
     const Expires = new Date();

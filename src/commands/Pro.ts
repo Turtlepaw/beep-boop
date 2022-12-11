@@ -8,6 +8,7 @@ import { Verifiers } from "../utils/verify";
 import { CreateLinkButton } from "../utils/buttons";
 import { ResolveUser } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
+import { GetSubscriptionName } from "../buttons/CreateGift";
 
 export default class Send extends Command {
     constructor() {
@@ -34,6 +35,9 @@ export default class Send extends Command {
                             name: `${Icons.Clock} Expires`,
                             value: time(ExpiresIn, TimestampStyles.RelativeTime)
                         }, {
+                            name: `${Icons.Discover} Subscription Tier`,
+                            value: `${GetSubscriptionName(Profile.subscription)}`
+                        }, {
                             name: `${Icons.Info} Pro is in early access`,
                             value: `Pro is currently in early access, provide feedback in our [support server](${SupportServerInvite}).`
                         }])
@@ -47,6 +51,14 @@ export default class Send extends Command {
                                 .setLabel("Custom Branding")
                                 .setCustomId("CUSTOM_BRANDING")
                                 .setStyle(ButtonStyle.Success),
+                            new ButtonBuilder()
+                                .setLabel("Redeem Code")
+                                .setStyle(ButtonStyle.Primary)
+                                .setCustomId("REDEEM_CODE"),
+                            new ButtonBuilder()
+                                .setLabel("Learn More")
+                                .setStyle(ButtonStyle.Link)
+                                .setURL("https://bop.trtle.xyz/pro"),
                             new ButtonBuilder()
                                 .setLabel("Manage Subscription")
                                 .setStyle(ButtonStyle.Link)

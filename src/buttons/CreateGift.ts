@@ -12,6 +12,9 @@ import { CreateLinkButton } from "../utils/buttons";
 import { CreateGift } from "../utils/Gift";
 import { Subscriptions } from "../models/Profile";
 
+export function GetSubscriptionName(name: Subscriptions | string) {
+    return Object.entries(Subscriptions).find(e => e[1] == name)[0]
+}
 export const CustomBrandingModal = "CUSTOM_BRANDING_MODAL";
 export default class CustomBranding extends Button {
     constructor() {
@@ -52,10 +55,10 @@ export default class CustomBranding extends Button {
             componentType: ComponentType.StringSelect
         });
 
-        const Gift = await CreateGift(interaction.user, Subscriptions[Type.values[0]])
+        const Gift = await CreateGift(interaction.user, Subscriptions[GetSubscriptionName(Type.values[0])])
         await Type.update({
             components: [],
-            content: `${Object.entries(Subscriptions).find(e => e[1] == Type.values[0])[0]} Gift Created: ${inlineCode(Gift.code)} (expires ${time(Gift.expires, TimestampStyles.RelativeTime)})`
+            content: `${GetSubscriptionName(Type.values[0])} Gift Created: ${inlineCode(Gift.code)} (expires ${time(Gift.expires, TimestampStyles.RelativeTime)})`
         });
     }
 }

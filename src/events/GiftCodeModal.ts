@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction, time, TimestampStyles } from "discord.js";
 import { Filter } from "../utils/filter";
 import { Embed } from "../configuration";
 import Event from "../lib/Event";
@@ -7,6 +7,7 @@ import { RedeemGiftAndExpire, ResolveGift } from "../utils/Gift";
 import { FriendlyInteractionError } from "../utils/error";
 import { SetSubscription } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
+import { GetSubscriptionName } from "../buttons/CreateGift";
 
 export default class AppealModal extends Event {
     constructor() {
@@ -29,14 +30,24 @@ export default class AppealModal extends Event {
             return;
         };
 
+        if (Gift.Redeemed) {
+            await FriendlyInteractionError(ModalInteraction, "Seems like someone already claimed this gift!")
+            return;
+        }
+
+        if (Gift.Expired) {
+            await FriendlyInteractionError(ModalInteraction, `That gift expired ${time(Gift.Expires, TimestampStyles.RelativeTime)}`)
+            return;
+        }
+
         const expires = new Date();
         expires.setMonth(expires.getMonth() + 2)
-        SetSubscription(ModalInteraction.user.id, Subscriptions.Pro, expires, client);
+        SetSubscription(ModalInteraction.user.id, Gift.Type, expires, client);
         RedeemGiftAndExpire(Fields.Code, client);
 
         await ModalInteraction.reply({
             ephemeral: true,
-            content: "Subscription activated."
+            content: `🎉 ${GetSubscriptionName(Gift.Type)} subscription from <@${Gift.From}> activated!`
         });
     }
 }
