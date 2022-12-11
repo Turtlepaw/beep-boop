@@ -281,7 +281,7 @@ export async function StartAutocompleteService(client: Client) {
     }
 }
 
-export async function StartService(client: Client) {
+export async function StartService(client: Client, logs = false) {
     try {
         //Handle command interactions
         client.on(ClientEvents.InteractionCreate, async (interaction) => {

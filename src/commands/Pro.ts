@@ -1,6 +1,6 @@
 import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandUserOption, time, TimestampStyles, Webhook, WebhookClient } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Colors, Embed, Emojis } from "../configuration";
+import { Colors, Embed, Emojis, Icons, SupportServerInvite } from "../configuration";
 import { Filter } from "../utils/filter";
 import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
@@ -31,10 +31,12 @@ export default class Send extends Command {
                 embeds: [
                     new Embed()
                         .addFields([{
-                            name: "Expires",
+                            name: `${Icons.Clock} Expires`,
                             value: time(ExpiresIn, TimestampStyles.RelativeTime)
+                        }, {
+                            name: `${Icons.Info} Pro is in early access`,
+                            value: `Pro is currently in early access, provide feedback in our [support server](${SupportServerInvite}).`
                         }])
-                        .setColor(Colors.SuccessButton)
                         .setTitle("Your Subscription")
                 ],
                 ephemeral: true,
@@ -42,7 +44,7 @@ export default class Send extends Command {
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(
                             new ButtonBuilder()
-                                .setLabel("Activate Custom Branding")
+                                .setLabel("Custom Branding")
                                 .setCustomId("CUSTOM_BRANDING")
                                 .setStyle(ButtonStyle.Success),
                             new ButtonBuilder()

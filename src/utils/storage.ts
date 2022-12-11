@@ -150,6 +150,7 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             array: []
         });
         this.CreatedGuilds.push(guild.id);
+        if (this.CreatedGuilds.includes(guild.id)) return;
         this.Create({
             CleanupChannels: EmptyArray,
             CleanupTimer: null,

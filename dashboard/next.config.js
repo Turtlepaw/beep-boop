@@ -20,6 +20,7 @@ const nextConfig = {
         "/bot"
       ),
       ...MultipleLinks("https://www.craft.do/s/LDE5iUWkkRLnnA", "/privacy", "/tos", "/terms", "/terms-of-serivce", "/privacy-policy", "/policy"),
+      ...MultipleLinks("https://www.craft.do/s/JJVExvuEq3ftaw", "/feature-tracker", "/upcoming", "/to-do", "/planned-changes", "/roadmap"),
       ...MultipleLinks("https://docs.trtle.xyz/pro/custom-bots", "/learn/custom-bots", "/learn/custom-bot", "/learn/custom")
     ]
   }

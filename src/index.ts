@@ -59,7 +59,7 @@ client.on(Events.ClientReady, HandleBotStart);
 
 export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true) {
     // Set client values
-    console.log("Setting client values...".grey);
+    if (!isCustom) console.log("Setting client values...".grey);
     await SetClientValues(ProvidedClient);
 
     // Deploy slash commands
@@ -67,8 +67,14 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
     Deploy(ProvidedClient, !isCustom).then(() => isCustom ? console.log("Registered all commands successfully.".green) : null);
 
     // Start command handler
-    console.log("Starting handler service...".grey);
+    if (!isCustom) console.log("Starting handler service...".grey);
     StartService(ProvidedClient)
+
+    // Start auto delete service
+    StartAutoDeleteService(ProvidedClient);
+
+    // Refresh reminders
+    Refresh(ProvidedClient);
 }
 
 export async function HandleBotStart() {
@@ -76,12 +82,6 @@ export async function HandleBotStart() {
     console.log("Getting everything ready...".green);
 
     await HandleAnyBotStart(client, false);
-
-    // Start auto delete service
-    StartAutoDeleteService(client);
-
-    // Refresh reminders
-    Refresh(client);
 
     // Start Custom Bots
     StartCustomBots(client);

@@ -1,6 +1,7 @@
-import { APIGuildMember, ButtonInteraction, GuildMember, MessageComponentInteraction } from "discord.js";
+import { APIGuildMember, ButtonInteraction, GuildMember, MessageComponentInteraction, CollectorFilter, Interaction } from "discord.js";
 
-export function Filter(member: (APIGuildMember | GuildMember), ...customIds: (string | boolean)[]) {
+export type InteractionFilter = (interaction: MessageComponentInteraction) => boolean;
+export function Filter(member: (APIGuildMember | GuildMember), ...customIds: (string | boolean)[]): InteractionFilter {
     let debug = false;
     if (customIds[0] == true) debug = true;
     return (Interaction: MessageComponentInteraction) => {

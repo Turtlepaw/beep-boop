@@ -1,14 +1,16 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
+import { ActionRow, ActionRowBuilder, ActivityType, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
 import { SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
+import { Embed, Emojis, GenerateTranscriptionURL, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../utils/Id";
 import { Ticket } from "./CreateTicket";
 import { Filter } from "../utils/filter";
 import { CreateLinkButton } from "../utils/buttons";
+import { ChannelSelectMenu } from "../utils/components";
+import { customClients, StartCustomBot } from "../utils/customBot";
 
 export const CustomBrandingModal = "CUSTOM_BRANDING_MODAL";
 export default class CustomBranding extends Button {
@@ -22,43 +24,217 @@ export default class CustomBranding extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const Message = await interaction.reply({
-            ephemeral: true,
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(
-                        new ButtonBuilder()
-                            .setLabel("Continue")
-                            .setStyle(ButtonStyle.Danger)
-                            .setCustomId("CONTINUE")
-                    )
-            ],
-            fetchReply: true,
-            content: "Before you continue, make sure you've got your custom bot ready, if you don't know how to do that, check out the [guide](https://bop.trtle.xyz/learn/custom-bots)."
+        const CurrentBot = await client.Storage.CustomBots.Get({
+            Owner: interaction.user.id
         });
 
-        const Interaction = await Message.awaitMessageComponent({
-            time: 0,
-            componentType: ComponentType.Button
-        });
+        if (CurrentBot != null) {
+            const BotUser = await interaction.client.users.fetch(CurrentBot.BotId);
+            const CurrentChannel = CurrentBot.LoggingChannel != null ? await interaction.guild.channels.fetch(CurrentBot.LoggingChannel) : "None.";
+            enum Id {
+                ChannelSelector = "LOG_CHANNEL_SELECTOR",
+                ResetBot = "RESET_BOT_DANGER",
+                EditStatus = "EDIT_CUSTOM_STATUS",
+                EditStatusModal = "EDIT_CUSTOM_STATUS_MODAL",
+                RestartBot = "RESTART_CUSTOM_BOT"
+            }
 
-        await Interaction.showModal(
-            new ModalBuilder()
-                .setTitle("Configuring Custom Branding")
-                .setCustomId(CustomBrandingModal)
-                .setComponents(
-                    new ActionRowBuilder<TextInputBuilder>()
-                        .addComponents(
-                            new TextInputBuilder()
-                                .setCustomId("TOKEN")
-                                .setLabel("Bot Token")
-                                .setRequired(true)
-                                .setStyle(TextInputStyle.Short)
-                                .setPlaceholder("NzkyNzE1NDU0MTk2MDg4ODQy.X-hvzA.Ovy4MCQywSkoMRRclStW4xAYK7I")
-                                .setMinLength(59)
-                                .setMaxLength(72)
+            const Components = ChannelSelectMenu(Id.ChannelSelector, interaction.guild.channels.cache, (component) =>
+                component.setPlaceholder("Logging Channel")
+            );
+
+            const Message = await interaction.reply({
+                ephemeral: true,
+                fetchReply: true,
+                embeds: [
+                    new Embed()
+                        .setTitle("Configuring your Custom Bot")
+                        .addFields([{
+                            name: "Custom Bot Name",
+                            value: BotUser.username || "Unknown."
+                        }, {
+                            name: "Configuration",
+                            value: `• Logging Channel: ${CurrentChannel.toString()}`
+                        }])
+                ],
+                components: [
+                    Components,
+                    new ActionRowBuilder<ButtonBuilder>()
+                        .setComponents(
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Link)
+                                .setURL(`https://discord.com/developers/applications/${CurrentBot.BotId}`)
+                                .setLabel("Configure Bot"),
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Primary)
+                                .setLabel("Edit Status")
+                                .setCustomId(Id.EditStatus),
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Secondary)
+                                .setLabel("Restart Bot")
+                                .setCustomId(Id.RestartBot),
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Danger)
+                                .setLabel("Delete Bot")
+                                .setCustomId(Id.ResetBot)
                         )
-                )
-        );
+                ]
+            });
+
+            const Collector = Message.createMessageComponentCollector({
+                filter: Filter(interaction.member, Id.ChannelSelector, Id.ResetBot, Id.EditStatus, Id.RestartBot),
+                time: 0
+            });
+
+            Collector.on("collect", async Interaction => {
+                if (Interaction.isChannelSelectMenu() && Interaction.customId == Id.ChannelSelector) {
+                    const SelectedChannel = Interaction.channels.first();
+
+                    await client.Storage.CustomBots.Edit({
+                        CustomId: CurrentBot.CustomId
+                    }, {
+                        LoggingChannel: SelectedChannel.id
+                    });
+
+                    await Interaction.reply({
+                        ephemeral: true,
+                        content: `${Icons.Discover} Saved your configuration.`
+                    })
+                } else if (Interaction.isButton() && Interaction.customId == Id.ResetBot) {
+                    const ComponentMessage = await Interaction.reply({
+                        content: `${Icons.Zap} This **will not delete your bot from Discord,** it will only remove your bot from Beep Boop, after you remove it, it will go offline.`,
+                        components: [
+                            new ActionRowBuilder<ButtonBuilder>()
+                                .setComponents(
+                                    new ButtonBuilder()
+                                        .setCustomId("DELETE_ANYWAY")
+                                        .setLabel("Delete it!")
+                                        .setStyle(ButtonStyle.Danger)
+                                )
+                        ],
+                        ephemeral: true,
+                        fetchReply: true
+                    });
+
+                    const DeleteComponent = await ComponentMessage.awaitMessageComponent({
+                        time: 0
+                    });
+
+                    await client.Storage.CustomBots.Delete({
+                        CustomId: CurrentBot.CustomId
+                    });
+                } else if (Interaction.isButton() && Interaction.customId == Id.EditStatus) {
+                    enum FieldId {
+                        Text = "STATUS_TEXT",
+                        Type = "STATUS_TYPE "
+                    }
+                    const TextComponent = new TextInputBuilder()
+                        .setLabel("Status Text")
+                        .setCustomId(FieldId.Text)
+                        .setMaxLength(128)
+                        .setMinLength(1)
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                        .setPlaceholder("discord.gg");
+                    const TypeComponent = new TextInputBuilder()
+                        .setLabel("Status Type")
+                        .setCustomId(FieldId.Type)
+                        .setMaxLength(128)
+                        .setMinLength(1)
+                        .setRequired(true)
+                        .setStyle(TextInputStyle.Short)
+                        .setPlaceholder([ActivityType.Competing, ActivityType.Listening, ActivityType.Playing, ActivityType.Watching].map(e => ActivityType[e]).join(" | "));
+
+                    if (Verifiers.String(CurrentBot.CustomStatus)) TextComponent.setValue(CurrentBot.CustomStatus);
+                    if (CurrentBot.CustomStatusType != null) TypeComponent.setValue(ActivityType[CurrentBot.CustomStatusType]);
+
+                    await Interaction.showModal(
+                        new ModalBuilder()
+                            .setTitle("Editing Custom Status")
+                            .setCustomId(Id.EditStatusModal)
+                            .setComponents(
+                                new ActionRowBuilder<TextInputBuilder>()
+                                    .setComponents(
+                                        TextComponent,
+
+                                    ),
+                                new ActionRowBuilder<TextInputBuilder>()
+                                    .setComponents(
+                                        TypeComponent
+                                    )
+                            )
+                    )
+
+                    const ModalInteraction = await Interaction.awaitModalSubmit({
+                        time: 0
+                    });
+
+                    const Fields = {
+                        Text: ModalInteraction.fields.getTextInputValue(FieldId.Text),
+                        Type: ModalInteraction.fields.getTextInputValue(FieldId.Type)
+                    }
+
+                    await client.Storage.CustomBots.Edit({
+                        CustomId: CurrentBot.CustomId
+                    }, {
+                        CustomStatus: Fields.Text,
+                        CustomStatusType: ActivityType[Fields.Type]
+                    });
+
+                    await ModalInteraction.reply({
+                        ephemeral: true,
+                        content: `${Icons.Discover} Saved your configuration.`
+                    });
+                } else if (Interaction.isButton() && Interaction.customId == Id.RestartBot) {
+                    const CustomClient: Client = customClients[CurrentBot.BotId];
+                    CustomClient.destroy();
+                    StartCustomBot(CurrentBot.Token, client);
+
+                    await Interaction.reply({
+                        ephemeral: true,
+                        content: `${Icons.Discover} Restarted your bot, it should come online in a few minutes...`
+                    });
+                }
+            })
+        } else {
+            const Message = await interaction.reply({
+                ephemeral: true,
+                components: [
+                    new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setLabel("Continue")
+                                .setStyle(ButtonStyle.Danger)
+                                .setCustomId("CONTINUE")
+                        )
+                ],
+                fetchReply: true,
+                content: "Before you continue, make sure you've got your custom bot ready, if you don't know how to do that, check out the [guide](https://bop.trtle.xyz/learn/custom-bots)."
+            });
+
+            const Interaction = await Message.awaitMessageComponent({
+                time: 0,
+                componentType: ComponentType.Button
+            });
+
+            await Interaction.showModal(
+                new ModalBuilder()
+                    .setTitle("Configuring Custom Branding")
+                    .setCustomId(CustomBrandingModal)
+                    .setComponents(
+                        new ActionRowBuilder<TextInputBuilder>()
+                            .addComponents(
+                                new TextInputBuilder()
+                                    .setCustomId("TOKEN")
+                                    .setLabel("Bot Token")
+                                    .setRequired(true)
+                                    .setStyle(TextInputStyle.Short)
+                                    .setPlaceholder("NzkyNzE1NDU0MTk2MDg4ODQy.X-hvzA.Ovy4MCQywSkoMRRclStW4xAYK7I")
+                                    .setMinLength(59)
+                                    .setMaxLength(72)
+                            )
+                    )
+            );
+        }
     }
 }

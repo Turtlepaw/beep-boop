@@ -1,12 +1,13 @@
 import { Client, User } from "discord.js";
-import { Gift } from "src/models/Gift";
+import { Gift } from "../models/Gift";
+import { Subscriptions } from "../models/Profile";
 import { generateId, generatePassword } from "./Id";
 
 export function GenerateGiftCode() {
     return `${generatePassword(4)}-${generatePassword(4)}-${generatePassword(4)}`
 }
 
-export async function CreateGift(from: User) {
+export async function CreateGift(from: User, sub: Subscriptions = Subscriptions.Pro) {
     const { client } = from;
     const GiftCode = GenerateGiftCode();
     const Expires = new Date();
@@ -17,7 +18,8 @@ export async function CreateGift(from: User) {
         GiftCode,
         Expired: false,
         RedeemedAt: null,
-        Expires: Expires.toDateString()
+        Expires: Expires.toDateString(),
+        Type: sub
     });
 
     return {
@@ -51,6 +53,7 @@ export interface ResolvedGift {
     Expired: boolean;
     Expires: Date;
     RedeemedAt: Date;
+    Type: Subscriptions;
 }
 
 export async function ResolveGift(code: string, client: Client): Promise<ResolvedGift> {
@@ -63,6 +66,7 @@ export async function ResolveGift(code: string, client: Client): Promise<Resolve
         RedeemedAt: new Date(Gift?.RedeemedAt),
         Expires: new Date(Gift?.Expires),
         Expired: Gift?.Expired ?? (new Date(Gift?.Expires) < new Date()),
-        gift: Gift
+        gift: Gift,
+        Type: Gift?.Type || Subscriptions.Pro
     }
 }

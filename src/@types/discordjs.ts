@@ -36,5 +36,6 @@ declare module 'discord.js' {
         Storage: StorageManagers;
         Errors: ErrorManager;
         LegacyStorage: KeyFileStorage;
+        CustomIcons: boolean;
     }
 }

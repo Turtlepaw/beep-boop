@@ -95,24 +95,25 @@ export function GetTextInput(Id: string, interaction: ModalSubmitInteraction) {
     return interaction.fields.fields.get(Id)?.value;
 }
 
-export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels: Collection<string, GuildBasedChannel>) {
-    const channels = Array.from(Channels.filter(e => e.type == ChannelType.GuildText).values()) as TextChannel[];
-    channels.length = 25
+export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels: Collection<string, GuildBasedChannel>, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => any) {
+    const Component = new ChannelSelectMenuBuilder()
+        .setCustomId(CustomId)
+        /*.addOptions(
+            channels.map(e =>
+                new SelectMenuOptionBuilder()
+                    .setLabel(e.name)
+                    .setValue(e.id)
+                    .setEmoji(Emojis.TextChannel)
+            )
+        )*/
+        .setChannelTypes(
+            ChannelType.GuildText
+        )
+
+    if (Configuration != null) Configuration(Component);
     return new ActionRowBuilder<ChannelSelectMenuBuilder>()
         .addComponents(
-            new ChannelSelectMenuBuilder()
-                .setCustomId(CustomId)
-                /*.addOptions(
-                    channels.map(e =>
-                        new SelectMenuOptionBuilder()
-                            .setLabel(e.name)
-                            .setValue(e.id)
-                            .setEmoji(Emojis.TextChannel)
-                    )
-                )*/
-                .setChannelTypes(
-                    ChannelType.GuildText
-                )
+            Component
         )
 }
 

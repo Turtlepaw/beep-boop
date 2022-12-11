@@ -103,8 +103,22 @@ dist
 # TernJS port file
 .tern-port
 
-.env
-storage
-ratelimits.json
-*config.json
+# SQLite databases
 *.sqlite
+
+# Custom ignores
+
+# .env file
+.env
+
+# legacy storage
+storage
+
+# ratelimits storage
+ratelimits.json
+
+# configuration files
+*config.json
+
+# main sqlite database file
+database.sqlite

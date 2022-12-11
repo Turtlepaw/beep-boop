@@ -1,4 +1,4 @@
-import { ActivityOptions, ActivityType, EmbedBuilder } from "discord.js";
+import { ActivityOptions, ActivityType, Client, EmbedBuilder } from "discord.js";
 import { Logging } from "./@types/config";
 
 //export const token = process.env.TOKEN;
@@ -99,6 +99,49 @@ export enum Icons {
     Disabled = "<:Disabled:1049904650989600849>",
     ProUser = "<:ProUser:1051214860119191634>"
 }
+
+export enum DefaultIcons {
+    Clock = "⏱️",
+    MemberAdd = "➕",
+    Flag = "🚩",
+    FlagBrilliance = "💡 (brilliance) ",
+    FlagBravery = "🪨 (bravery) ",
+    FlagBalance = "⚖️ (balance) ",
+    FlagVerifiedBot = "✔️ (verified bot) ",
+    FlagActiveDeveloper = "💻 (active developer) ",
+    FlagServerOwner = "👑 (server owner) ",
+    FlagBot = "🤖 (bot) ",
+    FlagOffline = "🔴",
+    FlagOnline = "🟢",
+    Tag = "🏷️",
+    Badge = "🎖️",
+    Globe = "🌐",
+    Image = "🖼️",
+    Emoji = "😀",
+    Channel = "#️⃣",
+    Folder = "📂",
+    Voice = "🎙️",
+    Color = "🎨",
+    Link = "🔗",
+    Error = "❌",
+    Success = "✅",
+    Members = "👤",
+    Info = "ℹ️",
+    Shield = "🛡️",
+    Lock = "🔒",
+    Unlock = "🔓",
+    Configure = "⚙️",
+    Discover = "🧭",
+    AdvancedConfiguration = "⚙️",
+    Gift = "🎁",
+    Zap = "⚡",
+    Trash = "🗑️",
+    Enabled = "✔️",
+    Disabled = "❌",
+    ProUser = "⚡ (pro user) "
+}
+
+export const ResolvableIcons = (client: Client) => Icons;
 
 export enum Colors {
     Transparent = "#2F3136",
