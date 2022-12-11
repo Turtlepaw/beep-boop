@@ -13,6 +13,7 @@ const nextConfig = {
   async redirects() {
     return [
       ...MultipleLinks("https://discord.gg/Rgxv5M6sq9", "/support", "/discord"),
+      ...MultipleLinks("/pricing", "/pro", "/pro-plus", "/premium", "/learn/pro"),
       ...MultipleLinks(
         "https://discord.com/oauth2/authorize?client_id=1028785995337977856&permissions=1504178465975&scope=bot",
         "/add",
@@ -21,7 +22,8 @@ const nextConfig = {
       ),
       ...MultipleLinks("https://www.craft.do/s/LDE5iUWkkRLnnA", "/privacy", "/tos", "/terms", "/terms-of-serivce", "/privacy-policy", "/policy"),
       ...MultipleLinks("https://www.craft.do/s/JJVExvuEq3ftaw", "/feature-tracker", "/upcoming", "/to-do", "/planned-changes", "/roadmap"),
-      ...MultipleLinks("https://docs.trtle.xyz/pro/custom-bots", "/learn/custom-bots", "/learn/custom-bot", "/learn/custom")
+      ...MultipleLinks("https://docs.trtle.xyz/pro/custom-bots", "/learn/custom-bots", "/learn/custom-bot", "/learn/custom"),
+      ...MultipleLinks("https://docs.trtle.xyz/tickets/about", "/learn/tickets", "/learn/ticket", "/learn/private-tickets")
     ]
   }
 }

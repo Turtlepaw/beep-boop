@@ -53,6 +53,9 @@ export function Menu(props: MenuProps) {
                         <Link href="/dashboard">
                             Dashboard
                         </Link>
+                        <Link href="/pricing">
+                            Pricing
+                        </Link>
                     </div>
                     <div className="!float-right !inline">
                         {

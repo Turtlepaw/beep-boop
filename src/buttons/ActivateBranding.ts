@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, ActivityType, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
+import { FriendlyInteractionError, SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis, GenerateTranscriptionURL, Icons } from "../configuration";
@@ -11,6 +11,8 @@ import { Filter } from "../utils/filter";
 import { CreateLinkButton } from "../utils/buttons";
 import { ChannelSelectMenu } from "../utils/components";
 import { customClients, StartCustomBot } from "../utils/customBot";
+import { ResolveUser } from "../utils/Profile";
+import { Subscriptions } from "../models/Profile";
 
 export const CustomBrandingModal = "CUSTOM_BRANDING_MODAL";
 export default class CustomBranding extends Button {
@@ -24,6 +26,8 @@ export default class CustomBranding extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        const Profile = await ResolveUser(interaction.user.id, client);
+        if (Profile.subscription == Subscriptions.None) return FriendlyInteractionError(interaction, "You don't have an active subscription on your account.")
         const CurrentBot = await client.Storage.CustomBots.Get({
             Owner: interaction.user.id
         });
@@ -36,13 +40,15 @@ export default class CustomBranding extends Button {
                 ResetBot = "RESET_BOT_DANGER",
                 EditStatus = "EDIT_CUSTOM_STATUS",
                 EditStatusModal = "EDIT_CUSTOM_STATUS_MODAL",
-                RestartBot = "RESTART_CUSTOM_BOT"
+                RestartBot = "RESTART_CUSTOM_BOT",
+                NewBot = "NEW_BOT"
             }
 
             const Components = ChannelSelectMenu(Id.ChannelSelector, interaction.guild.channels.cache, (component) =>
                 component.setPlaceholder("Logging Channel")
             );
 
+            const isAllowedMore = Profile.subscription == Subscriptions.Plus;
             const Message = await interaction.reply({
                 ephemeral: true,
                 fetchReply: true,
@@ -76,7 +82,12 @@ export default class CustomBranding extends Button {
                             new ButtonBuilder()
                                 .setStyle(ButtonStyle.Danger)
                                 .setLabel("Delete Bot")
-                                .setCustomId(Id.ResetBot)
+                                .setCustomId(Id.ResetBot),
+                            new ButtonBuilder()
+                                .setStyle(ButtonStyle.Success)
+                                .setLabel(`New Bot${isAllowedMore ? "" : " (not included in your subscription)"}`)
+                                .setCustomId(Id.NewBot)
+                                .setDisabled(!isAllowedMore)
                         )
                 ]
             });
@@ -100,6 +111,7 @@ export default class CustomBranding extends Button {
                         ephemeral: true,
                         content: `${Icons.Discover} Saved your configuration.`
                     })
+                } else if (Interaction.isButton() && Interaction.customId == Id.ResetBot) {
                 } else if (Interaction.isButton() && Interaction.customId == Id.ResetBot) {
                     const ComponentMessage = await Interaction.reply({
                         content: `${Icons.Zap} This **will not delete your bot from Discord,** it will only remove your bot from Beep Boop, after you remove it, it will go offline.`,
