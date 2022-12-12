@@ -43,7 +43,7 @@ export default function Home(props: DefaultProps) {
                 </div>
                 <h1 className="text-light text-center font-bold text-2xl pt-5 pb-1">Teirs</h1>
                 <div className="bg-[#5865f2] rounded-lg py-8 px-8 h- 40 w-96 my-5">
-                    <h1 className="text-2xl font-bold">Plus</h1>
+                    <h1 className="text-2xl font-bold">Pro</h1>
                     <p className="font-semibold pt-2 pb-2">The subscription with a little bit more of everything</p>
                     <Feature included>5 Custom Bots</Feature>
                     <Feature included>Everything in Pro</Feature>
@@ -54,7 +54,7 @@ export default function Home(props: DefaultProps) {
                     </a>
                 </div>
                 <div className="border-2 border-[#5865f2] rounded-lg py-8 px-8 h- 40 w-96 my-5">
-                    <h1 className="text-2xl font-bold">Pro</h1>
+                    <h1 className="text-2xl font-bold">Basic</h1>
                     <p className="font-semibold pt-2 pb-2">The smaller subscription with all the perks</p>
                     <Feature included>1 Custom Bot</Feature>
                     <Feature included>Pro Badge</Feature>
