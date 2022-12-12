@@ -122,4 +122,3 @@ ratelimits.json
 
 # main sqlite database file
 database.sqlite
-sqlite
