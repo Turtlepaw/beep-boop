@@ -24,6 +24,7 @@ import { Logger } from "./logger";
 export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
+export const API_ENABLED = process.env.START_API;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
 export const DEFAULT_CLIENT_OPTIONS = {
     intents: [
@@ -95,7 +96,13 @@ export async function HandleBotStart() {
 
     // Start API
     console.log("Starting API...".grey);
-    API(client, API_TOKEN);
+    if (API_ENABLED == null || API_ENABLED == "true") (async () => {
+        try {
+            await API(client, API_TOKEN);
+        } catch (e) {
+            console.log("Couldn't start API:", e);
+        }
+    })();
 
     // Create configuration for all servers
     CreateConfiguration(client);
