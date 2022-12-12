@@ -151,7 +151,6 @@ export default class CustomBranding extends Button {
                         content: `${Icons.Discover} Saved your configuration.`
                     })
                 } else if (Interaction.isButton() && Interaction.customId == Id.ResetBot) {
-                } else if (Interaction.isButton() && Interaction.customId == Id.ResetBot) {
                     const ComponentMessage = await Interaction.reply({
                         content: `${Icons.Zap} This **will not delete your bot from Discord,** it will only remove your bot from Beep Boop, after you remove it, it will go offline.`,
                         components: [
@@ -174,6 +173,10 @@ export default class CustomBranding extends Button {
                     await client.Storage.CustomBots.Delete({
                         CustomId: CurrentBot.CustomId
                     });
+
+                    DeleteComponent.update({
+                        content: "Bot Deleted"
+                    })
                 } else if (Interaction.isButton() && Interaction.customId == Id.EditStatus) {
                     enum FieldId {
                         Text = "STATUS_TEXT",
