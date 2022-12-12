@@ -140,16 +140,29 @@ export default class CustomBranding extends Button {
                 } else if (Interaction.isChannelSelectMenu() && Interaction.customId == Id.ChannelSelector) {
                     const SelectedChannel = Interaction.channels.first();
 
+                    if (!Verifiers.GuildText(SelectedChannel)) return FriendlyInteractionError(Interaction, "Invalid channel.")
+
+                    const Webhook = await SelectedChannel.createWebhook({
+                        name: `${BotUser.username}`,
+                        avatar: BotUser.avatarURL() || null,
+                        reason: "Custom Bot logging webhook"
+                    });
+
+                    await Webhook.send({
+                        content: `This channel has been set up to receive logs for ${interaction.user}'s custom bot. (${BotUser})`
+                    });
+
                     await client.Storage.CustomBots.Edit({
                         CustomId: CurrentBot.CustomId
                     }, {
-                        LoggingChannel: SelectedChannel.id
+                        LoggingChannel: SelectedChannel.id,
+                        WebhookURL: Webhook.url
                     });
 
                     await Interaction.reply({
                         ephemeral: true,
                         content: `${Icons.Discover} Saved your configuration.`
-                    })
+                    });
                 } else if (Interaction.isButton() && Interaction.customId == Id.ResetBot) {
                     const ComponentMessage = await Interaction.reply({
                         content: `${Icons.Zap} This **will not delete your bot from Discord,** it will only remove your bot from Beep Boop, after you remove it, it will go offline.`,

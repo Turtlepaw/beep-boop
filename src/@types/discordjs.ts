@@ -37,5 +37,6 @@ declare module 'discord.js' {
         Errors: ErrorManager;
         LegacyStorage: KeyFileStorage;
         CustomIcons: boolean;
+        LogWebhook: WebhookClient;
     }
 }

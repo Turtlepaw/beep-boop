@@ -1,10 +1,12 @@
-import { ActionRowBuilder, ActivityType, ButtonBuilder, ButtonStyle, ChannelType, Client, codeBlock, Events, Guild, inlineCode, OAuth2Scopes, Partials, PermissionFlagsBits, TextBasedChannel, TextChannel, time, TimestampStyles, User } from "discord.js";
+import { ActionRowBuilder, ActivityType, ButtonBuilder, ButtonStyle, ChannelType, Client, codeBlock, Events, Guild, inlineCode, OAuth2Scopes, Partials, PermissionFlagsBits, TextBasedChannel, TextChannel, time, TimestampStyles, User, WebhookClient } from "discord.js";
 import { SetupBot } from "../events/BotTokenModal";
 import { DEFAULT_CLIENT_OPTIONS, HandleAnyBotStart, HandleBotStart } from "..";
-import { Colors, Embed, ResolvableIcons, Website, WebsiteLink } from "../configuration";
+import { Colors, Embed, ResolvableIcons, SupportServerInvite, Website, WebsiteLink } from "../configuration";
 import { CreateLinkButton } from "./buttons";
 import { GuildConfiguration } from "../models/Configuration";
 import { Logger } from "../logger";
+import { DeepPartial } from "typeorm";
+import { CustomBot } from "../models/CustomBot";
 
 export interface CustomBotOptions {
     guild: Guild;
@@ -75,100 +77,119 @@ export async function CreateConfiguration(CustomClient: Client) {
             Logger.info(`Created configuration for ${Guilds.size} guilds`)
         }, 5000)
     });
+
+    return CustomClient;
 }
 
-export async function StartCustomBot(botToken: string, client: Client, options?: CustomBotOptions) {
-    const started = new Date();
-    // Create Discord.js client
-    const CustomClient = new Client(DEFAULT_CLIENT_OPTIONS);
+export function StartCustomBot(botToken: string, client: Client, options?: CustomBotOptions) {
+    return new Promise<{
+        CustomClient: Client;
+        config: DeepPartial<CustomBot>;
+    }>(async (resolve, reject) => {
+        const started = new Date();
+        // Create Discord.js client
+        const CustomClient = new Client(DEFAULT_CLIENT_OPTIONS);
 
-    CreateConfiguration(CustomClient);
+        CreateConfiguration(CustomClient);
 
-    // Get everything ready...
-    CustomClient.on(Events.ClientReady, async () => {
-        if (options != null) await SetupBot(CustomClient, options.client, {
-            ...options,
-            token: botToken
-        });
+        CustomClient.login(botToken).catch(reject);
 
-        const Bot = await client.Storage.CustomBots.Get({
-            Token: botToken
-        });
+        const config = await new Promise<DeepPartial<CustomBot>>((resolve, reject) => {
+            // Get everything ready...
+            CustomClient.on(Events.ClientReady, async () => {
+                if (options != null) await SetupBot(CustomClient, options.client, {
+                    ...options,
+                    token: botToken
+                }, (value) => resolve(value));
 
-        customClients[Bot.BotId] = CustomClient;
-        HandleAnyBotStart(CustomClient);
-        if (Bot.CustomStatus != null) CustomClient.user.setPresence({
-            status: Bot.CustomStatusPresence || "online",
-            activities: [{
-                name: Bot.CustomStatus,
-                type: Bot.CustomStatusType
-            }]
-        });
+                const Bot = await client.Storage.CustomBots.Get({
+                    Token: botToken
+                });
 
-        //let IconsGuild = await CustomClient.guilds.fetch("1043579620022292510");
-        CustomClient.CustomIcons = true;
-        const Guild = await CustomClient.guilds.fetch(Bot.GuildId);
-        const Channel = await Guild.channels.fetch(Bot.LoggingChannel) as TextChannel;
-        const StatusType = {
-            Listening: "Listening to",
-            Playing: "Playing",
-            Watching: "Watching",
-        }
-        const Icons = ResolvableIcons(client);
-        const Status = (status: string) => StatusType[status] ?? "";
-        await Channel.send({
-            embeds: [
-                new Embed()
-                    .setTitle("🎉 Your custom bot is online!")
-                    .addFields([{
-                        name: `${Icons.Clock} Started`,
-                        value: time(started, TimestampStyles.RelativeTime)
-                    }, {
-                        name: `${Icons.Discover} Your Bot`,
-                        value: `<@${Bot.BotId}>`
-                    }, {
-                        name: `${Icons.Configure} Bot Configuration`,
-                        value: `• Status: ${Bot.CustomStatus != null ? inlineCode(`${Status(ActivityType[Bot.CustomStatusType])} ${Bot.CustomStatus}`) : "None."}
+                customClients[Bot.BotId] = CustomClient;
+                HandleAnyBotStart(CustomClient);
+                if (Bot.CustomStatus != null) CustomClient.user.setPresence({
+                    status: Bot.CustomStatusPresence || "online",
+                    activities: [{
+                        name: Bot.CustomStatus,
+                        type: Bot.CustomStatusType
+                    }]
+                });
+
+                //let IconsGuild = await CustomClient.guilds.fetch("1043579620022292510");
+                CustomClient.CustomIcons = true;
+                if (Bot.WebhookURL != null) CustomClient.LogWebhook = new WebhookClient({
+                    url: Bot.WebhookURL
+                });
+                const Guild = await CustomClient.guilds.fetch(Bot.GuildId);
+                const Channel = await Guild.channels.fetch(Bot.LoggingChannel) as TextChannel;
+                const StatusType = {
+                    Listening: "Listening to",
+                    Playing: "Playing",
+                    Watching: "Watching",
+                }
+                const Icons = ResolvableIcons(client);
+                const Status = (status: string) => StatusType[status] ?? "";
+                await Channel.send({
+                    embeds: [
+                        new Embed()
+                            .setTitle("🎉 Your custom bot is online!")
+                            .addFields([{
+                                name: `${Icons.Clock} Started`,
+                                value: time(started, TimestampStyles.RelativeTime)
+                            }, {
+                                name: `${Icons.Discover} Your Bot`,
+                                value: `<@${Bot.BotId}>`
+                            }, {
+                                name: `${Icons.Configure} Bot Configuration`,
+                                value: `• Status: ${Bot.CustomStatus != null ? inlineCode(`${Status(ActivityType[Bot.CustomStatusType])} ${Bot.CustomStatus}`) : "None."}
 • Logging Channel: <#${Bot.LoggingChannel}>
 • Owner: <@${Bot.Owner}>`
-                    }])
-            ],
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .setComponents(
-                        new ButtonBuilder()
-                            .setStyle(ButtonStyle.Primary)
-                            .setCustomId("CUSTOM_BRANDING")
-                            .setLabel("Configure Bot"),
-                        new ButtonBuilder()
-                            .setStyle(ButtonStyle.Link)
-                            .setURL(`https://discord.com/developers/applications/${Bot.BotId}`)
-                            .setLabel("Customize Bot"),
-                        new ButtonBuilder()
-                            .setStyle(ButtonStyle.Link)
-                            .setURL(CustomClient.generateInvite({
-                                scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
-                                permissions: [PermissionFlagsBits.Administrator]
-                            }))
-                            .setLabel("Add to Server")
-                    )
-            ]
+                            }])
+                    ],
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>()
+                            .setComponents(
+                                new ButtonBuilder()
+                                    .setStyle(ButtonStyle.Primary)
+                                    .setCustomId("CUSTOM_BRANDING")
+                                    .setLabel("Configure Bot"),
+                                new ButtonBuilder()
+                                    .setStyle(ButtonStyle.Link)
+                                    .setURL(`https://discord.com/developers/applications/${Bot.BotId}`)
+                                    .setLabel("Customize Bot"),
+                                new ButtonBuilder()
+                                    .setStyle(ButtonStyle.Link)
+                                    .setURL(CustomClient.generateInvite({
+                                        scopes: [OAuth2Scopes.Bot, OAuth2Scopes.ApplicationsCommands],
+                                        permissions: [PermissionFlagsBits.Administrator]
+                                    }))
+                                    .setLabel("Add to Server")
+                            )
+                    ]
+                });
+
+                Logger.info(`${CustomClient.user.tag} is now online.`)
+            });
+        })
+
+        resolve({
+            CustomClient,
+            config
         });
-
-        Logger.info(`${CustomClient.user.tag} is now online.`)
     });
-
-    CustomClient.login(botToken);
 }
 
 export async function HandleBot(options?: CustomBotOptions & { client: Client, botToken: string; }) {
-    async function ErrorBot(e) {
-        await CreateLimitedBot(options.botToken, options.client, e, options);
+    function ErrorBot(e) {
+        return CreateLimitedBot(options.botToken, options.client, e, options);
     }
+
     try {
-        await StartCustomBot(options.botToken, options.client, options).catch((e) => ErrorBot(e));
+        return await StartCustomBot(options.botToken, options.client, options).catch((e) => ErrorBot(e));
     } catch (e) {
-        ErrorBot(e);
+        await ErrorBot(e);
+        return e as string;
     }
 }
 
@@ -178,9 +199,33 @@ export async function StartCustomBots(client: Client) {
 
     for (const CustomBot of Bots) {
         try {
-            StartCustomBot(CustomBot.Token, client);
+            await StartCustomBot(CustomBot.Token, client);
         } catch (e) {
-            CreateLimitedBot(CustomBot.Token, client, e);
+            try {
+                const webhook = new WebhookClient({ url: CustomBot.WebhookURL });
+                await webhook.send({
+                    content: `**Your custom bot couldn't start, here's what we know:**\n${codeBlock(e.toString())}`,
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>()
+                            .addComponents(
+                                new ButtonBuilder()
+                                    .setLabel("Troubleshooting")
+                                    .setStyle(ButtonStyle.Link)
+                                    .setURL("https://docs.trtle.xyz/pro/troubleshooting"),
+                                new ButtonBuilder()
+                                    .setLabel("Support Server")
+                                    .setStyle(ButtonStyle.Link)
+                                    .setURL(SupportServerInvite),
+                                new ButtonBuilder()
+                                    .setLabel("Retry")
+                                    .setStyle(ButtonStyle.Primary)
+                                    .setCustomId(`RETRY_${CustomBot.CustomId}`)
+                            )
+                    ]
+                });
+            } catch (e) {
+                Logger.error(`Couldn't get webhook for ${CustomBot.Owner}'s custom bot`)
+            }
         }
     }
 }

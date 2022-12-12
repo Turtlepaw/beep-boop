@@ -1,9 +1,14 @@
-import { ActivityOptions, ActivityType, Client, EmbedBuilder } from "discord.js";
+import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, EmbedBuilder } from "discord.js";
 import { Logging, SavedMessages } from "./@types/config";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
 export const SupportServerInvite = "https://discord.gg/G59JT7VbxZ";
+export const SupportServerInviteEmbedded = `<${SupportServerInvite}>`
+export const SupportServerComponent = new ButtonBuilder()
+    .setLabel("Support Server")
+    .setStyle(ButtonStyle.Link)
+    .setURL(SupportServerInvite);
 // The channel that you post updates about your bot
 export const NewsChannel = "1030689173784510504";
 export const ClientAdministators: string[] = [

@@ -31,4 +31,7 @@ export class CustomBot {
 
     @Column({ nullable: true })
     CustomStatusPresence: "dnd" | "online" | "invisible" | "idle";
+
+    @Column({ nullable: true })
+    WebhookURL: string;
 }
