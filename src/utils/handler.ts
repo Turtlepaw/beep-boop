@@ -8,6 +8,7 @@ import EventBuilder from "../lib/Event";
 import { CreateLinkButton } from "./buttons";
 import { SendError } from "./error";
 import SelectOptionBuilder from "src/lib/SelectMenuBuilder";
+import { Logger } from "../logger";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
     content: `${Icons.Error} You don't have the required permissions to run this command.`,
@@ -74,6 +75,7 @@ async function StartEventService(client: Client) {
         }
     } catch (e) {
         console.log("Error:".red, e);
+        Logger.error(`Event Error:`, e);
     }
 }
 
@@ -143,6 +145,9 @@ async function StartButtonService(client: Client) {
                     // Log error
                     console.log(`Error:`.red, e);
 
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.customId}:`, e);
+
                     // Send error message
                     SendError(
                         interaction,
@@ -202,6 +207,9 @@ async function StartSelectMenuService(client: Client) {
                     // Log error
                     console.log(`Error:`.red, e);
 
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.values[0]}:`, e);
+
                     // Send error message
                     SendError(
                         interaction,
@@ -249,6 +257,9 @@ async function StartContextMenuService(client: Client) {
                     // Log error
                     console.log(`Error:`.red, e);
 
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.commandName}:`, e);
+
                     // Send error message
                     SendError(
                         interaction,
@@ -273,6 +284,8 @@ export async function StartAutocompleteService(client: Client) {
                     await command?.ExecuteAutocompleteRequest(interaction, client);
                 } catch (e) {
                     console.log(`Error`.red, e);
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.commandName}'s autocomplete:`, e);
                 }
             }
         })
@@ -312,6 +325,9 @@ export async function StartService(client: Client, logs = false) {
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.commandName}:`, e);
 
                     // Send error message
                     SendError(

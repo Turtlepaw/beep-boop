@@ -16,6 +16,7 @@ import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
 import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
 import { GuildConfiguration } from "./models/Configuration";
+import { Logger } from "./logger";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -65,10 +66,15 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
 
     // Deploy slash commands
     if (!isCustom) console.log("Deploying commands...".grey);
-    Deploy(ProvidedClient, !isCustom).then(() => !isCustom ? console.log("Registered all commands successfully.".green) : null);
+    Logger.info(`Deploying commands for ${ProvidedClient.user.username}...`);
+    Deploy(ProvidedClient, !isCustom).then(() => {
+        if (!isCustom) console.log("Registered all commands successfully.".green)
+        Logger.info(`Registered all commands for ${ProvidedClient.user.username}.`);
+    });
 
     // Start command handler
     if (!isCustom) console.log("Starting handler service...".grey);
+    Logger.info(`Starting ${ProvidedClient.user.username}'s command handler.`);
     StartService(ProvidedClient)
 
     // Start auto delete service

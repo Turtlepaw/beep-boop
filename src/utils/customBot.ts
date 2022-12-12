@@ -4,6 +4,7 @@ import { DEFAULT_CLIENT_OPTIONS, HandleAnyBotStart, HandleBotStart } from "..";
 import { Colors, Embed, ResolvableIcons, Website, WebsiteLink } from "../configuration";
 import { CreateLinkButton } from "./buttons";
 import { GuildConfiguration } from "../models/Configuration";
+import { Logger } from "../logger";
 
 export interface CustomBotOptions {
     guild: Guild;
@@ -70,7 +71,8 @@ export async function CreateConfiguration(CustomClient: Client) {
                     console.log(`Couldn't create configuration for ${guild.name}: ${e}`, e.stack);
                 }
             }
-            console.log(`Created configuration for ${Guilds.size} guilds`)
+
+            Logger.info(`Created configuration for ${Guilds.size} guilds`)
         }, 5000)
     });
 }
@@ -152,6 +154,8 @@ export async function StartCustomBot(botToken: string, client: Client, options?:
                     )
             ]
         });
+
+        Logger.info(`${CustomClient.user.tag} is now online.`)
     });
 
     CustomClient.login(botToken);
@@ -169,6 +173,7 @@ export async function HandleBot(options?: CustomBotOptions & { client: Client, b
 }
 
 export async function StartCustomBots(client: Client) {
+    Logger.info(`Starting custom bots.`);
     const Bots = await client.Storage.CustomBots.GetAll();
 
     for (const CustomBot of Bots) {

@@ -4,6 +4,7 @@ import klawSync from "klaw-sync";
 import CommandBuilder from "../lib/CommandBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { CLIENT_ID, TOKEN } from "../index";
+import { Logger } from "../logger";
 
 export async function Deploy(client: Client, logs = true) {
     const DeveloperCommands: any[] = [];
@@ -47,6 +48,7 @@ export async function Deploy(client: Client, logs = true) {
     rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: DeveloperCommands })
         .then((data: any) => {
             if (logs) console.log(`Successfully registered ${data?.length} dev application commands.`)
+            Logger.info(`Registered application commands (dev) for ${client.user.tag}.`);
             for (const CommandData of data) {
                 client.DetailedCommands.push({
                     Id: CommandData.id,
@@ -59,6 +61,7 @@ export async function Deploy(client: Client, logs = true) {
     rest.put(Routes.applicationCommands(clientId), { body: PublicCommands })
         .then((data: any) => {
             if (logs) console.log(`Successfully registered ${data?.length} public application commands.`)
+            Logger.info(`Registered application commands (global) for ${client.user.tag}.`);
             for (const CommandData of data) {
                 client.DetailedCommands.push({
                     Id: CommandData.id,
