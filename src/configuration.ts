@@ -1,5 +1,5 @@
 import { ActivityOptions, ActivityType, Client, EmbedBuilder } from "discord.js";
-import { Logging } from "./@types/config";
+import { Logging, SavedMessages } from "./@types/config";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
@@ -98,7 +98,10 @@ export enum Icons {
     Trash = "<:Trash:1043579951586213888>",
     Enabled = "<:Enabled:1049904633939763211>",
     Disabled = "<:Disabled:1049904650989600849>",
-    ProUser = "<:ProUser:1051214860119191634>"
+    ProUser = "<:ProUser:1051214860119191634>",
+    Blank = "<:blank:1049914365752651796>",
+    StemItem = "<:StemItem:1051630581340971108>",
+    StemEnd = "<:StemEnd:1051630676354551839>"
 }
 
 export enum DefaultIcons {
@@ -143,7 +146,12 @@ export enum DefaultIcons {
 }
 
 export const ResolvableIcons = (client: Client) => Icons;
-
+export const Messages = {
+    Saved: {
+        content: `${Icons.Discover} Saved your configuration.`,
+        ephemeral: true
+    }
+}
 export enum Colors {
     Transparent = "#2F3136",
     BrandColor = "#FF605E",

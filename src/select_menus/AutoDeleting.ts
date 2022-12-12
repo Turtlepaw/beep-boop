@@ -1,11 +1,13 @@
 import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, Client, Colors, CommandInteraction, inlineCode, ModalBuilder, PermissionsBitField, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons } from "../configuration";
+import { Embed, Icons, Messages } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
 import { Filter } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
+import { CleanupType } from "../models/Configuration";
+import { JSONArray } from "../utils/jsonArray";
 
 export default class AutonomousCleaning extends SelectOptionBuilder {
     constructor() {
@@ -18,10 +20,11 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
     }
 
     async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[]) {
-        let SystemCleanup = false;
-        let MessageCleanup = false;
-        let TimedCleanup = false;
-        let Timer = 50000;
+        const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
+        let SystemCleanup = Configuration.isSystemCleanup();
+        let MessageCleanup = Configuration.isMessageCleanup();
+        let TimedCleanup = Configuration.isTimedCleanup();
+        let Timer = Configuration?.CleanupTimer;
 
         enum Id {
             TimedCleanup = "timed_cleanup",
@@ -31,45 +34,63 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
             TimeField = "timer_field"
         }
 
-        const Message = await interaction.update({
-            fetchReply: true,
-            embeds: [
-                new Embed()
-                    .setTitle("Managing Autonomous Cleanup")
-                    .addFields([{
-                        name: "About Autonomous Cleanup Module",
-                        value: `Autonomous Cleanup can cleanup old messages like member's message if they've left or if they left the server their system welcome message will be deleted.`
-                    }, {
-                        name: "Current Configuration",
-                        value: `
+        const Components = () => [
+            new ButtonBuilder()
+                .setCustomId(Id.SystemCleanup)
+                .setLabel("System Cleanup")
+                .setStyle(
+                    ButtonBoolean(SystemCleanup)
+                ),
+            new ButtonBuilder()
+                .setCustomId(Id.MessageCleanup)
+                .setLabel("Message Cleanup")
+                .setStyle(
+                    ButtonBoolean(MessageCleanup)
+                ),
+            new ButtonBuilder()
+                .setCustomId(Id.TimedCleanup)
+                .setLabel("Timed Cleanup")
+                .setStyle(
+                    ButtonBoolean(TimedCleanup)
+                )
+        ];
+        const GenerateEmbed = () => new Embed()
+            .setTitle("Managing Autonomous Cleanup")
+            .addFields([{
+                name: "About Autonomous Cleanup Module",
+                value: `Autonomous Cleanup can cleanup old messages like member's message if they've left or if they left the server their system welcome message will be deleted.`
+            }, {
+                name: "Current Configuration",
+                value: `
 ${TextBoolean(SystemCleanup, "System Cleanup")}
 ${TextBoolean(MessageCleanup, "Message Cleanup")}
 ${TextBoolean(TimedCleanup, "Timed Cleanup")}
-└ Deletes after: ...`
-                    }])
+${Icons.StemEnd} Deletes after: ${Timer == null ? "Nothing set." : ms(Timer)}`
+            }]);
+
+        const Save = async () => {
+            await client.Storage.Configuration.Edit({
+                Id: Configuration.Id
+            }, {
+                CleanupType: new JSONArray().push(...[
+                    ...(SystemCleanup ? [CleanupType.System] : []),
+                    ...(MessageCleanup ? [CleanupType.Message] : []),
+                    ...(TimedCleanup ? [CleanupType.Timed] : [])
+                ]).toJSON(),
+                CleanupTimer: TimedCleanup ? Timer : null
+            });
+        }
+
+        const Message = await interaction.update({
+            fetchReply: true,
+            embeds: [
+                GenerateEmbed()
             ],
             components: [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
                         BackComponent,
-                        new ButtonBuilder()
-                            .setCustomId(Id.SystemCleanup)
-                            .setLabel("System Cleanup")
-                            .setStyle(
-                                ButtonBoolean(SystemCleanup)
-                            ),
-                        new ButtonBuilder()
-                            .setCustomId(Id.MessageCleanup)
-                            .setLabel("Message Cleanup")
-                            .setStyle(
-                                ButtonBoolean(MessageCleanup)
-                            ),
-                        new ButtonBuilder()
-                            .setCustomId(Id.TimedCleanup)
-                            .setLabel("Timed Cleanup")
-                            .setStyle(
-                                ButtonBoolean(TimedCleanup)
-                            )
+                        ...Components()
                     )
             ]
         });
@@ -79,19 +100,18 @@ ${TextBoolean(TimedCleanup, "Timed Cleanup")}
             filter: Filter(interaction.member, Id.MessageCleanup, Id.SystemCleanup, Id.TimedCleanup)
         });
 
-        function HandleToggle(id: Id) {
+        function HandleToggle(id: string) {
             if (id == Id.MessageCleanup) {
                 MessageCleanup = !MessageCleanup
             } else if (id == Id.SystemCleanup) {
                 SystemCleanup = !SystemCleanup
+            } else if (id == Id.TimedCleanup) {
+                TimedCleanup = true
             }
         }
+
         Collector.on("collect", async button => {
-            if (button.customId == Id.MessageCleanup) {
-
-            } else if (button.customId == Id.SystemCleanup) {
-
-            } else if (button.customId == Id.TimedCleanup) {
+            if (button.customId == Id.TimedCleanup) {
                 const TimerField = new TextInputBuilder()
                     .setLabel("Time to delete")
                     .setPlaceholder("1m 6s")
@@ -114,6 +134,38 @@ ${TextBoolean(TimedCleanup, "Timed Cleanup")}
                 const ModalInteraction = await button.awaitModalSubmit({
                     time: 0
                 });
+
+                Timer = ms(ModalInteraction.fields.getTextInputValue(Id.TimeField));
+                TimedCleanup = true;
+                await Save();
+                await ModalInteraction.reply(Messages.Saved);
+                await Message.edit({
+                    embeds: [
+                        GenerateEmbed()
+                    ],
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>()
+                            .addComponents(
+                                BackComponent,
+                                ...Components()
+                            )
+                    ]
+                })
+            } else {
+                HandleToggle(button.customId);
+                await Save();
+                await button.update({
+                    embeds: [
+                        GenerateEmbed()
+                    ],
+                    components: [
+                        new ActionRowBuilder<ButtonBuilder>()
+                            .addComponents(
+                                BackComponent,
+                                ...Components()
+                            )
+                    ]
+                })
             }
         });
 

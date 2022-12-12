@@ -14,7 +14,8 @@ import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
-import { StartCustomBots } from "./utils/customBot";
+import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
+import { GuildConfiguration } from "./models/Configuration";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -89,6 +90,9 @@ export async function HandleBotStart() {
     // Start API
     console.log("Starting API...".grey);
     API(client, API_TOKEN);
+
+    // Create configuration for all servers
+    CreateConfiguration(client);
 
     // The client is ready
     console.log("Ready".green);

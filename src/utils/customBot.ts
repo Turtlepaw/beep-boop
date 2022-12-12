@@ -3,6 +3,7 @@ import { SetupBot } from "../events/BotTokenModal";
 import { DEFAULT_CLIENT_OPTIONS, HandleAnyBotStart, HandleBotStart } from "..";
 import { Colors, Embed, ResolvableIcons, Website, WebsiteLink } from "../configuration";
 import { CreateLinkButton } from "./buttons";
+import { GuildConfiguration } from "../models/Configuration";
 
 export interface CustomBotOptions {
     guild: Guild;
@@ -55,10 +56,31 @@ export async function CreateLimitedBot(botToken: string, client: Client, error: 
     CustomClient.login(botToken);
 }
 
+export async function CreateConfiguration(CustomClient: Client) {
+    CustomClient.on(Events.ClientReady, async () => {
+        setTimeout(async () => {
+            const Guilds = await CustomClient.guilds.fetch();
+            for (const guild of Guilds.values()) {
+                try {
+                    const config = await CustomClient.Storage.Configuration.forGuild(guild);
+                    if (config == null) {
+                        CustomClient.Storage.Configuration.CreateConfiguration(guild);
+                    }
+                } catch (e) {
+                    console.log(`Couldn't create configuration for ${guild.name}: ${e}`, e.stack);
+                }
+            }
+            console.log(`Created configuration for ${Guilds.size} guilds`)
+        }, 5000)
+    });
+}
+
 export async function StartCustomBot(botToken: string, client: Client, options?: CustomBotOptions) {
     const started = new Date();
     // Create Discord.js client
     const CustomClient = new Client(DEFAULT_CLIENT_OPTIONS);
+
+    CreateConfiguration(CustomClient);
 
     // Get everything ready...
     CustomClient.on(Events.ClientReady, async () => {

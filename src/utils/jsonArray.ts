@@ -8,6 +8,7 @@ export class JSONArray<type = any> {
     public type = ArrayType.JSONArray;
 
     push(...item: type[]) {
+        if (Array.isArray(item[0])) item = item[0];
         this.array.push(...item);
         return this;
     }

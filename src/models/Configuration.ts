@@ -16,10 +16,13 @@ export enum ReputationBasedModerationType {
 
 @Entity()
 export class GuildConfiguration {
-    // @PrimaryGeneratedColumn()
-    // GeneratedId: number;
+    @PrimaryGeneratedColumn({ type: "integer" })
+    CustomId: number;
 
-    @PrimaryColumn({ unique: false })
+    // @PrimaryColumn({ generated: true })
+    // CustomId: string;
+
+    @Column()
     Id: string;
 
     // Premium

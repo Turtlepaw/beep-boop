@@ -31,6 +31,18 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     isSystemCleanup() {
         return this.isCleanup(CleanupType.System);
     }
+
+    isMessageCleanup() {
+        return this.isCleanup(CleanupType.Message);
+    }
+
+    isTimedCleanup() {
+        return this.isCleanup(CleanupType.Timed);
+    }
+
+    isInviteBlocker() {
+        return this?.InviteBlocker ?? false;
+    }
 }
 
 const entities = [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message, CustomBot, Gift];
@@ -144,14 +156,14 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
         });
     }
 
-    async CreateConfiguration(guild: Guild) {
-        if (this.CreatedGuilds.includes(guild.id)) return;
+    CreateConfiguration(guild: { id: string; }) {
+        //if (this.CreatedGuilds.includes(guild.id)) return;
         const EmptyArray = JSON.stringify({
             array: []
         });
-        this.CreatedGuilds.push(guild.id);
-        if (this.CreatedGuilds.includes(guild.id)) return;
-        this.Create({
+        //if (this.CreatedGuilds.includes(guild.id)) return;
+        //this.CreatedGuilds.push(guild.id);
+        return this.Repository.create({
             CleanupChannels: EmptyArray,
             CleanupTimer: null,
             CleanupType: EmptyArray,
@@ -160,18 +172,19 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             MaxReputation: 5,
             ModerationChannel: null,
             ModerationType: EmptyArray,
-            ReputationMod: false
-        })
+            ReputationMod: false,
+            InviteBlocker: false
+        });
     }
 
-    async forGuild(guild: Guild): Promise<ResolvedGuildConfiguration> {
+    async forGuild(guild: { id: string }): Promise<ResolvedGuildConfiguration> {
         const config = await this.Get({
             Id: guild.id
         });
 
         const EmptyResolvableArray = () => new JSONArray();
 
-        if (config == null) this.CreateConfiguration(guild);
+        //if (config == null) return null; //this.CreateConfiguration(guild);
 
         return new ResolvedGuildConfiguration({
             CleanupChannels: config?.CleanupChannels == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupChannels),
@@ -182,7 +195,8 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,
             ModerationType: config?.ModerationType == null ? EmptyResolvableArray() : JSONArray.from(config?.ModerationType),
-            ReputationMod: config?.ReputationMod || false
+            ReputationMod: config?.ReputationMod ?? false,
+            InviteBlocker: config?.InviteBlocker ?? false
         });
     }
 }
