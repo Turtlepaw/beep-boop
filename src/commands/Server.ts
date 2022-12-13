@@ -2,6 +2,15 @@ import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputComma
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Icons } from "../configuration";
 
+export enum Modules {
+    AutonomousCleanup = "AUTO_DELETE_SETTINGS",
+    Appeals = "APPEAL_CONFIGURATION",
+    Tickets = "TICKET_CONFIGURATION",
+    ReputationBasedModeration = "REPUTATION_BASED_MODERATION_CONFIG",
+    AutonomousModeration = "AUTO_MODERATION",
+    JoinActions = "MEMBER_JOIN_ACTIONS",
+    ServerConfiguration = "MAIN_SERVER_CONFIG"
+}
 export function ServerConfiguration(interaction: RepliableInteraction) {
     const Buttons = [
         new ActionRowBuilder<ButtonBuilder>()
@@ -24,28 +33,34 @@ export function ServerConfiguration(interaction: RepliableInteraction) {
                     .setMaxValues(1)
                     .addOptions(
                         new SelectMenuOptionBuilder()
-                            .setLabel("Appeals")
+                            .setValue(Modules.Appeals)
+                            .setDescription("Appeals let users ask moderators to review their case/punishment.")
                             .setEmoji(Icons.Discover)
-                            .setValue("SETUP_APPEALS"),
+                            .setLabel("Appeals"),
                         new SelectMenuOptionBuilder()
-                            .setValue("SETUP_TICKETS")
+                            .setValue(Modules.Tickets)
+                            .setDescription("Tickets let members have a private space to discuss things with moderators.")
                             .setLabel("Tickets")
                             .setEmoji(Icons.Flag),
                         new SelectMenuOptionBuilder()
-                            .setValue("MODERATOR_SETTINGS")
+                            .setValue(Modules.AutonomousModeration)
+                            .setDescription("Autonomous Moderation moderates your server automatically.")
                             .setLabel("Autonomous Moderation")
                             .setEmoji(Icons.Shield),
                         new SelectMenuOptionBuilder()
-                            .setValue("SERVER_SETTINGS")
-                            .setLabel("Server")
-                            .setEmoji(Icons.Configure),
-                        new SelectMenuOptionBuilder()
-                            .setValue("AUTO_DELETE_SETTINGS")
+                            .setValue(Modules.AutonomousCleanup)
+                            .setDescription("Autonomous cleanup cleans up old messages that members sent. (e.g. system welcome messages)")
                             .setLabel("Autonomous Cleanup")
                             .setEmoji(Icons.Trash),
                         new SelectMenuOptionBuilder()
-                            .setValue("REPUTATION_BASED_MODERATION")
-                            .setLabel("Reputation Based Moderation")
+                            .setValue(Modules.ServerConfiguration)
+                            .setDescription("Main server configuration.")
+                            .setLabel("Server")
+                            .setEmoji(Icons.Configure),
+                        new SelectMenuOptionBuilder()
+                            .setValue(Modules.JoinActions)
+                            .setDescription("Set up join actions for when members join your server.")
+                            .setLabel("Join Actions")
                             .setEmoji(Icons.Lock)
                     )
             )

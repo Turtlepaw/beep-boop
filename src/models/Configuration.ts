@@ -45,6 +45,10 @@ export class GuildConfiguration {
     @Column()
     ModerationType: string // | JSONArray<ReputationBasedModerationType> | undefined[]; //ReputationBasedModerationType[];
 
+    // Tickets
+    @Column({ nullable: true })
+    TicketCategory: string;
+
     // Logs
     @Column({ nullable: true })
     ModerationChannel: string | null;

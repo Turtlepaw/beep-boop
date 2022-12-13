@@ -32,6 +32,10 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
         return this.isCleanup(CleanupType.System);
     }
 
+    hasTickets() {
+        return this?.TicketCategory != null;
+    }
+
     isMessageCleanup() {
         return this.isCleanup(CleanupType.Message);
     }

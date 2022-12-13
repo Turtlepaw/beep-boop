@@ -95,7 +95,9 @@ export function GetTextInput(Id: string, interaction: ModalSubmitInteraction) {
     return interaction.fields.fields.get(Id)?.value;
 }
 
-export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels: Collection<string, GuildBasedChannel>, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => any) {
+export type Channels = Collection<string, GuildBasedChannel>;
+export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Type?: Channels | ChannelType, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => any) {
+    if (typeof Type != "number") Type = ChannelType.GuildText
     const Component = new ChannelSelectMenuBuilder()
         .setCustomId(CustomId)
         /*.addOptions(
@@ -107,7 +109,7 @@ export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels:
             )
         )*/
         .setChannelTypes(
-            ChannelType.GuildText
+            Type
         )
 
     if (Configuration != null) Configuration(Component);

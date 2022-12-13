@@ -19,3 +19,7 @@ export function Filter(member: (APIGuildMember | GuildMember), ...customIds: (st
         return customIds.includes(Interaction.customId)
     }
 }
+
+export function GenerateIds(Selected: object) {
+    return Object.values(Selected);
+}

@@ -8,6 +8,7 @@ import { Filter } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
+import { Modules } from "../commands/Server";
 
 export default class AutonomousCleaning extends SelectOptionBuilder {
     constructor() {
@@ -15,7 +16,7 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: ["Administrator", "ManageGuild"],
-            Value: "AUTO_DELETE_SETTINGS"
+            Value: Modules.AutonomousCleanup
         });
     }
 

@@ -154,7 +154,8 @@ export const ResolvableIcons = (client: Client) => Icons;
 export const Messages = {
     Saved: {
         content: `${Icons.Discover} Saved your configuration.`,
-        ephemeral: true
+        ephemeral: true,
+        components: []
     }
 }
 export enum Colors {
