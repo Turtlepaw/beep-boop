@@ -10,6 +10,7 @@ import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
 import { Modules } from "../commands/Server";
 import { ChannelSelectMenu } from "../utils/components";
+import { generateId } from "../utils/Id";
 
 export default class AutonomousCleaning extends SelectOptionBuilder {
     constructor() {
@@ -25,6 +26,15 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         let Tickets = Configuration.hasTickets();
         let TicketCategory = Configuration?.TicketCategory;
+
+        if (Configuration?.CustomId == null) {
+            console.log("fixing guild", Configuration)
+            // client.Storage.Configuration.Edit({
+            //     Id: interaction.guild.id
+            // }, {
+            //     CustomId: Number(generateId(10))
+            // });
+        }
 
         enum Id {
             ToggleModule = "TOGGLE_MODULE",
@@ -74,10 +84,9 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
         });
 
         const Save = async () => {
-            await client.Storage.Configuration.Edit({
-                Id: Configuration.Id
-            }, {
-                TicketCategory
+            await client.Storage.Configuration.Edit(Configuration.CustomId, {
+                TicketCategory,
+                Tickets
             });
 
             await Message.edit({
@@ -101,9 +110,34 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
 
         Collector.on("collect", async button => {
             if (button.customId == Id.ToggleModule) {
-                Tickets = Tickets == null ? true : !Tickets;
-                Save();
-                await button.reply(Messages.Saved);
+                if (Tickets == false && TicketCategory == null) {
+                    Tickets = true;
+                    const ReplyMessage = await button.reply({
+                        ephemeral: true,
+                        fetchReply: true,
+                        content: `${Icons.Channel} Select a channel`,
+                        components: [
+                            ChannelSelector
+                        ]
+                    });
+
+                    const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
+                        time: 0,
+                        componentType: ComponentType.ChannelSelect,
+                        filter: Filter(interaction.member, Id.ChannelSelector)
+                    });
+
+                    const Channel = ChannelInteraction.channels.first();
+                    const ResolvedChannel = await interaction.guild.channels.fetch(Channel.id);
+
+                    TicketCategory = ResolvedChannel.id;
+                    await Save();
+                    await ChannelInteraction.update(Messages.Saved);
+                } else {
+                    Tickets = Tickets == null ? true : !Tickets;
+                    Save();
+                    await button.reply(Messages.Saved);
+                }
             } else if (button.customId == Id.SetChannel) {
                 const ReplyMessage = await button.reply({
                     ephemeral: true,

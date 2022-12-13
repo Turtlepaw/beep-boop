@@ -48,6 +48,8 @@ export class GuildConfiguration {
     // Tickets
     @Column({ nullable: true })
     TicketCategory: string;
+    @Column({ nullable: true, default: false })
+    Tickets: boolean;
 
     // Logs
     @Column({ nullable: true })

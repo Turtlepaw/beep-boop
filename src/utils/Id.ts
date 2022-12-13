@@ -50,12 +50,18 @@ export function randomNumber() {
     return numbers[n];
 }
 
+export enum AsTypeof {
+    Number = "number",
+    String = "string"
+}
+
 export function generateId(length: number = 5) {
     let Id = "";
     for (let index = 0; index < length; index++) {
         Id += `${randomNumber()}`
     }
 
+    //if (typeof type == "number") return Number(Id);
     return Id;
 }
 

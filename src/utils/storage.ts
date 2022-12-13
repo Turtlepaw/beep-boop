@@ -12,6 +12,7 @@ import { Message } from "../models/Message";
 import { CustomBot } from "../models/CustomBot";
 import { JSONArray } from "./jsonArray";
 import { Gift } from "../models/Gift";
+import { generateId } from "./Id";
 
 export class ResolvedGuildConfiguration extends GuildConfiguration {
     constructor(options?: any) {
@@ -33,6 +34,10 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 
     hasTickets() {
+        return this?.Tickets != null;
+    }
+
+    hasTicketsSetup() {
         return this?.TicketCategory != null;
     }
 
@@ -85,6 +90,7 @@ export class StorageManager<repo = any> {
         try {
             return this.Repository.find();
         } catch (e) {
+            console.log("error".red, e, e?.stack)
             return Promise.resolve<repo[]>([]);
         }
     }
@@ -167,7 +173,7 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
         });
         //if (this.CreatedGuilds.includes(guild.id)) return;
         //this.CreatedGuilds.push(guild.id);
-        return this.Repository.create({
+        return this.Repository.save({
             CleanupChannels: EmptyArray,
             CleanupTimer: null,
             CleanupType: EmptyArray,
@@ -177,7 +183,8 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             ModerationChannel: null,
             ModerationType: EmptyArray,
             ReputationMod: false,
-            InviteBlocker: false
+            InviteBlocker: false,
+            CustomId: Number(generateId(10))
         });
     }
 

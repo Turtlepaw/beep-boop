@@ -65,6 +65,21 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
     if (!isCustom) console.log("Setting client values...".grey);
     await SetClientValues(ProvidedClient);
 
+    // CLEAR ALL CONFIGURATION FUNCTION (OLD):
+    // const oldall = await ProvidedClient.Storage.Configuration.GetAll();
+    // console.log(`${oldall.length} to delete`)
+    // console.log("deleting every guild configuration");
+    // (await ProvidedClient.guilds.fetch()).forEach(e => {
+    //     console.log("deleting config for", e.name)
+    //     ProvidedClient.Storage.Configuration.Delete({
+    //         Id: e.id
+    //     });
+    // });
+
+    // console.log("check if there's any left...")
+    // const all = await ProvidedClient.Storage.Configuration.GetAll();
+    // console.log(`there's ${all.length} left`)
+
     // Deploy slash commands
     if (!isCustom) console.log("Deploying commands...".grey);
     Logger.info(`Deploying commands for ${ProvidedClient.user.username}...`);

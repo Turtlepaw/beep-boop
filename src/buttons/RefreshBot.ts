@@ -24,6 +24,7 @@ export default class ModeratorGuildSettings extends Button {
             content: "☁️ Restarting the bot, this might take a few minutes...",
             ephemeral: true
         });
+        client.destroy();
         process.exit();
     }
 }
