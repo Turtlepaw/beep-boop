@@ -101,7 +101,7 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
 
         Collector.on("collect", async button => {
             if (button.customId == Id.ToggleModule) {
-                Tickets = !Tickets;
+                Tickets = Tickets == null ? true : !Tickets;
                 Save();
                 await button.reply(Messages.Saved);
             } else if (button.customId == Id.SetChannel) {
