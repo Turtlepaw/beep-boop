@@ -104,7 +104,7 @@ export default class Help extends SlashCommandBuilder {
             Other: Pages;
         } = {};
 
-        const DefaultEmbed = new Embed()
+        const DefaultEmbed = new Embed(interaction.guild)
             .setAuthor({
                 name: "Beep Boop",
                 iconURL: client.user?.avatarURL() || ""
@@ -189,7 +189,7 @@ export default class Help extends SlashCommandBuilder {
             interaction.reply({
                 components: [Buttons],
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setAuthor({
                             name: "Beep Boop",
                             iconURL: client.user?.avatarURL() || ""

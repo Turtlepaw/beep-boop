@@ -21,7 +21,7 @@ export default class EvalModal extends Event {
                 ephemeral: true,
                 content: "\📦 Evaluating code...",
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setDescription(`\`\`\`\n${EvalResponse}\`\`\``)
                 ]
             });
@@ -30,7 +30,7 @@ export default class EvalModal extends Event {
                 ephemeral: true,
                 content: "\📦 Something didn't go right...",
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setDescription(`\`\`\`\n${e}\`\`\``)
                 ]
             });

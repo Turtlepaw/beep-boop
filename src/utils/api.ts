@@ -1,6 +1,8 @@
-import { ChannelType, Client, PermissionFlagsBits, TextChannel } from "discord.js";
+import { ChannelType, Client, PermissionFlagsBits, TextChannel, User } from "discord.js";
 import express from "express";
 import bodyParser from "body-parser";
+import { CLIENT_ID, TOKEN } from "../index";
+import fetch from "node-fetch";
 
 export enum Routes {
     AppealSettings = "/settings/appeals",
@@ -9,7 +11,8 @@ export enum Routes {
     OAuth = "/oauth",
     GuildsWith = "/guilds",
     Channels = "/channels",
-    CreateMessage = "/message/create"
+    CreateMessage = "/message/create",
+    RoleConnections = "/role-connections/verify"
 }
 
 enum Status {
@@ -288,6 +291,56 @@ export async function API(client: Client, token: string) {
 
         res.send(Messages.Success);
     })
+
+    async function RegisterApp() {
+        /**
+         * Copied From: https://discord.com/developers/docs/tutorials/configuring-app-metadata-for-linked-roles
+         * Register the metadata to be stored by Discord. This should be a one time action.
+         * Note: uses a Bot token for authentication, not a user token.
+         */
+        const url = `https://discord.com/api/v10/applications/${CLIENT_ID}/role-connections/metadata`;
+        // supported types: number_lt=1, number_gt=2, number_eq=3 number_neq=4, datetime_lt=5, datetime_gt=6, boolean_eq=7
+        const body = [
+            {
+                key: 'cookieseaten',
+                name: 'Cookies Eaten',
+                description: 'Cookies Eaten Greater Than',
+                type: 2,
+            },
+            {
+                key: 'allergictonuts',
+                name: 'Allergic To Nuts',
+                description: 'Is Allergic To Nuts',
+                type: 7,
+            },
+            {
+                key: 'bakingsince',
+                name: 'Baking Since',
+                description: 'Days since baking their first cookie',
+                type: 6,
+            },
+        ];
+
+        const response = await fetch(url, {
+            method: 'PUT',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bot ${TOKEN}`,
+            },
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            console.log("ok", data);
+        } else {
+            throw new Error(`Error pushing discord metadata schema: [${response.status}] ${response.statusText}`);
+            const data = await response.text();
+            console.log(data);
+        }
+    }
+
+    //RegisterApp();
 
     app.listen(4000, () => console.log("API Ready".green, "https://localhost:4000/".gray))
 }

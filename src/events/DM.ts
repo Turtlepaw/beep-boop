@@ -21,7 +21,7 @@ export default class DMService extends Event {
 
         await Channel.send({
             embeds: [
-                new Embed()
+                new Embed(Message.guild)
                     .setTitle(`${Emojis.TextChannel} DM Received!`)
                     .setDescription(`${Emojis.Information} *If there are embeds below, those are the embeds received in the DM.*`)
                     .addFields([{

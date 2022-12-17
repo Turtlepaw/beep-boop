@@ -66,7 +66,7 @@ export default class CloseTicket extends Button {
 
         const Message = await interaction.reply({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setColor(Colors.Blurple)
                     .setTitle(`${Emojis.Reason} Add a Reason`)
                     .setDescription("Would you like to add a reason to this?")
@@ -103,7 +103,7 @@ export default class CloseTicket extends Button {
 
         LogChannel.send({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setTitle(`Ticket Closed`)
                     .setAuthor({
                         iconURL: interaction.user.displayAvatarURL(),

@@ -68,7 +68,7 @@ export default class CustomBranding extends Button {
                         .setPlaceholder("Select a bot")
                 );
 
-            const GenerateEmbed = () => new Embed()
+            const GenerateEmbed = () => new Embed(interaction.guild)
                 .setTitle("Configuring your Custom Bot")
                 .addFields([{
                     name: "Custom Bot Name",

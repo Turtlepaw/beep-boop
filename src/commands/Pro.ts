@@ -30,7 +30,7 @@ export default class Send extends Command {
             const ExpiresIn = Profile.expires;
             await interaction.reply({
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .addFields([{
                             name: `${Icons.Clock} Expires`,
                             value: time(ExpiresIn, TimestampStyles.RelativeTime)

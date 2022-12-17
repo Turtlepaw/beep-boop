@@ -70,7 +70,7 @@ export default class SetupAppeals extends Button {
         client.storage[`${interaction.guild.id}_appeal_channel`] = SelectMenuInteraction.values[0];
         await SelectMenuInteraction.reply({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setTitle(`${Emojis.Tada} You're all set!`)
                     .setDescription("Appeals have been successfully set up in your server! Members that get banned will now get a DM with the appeal form. If you'd like to test this out you can use the </developer:1030997072175968326> command.")
             ]

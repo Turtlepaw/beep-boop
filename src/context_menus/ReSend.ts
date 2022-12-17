@@ -46,7 +46,7 @@ export default class DeleteThis extends ContextMenu {
         const url = await ShortenURL(wbMessge, Webhook);
         await interaction.editReply({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
                     .setTitle(`${Icons.Success} Webhook Created`)
                     .addFields([{

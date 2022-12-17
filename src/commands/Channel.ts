@@ -67,7 +67,7 @@ export default class Channel extends Command {
 
             await interaction.reply({
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setTitle(`${Icons.Lock} This channel has been locked.`)
                         .setAuthor({
                             name: `Locked by ${interaction.user.username}`,
@@ -81,7 +81,7 @@ export default class Channel extends Command {
             await Unlock(interaction.guild, interaction.channel as TextChannel);
             await interaction.reply({
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setTitle(`${Icons.Unlock} This channel has been unlocked.`)
                         .setAuthor({
                             name: `Unlocked by ${interaction.user.username}`,

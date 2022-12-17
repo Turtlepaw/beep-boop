@@ -68,7 +68,7 @@ export function ServerConfiguration(interaction: RepliableInteraction) {
 
     const payload = {
         embeds: [
-            new Embed()
+            new Embed(interaction.guild)
                 .setTitle(`Managing ${interaction.guild.name}`)
                 .setColor(Colors.Blurple)
                 .setDescription(`Since you're managing ${interaction.guild.name}, you're able to configure ${interaction.guild.name}'s modules. Select a module to get started!`)

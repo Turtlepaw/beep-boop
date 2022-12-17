@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AnySelectMenuInteraction, AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { AnySelectMenuInteraction, AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionFlags, PermissionResolvable, PermissionsString } from "discord.js";
 
 export type ButtonBuilderOptions = {
     /**
@@ -9,7 +9,7 @@ export type ButtonBuilderOptions = {
     /**
      * The member executing this command must have one or more of these permissions.
      */
-    SomePermissions: PermissionsString[];
+    SomePermissions: PermissionResolvable[];
     /**
      * If the command can only be executed within a server.
      */
@@ -22,8 +22,8 @@ export type ButtonBuilderOptions = {
 
 export default class SelectOptionBuilder {
     public Value: string;
-    public RequiredPermissions!: PermissionsString[];
-    public SomePermissions!: PermissionsString[];
+    public RequiredPermissions!: PermissionResolvable[];
+    public SomePermissions!: PermissionResolvable[];
     public GuildOnly: boolean = true;
 
     constructor(options: ButtonBuilderOptions) {

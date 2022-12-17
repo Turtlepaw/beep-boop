@@ -85,7 +85,7 @@ export default class Send extends Command {
                 content: `${Icons.Success} Created a reminder, you'll be reminded ${time(In, TimestampStyles.RelativeTime)}`,
                 ephemeral: true,
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setDescription(`Manage your reminder with \`${Id}\`.`)
                         .setFooter({
                             text: Title
@@ -110,7 +110,7 @@ export default class Send extends Command {
             }
 
             const PageEmbeds: EmbedBuilder[] = [];
-            const BaseEmbed = new Embed()
+            const BaseEmbed = new Embed(interaction.guild)
                 .setTitle(`${Icons.Clock} Reminders`);
 
             const Max = 5;

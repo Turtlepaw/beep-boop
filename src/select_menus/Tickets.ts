@@ -1,6 +1,6 @@
 import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, Colors, CommandInteraction, ComponentType, inlineCode, ModalBuilder, PermissionsBitField, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons, Messages } from "../configuration";
+import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
@@ -12,12 +12,12 @@ import { Modules } from "../commands/Server";
 import { ChannelSelectMenu } from "../utils/components";
 import { generateId } from "../utils/Id";
 
-export default class AutonomousCleaning extends SelectOptionBuilder {
+export default class TicketConfiguration extends SelectOptionBuilder {
     constructor() {
         super({
             GuildOnly: false,
             RequiredPermissions: [],
-            SomePermissions: ["Administrator", "ManageGuild"],
+            SomePermissions: Permissions.Manager,
             Value: Modules.Tickets
         });
     }
@@ -25,7 +25,7 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
     async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[]) {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         let Tickets = Configuration.hasTickets();
-        let TicketCategory = Configuration?.TicketCategory;
+        let TicketCategory = Configuration?.Tickets?.Category;
 
         if (Configuration?.CustomId == null) {
             console.log("fixing guild", Configuration)
@@ -57,7 +57,7 @@ export default class AutonomousCleaning extends SelectOptionBuilder {
                 .setStyle(ButtonStyle.Secondary)
         ];
 
-        const GenerateEmbed = () => new Embed()
+        const GenerateEmbed = () => new Embed(interaction.guild)
             .setTitle("Managing Tickets")
             .addFields([{
                 name: "About Tickets",
@@ -85,8 +85,8 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
 
         const Save = async () => {
             await client.Storage.Configuration.Edit(Configuration.CustomId, {
-                TicketCategory,
-                Tickets
+                TicketsCategory: TicketCategory,
+                TicketsStatus: Tickets
             });
 
             await Message.edit({

@@ -4,6 +4,7 @@ import { Emojis, Icons } from "../configuration";
 import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
 import { Verifiers } from "../utils/verify";
+import { Logger } from "../logger";
 
 export default class InviteBlocker extends Event {
     constructor() {
@@ -18,7 +19,7 @@ export default class InviteBlocker extends Event {
         const Configuration = await client.Storage.Configuration.forGuild(Message.guild);
         try {
             const isInviteLink = await Verifiers.InviteLink(Message.content);
-            if (Configuration?.InviteBlocker == true && isInviteLink) {
+            if (Configuration.isInviteBlocker() && isInviteLink) {
                 Message.delete();
                 Message.author.send({
                     content: `${Icons.Link} Invite links aren't allowed in this community.`
@@ -31,7 +32,9 @@ export default class InviteBlocker extends Event {
                 })*/
             }
         } catch (e) {
-
+            let content: string = Message?.content;
+            if (content.length >= 30) content = (content.slice(0, 30) + "...");
+            Logger.error(`Error recieved processing ${content}: ${e}`)
         }
     }
 }

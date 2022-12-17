@@ -125,3 +125,6 @@ database.sqlite
 
 # log file
 log.json
+
+## Migrate files
+*-beep-boop.ts

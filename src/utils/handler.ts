@@ -44,7 +44,7 @@ async function CreateError(Summary: string, ExecutingGuild: Guild, client: Clien
 
     await (Channel as TextChannel).send({
         embeds: [
-            new Embed()
+            new Embed(ExecutingGuild)
                 .setTitle("Something didn't go right...")
                 .setDescription(`Here's what happened:\n\n\`\`\`bash\n${Summary}\`\`\``)
         ],

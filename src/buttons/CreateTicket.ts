@@ -66,7 +66,7 @@ export default class CreateTicket extends Button {
 
         const Message = await interaction.reply({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setColor(Colors.Blurple)
                     .setTitle(`${Emojis.Reason} Add a Reason`)
                     .setDescription("If you add a reason, you're more likely to get help faster.")
@@ -111,7 +111,7 @@ export default class CreateTicket extends Button {
 
         TicketChannel.send({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setTitle(`Ticket`)
                     .setAuthor({
                         name: `Created By ${interaction.user.username}`,

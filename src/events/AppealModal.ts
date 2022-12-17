@@ -32,7 +32,7 @@ export default class AppealModal extends Event {
             components: [Buttons],
             content: "Here's what you'll be sending",
             embeds: [
-                new Embed()
+                new Embed(ModalInteraction.guild)
                     .setAuthor({
                         name: ModalInteraction.user.username,
                         iconURL: ModalInteraction.user.displayAvatarURL()
@@ -83,7 +83,7 @@ export default class AppealModal extends Event {
         const Message = Channel.send({
             components: [Components],
             embeds: [
-                new Embed()
+                new Embed(ModalInteraction.guild)
                     .setAuthor({
                         name: ModalInteraction.user.username,
                         iconURL: ModalInteraction.user.displayAvatarURL()

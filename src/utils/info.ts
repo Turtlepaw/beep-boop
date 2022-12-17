@@ -126,7 +126,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     // like without guild required
     await interaction.reply({
         embeds: [
-            new Embed()
+            new Embed(interaction.guild)
                 .setAuthor({
                     iconURL: AvatarURL,
                     name: `${Member.displayName} (${User.tag})`
@@ -206,7 +206,7 @@ export async function GuildInformation(interaction: RepliableInteraction, target
 
     await interaction.reply({
         embeds: [
-            new Embed()
+            new Embed(interaction.guild)
                 .setAuthor({
                     iconURL: AvatarURL,
                     name: Guild.name

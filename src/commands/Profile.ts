@@ -25,7 +25,7 @@ export async function ViewProfile(interaction: UserContextMenuCommandInteraction
         ephemeral,
         fetchReply: true,
         embeds: [
-            new Embed()
+            new Embed(interaction.guild)
                 .setTitle(`${profile.displayName}'s Profile`)
                 .setColor(profile.accentColor)
                 .setThumbnail(user.avatarURL())
@@ -202,7 +202,7 @@ export default class Send extends Command {
                 fetchReply: true,
                 components: [ActionButtons],
                 embeds: [
-                    new Embed()
+                    new Embed(interaction.guild)
                         .setTitle("Customizing your profile")
                         .setDescription("Select an option below to start customizing your profile!")
                 ]

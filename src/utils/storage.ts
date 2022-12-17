@@ -1,7 +1,7 @@
 import { Client, Guild } from "discord.js";
 import { KeyFileStorage } from "key-file-storage/dist/src/key-file-storage";
 import "reflect-metadata"
-import { CleanupType, GuildConfiguration } from "../models/Configuration";
+import { CleanupType, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType } from "../models/Configuration";
 import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { Profile } from "../models/Profile";
@@ -14,8 +14,62 @@ import { JSONArray } from "./jsonArray";
 import { Gift } from "../models/Gift";
 import { generateId } from "./Id";
 
-export class ResolvedGuildConfiguration extends GuildConfiguration {
-    constructor(options?: any) {
+class ResolvableConfiguration {
+    // Guild Information
+    public CustomId: number;
+    public Id: string;
+    public Name: string;
+
+    // Autonomous Cleanup
+    public CleanupChannels: string[];
+    public CleanupTimer: number;
+    public CleanupType: CleanupType[];
+
+    // Premium (basic and pro)
+    public Color: string;
+
+    // [deprecated] Reputation Based Moderation
+    public MaxReputation: number;
+    public ModerationChannel: string;
+    public ModerationType: JSONArray<ReputationBasedModerationType>;
+    public ReputationMod: boolean;
+
+    // Invite Blocker
+    public InviteBlocker: {
+        Status: boolean;
+        Exceptions: string[];
+    };
+
+    // Starboard
+    public Starboard: {
+        Channel: string;
+        Status: boolean;
+        Reaction: string;
+    };
+
+    // Tickets
+    public Tickets: {
+        Status: boolean;
+        Category: string;
+    };
+
+    // Join Actions
+    public ActionsDetails: {
+        MaxReputation: number;
+        NicknamePrefix: string;
+    };
+
+    public Actions: {
+        Action: JoinActions;
+        Trigger: JoinTriggers;
+    }[];
+
+    // Raw configuration
+    public raw: GuildConfiguration;
+}
+
+export class ResolvedGuildConfiguration extends ResolvableConfiguration {
+    constructor(options?: ResolvableConfiguration) {
         super();
         Object.entries(options).map(([k, v]) => this[k] = v);
     }
@@ -25,7 +79,7 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 
     isCleanup(type: CleanupType) {
-        if (!JSONArray.isArray(this.CleanupType)) return;
+        if (!Array.isArray(this.CleanupType)) return false;
         return this.CleanupType.includes(type);
     }
 
@@ -34,11 +88,11 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 
     hasTickets() {
-        return this?.Tickets != null;
+        return this?.Tickets?.Status ?? false;
     }
 
     hasTicketsSetup() {
-        return this?.TicketCategory != null;
+        return this?.Tickets?.Category != null;
     }
 
     isMessageCleanup() {
@@ -50,7 +104,7 @@ export class ResolvedGuildConfiguration extends GuildConfiguration {
     }
 
     isInviteBlocker() {
-        return this?.InviteBlocker ?? false;
+        return this?.InviteBlocker?.Status ?? false;
     }
 }
 
@@ -162,11 +216,11 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
         return this.EditOrCreate({
             Id
         }, {
-            CleanupChannels: json.toJSON()
+            CleanupChannels: []
         });
     }
 
-    CreateConfiguration(guild: { id: string; }) {
+    CreateConfiguration(guild: { id: string; name: string; }) {
         //if (this.CreatedGuilds.includes(guild.id)) return;
         const EmptyArray = JSON.stringify({
             array: []
@@ -174,21 +228,40 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
         //if (this.CreatedGuilds.includes(guild.id)) return;
         //this.CreatedGuilds.push(guild.id);
         return this.Repository.save({
-            CleanupChannels: EmptyArray,
-            CleanupTimer: null,
-            CleanupType: EmptyArray,
-            Color: null,
+            // Server Information
             Id: guild.id,
-            MaxReputation: 5,
-            ModerationChannel: null,
-            ModerationType: EmptyArray,
+            Name: guild.name,
+            // Autonomous Cleaning
+            CleanupChannels: [],
+            CleanupTimer: null,
+            CleanupType: [],
+            // Premium
+            Color: null,
+            // Invite Blocker
+            InviteBlockerStatus: false,
+            InviteBlockerExceptions: [],
+            // [deprecated] Reputation Based Moderation
             ReputationMod: false,
-            InviteBlocker: false,
-            CustomId: Number(generateId(10))
+            MaxReputation: 5,
+            ModerationType: "",
+            // Logs
+            ModerationChannel: null,
+            ModerationChannels: [],
+            // Highlights (known as Starboard)
+            StarboardReaction: "⭐",
+            StarboardChannel: null,
+            StarboardStatus: false,
+            // Join Actions
+            ActionsMaxReputation: 2,
+            ActionsNicknamePrefix: null,
+            Actions: [],
+            // Tickets
+            TicketsCategory: null,
+            TicketsStatus: false
         });
     }
 
-    async forGuild(guild: { id: string }): Promise<ResolvedGuildConfiguration> {
+    async forGuild(guild: { id: string; name: string; }): Promise<ResolvedGuildConfiguration> {
         const config = await this.Get({
             Id: guild.id
         });
@@ -197,17 +270,50 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
 
         //if (config == null) return null; //this.CreateConfiguration(guild);
 
+
         return new ResolvedGuildConfiguration({
-            CleanupChannels: config?.CleanupChannels == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupChannels),
-            CleanupTimer: config?.CleanupTimer || null,
-            CleanupType: config?.CleanupType == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupType),
-            Color: config?.Color || null,
+            // Guild Information
+            CustomId: config?.CustomId,
             Id: config?.Id ?? guild.id,
+            Name: config?.Name ?? guild.name,
+            // Autonomous Cleanup
+            CleanupChannels: config?.CleanupChannels == null ? [] : config.CleanupChannels,
+            CleanupTimer: config?.CleanupTimer || null,
+            CleanupType: config?.CleanupType == null ? [] : config.CleanupType,
+            // Premium (basic and pro)
+            Color: config?.Color || null,
+            // [deprecated] Reputation Based Moderation
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,
             ModerationType: config?.ModerationType == null ? EmptyResolvableArray() : JSONArray.from(config?.ModerationType),
             ReputationMod: config?.ReputationMod ?? false,
-            InviteBlocker: config?.InviteBlocker ?? false
+            // Invite Blocker
+            InviteBlocker: {
+                Status: config?.InviteBlockerStatus ?? false,
+                Exceptions: config?.InviteBlockerExceptions == null ? [] : config?.InviteBlockerExceptions
+            },
+            // Starboard
+            Starboard: {
+                Channel: config?.StarboardChannel || null,
+                Status: config?.StarboardStatus ?? false,
+                Reaction: config?.StarboardReaction ?? "⭐"
+            },
+            // Tickets
+            Tickets: {
+                Category: config?.TicketsCategory,
+                Status: config?.TicketsStatus
+            },
+            // Join Actions
+            ActionsDetails: {
+                MaxReputation: config?.ActionsMaxReputation,
+                NicknamePrefix: config?.ActionsNicknamePrefix
+            },
+            Actions: config?.Actions == null ? [] : config.Actions.map(e => ({
+                Action: e[1],
+                Trigger: e[0]
+            })),
+            // Raw configuration
+            raw: config
         });
     }
 }

@@ -23,7 +23,8 @@ export class JSONArray<type = any> {
         });
     }
 
-    static from(json: any) {
+    static from<T>(json: any): JSONArray<T> {
+        if (json == '') return new JSONArray();
         const ResolvedJSON = JSON.parse(json);
         const array = new JSONArray();
         array.array.push(...ResolvedJSON.array);

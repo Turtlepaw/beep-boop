@@ -1,5 +1,6 @@
-import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, EmbedBuilder } from "discord.js";
+import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, PermissionFlagsBits } from "discord.js";
 import { Logging, SavedMessages } from "./@types/config";
+import { Embed as EmbedBuilder } from "./utils/EmbedBuilder";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
@@ -164,13 +165,7 @@ export enum Colors {
     SuccessButton = "#2d7d46"
 }
 
-export class Embed extends EmbedBuilder {
-    constructor() {
-        super();
-        this.setColor([255, 96, 96])
-    }
-
-    build() {
-        return [this]
-    }
+export const Embed = EmbedBuilder;
+export const Permissions = {
+    Manager: [PermissionFlagsBits.Administrator, PermissionFlagsBits.ManageGuild]
 }

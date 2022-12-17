@@ -26,7 +26,7 @@ export default class Activities extends Command {
 
         await interaction.reply({
             embeds: [
-                new Embed()
+                new Embed(interaction.guild)
                     .setTitle("Rank")
                     .addFields([{
                         name: "Current Level",

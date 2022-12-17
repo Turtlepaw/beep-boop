@@ -1,4 +1,4 @@
-import { HexColorString } from 'discord.js';
+import { Events, HexColorString } from 'discord.js';
 import { JSONArray } from '../utils/jsonArray';
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
 
@@ -14,47 +14,100 @@ export enum ReputationBasedModerationType {
     AsKick = "AS_MEMBER_KICK"
 }
 
+export enum JoinTriggers {
+    Reputation = "REPUTATION_BELOW",
+    Suspicious = "SUSPICIOUS",
+    Any = "ANY"
+}
+
+export enum JoinActions {
+    SendVerification = "VERIFY_USER",
+    Warn = "WARN_MODERATORS",
+    RemoveZalgo = "REMOVE_ZALGO",
+    PrefixUsername = "PREFIX_USERNAME"
+}
+
 @Entity()
 export class GuildConfiguration {
     @PrimaryGeneratedColumn({ type: "integer" })
     CustomId: number;
 
-    // @PrimaryColumn({ generated: true })
-    // CustomId: string;
-
+    // Server Information
+    // -> Basic information about the server.
     @Column()
     Id: string;
+    @Column()
+    Name: string;
 
-    // Premium
+    // Premium (basic and pro)
+    // -> https://bop.trtle.xyz/pro
     @Column({ nullable: true })
     Color: HexColorString | string;
 
     // Autonomous Cleaning
-    @Column()
-    CleanupType: string // | CleanupType[] | JSONArray<CleanupType> | undefined[]; //CleanupType[];
+    // -> Clean up old messages from members.
+    @Column({ type: "simple-array" })
+    CleanupType: CleanupType[]; // | CleanupType[] | JSONArray<CleanupType> | undefined[]; //CleanupType[];
     @Column({ nullable: true })
     CleanupTimer: number;
-    @Column()
-    CleanupChannels: string;
+    @Column({ type: "simple-array" })
+    CleanupChannels: string[];
 
-    // Reputation Based Moderation
+    // [deprecated] Reputation Based Moderation
+    // -> Set up actions when a member when low
+    //    reputation joins.
+    // -> Deprecation notice: use join Actions instead
     @Column()
     ReputationMod: boolean;
     @Column()
     MaxReputation: number;
     @Column()
-    ModerationType: string // | JSONArray<ReputationBasedModerationType> | undefined[]; //ReputationBasedModerationType[];
+    ModerationType: string; // | JSONArray<ReputationBasedModerationType> | undefined[]; //ReputationBasedModerationType[];
 
     // Tickets
+    // -> Let members have a private discussion
+    //    with moderators.
     @Column({ nullable: true })
-    TicketCategory: string;
-    @Column({ nullable: true, default: false })
-    Tickets: boolean;
+    TicketsStatus: boolean;
+    @Column({ nullable: true })
+    TicketsCategory: string;
 
     // Logs
+    // -> Log everything going on in
+    //    your community
     @Column({ nullable: true })
     ModerationChannel: string | null;
+    @Column({ nullable: true, type: "simple-array" })
+    ModerationChannels: {
+        Channel: string;
+        Events: Events[]
+    }[]
 
+    // Invite Blocker
+    // -> Blocks members from sending invites
+    //    by scanning the url.
+    @Column({ nullable: true })
+    InviteBlockerStatus: boolean;
+    @Column({ nullable: true, type: "simple-array" })
+    InviteBlockerExceptions: string[];
+
+    // Invite Blocker
+    // -> Set up actions to run when a member
+    //    joins your community.
+    @Column({ nullable: true, type: "simple-array" })
+    Actions: ([JoinTriggers, JoinActions])[];
+    @Column({ nullable: true })
+    ActionsMaxReputation: number;
+    @Column({ nullable: true })
+    ActionsNicknamePrefix: string;
+
+    // Highlighs (known as Starboard)
+    // -> Highlight the best and brightest
+    //    messages in your community.
     @Column({ nullable: true, default: false })
-    InviteBlocker: boolean;
+    StarboardStatus: boolean;
+    @Column({ nullable: true })
+    StarboardChannel: string;
+    @Column({ nullable: true, default: "⭐" })
+    StarboardReaction: string;
 }

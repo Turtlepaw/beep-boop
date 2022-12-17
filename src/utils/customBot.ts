@@ -62,19 +62,22 @@ export async function CreateLimitedBot(botToken: string, client: Client, error: 
 export function CreateConfiguration(client: Client) {
     setTimeout(async () => {
         console.log("Creating configuration...")
+        let num = 0;
         const Guilds = await client.guilds.fetch();
         for (const guild of Guilds.values()) {
             try {
                 const config = await client.Storage.Configuration.forGuild(guild);
-                if (config == null) {
+                if (config?.raw == null) {
+                    num++
                     client.Storage.Configuration.CreateConfiguration(guild);
                 }
             } catch (e) {
+                console.log("Error:".red, e);
                 Logger.error(`Couldn't create configuration for ${guild.name}: ${e}`);
             }
         }
 
-        Logger.info(`Created configuration for ${Guilds.size} guilds`)
+        Logger.info(`Created configuration for ${num} guilds`)
     }, 5000)
 }
 
@@ -129,7 +132,7 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
                 const Status = (status: string) => StatusType[status] ?? "";
                 await Channel.send({
                     embeds: [
-                        new Embed()
+                        new Embed(Guild)
                             .setTitle("🎉 Your custom bot is online!")
                             .addFields([{
                                 name: `${Icons.Clock} Started`,
