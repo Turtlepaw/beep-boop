@@ -1,3 +1,4 @@
+//@ts-nocheck
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Emojis } from "../configuration";
@@ -12,7 +13,7 @@ export default class DeleteThis extends ContextMenu {
     constructor() {
         super({
             Name: "Legacy Quick Edit",
-            CanaryCommand: false,
+            CanaryCommand: true,
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: [],
@@ -21,6 +22,7 @@ export default class DeleteThis extends ContextMenu {
     }
 
     public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
+        return FriendlyInteractionError(interaction, "This command is now deprecated.");
         if (interaction.targetMessage.author.id != client.user.id) {
             return FriendlyInteractionError(interaction, "That message wasn't sent by me");
         };

@@ -89,7 +89,10 @@ export default class DeleteThis extends ContextMenu {
         const ButtonInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.Button,
             time: 0,
-            filter: Filter(interaction.member, CustomIds.EditEmbed, CustomIds.MoveEmbed, CustomIds.RemoveButtons)
+            filter: Filter({
+                member: interaction.member,
+                customIds: CustomIds
+            })
         });
 
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
@@ -106,7 +109,7 @@ export default class DeleteThis extends ContextMenu {
                 embeds: [
                     new Embed(interaction.guild)
                         .setDescription(`${URL.url}`)
-                        .setTitle(`${Icons.Success} Generated URL`)
+                        .setTitle(`${Icons.Configure} Generated URL`)
                         .addFields([{
                             name: `${Icons.Clock} Expires`,
                             value: `${time(date, TimestampStyles.RelativeTime)} or ${time(date, TimestampStyles.LongDate)}`
@@ -168,7 +171,10 @@ export default class DeleteThis extends ContextMenu {
             const SelectInteraction = await Message.awaitMessageComponent({
                 componentType: ComponentType.StringSelect,
                 time: 0,
-                filter: Filter(interaction.member, CustomIds.ChannelSelect)
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: [CustomIds.ChannelSelect]
+                })
             });
 
             const Value = SelectInteraction.values[0];

@@ -105,7 +105,10 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
 
         const Collector = Message.createMessageComponentCollector({
             time: 0,
-            filter: Filter(interaction.member, ...GenerateIds(Id))
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         Collector.on("collect", async button => {
@@ -124,7 +127,10 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
                     const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
                         time: 0,
                         componentType: ComponentType.ChannelSelect,
-                        filter: Filter(interaction.member, Id.ChannelSelector)
+                        filter: Filter({
+                            member: interaction.member,
+                            customIds: [Id.ChannelSelector]
+                        })
                     });
 
                     const Channel = ChannelInteraction.channels.first();
@@ -151,7 +157,10 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
                 const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
                     time: 0,
                     componentType: ComponentType.ChannelSelect,
-                    filter: Filter(interaction.member, Id.ChannelSelector)
+                    filter: Filter({
+                        member: interaction.member,
+                        customIds: [Id.ChannelSelector]
+                    })
                 });
 
                 const Channel = ChannelInteraction.channels.first();

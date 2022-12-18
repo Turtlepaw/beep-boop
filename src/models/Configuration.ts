@@ -1,6 +1,6 @@
 import { Events, HexColorString } from 'discord.js';
 import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ValueTransformer } from "typeorm"
 
 export enum CleanupType {
     System = "SYSTEM_CLEANUP",
@@ -27,6 +27,15 @@ export enum JoinActions {
     PrefixUsername = "PREFIX_USERNAME"
 }
 
+const JSONTransformer: ValueTransformer = {
+    to(value) {
+        return JSON.stringify(value);
+    },
+    from(value) {
+        return JSON.parse(value);
+    },
+};
+
 @Entity()
 export class GuildConfiguration {
     @PrimaryGeneratedColumn({ type: "integer" })
@@ -50,8 +59,11 @@ export class GuildConfiguration {
     CleanupType: CleanupType[]; // | CleanupType[] | JSONArray<CleanupType> | undefined[]; //CleanupType[];
     @Column({ nullable: true })
     CleanupTimer: number;
-    @Column({ type: "simple-array" })
-    CleanupChannels: string[];
+    @Column({ type: "varchar", transformer: JSONTransformer })
+    CleanupChannels: {
+        Type: CleanupType;
+        ChannelId: string;
+    }[];
 
     // [deprecated] Reputation Based Moderation
     // -> Set up actions when a member when low
@@ -77,11 +89,11 @@ export class GuildConfiguration {
     //    your community
     @Column({ nullable: true })
     ModerationChannel: string | null;
-    @Column({ nullable: true, type: "simple-array" })
+    @Column({ type: "varchar", nullable: true, transformer: JSONTransformer })
     ModerationChannels: {
         Channel: string;
         Events: Events[]
-    }[]
+    }[];
 
     // Invite Blocker
     // -> Blocks members from sending invites

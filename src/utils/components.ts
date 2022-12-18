@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder } from "discord.js"
+import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
 
@@ -96,6 +96,70 @@ export function GetTextInput(Id: string, interaction: ModalSubmitInteraction) {
 }
 
 export type Channels = Collection<string, GuildBasedChannel>;
+
+export type AnySelectMenuBuilder = StringSelectMenuBuilder |
+    RoleSelectMenuBuilder |
+    ChannelSelectMenuBuilder |
+    UserSelectMenuBuilder |
+    MentionableSelectMenuBuilder;
+
+export type SelectorConfiguration<T extends AnySelectMenuBuilder> = (SelectMenu: T) => AnySelectMenuBuilder;
+export class Selector<T extends AnySelectMenuBuilder> {
+    public Configuration: SelectorConfiguration<T>;
+    public CustomId: string;
+
+    public SetCustomId(customId: string) {
+        this.CustomId = customId;
+        return this;
+    }
+
+    public Configure(Configuration: SelectorConfiguration<T>) {
+        this.Configuration = Configuration;
+        return this;
+    }
+
+    //@ts-expect-error
+    public toBuilder(): T { };
+
+    public toActionRow(): ActionRowBuilder<T> {
+        return new ActionRowBuilder<T>()
+            .addComponents(
+                this.toBuilder()
+            );
+    }
+}
+
+export class ChannelSelector extends Selector<ChannelSelectMenuBuilder> {
+    public ChannelTypes: ChannelType[] = [ChannelType.GuildText];
+
+    public SetChannelTypes(...Types: ChannelType[]) {
+        this.ChannelTypes = Types;
+        return this;
+    }
+
+    public toBuilder(): ChannelSelectMenuBuilder {
+        if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
+        const Builder = new ChannelSelectMenuBuilder()
+            .setCustomId(this.CustomId)
+            .setChannelTypes(this.ChannelTypes);
+        if (this?.Configuration != null) this.Configuration(Builder);
+        return Builder;
+    }
+}
+
+export class RoleSelector extends Selector<RoleSelectMenuBuilder> {
+    public toBuilder(): RoleSelectMenuBuilder {
+        if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
+        const Builder = new RoleSelectMenuBuilder()
+            .setCustomId(this.CustomId);
+        if (this?.Configuration != null) this.Configuration(Builder);
+        return Builder;
+    }
+}
+
+/**
+ * @deprecated use ChannelSelector class instead
+ */
 export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Type?: Channels | ChannelType, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => any) {
     if (typeof Type != "number") Type = ChannelType.GuildText
     const Component = new ChannelSelectMenuBuilder()

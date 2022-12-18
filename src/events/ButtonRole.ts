@@ -1,9 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
 import { Filter } from "../utils/filter";
-import { Embed, Emojis } from "../configuration";
+import { Embed, Emojis, Icons } from "../configuration";
 import Event from "../lib/Event";
 
-export default class AppealModal extends Event {
+export default class ButtonRole extends Event {
     constructor() {
         super({
             EventName: Events.InteractionCreate
@@ -11,6 +11,18 @@ export default class AppealModal extends Event {
     }
 
     async ExecuteEvent(client: Client, interaction: ButtonInteraction) {
+        const Variant: "Members" | "Circles" = "Members";
+        const Variants = {
+            Members: {
+                Add: Icons.MemberAdd,
+                Remove: Icons.RoleRemove
+            },
+            Circles: {
+                Add: Icons.Add,
+                Remove: Icons.Remove
+            }
+        };
+
         if (!interaction.isButton()) return;
         if (!interaction.inCachedGuild()) return;
         if (!interaction.customId.startsWith("button-role:")) return;
@@ -21,13 +33,13 @@ export default class AppealModal extends Event {
             interaction.member.roles.add(Role);
             await interaction.reply({
                 ephemeral: true,
-                content: `${Emojis.Success} Successfully assigned you ${Role}.`
+                content: `${Variants[Variant].Add} Successfully assigned you ${Role}.`
             })
         } else {
             interaction.member.roles.remove(Role);
             await interaction.reply({
                 ephemeral: true,
-                content: `${Emojis.Success} Successfully removed ${Role}.`
+                content: `${Variants[Variant].Remove} Successfully removed ${Role}.`
             });
         }
     }

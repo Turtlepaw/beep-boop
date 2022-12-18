@@ -50,7 +50,10 @@ export default class AppealModal extends Event {
 
         const ChannelInteraction = await Message.awaitMessageComponent({
             time: 0,
-            filter: Filter(ModalInteraction.member, ChannelMenuId),
+            filter: Filter({
+                member: ModalInteraction.member,
+                customIds: [ChannelMenuId]
+            }),
             componentType: ComponentType.ChannelSelect
         });
 

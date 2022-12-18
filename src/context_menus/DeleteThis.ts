@@ -62,7 +62,10 @@ export default class DeleteThis extends ContextMenu {
         const Button = await Message.awaitMessageComponent({
             componentType: ComponentType.Button,
             time: 0,
-            filter: Filter(interaction.member, CustomId.BulkDelete, CustomId.DeleteMessage)
+            filter: Filter({
+                member: interaction.member,
+                customIds: CustomId
+            })
         });
 
         const MessageSelected = await interaction.options.getMessage("message");

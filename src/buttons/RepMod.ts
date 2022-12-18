@@ -27,6 +27,13 @@ export default class SetupAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        enum Id {
+            Continue = "CONTINUE",
+            ActionBan = "BAN_ACTION_REPMOD",
+            ActionWarn = "WARN_ACTION_REPMOD",
+            ActionSelector = "SELECT_AN_ACTION",
+            ChannelSelector = "SELECT_A_CHANNEL"
+        }
         const CurrentSettings = await client.Storage.Configuration.forGuild(interaction.guild);
         let Button: ButtonInteraction;
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
@@ -34,7 +41,7 @@ export default class SetupAppeals extends Button {
                 new ButtonBuilder()
                     .setLabel("Continue")
                     .setStyle(ButtonStyle.Danger)
-                    .setCustomId("CONTINUE")
+                    .setCustomId(Id.Continue)
             )
 
         const Type = new ActionRowBuilder<SelectMenuBuilder>()
@@ -43,12 +50,12 @@ export default class SetupAppeals extends Button {
                     .addOptions([
                         new SelectMenuOptionBuilder()
                             .setLabel("Ban")
-                            .setValue("BAN_AFTER"),
+                            .setValue(Id.ActionBan),
                         new SelectMenuOptionBuilder()
                             .setLabel("Warn Moderators")
-                            .setValue("WARN"),
+                            .setValue(Id.ActionWarn)
                     ])
-                    .setCustomId("TYPE_SELECT")
+                    .setCustomId(Id.ActionSelector)
                     .setMinValues(1)
                     .setMaxValues(2)
             );
@@ -62,12 +69,15 @@ export default class SetupAppeals extends Button {
 
             Button = await ActionMessage.awaitMessageComponent({
                 time: 0,
-                filter: Filter(interaction.member, "CONTINUE"),
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: Id
+                }),
                 componentType: ComponentType.Button
             });
         };
 
-        const ChannelMenu = ChannelSelectMenu("CHANNEL_SELECT", interaction.guild.channels.cache);
+        const ChannelMenu = ChannelSelectMenu(Id.ChannelSelector, interaction.guild.channels.cache);
 
         const reply = (interaction.replied ? Button : interaction);
         const Message = await reply.reply({
@@ -81,7 +91,10 @@ export default class SetupAppeals extends Button {
         const SelectMenuInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.StringSelect,
             time: 0,
-            filter: Filter(interaction.member, "TYPE_SELECT")
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         let btn: RepliableInteraction = SelectMenuInteraction;
@@ -99,7 +112,10 @@ export default class SetupAppeals extends Button {
             const select = await message.awaitMessageComponent({
                 componentType: ComponentType.StringSelect,
                 time: 0,
-                filter: Filter(interaction.member, "CHANNEL_SELECT")
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: Id
+                })
             });
 
             btn = select;

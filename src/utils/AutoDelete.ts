@@ -29,7 +29,7 @@ export async function StartAutoDeleteService(client: Client) {
         if (stop) return;
 
         for (const Channel of Channels) {
-            const ResolvedChannel = await ResolvedGuild.channels.fetch(Channel);
+            const ResolvedChannel = await ResolvedGuild.channels.fetch(Channel.ChannelId);
             if (stop) return;
             if (ResolvedChannel?.type != ChannelType.GuildText) return;
             const MessageCollector = ResolvedChannel.createMessageCollector({

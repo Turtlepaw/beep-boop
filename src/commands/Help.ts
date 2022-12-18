@@ -171,7 +171,10 @@ export default class Help extends SlashCommandBuilder {
 
             const collect = Message.createMessageComponentCollector({
                 time: 0,
-                filter: Filter(interaction.member, Ids.Categories),
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: Ids
+                }),
                 componentType: ComponentType.StringSelect
             });
 

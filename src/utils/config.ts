@@ -1,9 +1,12 @@
 import { ButtonBuilder, ButtonStyle } from "discord.js";
 import { Icons } from "../configuration";
 
+export enum ButtonId {
+    ReturnButton = "RETURN"
+}
 export const BackComponent = new ButtonBuilder()
     .setLabel("Back")
-    .setCustomId("return")
+    .setCustomId(ButtonId.ReturnButton)
     .setStyle(ButtonStyle.Danger)
 
 export function ButtonBoolean(bool: boolean) {

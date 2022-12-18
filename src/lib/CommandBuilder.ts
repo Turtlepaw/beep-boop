@@ -1,5 +1,5 @@
 import { SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandOptionsOnlyBuilder, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
-import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, CommandInteraction, PermissionsString, SlashCommandUserOption } from "discord.js";
+import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, CommandInteraction, PermissionResolvable, PermissionsString, SlashCommandUserOption } from "discord.js";
 import { BuilderOptions, CommandBuilderType } from "./Builder";
 
 export type SlashCommandOption = SlashCommandRoleOption |
@@ -24,11 +24,11 @@ export interface CommandBuilderOptions {
     /**
      * Required permissions to execute this command.
      */
-    RequiredPermissions: PermissionsString[];
+    RequiredPermissions: PermissionResolvable[];
     /**
      * The member executing this command must have one or more of these permissions.
      */
-    SomePermissions: PermissionsString[];
+    SomePermissions: PermissionResolvable[];
     /**
      * If the command can only be executed within a server.
      */
@@ -56,8 +56,8 @@ export interface CommandBuilderOptions {
 export default class Command {
     public Name: string;
     public Description: string;
-    public RequiredPermissions!: PermissionsString[];
-    public SomePermissions!: PermissionsString[];
+    public RequiredPermissions!: PermissionResolvable[];
+    public SomePermissions!: PermissionResolvable[];
     public Builder: SlashCommandBuilder = new SlashCommandBuilder();
     public CanaryCommand: boolean = false;
     public GuildOnly: boolean = true;

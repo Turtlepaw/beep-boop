@@ -1,16 +1,16 @@
 import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, Client, CommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType, PermissionsString } from "discord.js";
+import { AutocompleteInteraction, Client, CommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType, PermissionResolvable, PermissionsString } from "discord.js";
 import { BuilderOptions, CommandBuilderType } from "./Builder";
 
 export interface ContextMenuBuilderOptions {
     /**
      * Required permissions to execute this command.
      */
-    RequiredPermissions: PermissionsString[];
+    RequiredPermissions: PermissionResolvable[];
     /**
      * The member executing this command must have one or more of these permissions.
      */
-    SomePermissions: PermissionsString[];
+    SomePermissions: PermissionResolvable[];
     /**
      * If the command can only be executed within a server.
      */
@@ -31,8 +31,8 @@ export interface ContextMenuBuilderOptions {
 export default class ContextMenu {
     public Name: string;
     public Type: ContextMenuCommandType;
-    public RequiredPermissions!: PermissionsString[];
-    public SomePermissions!: PermissionsString[];
+    public RequiredPermissions!: PermissionResolvable[];
+    public SomePermissions!: PermissionResolvable[];
     public Builder: ContextMenuCommandBuilder = new ContextMenuCommandBuilder();
     public CanaryCommand: boolean = false;
     public GuildOnly: boolean = true;

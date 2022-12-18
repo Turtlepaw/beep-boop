@@ -76,14 +76,8 @@ export function ServerConfiguration(interaction: RepliableInteraction) {
         components: Buttons
     }
 
-    if (interaction.deferred || interaction.replied) {
-        //@ts-expect-error
-        if (interaction?.update != null) {
-            //@ts-expect-error
-            return interaction.update(payload)
-        } else {
-            return interaction.editReply(payload)
-        }
+    if (interaction.isButton()) {
+        interaction.update(payload);
     } else return interaction.reply(payload);
 }
 

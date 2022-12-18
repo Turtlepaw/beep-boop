@@ -1,15 +1,34 @@
-import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, Colors, CommandInteraction, ComponentType, GuildTextBasedChannel, inlineCode, ModalBuilder, NewsChannel, PermissionsBitField, PrivateThreadChannel, SelectMenuOptionBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextBasedChannel, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, Channel, channelMention, ChannelType, Client, Colors, CommandInteraction, ComponentType, GuildTextBasedChannel, inlineCode, ModalBuilder, NewsChannel, PermissionsBitField, PrivateThreadChannel, SelectMenuOptionBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextBasedChannel, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Emojis, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
-import { Filter, GenerateIds } from "../utils/filter";
+import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
 import { Modules } from "../commands/Server";
 import { ChannelSelectMenu } from "../utils/components";
+import { CleanupChannel } from "../utils/storage";
+
+export function ResolveEnumValue(selectedEnum: object, selectedValue: string) {
+    for (const [k, v] of Object.entries(selectedEnum)) {
+        if (k == selectedValue || v == selectedValue) return selectedEnum[k];
+    }
+}
+
+export function EmbedChildren<T>(array: T[], item: (item: T) => string, noneMessage: string = "None") {
+    const GetEmoji = (last: boolean = false) => last ? `${Icons.StemEnd}` : `${Icons.StemItem}`;
+    let StringArray = "";
+    let at = 0;
+    array.forEach(e => {
+        at++
+        StringArray += `${GetEmoji(at == array.length)} ${item(e)}${at == array.length ? "" : "\n"}`;
+    });
+    if (array.length <= 0) StringArray = `${Icons.StemEnd} ${noneMessage}`;
+    return StringArray;
+}
 
 export default class AutonomousCleaningConfiguration extends SelectOptionBuilder {
     constructor() {
@@ -27,6 +46,9 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
         let MessageCleanup = Configuration.isMessageCleanup();
         let TimedCleanup = Configuration.isTimedCleanup();
         let Timer = Configuration?.CleanupTimer;
+        let MessageChannels = Configuration?.getCleanupChannels(CleanupType.Message);
+        let SystemChannels = Configuration?.getCleanupChannels(CleanupType.System);
+        let TimedChannels = Configuration?.getCleanupChannels(CleanupType.Timed);
         let Channels = Configuration?.CleanupChannels;
 
         enum Id {
@@ -38,7 +60,8 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
             AddChannel = "add_channels",
             RemoveChannel = "remove_channels",
             ChannelSelector = "select_a_channel",
-            RemoveChannelSelector = "remove_a_channel"
+            RemoveChannelSelector = "remove_a_channel",
+            TypeSelector = "select_a_type"
         }
 
         const Components = () => [
@@ -78,14 +101,12 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
         ];
 
         const GenerateEmbed = () => {
-            const GetEmoji = (last: boolean = false) => last ? `${Icons.StemEnd}` : `${Icons.StemItem}`;
-            let ResolvedChannels = "";
-            let at = 0;
-            Channels.forEach(e => {
-                at++
-                ResolvedChannels += `${GetEmoji(at == Channels.length)} ${channelMention(e)}\n`;
-            });
-            if (ResolvedChannels.length <= 0) ResolvedChannels = `${Icons.StemEnd} None`
+            MessageChannels = Channels.filter(e => e.Type == CleanupType.Message)
+            SystemChannels = Channels.filter(e => e.Type == CleanupType.System)
+            TimedChannels = Channels.filter(e => e.Type == CleanupType.Timed)
+            const StringSystemChannels = EmbedChildren<CleanupChannel>(SystemChannels, (item) => channelMention(item.ChannelId), "No channels set")
+            const StringMessageChannels = EmbedChildren<CleanupChannel>(MessageChannels, (item) => channelMention(item.ChannelId), "No channels set")
+            const StringTimedChannels = EmbedChildren<CleanupChannel>(TimedChannels, (item) => channelMention(item.ChannelId), "No channels set")
             return new Embed(interaction.guild)
                 .setTitle("Managing Autonomous Cleanup")
                 .addFields([{
@@ -95,11 +116,12 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
                     name: "Current Configuration",
                     value: `
 ${TextBoolean(SystemCleanup, "System Cleanup")}
+${StringSystemChannels}
 ${TextBoolean(MessageCleanup, "Message Cleanup")}
+${StringMessageChannels}
 ${TextBoolean(TimedCleanup, "Timed Cleanup")}
-${Icons.StemEnd} Deletes after: ${Timer == null ? "Nothing set." : ms(Timer)}
-${Icons.Channel} Channels
-${ResolvedChannels}`
+${Icons.StemItem} Deletes after: ${Timer == null ? "Nothing set" : ms(Timer)}
+${StringTimedChannels}`
                 }]);
         }
 
@@ -132,7 +154,10 @@ ${ResolvedChannels}`
 
         const Collector = Message.createMessageComponentCollector({
             time: 0,
-            filter: Filter(interaction.member, ...GenerateIds(Id))
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         function HandleToggle(id: string) {
@@ -182,9 +207,38 @@ ${ResolvedChannels}`
                     components: Components()
                 });
             } else if (button.customId == Id.AddChannel) {
+                const TypeSelector = new StringSelectMenuBuilder()
+                    .addOptions(
+                        Object.entries(CleanupType).map(([k, v]) =>
+                            new SelectMenuOptionBuilder()
+                                .setLabel(k)
+                                .setValue(v)
+                        )
+                    )
+                    .setCustomId(Id.TypeSelector);
+
                 const ReplyMessage = await button.reply({
                     ephemeral: true,
                     fetchReply: true,
+                    content: `${Icons.Flag} Select a type`,
+                    components: [
+                        new ActionRowBuilder<StringSelectMenuBuilder>()
+                            .addComponents(
+                                TypeSelector
+                            )
+                    ]
+                });
+
+                const TypeInteraction = await ReplyMessage.awaitMessageComponent({
+                    time: 0,
+                    componentType: ComponentType.StringSelect,
+                    filter: Filter({
+                        member: interaction.member,
+                        customIds: [Id.TypeSelector]
+                    })
+                });
+
+                await TypeInteraction.update({
                     content: `${Icons.Channel} Select a channel`,
                     components: [
                         ChannelSelector
@@ -194,13 +248,20 @@ ${ResolvedChannels}`
                 const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
                     time: 0,
                     componentType: ComponentType.ChannelSelect,
-                    filter: Filter(interaction.member, Id.ChannelSelector)
+                    filter: Filter({
+                        member: interaction.member,
+                        customIds: [Id.ChannelSelector]
+                    })
                 });
 
                 const Channel = ChannelInteraction.channels.first();
+                const CleanupTypeSelected = TypeInteraction.values[0];
                 //const ResolvedChannel = await interaction.guild.channels.fetch(Channel.id);
 
-                if (Channels.includes(Channel.id)) {
+                if (Channels.includes({
+                    ChannelId: Channel.id,
+                    Type: ResolveEnumValue(CleanupType, CleanupTypeSelected)
+                })) {
                     ChannelInteraction.update({
                         content: `${Icons.Configure} The selected channel already exists.`,
                         components: []
@@ -208,7 +269,10 @@ ${ResolvedChannels}`
                     return
                 }
 
-                Channels.push(Channel.id);
+                Channels.push({
+                    ChannelId: Channel.id,
+                    Type: ResolveEnumValue(CleanupType, CleanupTypeSelected)
+                });
                 await Save();
                 await ChannelInteraction.update(Messages.Saved);
             } else if (button.customId == Id.RemoveChannel) {
@@ -219,7 +283,7 @@ ${ResolvedChannels}`
 
                 const ResolvedChannels = await new Promise<TextChannel[]>(async (resolve, reject) => {
                     const channels = Promise.all(Channels.map(async e => {
-                        const ResolvedChannel = await interaction.guild.channels.fetch(e);
+                        const ResolvedChannel = await interaction.guild.channels.fetch(e.ChannelId);
                         if (ResolvedChannel.type != ChannelType.GuildText) return;
                         return ResolvedChannel;
                     }));
@@ -251,13 +315,16 @@ ${ResolvedChannels}`
                 const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
                     time: 0,
                     componentType: ComponentType.StringSelect,
-                    filter: Filter(interaction.member, Id.RemoveChannelSelector)
+                    filter: Filter({
+                        member: interaction.member,
+                        customIds: [Id.RemoveChannelSelector]
+                    })
                 });
 
                 const StringChannels = ChannelInteraction.values;
                 //const ResolvedChannel = await interaction.guild.channels.fetch(Channel.id);
 
-                Channels = Channels.filter(e => !StringChannels.includes(e));
+                Channels = Channels.filter(e => !StringChannels.includes(e.ChannelId));
                 await Save();
                 await ChannelInteraction.update(Messages.Saved);
             } else {
@@ -272,7 +339,8 @@ ${ResolvedChannels}`
             }
         });
 
-        Collector.on("end", async () => {
+        ButtonCollector.AttachBackButton(Collector);
+        /*Collector.on("end", async () => {
             Message.edit({
                 components: [
                     new ActionRowBuilder<ResolvedComponent>()
@@ -281,6 +349,6 @@ ${ResolvedChannels}`
                         )
                 ]
             });
-        });
+        });*/
     }
 }

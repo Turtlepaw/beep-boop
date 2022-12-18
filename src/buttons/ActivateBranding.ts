@@ -116,7 +116,10 @@ export default class CustomBranding extends Button {
             });
 
             const Collector = Message.createMessageComponentCollector({
-                filter: Filter(interaction.member, Id.ChannelSelector, Id.ResetBot, Id.EditStatus, Id.RestartBot, Id.BotSelector, Id.NewBot),
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: Id
+                }),
                 time: 0
             });
 

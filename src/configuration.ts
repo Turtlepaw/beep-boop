@@ -79,7 +79,7 @@ export enum Icons {
     FlagBot = "<:Bot:1040733154656403616>",
     FlagOffline = "<:StatusOffline:1044019373775540276>",
     FlagOnline = "<:StatusOnline:1044019293307801680>",
-    Tag = "<:Tag:1040733256028520579>",
+    Tag = "<:Tag:1053881213112295505>",
     Badge = "<:Badge:1043599252414275634>",
     Globe = "<:Globe:1043599254125563925>",
     Image = "<:Image:1043718873045811271>",
@@ -107,7 +107,11 @@ export enum Icons {
     ProUser = "<:ProUser:1051214860119191634>",
     Blank = "<:blank:1049914365752651796>",
     StemItem = "<:StemItem:1051630581340971108>",
-    StemEnd = "<:StemEnd:1051630676354551839>"
+    StemEnd = "<:StemEnd:1051630676354551839>",
+    Remove = "<:Remove:1053887107921363034>",
+    Add = "<:Add:1053887100551966771>",
+    RoleRemove = "<:RoleRemove:1053887104842735677>",
+    RoleAdd = "<:RoleAdd:1053887102187741304>"
 }
 
 export enum DefaultIcons {

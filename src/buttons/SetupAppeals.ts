@@ -15,6 +15,10 @@ export default class SetupAppeals extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        enum Id {
+            Continue = "CONTINUE_OVERWRITE_SAVED_DATA",
+            ChannelSelector = "SELECT_A_CHANNEL_APPEALS"
+        }
         const CurrentSettings = client.storage[`${interaction.guild.id}_appeal_channel`];
         let Button: ButtonInteraction;
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
@@ -22,7 +26,7 @@ export default class SetupAppeals extends Button {
                 new ButtonBuilder()
                     .setLabel("Continue")
                     .setStyle(ButtonStyle.Danger)
-                    .setCustomId("CONTINUE")
+                    .setCustomId(Id.Continue)
             )
 
         if (CurrentSettings != null) {
@@ -34,7 +38,10 @@ export default class SetupAppeals extends Button {
 
             Button = await ActionMessage.awaitMessageComponent({
                 time: 0,
-                filter: Filter(interaction.member, "CONTINUE"),
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: Id
+                }),
                 componentType: ComponentType.Button
             });
         };
@@ -42,7 +49,7 @@ export default class SetupAppeals extends Button {
         const Menu = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(
                 new SelectMenuBuilder()
-                    .setCustomId("CHANNEL_SELECT")
+                    .setCustomId(Id.ChannelSelector)
                     .addOptions(
                         interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText).map(e =>
                             new SelectMenuOptionBuilder()
@@ -64,7 +71,10 @@ export default class SetupAppeals extends Button {
         const SelectMenuInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.SelectMenu,
             time: 0,
-            filter: Filter(interaction.member, "CHANNEL_SELECT")
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         client.storage[`${interaction.guild.id}_appeal_channel`] = SelectMenuInteraction.values[0];

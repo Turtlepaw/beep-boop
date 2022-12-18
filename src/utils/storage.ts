@@ -14,6 +14,11 @@ import { JSONArray } from "./jsonArray";
 import { Gift } from "../models/Gift";
 import { generateId } from "./Id";
 
+export interface CleanupChannel {
+    Type: CleanupType;
+    ChannelId: string;
+};
+
 class ResolvableConfiguration {
     // Guild Information
     public CustomId: number;
@@ -21,7 +26,7 @@ class ResolvableConfiguration {
     public Name: string;
 
     // Autonomous Cleanup
-    public CleanupChannels: string[];
+    public CleanupChannels: CleanupChannel[];
     public CleanupTimer: number;
     public CleanupType: CleanupType[];
 
@@ -81,6 +86,11 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
     isCleanup(type: CleanupType) {
         if (!Array.isArray(this.CleanupType)) return false;
         return this.CleanupType.includes(type);
+    }
+
+    getCleanupChannels(type: CleanupType) {
+        if (this?.CleanupChannels == null) return [];
+        return this.CleanupChannels.filter(e => e.Type != type);
     }
 
     isSystemCleanup() {

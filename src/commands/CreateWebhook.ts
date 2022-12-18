@@ -1,6 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, inlineCode, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, spoiler, Webhook, WebhookClient } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, inlineCode, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, spoiler, Webhook, WebhookClient } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../configuration";
+import { Embed, Emojis, Icons, Permissions } from "../configuration";
 import { Filter } from "../utils/filter";
 import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
@@ -10,33 +10,38 @@ import { GenerateURL } from "../utils/Discohook";
 
 export default class Send extends Command {
     constructor() {
+        const Description = "Create a webhook for sending messages with buttons.";
         super({
             CanaryCommand: false,
-            Description: "Send a message as Beep Boop.",
+            Description,
             GuildOnly: false,
-            Name: "send",
+            Name: "webhook",
             RequiredPermissions: [],
-            SomePermissions: ["ManageGuild"],
+            SomePermissions: Permissions.Manager,
             Category: Categories.Server,
-            Options: [
-                new SlashCommandChannelOption()
-                    .setName("channel")
-                    .setDescription("The channel to send the message."),
-                new SlashCommandStringOption()
-                    .setName("webhook_name")
-                    .setDescription("The name of the webhook that will send the message."),
-                new SlashCommandStringOption()
-                    .setName("webhook_avatar_url")
-                    .setDescription("The avatar url of the webhook that will send the message."),
-                new SlashCommandStringOption()
-                    .setName("webhook_avatar_emoji")
-                    .setDescription("Use a custom Discord emoji as the webhook's url."),
-                new SlashCommandAttachmentOption()
-                    .setName("webhook_avatar")
-                    .setDescription("Drag and drop the avatar for the webhook"),
-                /*new SlashCommandStringOption()
-                    .setName("webhook_url")
-                    .setDescription("If you already have a webhook url ready, paste it here!")*/
+            Subcomamnds: [
+                new SlashCommandSubcommandBuilder()
+                    .setName("create")
+                    .setDescription(Description)
+                    .addChannelOption(option =>
+                        option.setName("channel")
+                            .setDescription("The channel to create the webhook.")
+                    )
+                    .addStringOption(option =>
+                        option.setName("webhook_name")
+                            .setDescription("The name of the webhook that will appear on top of the message.")
+                    )
+                    .addStringOption(option =>
+                        option.setName("webhook_avatar_url")
+                            .setDescription("The avatar url of the webhook that will appear on top of the message."))
+                    .addStringOption(option =>
+                        option.setName("webhook_avatar_emoji")
+                            .setDescription("Set a CUSTOM Discord emoji as the webhook's avatar.")
+                    )
+                    .addAttachmentOption(option =>
+                        option.setName("webhook_avatar")
+                            .setDescription("Drag 'n drop the avatar for the webhook")
+                    )
             ]
         });
     }
@@ -85,7 +90,7 @@ export default class Send extends Command {
             embeds: [
                 new Embed(interaction.guild)
                     .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
-                    .setTitle(`${Icons.Success} Webhook Created`)
+                    .setTitle(`${Icons.Configure} Webhook Created`)
                     .addFields([{
                         name: `${Icons.Flag} Keep this secret!`,
                         value: `Someone with this URL can send any message they want to ${Channel}, including ${inlineCode(`@everyone`)} mentions.`

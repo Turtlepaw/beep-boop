@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
 import { Filter } from "../utils/filter";
 import { SendAppealMessage } from "../utils/appeals";
@@ -5,6 +6,7 @@ import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import ms from "ms";
 import { StartAutoDeleteService, StopAutoDeleteService } from "../utils/AutoDelete";
+import { ChannelSelectMenu } from "../utils/components";
 
 export default class SetupAppeals extends Button {
     constructor() {
@@ -19,12 +21,17 @@ export default class SetupAppeals extends Button {
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
         const CurrentSettings = client.Storage.Configuration.forGuild(interaction.guild);
         let Button: ButtonInteraction;
+        enum Id {
+            Continue = "CONTIUE_OVERWRITE_SAVED_DATA_AD",
+            ChannelSelector = "SELECT_A_CHANNEL_AD",
+            TypeSelector = "SELECT_A_TYPE_AD"
+        }
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
                     .setLabel("Continue")
                     .setStyle(ButtonStyle.Danger)
-                    .setCustomId("CONTINUE")
+                    .setCustomId(Id.Continue)
             )
 
         const Type = new ActionRowBuilder<SelectMenuBuilder>()
@@ -52,26 +59,15 @@ export default class SetupAppeals extends Button {
 
             Button = await ActionMessage.awaitMessageComponent({
                 time: 0,
-                filter: Filter(interaction.member, "CONTINUE"),
+                filter: Filter({
+                    member: interaction.member,
+                    customIds: Id
+                }),
                 componentType: ComponentType.Button
             });
         };
 
-        const Menu = new ActionRowBuilder<SelectMenuBuilder>()
-            .addComponents(
-                new SelectMenuBuilder()
-                    .setCustomId("CHANNEL_SELECT")
-                    .setMaxValues(10)
-                    .setMinValues(1)
-                    .addOptions(
-                        interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText).map(e =>
-                            new SelectMenuOptionBuilder()
-                                .setLabel(e.name)
-                                .setValue(e.id)
-                                .setEmoji(Emojis.TextChannel)
-                        )
-                    )
-            )
+        const Menu = ChannelSelectMenu(Id.ChannelSelector);
 
         const Message = await (interaction.replied ? Button : interaction).reply({
             content: "Let's start with the auto deleting channels.",
@@ -84,7 +80,10 @@ export default class SetupAppeals extends Button {
         const SelectMenuInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.StringSelect,
             time: 0,
-            filter: Filter(interaction.member, "CHANNEL_SELECT")
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         await SelectMenuInteraction.update({
@@ -95,7 +94,10 @@ export default class SetupAppeals extends Button {
         const TypeInteraction = await Message.awaitMessageComponent({
             componentType: ComponentType.StringSelect,
             time: 0,
-            filter: Filter(interaction.member, "TYPE_SELECT")
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         let int: RepliableInteraction = TypeInteraction;

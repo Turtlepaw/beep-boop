@@ -1,22 +1,55 @@
-import { APIGuildMember, ButtonInteraction, GuildMember, MessageComponentInteraction, CollectorFilter, Interaction } from "discord.js";
+import { APIGuildMember, ButtonInteraction, GuildMember, MessageComponentInteraction, CollectorFilter, Interaction, InteractionCollector, ComponentType, CollectedInteraction, CacheType } from "discord.js";
+import { ButtonId } from "./config";
 
 export type InteractionFilter = (interaction: MessageComponentInteraction) => boolean;
-export function Filter(member: (APIGuildMember | GuildMember), ...customIds: (string | boolean)[]): InteractionFilter {
-    let debug = false;
-    if (customIds[0] == true) debug = true;
+export interface FilterOptions {
+    member: (APIGuildMember | GuildMember);
+    customIds: (string[]) | object;
+    debug?: boolean;
+    messageId?: string;
+    errorMessages?: boolean;
+}
+
+export function Filter({ customIds, member, debug, messageId, errorMessages }: FilterOptions): InteractionFilter {
+    let ResolvedIds: string[];
+    if (typeof customIds == "object") ResolvedIds = GenerateIds(customIds);
+    else if (Array.isArray(customIds)) ResolvedIds = customIds;
+
     return (Interaction: MessageComponentInteraction) => {
-        const debugJson = JSON.stringify({
-            user: Interaction.user.username,
-            customId: Interaction.customId,
-            memberMatches: !(member != null && Interaction.user.id != member.user.id),
-            customIdMatches: customIds.includes(Interaction.customId),
-            matches: (member != null && Interaction.user.id != member.user.id) && customIds.includes(Interaction.customId),
-            member: member.user.username,
-            customIds
-        })
-        if (debug == true) console.log(`Filter Interaction Received:`.green, debugJson)//` {\n   user: "${Interaction.user.username}",\n   customId: "${Interaction.customId}",\n  matches: ${customIds.includes(Interaction.customId) && (member != null && Interaction.user.id != member.user.id)},\n   ...\n}`.gray)
-        if (member != null && Interaction.user.id != member.user.id) return false;
-        return customIds.includes(Interaction.customId)
+        const result = (() => {
+            const debugJson = JSON.stringify({
+                user: Interaction.user.username,
+                customId: Interaction.customId,
+                memberMatches: !(member != null && Interaction.user.id != member.user.id),
+                customIdMatches: ResolvedIds.includes(Interaction.customId),
+                matches: (member != null && Interaction.user.id != member.user.id) && ResolvedIds.includes(Interaction.customId),
+                member: member.user.username,
+                messageId,
+                ResolvedIds
+            });
+            if (messageId != null && messageId != Interaction.message.id) return false;
+            if (debug == true) console.log(`Filter Interaction Received:`.green, debugJson)//` {\n   user: "${Interaction.user.username}",\n   customId: "${Interaction.customId}",\n  matches: ${customIds.includes(Interaction.customId) && (member != null && Interaction.user.id != member.user.id)},\n   ...\n}`.gray)
+            if (member != null && Interaction.user.id != member.user.id) return false;
+            return ResolvedIds.includes(Interaction.customId);
+        })();
+
+        if (result == false && (errorMessages == null || errorMessages == true)) {
+            Interaction.reply({
+                ephemeral: true,
+                content: "This component is locked to the member who executed the command."
+            });
+        }
+        return result;
+    }
+}
+
+export class ButtonCollector {
+    static AttachBackButton(collector: InteractionCollector<CollectedInteraction<CacheType>>) {
+        collector.on("collect", async button => {
+            if (button.customId == ButtonId.ReturnButton) {
+                collector.stop("Returned to main menu");
+            }
+        });
     }
 }
 

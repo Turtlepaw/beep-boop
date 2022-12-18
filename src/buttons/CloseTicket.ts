@@ -21,15 +21,20 @@ export default class CloseTicket extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        enum Id {
+            AddReason = "ADD_REASON_TICKET",
+            SkipReason = "SKIP_ADD_REASON_TICKET"
+        }
+
         const Buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId("ADD_REASON")
+                    .setCustomId(Id.AddReason)
                     .setEmoji("👆")
                     .setLabel("Add Reason")
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
-                    .setCustomId("SKIP")
+                    .setCustomId(Id.SkipReason)
                     .setLabel("Skip")
                     .setStyle(ButtonStyle.Secondary),
             );
@@ -79,7 +84,10 @@ export default class CloseTicket extends Button {
         const ButtonInteraction = await interaction.channel.awaitMessageComponent({
             time: 0,
             componentType: ComponentType.Button,
-            filter: Filter(interaction.member, "ADD_REASON", "SKIP")
+            filter: Filter({
+                member: interaction.member,
+                customIds: Id
+            })
         });
 
         let Reason = "None provided.";

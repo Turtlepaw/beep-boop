@@ -54,7 +54,10 @@ export default class AppealModal extends Event {
         const Button = await ModalInteraction.channel.awaitMessageComponent({
             time: 0,
             componentType: ComponentType.Button,
-            filter: Filter(ModalInteraction.member, SendButtonId)
+            filter: Filter({
+                member: ModalInteraction.member,
+                customIds: [SendButtonId]
+            })
         });
 
         const GuildId = client.storage[ModalInteraction.message.id];

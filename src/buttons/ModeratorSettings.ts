@@ -66,7 +66,10 @@ export default class ModeratorGuildSettings extends Button {
         const ButtonCollector = Message.createMessageComponentCollector({
             time: 0,
             componentType: ComponentType.Button,
-            filter: Filter(interaction.member, CustomId.ToggleInvites)
+            filter: Filter({
+                member: interaction.member,
+                customIds: CustomId
+            })
         });
 
         ButtonCollector.on("collect", async (Button) => {
