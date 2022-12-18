@@ -24,7 +24,10 @@ export enum JoinActions {
     SendVerification = "VERIFY_USER",
     Warn = "WARN_MODERATORS",
     RemoveZalgo = "REMOVE_ZALGO",
-    PrefixUsername = "PREFIX_USERNAME"
+    PrefixUsername = "PREFIX_USERNAME",
+    AddRole = "ADD_ROLE",
+    AddRoleAfterVerification = "ADD_ROLE_AFTER_VERIFICATION",
+    AddRoleAfterServerScreen = "ADD_ROLE_AFTER_SERVER_SCREEN"
 }
 
 const JSONTransformer: ValueTransformer = {
