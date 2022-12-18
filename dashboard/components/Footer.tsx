@@ -27,7 +27,7 @@ export function Footer() {
                     <h1 className="font-bold text-2xl">
                         Beep Boop
                     </h1>
-                    <h2 className="DiscordTag">By Airdot</h2>
+                    <h2 className="DiscordTag">©️ Airdot</h2>
                 </div>
                 <div className="float-right pr-10 flex flex-wrap">
                     <Category>
