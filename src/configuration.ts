@@ -161,7 +161,12 @@ export const Messages = {
         content: `${Icons.Discover} Saved your configuration.`,
         ephemeral: true,
         components: []
-    }
+    },
+    Success: (message: string) => ({
+        content: `${Icons.Success} ${message}`,
+        ephemeral: true,
+        components: []
+    })
 }
 export enum Colors {
     Transparent = "#2F3136",
