@@ -41,6 +41,9 @@ export function Experimental({ Get, Set }: Key) {
                 <Button className="mt-5" variant="secondary" onClick={onOpen}>
                     Bypass
                 </Button>
+                {/* <Button className="mt-5" variant="danger" onClick={onOpen}>
+                    Continue
+                </Button> */}
                 <Modal isOpen={isOpen} onClose={onClose}>
                     <ModalOverlay />
                     <ModalContent className="ModalBackground">
