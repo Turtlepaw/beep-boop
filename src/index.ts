@@ -1,5 +1,5 @@
 //Import packages
-import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData } from "discord.js";
+import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData, ClientOptions } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
@@ -26,14 +26,15 @@ export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
 export const API_ENABLED = process.env.START_API;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
-export const DEFAULT_CLIENT_OPTIONS = {
+export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.DirectMessages,
         IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildPresences
+        IntentsBitField.Flags.GuildPresences,
+        IntentsBitField.Flags.GuildMessageReactions
     ],
     partials: [
         Partials.Channel,

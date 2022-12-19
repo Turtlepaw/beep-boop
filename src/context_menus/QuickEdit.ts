@@ -96,7 +96,7 @@ export default class DeleteThis extends ContextMenu {
         });
 
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
-            ButtonInteraction.deferReply({ ephemeral: true })
+            await ButtonInteraction.deferUpdate()
             const { targetMessage } = interaction;
             const isMessage = targetMessage.content != '';
             //const Webhook = await FindWebhook(targetMessage.id, interaction.channel.id, client);
@@ -115,6 +115,7 @@ export default class DeleteThis extends ContextMenu {
                             value: `${time(date, TimestampStyles.RelativeTime)} or ${time(date, TimestampStyles.LongDate)}`
                         }])
                 ],
+                content: null,
                 components: [
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(
@@ -212,7 +213,7 @@ export default class DeleteThis extends ContextMenu {
 
             const url = await ShortenURL(SentMessage, Webhook);
             await SelectInteraction.update({
-                content: `${Emojis.Success} Moved message to ${Channel}`,
+                content: `${Icons.Success} Moved message to ${Channel}`,
                 components: [
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(
@@ -257,7 +258,7 @@ export default class DeleteThis extends ContextMenu {
                 }).filter(e => e != null);
 
             await ButtonInteraction.update({
-                content: `${Emojis.Tag} Select a button to remove`,
+                content: `${Icons.Tag} Select a button to remove`,
                 components: Buttons
             });
 
@@ -286,7 +287,7 @@ export default class DeleteThis extends ContextMenu {
 
             Btn.update({
                 components: [],
-                content: `${Emojis.Success} Removed button successfully.`
+                content: `${Icons.Success} Removed button successfully.`
             });
         }
     }
