@@ -1,7 +1,7 @@
 //import { BitField, PermissionFlagsBits, PermissionsBitField } from "discord.js";
 import BitField from "bitfield";
 import { APIGuild } from "./types";
-import { BitFieldResolvable, PermissionFlagsBits } from "./BitField";
+
 
 export enum Roles {
     GuildOwner = "Server Owner",
