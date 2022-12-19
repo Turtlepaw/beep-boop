@@ -104,7 +104,7 @@ export default function Home(props: Props) {
                     <div className='Item px-5 py-5 rounded-md'>
                         <AutoCenter className='pt-2'>
                             <h1 className='pb-2 text-lg font-semibold'>Channel</h1>
-                            <Select
+                            {/* <Select
                                 options={options}
                                 isSearchable
                                 //@ts-expect-error
@@ -117,7 +117,7 @@ export default function Home(props: Props) {
                                     value: Channel
                                 }}
                                 styles={colourStyles}
-                            />
+                            /> */}
                         </AutoCenter>
                     </div>
                 </AutoCenter >

@@ -86,8 +86,8 @@ export async function CreateUser(Id: string, Options: OAuthUser): Promise<any> {
     return Result.json();
 }
 
-export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
-    const Result = await fetch(CreateRoute(Routes.GuildsWith) + `?id=${Id}`, {
+export async function CallAPI<T>(url: string): Promise<T> {
+    const Result = await fetch(url, {
         method: Methods.Get,
         headers: {
             Authorization: token
@@ -95,6 +95,10 @@ export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
     });
 
     return Result.json();
+}
+
+export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
+    return CallAPI(CreateRoute(Routes.GuildsWith) + `?id=${Id}`);
 }
 
 export async function GetChannels(Id: string): Promise<APIGuild[]> {

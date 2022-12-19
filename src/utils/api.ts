@@ -48,7 +48,7 @@ export interface APIGuild {
     IconHash: string | null;
     IconURL: string | null;
     IsOwner: boolean; //if they are the owner
-    //Permissions: any;
+    Permissions: string[];
     Features: any[];
 }
 
@@ -220,7 +220,7 @@ export async function API(client: Client, token: string) {
     app.get(Routes.GuildsWith, async (req, res) => {
         const UserId = req.query?.id;
 
-        if (VerifyStringNumber(UserId, 18)) return res.send(GetMessage(
+        if (typeof UserId != "string" || VerifyStringNumber(UserId, 18)) return res.send(GetMessage(
             Message(Messages.Error, "Invalid User Id")
         ));
 
@@ -240,9 +240,9 @@ export async function API(client: Client, token: string) {
             IconHash: e.icon,
             IconURL: e.iconURL({ forceStatic: true }),
             Id: e.id,
-            //@ts-expect-error
             IsOwner: e.ownerId == UserId,
-            Name: e.name
+            Name: e.name,
+            Permissions: e.members.cache.get(UserId).permissions.toArray()
         }));
 
         res.send(Guilds);

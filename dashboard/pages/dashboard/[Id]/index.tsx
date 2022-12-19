@@ -13,6 +13,8 @@ import { DefaultProps, parseUser } from '../../../utils/parse-user';
 import { APIChannel, APIGuild } from '../../../utils/types';
 import { CreateHandler } from '../../../utils/utils';
 import { Configuration } from '../../_app';
+import { Mentions } from '../../../components/Mention';
+import { Permissions } from '../../../utils/permissions';
 
 export interface Props extends DefaultProps {
     guild: APIGuild | null;
@@ -25,24 +27,27 @@ export function Card(props: {
     href: string;
 }) {
     return (
-        <a className='card ActiveCard' href={props.href}>
-            <Center className='px-20 py-4'>
-                <div className='inline'>
-                    {props.children}
-                </div>
-                <div className='pl-2'>
-                    <ExternalIcon />
-                </div>
-            </Center>
-        </a>
+        <Center>
+            <a className='card ActiveCard' href={props.href}>
+                <Center className='px-20 py-4'>
+                    <div className='inline'>
+                        {props.children}
+                    </div>
+                    <div className='pl-2'>
+                        <ExternalIcon />
+                    </div>
+                </Center>
+            </a>
+        </Center>
     )
 }
-export default function Home(props: Props) {
-    const { guild, channels } = props;
-    if (guild == null) return (
-        <div>
+
+export function NotLoggedIn() {
+    return (
+        <div className='py-20'>
             <AutoCenter>
                 <h1 className='font-semibold text-2xl'>😢 You're not logged in!</h1>
+                <p className='font-medium text-lg pt-1'>You'll need to log in to access the dashboard.</p>
                 <Center className='pt-5'>
                     <a className='inline px-1.5' href='/api/oauth'>
                         <Button variant="primary" className='inline'>Login</Button>
@@ -54,6 +59,17 @@ export default function Home(props: Props) {
             </AutoCenter>
         </div>
     );
+}
+
+export function Title({ children }: { children: string; }) {
+    return (
+        <h2 className='font-semibold text-lg uppercase'>{children}</h2>
+    );
+}
+
+export default function Home(props: Props) {
+    const { guild, channels } = props;
+    if (guild == null) return <NotLoggedIn />;
 
     const [SavePanel, SetPanel] = useState(false);
     const [IsSaving, SetSaving] = useState(false);
@@ -73,18 +89,28 @@ export default function Home(props: Props) {
             <div className='!flex'>
                 <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
                 <AutoCenter className='text-center'>
-                    <div>
+                    <div className='pb-5'>
                         <Center>
                             <img src={guild.IconURL || ""} className="rounded-full w-16" />
                         </Center>
-                        <h1 className='font-bold text-4xl pt-5 pb-5'>
+                        <h1 className='font-bold text-4xl pt-5 pb-3'>
                             {guild?.Name}
                         </h1>
+                        <Center>
+                            <Mentions.Role className='w-[8.6rem]'>{Permissions.Role(props.guild)}</Mentions.Role>
+                        </Center>
                     </div>
 
-                    <Card href={`${props.guild?.Id}/appeals`}>
-                        <h1>Appeal Settings</h1>
-                    </Card>
+                    <div>
+                        <Title>Server Management</Title>
+                        <h1>soon</h1>
+                    </div>
+                    <div className='pt-5'>
+                        <Title>Plugins</Title>
+                        <Card href={`${props.guild?.Id}/appeals`}>
+                            <h1>Appeal Settings</h1>
+                        </Card>
+                    </div>
                 </AutoCenter >
             </div >
         </>

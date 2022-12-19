@@ -17,7 +17,7 @@ export interface RawDiscordGuild {
     name: string;
     icon: string | null;
     owner: boolean;
-    permissions: number;
+    permissions: string[];
     features: DiscordGuildFeatures[];
 }
 
@@ -27,7 +27,7 @@ export interface DiscordGuild {
     icon: string | null;
     iconURL: string | null;
     owner: boolean; //if they are the owner
-    permissions: number;
+    permissions: string[];
     features: DiscordGuildFeatures[];
     botIn: boolean;
 }
@@ -92,8 +92,9 @@ export interface APIGuild {
     IconHash: string | null;
     IconURL: string | null;
     IsOwner: boolean; //if they are the owner
-    //Permissions: any;
+    Permissions: string[];
     Features: any[];
+    APIVersion: DiscordGuild;
 }
 
 export interface APIChannel {

@@ -8,6 +8,7 @@ import { AddIcon } from '../../components/Icons';
 import { ExternalIcon, Menu } from '../../components/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
 import { Configuration } from '../_app';
+import { GenerateInviteURL } from '../../utils/Invite';
 
 export default function Home(props: DefaultProps) {
     return (
@@ -24,7 +25,7 @@ export default function Home(props: DefaultProps) {
                     {props.user?.guilds?.map(e => {
                         if (e == null) return;
                         return (
-                            <a href={`/dashboard/${e.Id}`}>
+                            <a href={`/dashboard/${e.Id}`} key={e.Id}>
                                 <Center>
                                     <div key={e.Id} className="ActiveCard card px-8 py-4 Guild">
                                         <Center>
@@ -32,7 +33,7 @@ export default function Home(props: DefaultProps) {
                                         </Center>
                                         <Center>
                                             <span className='text-center font-semibold text-lg'>{e.Name.length >= 18 ? (e.Name.substring(0, 16) + "...") : e.Name}</span>
-                                            <ExternalIcon />
+                                            {/* <ExternalIcon /> */}
                                         </Center>
                                     </div>
                                 </Center>
@@ -40,17 +41,19 @@ export default function Home(props: DefaultProps) {
                         )
                     })}
                     <Center>
-                        <div className="ActiveCard card px-8 py-4 Guild">
-                            <Center>
-                                <div className='border-solid border-[#FF6060] border-2 rounded-full mb-2'>
-                                    <AddIcon className="w-8 h-8 px-1 py-1" />
-                                </div>
-                            </Center>
-                            <Center>
-                                <span className='text-center font-semibold text-lg'>Add to Server</span>
-                                <ExternalIcon />
-                            </Center>
-                        </div>
+                        <a href={GenerateInviteURL()}>
+                            <div className="ActiveCard card px-8 py-4 Guild">
+                                <Center>
+                                    <div className='mb-2'>
+                                        <AddIcon className="w-10 h-10 px-1 py-1" />
+                                    </div>
+                                </Center>
+                                <Center>
+                                    <span className='text-center font-semibold text-lg'>Add to Server</span>
+                                    {/* <ExternalIcon /> */}
+                                </Center>
+                            </div>
+                        </a>
                     </Center>
                 </div>
             </AutoCenter>

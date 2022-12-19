@@ -8,7 +8,10 @@ function Title({ children }: { children: string; }) {
 
 function Link({ children, href }: { children: string; href: string; }) {
     return (
-        <a className="hover:opacity-80" href={href}>{children}</a>
+        <>
+            <a className="hover:opacity-80" href={href}>{children}</a>
+            <br />
+        </>
     )
 }
 
@@ -24,16 +27,20 @@ export function Footer() {
             <hr className="w-full" />
             <div className="pl-10 py- 10 py-16 flex justify-between max-w-screen-xl w-full z-10 flex-wrap">
                 <div className="float-left">
-                    <h1 className="font-bold text-2xl">
-                        Beep Boop
-                    </h1>
-                    <h2 className="DiscordTag">© 2022 Airdot</h2>
+                    <a href="/">
+                        <h1 className="font-bold text-2xl pb-0.5 hover:opacity-80">
+                            Beep Boop
+                        </h1>
+                    </a>
+                    <a href="/airdot" className="hover:opacity-80">
+                        <h2 className="DiscordTag">© 2022 Airdot</h2>
+                    </a>
                 </div>
                 <div className="float-right pr-10 flex flex-wrap">
                     <Category>
                         <Title>Legal</Title>
                         <Link href="/privacy">Privacy Policy</Link>
-                        <Link href="/tos">Terms of Service</Link>
+                        <Link href="/terms">Terms of Service</Link>
                     </Category>
                     <Category>
                         <Title>Company</Title>
