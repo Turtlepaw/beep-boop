@@ -4,7 +4,6 @@ import { SendAppealMessage } from "../utils/appeals";
 import { Embed, Emojis, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import ms from "ms";
-import { StartAutoDeleteService, StopAutoDeleteService } from "../utils/AutoDelete";
 import { ChannelSelectMenu } from "../utils/components";
 import { ReputationBasedModerationType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";

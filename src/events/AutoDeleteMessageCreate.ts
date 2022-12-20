@@ -40,11 +40,13 @@ export default class AutoDeleteMessageCreateEvent extends Event {
             if (!ObjectArray.includes(message.channel.id, Channels)) return;
             //if (message.author.bot) return;
             client.Storage.Messages.Create({
-                CustomId: `AUTO_CLEANUP`,
+                CustomName: `AUTO_CLEANUP`,
                 Type: MessageType.CleanupMessage,
-                ChannelId: message.channel.id,
-                MessageId: message.id,
-                AuthorId: message.author.id
+                Channel: message.channel.id,
+                Message: message.id,
+                Author: message.author.id,
+                CreatedAt: message.createdTimestamp,
+                Guild: message.guild.id
             });
         } catch (e) {
             console.log("Error:".red, e);

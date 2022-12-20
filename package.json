@@ -34,7 +34,7 @@
     "dev": "yarn build && yarn run run",
     "dash": "cd dashboard/ && yarn dev",
     "start": "yarn dev & yarn dash",
-    "cache": "yarn build",
+    "cache": "yarn run run",
     "fix-canvas": "yarn remove canvas && yarn add canvas",
     "migrate:create": "typeorm migration:create",
     "migrate:run": "typeorm migration:run"

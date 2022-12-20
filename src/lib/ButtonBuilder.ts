@@ -1,15 +1,15 @@
 import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+import { AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionResolvable, PermissionsString } from "discord.js";
 
 export type ButtonBuilderOptions = {
     /**
      * Required permissions to execute this command.
      */
-    RequiredPermissions: PermissionsString[];
+    RequiredPermissions: PermissionResolvable[];
     /**
      * The member executing this command must have one or more of these permissions.
      */
-    SomePermissions: PermissionsString[];
+    SomePermissions: PermissionResolvable[];
     /**
      * If the command can only be executed within a server.
      */
@@ -22,8 +22,8 @@ export type ButtonBuilderOptions = {
 }
 export default class Button {
     public CustomId: string;
-    public RequiredPermissions!: PermissionsString[];
-    public SomePermissions!: PermissionsString[];
+    public RequiredPermissions!: PermissionResolvable[];
+    public SomePermissions!: PermissionResolvable[];
     public GuildOnly: boolean = true;
     public RequireIdFetching: boolean = false;
 

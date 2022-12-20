@@ -51,6 +51,8 @@ export class ButtonCollector {
             }
         });
     }
+
+    static BackButton: string = ButtonId.ReturnButton;
 }
 
 export function GenerateIds(Selected: object) {

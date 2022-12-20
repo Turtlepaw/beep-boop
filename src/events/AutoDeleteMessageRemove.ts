@@ -21,15 +21,15 @@ export default class LeaveAppealMessage extends Event {
         const Channels = Configuration.CleanupChannels;
         if (Channels == null) return;
         const AutoDeleteMessages = await client.Storage.Messages.FindBy({
-            AuthorId: member.id,
+            Author: member.id,
             Type: MessageType.CleanupMessage
         });
 
         for (const AutoMessage of AutoDeleteMessages) {
-            const Channel = await member.guild.channels.fetch(AutoMessage.ChannelId) as TextChannel;
+            const Channel = await member.guild.channels.fetch(AutoMessage.Channel) as TextChannel;
 
             try {
-                const Message = await Channel.messages.fetch(AutoMessage.MessageId);
+                const Message = await Channel.messages.fetch(AutoMessage.Message);
 
                 if (Message.deletable) Message.delete();
             } catch (e) {

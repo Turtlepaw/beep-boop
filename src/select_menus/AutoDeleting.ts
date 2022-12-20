@@ -156,7 +156,7 @@ ${StringTimedChannels}`
             time: 0,
             filter: Filter({
                 member: interaction.member,
-                customIds: Id
+                customIds: [...GenerateIds(Id), [ButtonCollector.BackButton]]
             })
         });
 
@@ -340,15 +340,5 @@ ${StringTimedChannels}`
         });
 
         ButtonCollector.AttachBackButton(Collector);
-        /*Collector.on("end", async () => {
-            Message.edit({
-                components: [
-                    new ActionRowBuilder<ResolvedComponent>()
-                        .addComponents(
-                            DisableButtons(Message.components[0].components)
-                        )
-                ]
-            });
-        });*/
     }
 }

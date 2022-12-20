@@ -4,7 +4,7 @@ import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
-import { Filter, GenerateIds } from "../utils/filter";
+import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
@@ -107,7 +107,7 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
             time: 0,
             filter: Filter({
                 member: interaction.member,
-                customIds: Id
+                customIds: [...GenerateIds(Id), [ButtonCollector.BackButton]]
             })
         });
 
@@ -172,15 +172,6 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
             }
         });
 
-        Collector.on("end", async () => {
-            Message.edit({
-                components: [
-                    new ActionRowBuilder<ResolvedComponent>()
-                        .addComponents(
-                            DisableButtons(Message.components[0].components)
-                        )
-                ]
-            });
-        });
+        ButtonCollector.AttachBackButton(Collector);
     }
 }

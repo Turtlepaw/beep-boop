@@ -1,6 +1,7 @@
 import { Events, HexColorString } from 'discord.js';
 import { JSONArray } from '../utils/jsonArray';
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ValueTransformer } from "typeorm"
+import { JSONTransformer } from '../utils/transformers';
 
 export enum CleanupType {
     System = "SYSTEM_CLEANUP",
@@ -29,15 +30,6 @@ export enum JoinActions {
     AddRoleAfterVerification = "ADD_ROLE_AFTER_VERIFICATION",
     AddRoleAfterServerScreen = "ADD_ROLE_AFTER_SERVER_SCREEN"
 }
-
-const JSONTransformer: ValueTransformer = {
-    to(value) {
-        return JSON.stringify(value);
-    },
-    from(value) {
-        return JSON.parse(value);
-    },
-};
 
 @Entity()
 export class GuildConfiguration {

@@ -21,13 +21,13 @@ export default class LeaveAppealMessage extends Event {
         const Server = await client.Storage.Configuration.forGuild(member.guild);
         if (Server == null || (JSONArray.isArray(Server.CleanupType) && Server.CleanupType.includes(CleanupType.System)))
             return;
-        const JoinMessage: MemberMessage = await client.Storage.Messages.Get({
-            CustomId: `${member.guild.id}_add_${member.id}`
+        const JoinMessage = await client.Storage.Messages.Get({
+            CustomName: `${member.guild.id}_add_${member.id}`
         });
-        const Channel = await member.guild.channels.fetch(JoinMessage.ChannelId) as TextChannel;
+        const Channel = await member.guild.channels.fetch(JoinMessage.Channel) as TextChannel;
 
         try {
-            const Message = await Channel.messages.fetch(JoinMessage.MessageId);
+            const Message = await Channel.messages.fetch(JoinMessage.Message);
 
             if (Message.deletable) Message.delete();
         } catch (e) {
