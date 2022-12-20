@@ -1,7 +1,7 @@
 //import { BitField, PermissionFlagsBits, PermissionsBitField } from "discord.js";
 import BitField from "bitfield";
 import { APIGuild } from "./types";
-import { BitFieldResolvable, PermissionFlagsBits } from "./BitField";
+
 
 export enum Roles {
     GuildOwner = "Server Owner",
@@ -113,12 +113,12 @@ export class Permissions {
         return flags.map(flag => this.permissions.includes(flag)).includes(true);
     }
 
-    static Resolve(permissions: number) {
+    /*static Resolve(permissions: number) {
         const PermissionsBits = new BitFieldResolvable(
             new BitField(permissions)
         );
         return PermissionsBits;
-    }
+    }*/
 
     static Role(guild: APIGuild) {
         const PermissionArray = new Permissions(guild.Permissions as PermissionString[]);
