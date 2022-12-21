@@ -8,10 +8,16 @@ import { AddIcon } from '../../components/Icons';
 import { ExternalIcon, Menu } from '../../components/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
 import { Configuration } from '../_app';
+import { Meta } from '../../components/Meta';
 
 export default function Home(props: DefaultProps) {
     const key = GetKey();
-    return Experimental(key);
+    return (
+        <>
+            <Meta>Experimental Dashboard</Meta>
+            <Experimental Get={key.Get} Set={key.Set} />
+        </>
+    );
     return (
         <div>
             <AutoCenter className='text-center'>

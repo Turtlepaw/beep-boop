@@ -7,6 +7,7 @@ import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
 import { CSSProperties } from 'react';
+import { Meta } from '../components/Meta';
 
 export function Feature({ included, children }: {
     included?: boolean;
@@ -86,6 +87,7 @@ export default function Branding(props: DefaultProps) {
     return (
         <>
             <Menu user={props.user} />
+            <Meta>Branding</Meta>
             <div className="pb-20 pt-5">
                 <AutoCenter className="text-center">
                     {/* <div>

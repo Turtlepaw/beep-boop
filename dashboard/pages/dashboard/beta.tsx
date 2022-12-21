@@ -9,11 +9,13 @@ import { ExternalIcon, Menu } from '../../components/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
 import { Configuration } from '../_app';
 import { GenerateInviteURL } from '../../utils/Invite';
+import { Meta } from '../../components/Meta';
 
 export default function Home(props: DefaultProps) {
     return (
         <div>
             <AutoCenter className='text-center'>
+                <Meta>Dashboard</Meta>
                 <Menu user={props.user} isDashboard />
                 <div>
                     <h1 className='font-bold text-4xl pt-5 pb-5'>

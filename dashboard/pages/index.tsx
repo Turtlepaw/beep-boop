@@ -7,11 +7,13 @@ import { Feature, FeatureDescription, FeatureIcon, FeatureText, FeatureTitle } f
 import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
+import { Meta } from '../components/Meta';
 
 export default function Home(props: DefaultProps) {
   return (
     <div className='pb-10'>
       <Menu user={props.user} />
+      <Meta>Home</Meta>
       <AutoCenter>
         <div className='text-center'>
           <Center>

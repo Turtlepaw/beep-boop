@@ -22,6 +22,7 @@ export interface WebsiteConfiguration {
    * The website url for the embed.
    */
   WebsiteURL: URL;
+  Color: string;
 }
 
 // Configuration*
@@ -34,7 +35,8 @@ export const Configuration: WebsiteConfiguration = {
     SVG: "/Robot.svg",
     PNG: "/Robot.png"
   },
-  Description: "Beep Boop is a multipurpose Discord bot built with large community servers in mind."
+  Description: "Beep Boop is a multipurpose Discord bot built with large community servers in mind.",
+  Color: "#ff5c5e"
 }
 
 
@@ -132,27 +134,6 @@ function MyApp({ Component, pageProps }: AppProps) {
         <a href='/'>
 
         </a>
-        <Head>
-          <title>{Configuration.Title}</title>
-          <link rel="icon" href={Configuration.Icon.SVG} />
-          {/* Primary Meta Tags */}
-          <meta name="title" content={Configuration.Title} />
-          <meta name="description" content={Configuration.Description} />
-
-          {/* Open Graph / Facebook */}
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content={Configuration.WebsiteURL} />
-          <meta property="og:title" content={Configuration.Title} />
-          <meta property="og:description" content={Configuration.Description} />
-          <meta property="og:image" content={Configuration.Icon.PNG} />
-
-          {/* Twitter */}
-          <meta property="twitter:card" content="summary_large_image" />
-          <meta property="twitter:url" content={Configuration.WebsiteURL} />
-          <meta property="twitter:title" content={Configuration.Title} />
-          <meta property="twitter:description" content={Configuration.Description} />
-          <meta property="twitter:image" content={Configuration.Icon.PNG} />
-        </Head>
         <Component {...pageProps} />
         <Footer />
       </ChakraProvider>

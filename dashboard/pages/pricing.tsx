@@ -7,6 +7,7 @@ import { AutoCenter } from '../components/AutoCenter';
 import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
+import { Meta } from '../components/Meta';
 
 export function Feature({ included, children }: {
     included?: boolean;
@@ -30,6 +31,7 @@ export default function Home(props: DefaultProps) {
     return (
         <div className='pb-10'>
             <Menu user={props.user} />
+            <Meta>Pricing</Meta>
             <AutoCenter>
                 <div className='text-center'>
                     <Center>

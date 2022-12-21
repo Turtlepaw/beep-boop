@@ -15,6 +15,7 @@ import { CreateHandler } from '../../../utils/utils';
 import { Configuration } from '../../_app';
 import { Mentions } from '../../../components/Mention';
 import { Permissions } from '../../../utils/permissions';
+import { Meta } from '../../../components/Meta';
 
 export interface Props extends DefaultProps {
     guild: APIGuild | null;
@@ -44,20 +45,23 @@ export function Card(props: {
 
 export function NotLoggedIn() {
     return (
-        <div className='py-20'>
-            <AutoCenter>
-                <h1 className='font-semibold text-2xl'>😢 You're not logged in!</h1>
-                <p className='font-medium text-lg pt-1'>You'll need to log in to access the dashboard.</p>
-                <Center className='pt-5'>
-                    <a className='inline px-1.5' href='/api/oauth'>
-                        <Button variant="primary" className='inline'>Login</Button>
-                    </a>
-                    <a className='inline px-1.5' href='/'>
-                        <Button variant="secondary" className='inline'>Back Home</Button>
-                    </a>
-                </Center>
-            </AutoCenter>
-        </div>
+        <>
+            <Meta>Dashboard</Meta>
+            <div className='py-20'>
+                <AutoCenter>
+                    <h1 className='font-semibold text-2xl'>😢 You're not logged in!</h1>
+                    <p className='font-medium text-lg pt-1'>You'll need to log in to access the dashboard.</p>
+                    <Center className='pt-5'>
+                        <a className='inline px-1.5' href='/api/oauth'>
+                            <Button variant="primary" className='inline'>Login</Button>
+                        </a>
+                        <a className='inline px-1.5' href='/'>
+                            <Button variant="secondary" className='inline'>Back Home</Button>
+                        </a>
+                    </Center>
+                </AutoCenter>
+            </div>
+        </>
     );
 }
 
@@ -86,6 +90,7 @@ export default function Home(props: Props) {
     return (
         <>
             <Menu user={props.user} isDashboard />
+            <Meta>Dashboard</Meta>
             <div className='!flex'>
                 <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
                 <AutoCenter className='text-center'>
