@@ -1,6 +1,6 @@
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Guild, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, OverwriteType, PermissionFlagsBits, PermissionsString, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextBasedChannel, TextChannel, TextChannelResolvable, TextInputBuilder, TextInputStyle, Webhook, WebhookClient } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../configuration";
+import { Embed, Emojis, Icons, Permissions } from "../configuration";
 import { Filter } from "../utils/filter";
 import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
@@ -20,36 +20,47 @@ export async function Unlock(guild: Guild, channel: TextChannel) {
     await channel.lockPermissions();
 }
 
-export const Permissions: PermissionsString[] = ["ManageMessages", "ManageChannels", "ManageGuild"];
 export default class Channel extends Command {
     constructor() {
         super({
             CanaryCommand: false,
-            Description: "Channel utils",
+            Description: "Lock the server or a channel.",
             GuildOnly: true,
-            Name: "channel",
+            Name: "lock",
             RequiredPermissions: [],
-            SomePermissions: Permissions,
+            SomePermissions: Permissions.Moderator,
             Category: Categories.Server,
             Subcomamnds: [
                 new SlashCommandSubcommandBuilder()
-                    .setName("lock")
-                    .setDescription("Lock this channel up.")
+                    .setName("channel")
+                    .setDescription("Lock this channel.")
                     .addStringOption(e =>
                         e.setName("reason")
                             .setDescription("The reason to appear on the message.")
                     ),
                 new SlashCommandSubcommandBuilder()
-                    .setName("unlock")
+                    .setName("remove")
                     .setDescription("Restores the defualt permissions."),
+                /*new SlashCommandSubcommandBuilder()
+                    .setName("server")
+                    .setDescription("Locks the whole server.")
+                    .addStringOption(e =>
+                        e.setName("reason")
+                            .setDescription("The reason to appear on the message.")
+                    )
+                    .addBooleanOption(e =>
+                        e.setName("exclude_private_channels")
+                            .setDescription("Exclude private channels from being locked. (e.g. moderator only channels)")
+                    ),*/
             ]
         });
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
         enum Subcommands {
-            Lock = "lock",
-            Unlock = "unlock"
+            Lock = "channel",
+            Unlock = "remove",
+            LockServer = "server"
         };
         const Subcommand = interaction.options.getSubcommand() as Subcommands;
 
@@ -61,7 +72,27 @@ export default class Channel extends Command {
                     .setEmoji(Icons.Unlock)
                     .setStyle(ButtonStyle.Secondary)
             );
-        if (Subcommand == Subcommands.Lock) {
+        if (Subcommand == Subcommands.LockServer) {
+            const ExcludePrivateChannels = interaction.options.getBoolean("exclude_private_channels");
+            const Channels = await interaction.guild.channels.fetch();
+            const ResolvedChannels = Channels.filter(e => {
+                if (ExcludePrivateChannels && !e.permissionsFor(interaction.guild.roles.everyone).has(PermissionFlagsBits.ViewChannel)) {
+                    return false;
+                } else if (e.type == ChannelType.GuildCategory) {
+                    return false;
+                } else return true;
+            });
+
+            for (const Channel of ResolvedChannels.values()) {
+                if (![ChannelType.GuildText, ChannelType.GuildVoice].includes(Channel.type)) return;
+                Lock(interaction.guild, Channel as TextChannel);
+            }
+
+            await interaction.reply({
+                content: `${Icons.Channel} Locked ${ResolvedChannels.size} channels.`,
+                ephemeral: true
+            });
+        } else if (Subcommand == Subcommands.Lock) {
             const Reason = interaction.options.getString("reason");
             await Lock(interaction.guild, interaction.channel as TextChannel);
 

@@ -16,6 +16,7 @@ async function ActionMessage(messageId: string, channelId: string, guild: Guild)
 }
 
 async function Refresh(client: Client) {
+    return;
     const Messages = await client.Storage.Messages.FindBy({
         Type: MessageType.CleanupMessage
     });

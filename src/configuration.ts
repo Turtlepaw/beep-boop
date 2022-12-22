@@ -176,5 +176,14 @@ export enum Colors {
 
 export const Embed = EmbedBuilder;
 export const Permissions = {
-    Manager: [PermissionFlagsBits.Administrator, PermissionFlagsBits.ManageGuild]
+    Manager: [
+        PermissionFlagsBits.Administrator,
+        PermissionFlagsBits.ManageGuild,
+        PermissionFlagsBits.ManageRoles,
+        PermissionFlagsBits.ManageWebhooks
+    ],
+    Moderator: [
+        PermissionFlagsBits.ModerateMembers,
+        PermissionFlagsBits.ManageMessages
+    ]
 }

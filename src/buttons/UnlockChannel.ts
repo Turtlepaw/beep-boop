@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonInteraction, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { Permissions, Unlock } from "../commands/Channel";
-import { Embed, Icons } from "../configuration";
+import { Unlock } from "../commands/Channel";
+import { Embed, Icons, Permissions } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class UnlockChannel extends Button {
@@ -9,13 +9,13 @@ export default class UnlockChannel extends Button {
             CustomId: "UNLOCK_CHANNEL",
             GuildOnly: false,
             RequiredPermissions: [],
-            SomePermissions: Permissions
+            SomePermissions: Permissions.Moderator
         })
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
         await Unlock(interaction.guild, interaction.channel as TextChannel);
-        await interaction.reply({
+        await interaction.update({
             embeds: [
                 new Embed(interaction.guild)
                     .setTitle(`${Icons.Unlock} This channel has been unlocked.`)
