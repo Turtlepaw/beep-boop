@@ -37,7 +37,8 @@
     "cache": "yarn run run",
     "fix-canvas": "yarn remove canvas && yarn add canvas",
     "migrate:create": "typeorm migration:create",
-    "migrate:run": "typeorm migration:run"
+    "migrate:run": "typeorm migration:run",
+    "pm2": "pm2 start yarn --interpreter bash --name ${arg} --watch --ignore-watch=\"dist storage database.sqlite log.json database.sqlite-journal\" -- dev && pm2 save && pm2 logs"
   },
   "devDependencies": {
     "colors": "^1.4.0",
