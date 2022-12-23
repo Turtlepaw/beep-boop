@@ -1,7 +1,7 @@
 import { ChannelType, Client, Events as ClientEvents, Guild, InteractionReplyOptions, TextChannel } from "discord.js";
 import klawSync from "klaw-sync";
 import { DEVELOPER_BUILD } from "../index";
-import { Embed, Emojis, guildId, Icons, Logs } from "../configuration";
+import { BaseDirectory, Embed, Emojis, guildId, Icons, Logs } from "../configuration";
 import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import EventBuilder from "../lib/Event";
@@ -60,7 +60,7 @@ async function CreateError(Summary: string, ExecutingGuild: Guild, client: Clien
 async function StartEventService(client: Client) {
     try {
         //Find the event files
-        const Files = klawSync("./dist/events", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const Files = klawSync(`${BaseDirectory}/events`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
         const Events: EventBuilder[] = [];
         for (const File of Files) {
             const OriginalFile = require(File.path);
@@ -82,7 +82,7 @@ async function StartEventService(client: Client) {
 async function StartButtonService(client: Client) {
     try {
         //Find the button files
-        const Files = klawSync("./dist/buttons", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const Files = klawSync(`${BaseDirectory}/buttons`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
         const Buttons: ButtonBuilder[] = [];
         for (const File of Files) {
             const OriginalFile = require(File.path);
@@ -164,7 +164,7 @@ async function StartButtonService(client: Client) {
 async function StartSelectMenuService(client: Client) {
     try {
         //Find the button files
-        const Files = klawSync("./dist/select_menus", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const Files = klawSync(`${BaseDirectory}/select_menus`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
         const SelectOptions: SelectOptionBuilder[] = [];
         for (const File of Files) {
             const OriginalFile = require(File.path);

@@ -12,6 +12,7 @@ import { Reminder } from "../models/Reminders";
 import { Message } from "../models/Message";
 import { CustomBot } from "../models/CustomBot";
 import { Gift } from "../models/Gift";
+import { OAuth } from "../models/OAuth";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -21,6 +22,7 @@ export interface StorageManagers {
     Messages: StorageManager<Message>;
     CustomBots: StorageManager<CustomBot>;
     Gifts: StorageManager<Gift>;
+    OAuth: StorageManager<OAuth>;
 }
 
 declare module 'discord.js' {

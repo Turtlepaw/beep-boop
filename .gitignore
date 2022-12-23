@@ -126,5 +126,9 @@ database.sqlite
 # log file
 log.json
 
-## Migrate files
+# Migrate files
 *-beep-boop.ts
+
+# Certs
+*.key
+*.cert

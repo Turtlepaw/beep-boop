@@ -51,6 +51,13 @@ export class GuildConfiguration {
     @Column({ nullable: true, default: false })
     Premium: boolean;
 
+    // Appeals
+    // -> Let members appeal their punishments
+    @Column({ nullable: true })
+    Appeals: boolean;
+    @Column({ nullable: true })
+    AppealChannel: string;
+
     // Autonomous Cleaning
     // -> Clean up old messages from members.
     @Column({ type: "simple-array" })

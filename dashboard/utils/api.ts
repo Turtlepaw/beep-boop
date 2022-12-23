@@ -1,17 +1,20 @@
 import fetch from "node-fetch";
 import { config } from "./config";
 import { APIGuild } from "./types";
+//import { Routes } from "../../shared/types";
 const URL = process.env.API_URI || "http://localhost:4000";
 const token = process.env.API_TOKEN || "Bearer api_token_1490ujdsifh9124yf";
 //const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
 
 export enum Routes {
-    AppealSettings = "/settings/appeals",
-    Index = "/",
-    OAuth = "/oauth",
-    GuildsWith = "/guilds",
-    Channels = "/channels",
-    CreateMessage = "/message/create"
+    GuildConfiguration = "/v1/settings/:guildId",
+    Index = "/v1/",
+    OAuth = "/v1/oauth",
+    GuildsWith = "/v1/guilds",
+    Channels = "/v1/channels",
+    CreateMessage = "/v1/message/create",
+    RoleConnections = "/v1/role-connections/verify",
+    Subscription = "/v1/subscription/:guildId"
 }
 
 enum Status {
@@ -107,32 +110,6 @@ export async function GetChannels(Id: string): Promise<APIGuild[]> {
         headers: {
             Authorization: token
         }
-    });
-
-    return Result.json();
-}
-
-export async function GetAppeals(Id: string): Promise<string> {
-    const Result = await fetch(CreateRoute(Routes.AppealSettings) + `?id=${Id}`, {
-        method: Methods.Get,
-        headers: {
-            Authorization: token
-        }
-    });
-
-    return Result.json();
-}
-
-export async function SetAppeals(Id: string, ChannelId: string): Promise<any> {
-    const Result = await fetch(CreateRoute(Routes.AppealSettings), {
-        method: Methods.Post,
-        body: JSON.stringify({
-            id: Id,
-            channel: ChannelId,
-            headers: {
-                Authorization: token
-            }
-        })
     });
 
     return Result.json();

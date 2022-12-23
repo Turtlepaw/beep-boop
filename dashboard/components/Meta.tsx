@@ -6,9 +6,10 @@ export interface MetaProperties {
 }
 
 export function Meta({ children: Title }: MetaProperties) {
+    const PageTitle = `${Configuration.Title} - ${Title == null ? "" : ` ${Title}`}`
     return (
         <Head>
-            <title>{Configuration.Title} - {Title == null ? "" : ` ${Title}`}</title>
+            <title>{PageTitle}</title>
             <link rel="icon" href={Configuration.Icon.SVG} />
             {/* Primary Meta Tags */}
             <meta name="title" content={Title || Configuration.Title} />

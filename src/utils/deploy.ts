@@ -1,5 +1,5 @@
 import { REST, SlashCommandBuilder, Routes, Client } from "discord.js";
-import { guildId } from "../configuration";
+import { BaseDirectory, guildId } from "../configuration";
 import klawSync from "klaw-sync";
 import CommandBuilder from "../lib/CommandBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
@@ -12,7 +12,7 @@ export async function Deploy(client: Client, logs = true) {
     const clientId = client.user.id;
     const token = client.token;
 
-    const Files = klawSync("./dist/commands", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+    const Files = klawSync(`${BaseDirectory}/commands`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
 
     for (const File of Files) {
         const OriginalFile = require(File.path);
@@ -26,7 +26,7 @@ export async function Deploy(client: Client, logs = true) {
         }
     }
 
-    const ContextMenuFiles = klawSync("./dist/context_menus", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+    const ContextMenuFiles = klawSync(`${BaseDirectory}/context_menus`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
     const ContextMenus: ContextMenu[] = [];
     for (const File of ContextMenuFiles) {
         const OriginalFile = require(File.path);

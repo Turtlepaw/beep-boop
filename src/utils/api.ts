@@ -1,28 +1,29 @@
 import { ChannelType, Client, PermissionFlagsBits, TextChannel, User } from "discord.js";
 import express from "express";
 import bodyParser from "body-parser";
-import { CLIENT_ID, TOKEN } from "../index";
+import { CLIENT_ID, DEVELOPER_BUILD, TOKEN } from "../index";
 import fetch from "node-fetch";
 import https from "https";
 import fs from "fs";
-
-export enum Routes {
-    AppealSettings = "/settings/appeals",
-    TicketSettings = "/settings/tickets",
-    Index = "/",
-    OAuth = "/oauth",
-    GuildsWith = "/guilds",
-    Channels = "/channels",
-    CreateMessage = "/message/create",
-    RoleConnections = "/role-connections/verify",
-    Subscription = "/subscription/:guildId"
-}
+import { Verifiers } from "@airdot/verifiers";
+//import { Routes } from "../../shared/types";
 
 enum Status {
     Initialized = 1,
     Error = 2,
     Success = 3,
     NotFound = 4
+}
+
+export enum Routes {
+    GuildConfiguration = "/v1/settings/:guildId",
+    Index = "/v1/",
+    OAuth = "/v1/oauth",
+    GuildsWith = "/v1/guilds",
+    Channels = "/v1/channels",
+    CreateMessage = "/v1/message/create",
+    RoleConnections = "/v1/role-connections/verify",
+    Subscription = "/v1/subscription/:guildId"
 }
 
 enum Messages {
@@ -78,6 +79,12 @@ function VerifyNumber(str: any, length?: number): str is number {
     return VerifyBase(str) || (isNaN(str));
 }
 
+function StringNumber(str: any, length?: number): str is number {
+    if (isNaN(str)) str = Number(str);
+    if (length != null && str.length != length) return false;
+    return !isNaN(str);
+}
+
 function VerifyStringNumber(str: any, length?: number): str is string {
     if (isNaN(str)) str = Number(str);
     if (length != null && str.length != length) return true;
@@ -110,58 +117,19 @@ export async function API(client: Client, token: string) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
 
-    app.get(Routes.AppealSettings, async (req, res) => {
-        const GuildId = req.query.id;
+    app.get(Routes.GuildConfiguration, async (req, res) => {
+        const GuildId = req.params.guildId;
 
-        if (VerifyNumber(GuildId, 19)) return res.send(GetMessage(
+        if (!StringNumber(GuildId, 19)) return res.send(GetMessage(
             Message(Messages.Error, "Invalid Guild Id")
         ));
 
-        const Settings = client.storage[`${GuildId}_appeal_channel`];
+        const Settings = await client.Storage.Configuration.forGuild({
+            name: "Unknown Guild",
+            id: GuildId
+        });
+
         res.send(Settings);
-    });
-
-    app.post(Routes.AppealSettings, async (req, res) => {
-        const GuildId = req.body?.id;
-        const Channel = req.body?.channel;
-
-        if (VerifyNumber(Channel, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Channel Id")
-        ));
-
-        if (VerifyNumber(GuildId, 18)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
-
-        client.storage[`${GuildId}_appeal_channel`] = Channel;
-        res.send(Messages.Success);
-    });
-
-    app.get(Routes.TicketSettings, async (req, res) => {
-        const GuildId = req.query.id;
-
-        if (VerifyNumber(GuildId, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
-
-        const Settings = client.storage[`${GuildId}_tickets`];
-        res.send(Settings);
-    });
-
-    app.post(Routes.TicketSettings, async (req, res) => {
-        const GuildId = req.body?.id;
-        const Channel = req.body?.channel;
-
-        if (VerifyNumber(Channel, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Channel Id")
-        ));
-
-        if (VerifyNumber(GuildId, 18)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
-
-        client.storage[`${GuildId}_tickets`] = Channel;
-        res.send(Messages.Success);
     });
 
     app.get(Routes.Index, async (req, res) => {
@@ -169,13 +137,13 @@ export async function API(client: Client, token: string) {
     });
 
     app.get(Routes.OAuth, async (req, res) => {
-        const UserId = req.query?.id;
-        if (VerifyString(UserId)) return res.send(GetMessage(
+        const UserId = req.query?.id as string;
+        if (!Verifiers.String(UserId)) return res.send(GetMessage(
             Message(Messages.Error, "Invalid Id")
         ));
 
-        const User = client.storage[`oauth_${UserId}`];
-        res.send(User);
+        const User = client.Storage.OAuth.FindBy({ User: UserId });
+        res.send(User[0]);
     });
 
     app.post(Routes.OAuth, async (req, res) => {
@@ -189,18 +157,19 @@ export async function API(client: Client, token: string) {
         ));
 
         if (
-            VerifyString(access_token) ||
-            VerifyString(token_type) ||
-            VerifyString(jwt_token)
+            !Verifiers.String(access_token) ||
+            !Verifiers.String(token_type) ||
+            !Verifiers.String(jwt_token)
         ) return res.send(GetMessage(
             Message(Messages.Error, "Missing a parameter")
         ));
 
-        client.storage[`oauth_${UserId}`] = {
-            access_token,
+        client.Storage.OAuth.Create({
+            User: UserId,
             token_type,
-            jwt_token
-        };
+            jwt_token,
+            access_token
+        });
 
         res.send(
             GetMessage(Messages.Success)
@@ -314,10 +283,14 @@ export async function API(client: Client, token: string) {
     var privateKey = fs.readFileSync('server.key');
     var certificate = fs.readFileSync('server.cert');
 
-    const port = 443;
+    const port = DEVELOPER_BUILD ? 4000 : 443;
 
-    https.createServer({
-        key: privateKey,
-        cert: certificate
-    }, app).listen(port);
+    if (DEVELOPER_BUILD) {
+        app.listen(port, () => console.log("API Running: ".green + "http://localhost:4000/".gray));
+    } else {
+        https.createServer({
+            key: privateKey,
+            cert: certificate
+        }, app).listen(port, () => console.log("API Running: ".green + "https://api.trtle.xyz/".gray));
+    }
 }
