@@ -11,13 +11,16 @@ export const JSONTransformer: ValueTransformer = {
 
 export class SetTransformer<T> {
     to(values: Set<T>) {
+        if (values == null) return "";
         return JSON.stringify(
             Array.from(values.values())
         );
     }
 
-    from(value: T[]) {
-        return new Set<T>(value);
+    from(value: string) {
+        if (value == '') return new Set<T>();
+        const Array: T[] = JSON.parse(value);
+        return new Set<T>(Array);
     }
 }
 

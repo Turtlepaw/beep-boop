@@ -9,7 +9,7 @@ import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/act
 import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
 import { Modules } from "../commands/Server";
-import { ChannelSelectMenu } from "../utils/components";
+import { ChannelSelectMenu, ChannelSelector as ChannelSelectBuilder } from "../utils/components";
 import { CleanupChannel } from "../utils/storage";
 
 export function ResolveEnumValue(selectedEnum: object, selectedValue: string) {
@@ -170,7 +170,9 @@ ${StringTimedChannels}`
             }
         }
 
-        const ChannelSelector = ChannelSelectMenu(Id.ChannelSelector);
+        const ChannelSelector = new ChannelSelectBuilder()
+            .SetCustomId(Id.ChannelSelector)
+            .SetChannelTypes(ChannelType.GuildText);
         Collector.on("collect", async button => {
             if (button.customId == Id.TimedCleanup) {
                 const TimerField = new TextInputBuilder()
@@ -241,7 +243,7 @@ ${StringTimedChannels}`
                 await TypeInteraction.update({
                     content: `${Icons.Channel} Select a channel`,
                     components: [
-                        ChannelSelector
+                        ChannelSelector.toActionRow()
                     ]
                 });
 

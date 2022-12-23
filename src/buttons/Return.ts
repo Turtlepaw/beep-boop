@@ -15,6 +15,10 @@ export default class ReturnButton extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        await ServerConfiguration(interaction);
+        try {
+            await ServerConfiguration(interaction);
+        } catch (e) {
+
+        }
     }
 }

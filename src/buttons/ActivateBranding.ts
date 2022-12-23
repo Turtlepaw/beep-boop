@@ -13,6 +13,7 @@ import { ChannelSelectMenu } from "../utils/components";
 import { customClients, StartCustomBot } from "../utils/customBot";
 import { ResolveUser } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
+import { PremiumPerks } from "../utils/constants";
 
 export const CustomBrandingModal = "CUSTOM_BRANDING_MODAL";
 export default class CustomBranding extends Button {
@@ -77,7 +78,7 @@ export default class CustomBranding extends Button {
                     name: "Configuration",
                     value: `• Logging Channel: ${CurrentChannel.toString()}`
                 }]);
-            const isAllowedMore = Profile.subscription == Subscriptions.Pro && CustomBots.length != 5;
+            const isAllowedMore = CustomBots.length != PremiumPerks[Profile.subscription].CustomBots;
             const GenerateComponents = () => new ActionRowBuilder<ButtonBuilder>()
                 .setComponents(
                     new ButtonBuilder()

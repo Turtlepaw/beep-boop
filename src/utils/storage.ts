@@ -32,6 +32,7 @@ class ResolvableConfiguration {
 
     // Premium (basic and pro)
     public Color: string;
+    public Premium: boolean;
 
     // [deprecated] Reputation Based Moderation
     public MaxReputation: number;
@@ -77,6 +78,10 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
     constructor(options?: ResolvableConfiguration) {
         super();
         Object.entries(options).map(([k, v]) => this[k] = v);
+    }
+
+    isPremium() {
+        return this?.Premium ?? false;
     }
 
     isReputationModeration() {
@@ -292,6 +297,7 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             CleanupType: config?.CleanupType == null ? [] : config.CleanupType,
             // Premium (basic and pro)
             Color: config?.Color || null,
+            Premium: config?.Premium || false,
             // [deprecated] Reputation Based Moderation
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,

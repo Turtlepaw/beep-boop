@@ -52,6 +52,10 @@ export default class Send extends Command {
                                 .setCustomId("CUSTOM_BRANDING")
                                 .setStyle(ButtonStyle.Success),
                             new ButtonBuilder()
+                                .setLabel("Manage Servers")
+                                .setCustomId("SUBSCRIPTION_GUILDS")
+                                .setStyle(ButtonStyle.Secondary),
+                            new ButtonBuilder()
                                 .setLabel("Redeem Code")
                                 .setStyle(ButtonStyle.Primary)
                                 .setCustomId("REDEEM_CODE"),

@@ -67,6 +67,7 @@ export enum Emojis {
 }
 
 export enum Icons {
+    Dot = "<:ListItem:1043218649940508712>",
     Clock = "<:Clock:1043579937690497044>",
     MemberAdd = "<:MemberAdd:1043579947639386292>",
     Flag = "<:Flag:1043584066068422747>",

@@ -10,6 +10,7 @@ export interface Profile {
     accentColor?: ColorResolvable;
     subscription?: Subscriptions;
     expires?: Date;
+    guilds: Set<string>;
 }
 
 export function CreateUser(user: User, client: Client) {
@@ -40,7 +41,8 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
         reputation: user?.reputation || 0,
         userId: user?.userId || ResolvedUser.id,
         subscription: user?.subscription || Subscriptions.None,
-        expires: new Date(user?.expires) || null
+        expires: new Date(user?.expires) || null,
+        guilds: user?.guilds ?? new Set()
     }
 }
 
@@ -52,6 +54,26 @@ export function FetchUser(Id: string, client: Client) {
 export function SetBio(Id: string, bio: string, client: Client) {
     return client.Storage.Profiles.Edit(Id, {
         bio
+    });
+}
+
+export async function AddGuild(Id: string, guild: string, client: Client) {
+    const current = await ResolveUser(Id, client);
+    let guilds = current?.guilds;
+    if (current.guilds == null) guilds = new Set([guild])
+    else guilds.add(guild);
+
+    return client.Storage.Profiles.Edit(Id, {
+        guilds
+    });
+}
+
+export async function RemoveGuild(Id: string, guild: string, client: Client) {
+    const current = await ResolveUser(Id, client);
+    current.guilds.delete(guild);
+
+    return client.Storage.Profiles.Edit(Id, {
+        guilds: current.guilds
     });
 }
 

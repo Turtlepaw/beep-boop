@@ -48,6 +48,9 @@ export class GuildConfiguration {
     @Column({ nullable: true })
     Color: HexColorString | string;
 
+    @Column({ nullable: true, default: false })
+    Premium: boolean;
+
     // Autonomous Cleaning
     // -> Clean up old messages from members.
     @Column({ type: "simple-array" })

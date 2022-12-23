@@ -8,7 +8,7 @@ export class Embed extends EmbedBuilder {
         super();
         if (guild != null) this.guild = guild;
         this.setColor(Colors.BrandColor)
-        this.GetColor();
+        //this.GetColor();
     }
 
     async GetColor() {
@@ -16,11 +16,12 @@ export class Embed extends EmbedBuilder {
         const { client } = this.guild;
         const config = await client.Storage.Configuration.forGuild(this.guild);
         if (config?.Color == null) return;
-        if (!Verifiers.HexColor(config.Color)) throw new Error("config.color must be a hex color");
+        if (!Verifiers.HexColor(config.Color)) return; //throw new Error("config.color must be a hex color");
         this.setColor(config.Color);
     }
 
-    build() {
-        return [this]
+    async Resolve() {
+        await this.GetColor();
+        return this
     }
 }
