@@ -188,4 +188,4 @@ export const Permissions = {
         PermissionFlagsBits.ManageMessages
     ]
 }
-export const BaseDirectory = "./dist/src";
+export const BaseDirectory = "./dist";
