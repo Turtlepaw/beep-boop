@@ -29,7 +29,7 @@ export interface WebsiteConfiguration {
 // ^ This is required
 // This is what'll appear on your website
 export const Configuration: WebsiteConfiguration = {
-  WebsiteURL: "https://dash.trtle.xyz/",
+  WebsiteURL: "https://bop.trtle.xyz/",
   Title: "Beep Boop",
   Icon: {
     SVG: "/Robot.svg",
