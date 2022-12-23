@@ -8,7 +8,7 @@ import { Experimental } from '../../../components/Beta';
 import { AddIcon, DownIcon } from '../../../components/Icons';
 import { ExternalIcon, Menu } from '../../../components/Menu';
 import { SideMenu } from '../../../components/SideMenu';
-import { GetAppeals, GetChannels, SetAppeals } from '../../../utils/api';
+import { GetChannels } from '../../../utils/api';
 import { DefaultProps, parseUser } from '../../../utils/parse-user';
 import { APIChannel, APIGuild } from '../../../utils/types';
 import { CreateHandler } from '../../../utils/utils';
@@ -80,7 +80,7 @@ export default function Home(props: Props) {
     const [Channel, SetChannel] = useState("");
     const HandleChannel = CreateHandler(Channel, SetChannel, () => SetPanel(true));
     const SaveSettings = async () => {
-        SetAppeals(guild.Id, Channel)
+        //SetAppeals(guild.Id, Channel)
     };
     const SaveAll = () => {
         SetSaving(!IsSaving)
@@ -147,7 +147,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (ctx
     }
 
     const channels = await GetChannels(guild.Id);
-    const channel = await GetAppeals(guild.Id);
+    const channel = null; //await GetAppeals(guild.Id);
 
     return {
         props: {
