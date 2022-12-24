@@ -143,18 +143,18 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                     inline: false
                 }, {
                     name: `${Icons.Color} Accent Color`,
-                    value: User.hexAccentColor != null ? inlineCode(User.hexAccentColor) : "No accent color."
+                    value: User.hexAccentColor != null ? inlineCode(User.hexAccentColor) : "No accent color"
                 }, {
                     name: `${Icons.Flag} Roles`,
-                    value: MemberRoles.size >= 1 ? MemberRoles.map(e => e.toString()).join(" ") : "No roles.",
+                    value: MemberRoles.size >= 1 ? MemberRoles.map(e => e.toString()).join(" ") : "No roles",
                     inline: false
                 }, {
                     name: `${Icons.Globe} Language`,
-                    value: (Member.id == interaction.user.id && interaction.locale != null) ? Language(interaction.locale) : "Unknown.",
+                    value: (Member.id == interaction.user.id && interaction.locale != null) ? Language(interaction.locale) : "Unknown",
                     inline: false
                 }, {
                     name: `${Icons.Badge} Badges`,
-                    value: flags.length >= 1 ? flags.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges.",
+                    value: flags.length >= 1 ? flags.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges",
                     inline: false
                 }])
                 .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)
@@ -228,15 +228,15 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                     name: `${Icons.Flag} Roles`,
                     value: Guild.roles.cache.size >= 1 ? `${(
                         Guild.roles.cache.filter(e => e.name != "@everyone").size.toString()
-                    )} roles` : "No roles.",
+                    )} roles` : "No roles",
                     inline: false
                 }, {
                     name: `${Icons.Globe} Language`,
-                    value: (interaction.guildLocale != null) ? Language(interaction.guildLocale) : "Unknown.",
+                    value: (interaction.guildLocale != null) ? Language(interaction.guildLocale) : "Unknown",
                     inline: false
                 }, {
                     name: `${Icons.Badge} Badges`,
-                    value: Guild.features.length >= 1 ? Guild.features.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges.",
+                    value: Guild.features.length >= 1 ? Guild.features.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges",
                     inline: false
                 }, {
                     name: `${Icons.Emoji} Emojis`,
@@ -254,7 +254,7 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                 }])
                 .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)
                 .setFooter({
-                    text: `ID: ${Guild.id} `
+                    text: `ID: ${Guild.id}`
                 })
         ],
         components: [
