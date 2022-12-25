@@ -1,7 +1,7 @@
 import { Client, Guild } from "discord.js";
 import { KeyFileStorage } from "key-file-storage/dist/src/key-file-storage";
 import "reflect-metadata"
-import { CleanupType, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType } from "../models/Configuration";
+import { CleanupType, CounterChannel, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType } from "../models/Configuration";
 import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { Profile } from "../models/Profile";
@@ -30,6 +30,9 @@ class ResolvableConfiguration {
     public CleanupChannels: CleanupChannel[];
     public CleanupTimer: number;
     public CleanupType: CleanupType[];
+
+    // Counter Channels
+    public CounterChannels: CounterChannel[];
 
     // Premium (basic and pro)
     public Color: string;
@@ -101,6 +104,10 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
 
     isSystemCleanup() {
         return this.isCleanup(CleanupType.System);
+    }
+
+    hasCounterChannels() {
+        return this?.CounterChannels != null && this.CounterChannels.length >= 1;
     }
 
     hasTickets() {
@@ -298,8 +305,10 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             CleanupTimer: config?.CleanupTimer || null,
             CleanupType: config?.CleanupType == null ? [] : config.CleanupType,
             // Premium (basic and pro)
-            Color: config?.Color || null,
-            Premium: config?.Premium || false,
+            Color: config?.Color ?? null,
+            Premium: config?.Premium ?? false,
+            // Counter channels
+            CounterChannels: config?.CounterChannels ?? [],
             // [deprecated] Reputation Based Moderation
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,

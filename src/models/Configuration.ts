@@ -31,6 +31,16 @@ export enum JoinActions {
     AddRoleAfterServerScreen = "ADD_ROLE_AFTER_SERVER_SCREEN"
 }
 
+export enum CounterType {
+    Members = "MEMBERS",
+    HumanMembers = "MEMBERS_EXLCUDE_BOTS"
+}
+
+export interface CounterChannel {
+    Id: string;
+    Name: string;
+}
+
 @Entity()
 export class GuildConfiguration {
     @PrimaryGeneratedColumn({ type: "integer" })
@@ -57,6 +67,11 @@ export class GuildConfiguration {
     Appeals: boolean;
     @Column({ nullable: true })
     AppealChannel: string;
+
+    // Counter Channels
+    // -> Show counts of multiple things
+    @Column({ type: "simple-array", nullable: true })
+    CounterChannels: CounterChannel[];
 
     // Autonomous Cleaning
     // -> Clean up old messages from members.
