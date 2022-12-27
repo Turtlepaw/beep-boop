@@ -21,7 +21,8 @@
     "react": "18.2.0",
     "react-burger-menu": "^3.0.8",
     "react-dom": "18.2.0",
-    "react-select": "^5.5.7"
+    "react-select": "^5.5.7",
+    "@vercel/edge-config": "^0.1.0"
   },
   "devDependencies": {
     "@types/cookie": "^0.5.1",
