@@ -6,11 +6,51 @@ export enum Modules {
     AutonomousCleanup = "AUTO_DELETE_SETTINGS",
     Appeals = "APPEAL_CONFIGURATION",
     Tickets = "TICKET_CONFIGURATION",
-    ReputationBasedModeration = "REPUTATION_BASED_MODERATION_CONFIG",
+    //ReputationBasedModeration = "REPUTATION_BASED_MODERATION_CONFIG",
     AutonomousModeration = "AUTO_MODERATION",
     JoinActions = "MEMBER_JOIN_ACTIONS",
-    ServerConfiguration = "MAIN_SERVER_CONFIG"
+    ServerConfiguration = "MAIN_SERVER_CONFIG",
+    Verification = "SERVER_VERIFICATION"
 }
+
+export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; }> = {
+    [Modules.Appeals]: {
+        Label: "Appeals",
+        Description: "Appeals let users ask moderators to review their case/punishment.",
+        Icon: Icons.Discover
+    },
+    [Modules.Tickets]: {
+        Label: "Tickets",
+        Description: "Tickets let members have a private space to discuss things with moderators.",
+        Icon: Icons.Flag
+    },
+    [Modules.AutonomousModeration]: {
+        Label: "Autonomous Moderation",
+        Description: "Autonomous Moderation moderates your server automatically.",
+        Icon: Icons.Shield
+    },
+    [Modules.AutonomousCleanup]: {
+        Label: "Autonomous Cleanup",
+        Description: "Autonomous cleanup cleans up old messages that members sent. (e.g. system welcome messages)",
+        Icon: Icons.Trash
+    },
+    [Modules.JoinActions]: {
+        Label: "Join Actions",
+        Description: "Set up join actions for when members join your server.",
+        Icon: Icons.Tag
+    },
+    [Modules.ServerConfiguration]: {
+        Label: "Server Configuration",
+        Description: "Essential configuration for your server.",
+        Icon: Icons.Configure
+    },
+    [Modules.Verification]: {
+        Label: "Verification",
+        Description: "Protect your server with member verification.",
+        Icon: Icons.Unlock
+    }
+}
+
 export function ServerConfiguration(interaction: RepliableInteraction) {
     const Buttons = [
         new ActionRowBuilder<ButtonBuilder>()
@@ -32,36 +72,13 @@ export function ServerConfiguration(interaction: RepliableInteraction) {
                     .setPlaceholder("Configure an module")
                     .setMaxValues(1)
                     .addOptions(
-                        new SelectMenuOptionBuilder()
-                            .setValue(Modules.Appeals)
-                            .setDescription("Appeals let users ask moderators to review their case/punishment.")
-                            .setEmoji(Icons.Discover)
-                            .setLabel("Appeals"),
-                        new SelectMenuOptionBuilder()
-                            .setValue(Modules.Tickets)
-                            .setDescription("Tickets let members have a private space to discuss things with moderators.")
-                            .setLabel("Tickets")
-                            .setEmoji(Icons.Flag),
-                        new SelectMenuOptionBuilder()
-                            .setValue(Modules.AutonomousModeration)
-                            .setDescription("Autonomous Moderation moderates your server automatically.")
-                            .setLabel("Autonomous Moderation")
-                            .setEmoji(Icons.Shield),
-                        new SelectMenuOptionBuilder()
-                            .setValue(Modules.AutonomousCleanup)
-                            .setDescription("Autonomous cleanup cleans up old messages that members sent. (e.g. system welcome messages)")
-                            .setLabel("Autonomous Cleanup")
-                            .setEmoji(Icons.Trash),
-                        new SelectMenuOptionBuilder()
-                            .setValue(Modules.ServerConfiguration)
-                            .setDescription("Main server configuration.")
-                            .setLabel("Server")
-                            .setEmoji(Icons.Configure),
-                        new SelectMenuOptionBuilder()
-                            .setValue(Modules.JoinActions)
-                            .setDescription("Set up join actions for when members join your server.")
-                            .setLabel("Join Actions")
-                            .setEmoji(Icons.Lock)
+                        Object.entries(ModuleInformation).map(([k, v]) =>
+                            new SelectMenuOptionBuilder()
+                                .setLabel(v.Label)
+                                .setDescription(v.Description)
+                                .setEmoji(v.Icon)
+                                .setValue(k)
+                        )
                     )
             )
     ];

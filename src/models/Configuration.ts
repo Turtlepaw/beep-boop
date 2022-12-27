@@ -41,6 +41,12 @@ export interface CounterChannel {
     Name: string;
 }
 
+export enum VerificationLevel {
+    Low = "Simple",
+    Medium = "Balanced",
+    High = "Secure"
+}
+
 @Entity()
 export class GuildConfiguration {
     @PrimaryGeneratedColumn({ type: "integer" })
@@ -67,6 +73,15 @@ export class GuildConfiguration {
     Appeals: boolean;
     @Column({ nullable: true })
     AppealChannel: string;
+
+    // Verification
+    // -> Verify users, etc...
+    @Column({ nullable: true })
+    Verification: boolean;
+    @Column({ nullable: true })
+    VerificationLevel: VerificationLevel;
+    @Column({ nullable: true, type: "simple-array" })
+    VerificationPanels: { Channel: string; Message: string; }[];
 
     // Counter Channels
     // -> Show counts of multiple things
