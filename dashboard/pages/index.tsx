@@ -22,7 +22,7 @@ export default function Home(props: DefaultProps) {
           <Center>
             <h1 className='font-bold text-4xl pt-5 pb-1'>
               {/* <img src={Configuration.Icon.SVG} className="w-8 inline-block mb-2 mr-2" /> */}
-              Modern bot for the <span style={BrandColor}>21st century</span>
+              Modern bot built for the <span style={BrandColor}>21st century</span>
             </h1>
           </Center>
           <Center>
