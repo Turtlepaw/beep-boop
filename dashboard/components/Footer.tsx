@@ -1,4 +1,5 @@
 import React from "react";
+import { BrandColor } from "../Link"
 
 function Title({ children }: { children: string; }) {
     return (
@@ -28,7 +29,7 @@ export function Footer() {
             <div className="pl-10 py- 10 py-16 flex justify-between max-w-screen-xl w-full z-10 flex-wrap">
                 <div className="float-left">
                     <a href="/">
-                        <h1 className="font-bold text-2xl pb-0.5 hover:opacity-80">
+                        <h1 className="font-bold text-2xl pb-0.5 hover:opacity-80" style={BrandColor}>
                             Beep Boop
                         </h1>
                     </a>
