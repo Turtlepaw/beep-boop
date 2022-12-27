@@ -1,5 +1,5 @@
 import React from "react";
-import { BrandColor } from "../Link"
+import { BrandColor } from "./Link"
 
 function Title({ children }: { children: string; }) {
     return (
