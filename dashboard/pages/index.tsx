@@ -1,4 +1,4 @@
-import { Button, Center } from '@chakra-ui/react'
+import { Badge, Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import Image from 'next/image'
@@ -8,6 +8,8 @@ import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
 import { Meta } from '../components/Meta';
+import { BrandColor } from '../components/Link';
+import { CustomBadge, Presets } from '../components/Common';
 
 export default function Home(props: DefaultProps) {
   return (
@@ -16,19 +18,20 @@ export default function Home(props: DefaultProps) {
       <Meta>Home</Meta>
       <AutoCenter>
         <div className='text-center'>
+          <CustomBadge preset={Presets.ComingSoon("!px-4 py-1", "Private Beta")} />
           <Center>
             <h1 className='font-bold text-4xl pt-5 pb-1'>
-              <img src={Configuration.Icon.SVG} className="w-8 inline-block mb-2 mr-2" />
-              {Configuration.Title}
+              {/* <img src={Configuration.Icon.SVG} className="w-8 inline-block mb-2 mr-2" /> */}
+              Modern bot for the <span style={BrandColor}>21st century</span>
             </h1>
           </Center>
           <Center>
-            <p className='max-w-sm text-lg'>{Configuration.Description}</p>
+            <p className='max-w-md pt-1 font-medium DiscordTag text-lg'>{Configuration.Description}</p>
           </Center>
           <Center className='mt-5'>
-            <a href='/add'>
-              <Button variant="primary" className='mx-1.5'>
-                Add to Server
+            <a href='/beta'>
+              <Button variant="brand" className='mx-1.5'>
+                Join Beta
               </Button>
             </a>
             <a href='/support'>
@@ -40,7 +43,7 @@ export default function Home(props: DefaultProps) {
         </div>
         <div>
           <Center>
-            <h1 className='text-center font-bold text-2xl pt-10'>What you're getting</h1>
+            <h1 className='text-center font-bold text-2xl pt-10 max-w-sm'>Packed with features for your community</h1>
           </Center>
           <div className='FlexContainer'>
             <Feature>
@@ -80,8 +83,8 @@ export default function Home(props: DefaultProps) {
             </Feature>
           </div>
         </div>
-      </AutoCenter>
-    </div>
+      </AutoCenter >
+    </div >
   )
 }
 

@@ -584,6 +584,11 @@
   dependencies:
     "@types/node" "*"
 
+"@vercel/edge-config@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@vercel/edge-config/-/edge-config-0.1.0.tgz#f966360686e31e47eb3cffc3b36fb26e862fe325"
+  integrity sha512-1kN/09w5gjjWquXZGdVAavoB+VwF0RukdcIIuuTFtPPPQsl7IXa9KM3d04YLxKbp+VDQLVOaNmvLfkmVbMEW8A==
+
 "@vierofernando/decancer-darwin-arm64@1.4.1":
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/@vierofernando/decancer-darwin-arm64/-/decancer-darwin-arm64-1.4.1.tgz#153cc0894cfa3a7b2a02e93340a899f09c332903"

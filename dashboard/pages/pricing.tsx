@@ -8,7 +8,7 @@ import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
 import { Meta } from '../components/Meta';
-import { Link, Links } from '../components/Link';
+import { BrandBg, BrandBorder, BrandColor, Link, Links } from '../components/Link';
 
 export function Feature({ included, children }: {
     included?: boolean;
@@ -40,7 +40,7 @@ export default function Home(props: DefaultProps) {
                 <div className='text-center'>
                     <Center>
                         <h1 className='font-bold text-4xl pt-5 pb-1.5 max-w-lg'>
-                            Get a pro subscription and level up your server
+                            Get a pro subscription and <span style={BrandColor} className="">level up</span> your server
                         </h1>
                     </Center>
                     <Center>
@@ -48,7 +48,7 @@ export default function Home(props: DefaultProps) {
                     </Center>
                 </div>
                 <h1 className="text-light text-center font-bold text-2xl pt-5 pb-1">Teirs</h1>
-                <div className="bg-[#5865f2] rounded-lg py-8 px-8 h- 40 w-96 my-5">
+                <div style={BrandBg} className="rounded-lg py-8 px-8 h- 40 w-96 my-5">
                     <h1 className="text-2xl font-bold">Pro</h1>
                     <p className="font-semibold pt-2 pb-2">The subscription with a little bit more of everything</p>
                     <Feature included>5 Servers</Feature>
@@ -60,7 +60,7 @@ export default function Home(props: DefaultProps) {
                         </div>
                     </a>
                 </div>
-                <div className="border-2 border-[#5865f2] rounded-lg py-8 px-8 h- 40 w-96 my-5">
+                <div style={BrandBorder} className="border-2 rounded-lg py-8 px-8 h- 40 w-96 my-5">
                     <h1 className="text-2xl font-bold">Basic</h1>
                     <p className="font-semibold pt-2 pb-2">The smaller subscription with all the perks</p>
                     <Feature included>2 Servers</Feature>
@@ -75,7 +75,7 @@ export default function Home(props: DefaultProps) {
                         </div>
                     </a>
                 </div>
-                <div className="border-2 border-[#5865f2] rounded-lg py-8 px-8 h- 40 w-96 my-5">
+                <div style={BrandBorder} className="border-2 rounded-lg py-8 px-8 h- 40 w-96 my-5">
                     <h1 className="text-2xl font-bold">Enterprise</h1>
                     <p className="font-semibold pt-2 pb-2">The subscription for big companies of all kinds</p>
                     <Feature included>Up to 3 Servers</Feature>

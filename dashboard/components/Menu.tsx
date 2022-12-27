@@ -2,6 +2,7 @@ import { Button, Menu as ChakraMenu, Center, MenuButton, MenuItem as ChakraMenuI
 import React from "react";
 import { DefaultProps } from "../utils/parse-user";
 import { DownIcon, UpIcon } from "./Icons";
+import { BrandColor } from "./Link";
 
 export interface MenuProps extends DefaultProps {
     isDashboard?: boolean;
@@ -43,7 +44,7 @@ export function Menu(props: MenuProps) {
         <Center>
             <div className="pr-5 pt-5 z-50">
                 <Center>
-                    <a className="!inline font-bold text-2xl pr-6 hover:opacity-80" href="/">
+                    <a style={BrandColor} className="!inline font-bold text-2xl pr-6 hover:opacity-80" href="/">
                         Beep Boop
                     </a>
                     <div className="pr-6">

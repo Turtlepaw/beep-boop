@@ -11,7 +11,7 @@ export interface LinkProperties {
     className?: string;
 }
 
-export function Link({ children, href, onBrand, isExternal, isNewTab, className }: LinkProperties) {
+export function Link({ children, href, onBrand = true, isExternal, isNewTab, className }: LinkProperties) {
     if (isExternal != false && (
         href.startsWith("https://") ||
         href.startsWith("http://")
@@ -28,6 +28,18 @@ export function Link({ children, href, onBrand, isExternal, isNewTab, className 
             {isExternal && <ExternalIcon />}
         </a>
     )
+}
+
+export const BrandColor: CSSProperties = {
+    color: Configuration.Color
+}
+
+export const BrandBg: CSSProperties = {
+    backgroundColor: Configuration.Color
+}
+
+export const BrandBorder: CSSProperties = {
+    borderColor: Configuration.Color
 }
 
 export class Links {

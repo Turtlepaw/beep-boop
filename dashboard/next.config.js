@@ -25,6 +25,7 @@ const nextConfig = {
       ...MultipleLinks("https://docs.trtle.xyz/pro/custom-bots", "/learn/custom-bots", "/learn/custom-bot", "/learn/custom"),
       ...MultipleLinks("https://docs.trtle.xyz/tickets/about", "/learn/tickets", "/learn/ticket", "/learn/private-tickets"),
       ...MultipleLinks("https://docs.trtle.xyz/pro/troubleshooting", "/learn/custom-bots-troubleshooting", "/learn/custom-bots-faq", "/learn/custom-bots-help"),
+      ...MultipleLinks("https://my.forms.app/turtlepaw/beep-boop-beta", "/beta", "/beta-testing", "/join-beta")
     ]
   }
 }

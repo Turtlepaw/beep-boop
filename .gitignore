@@ -132,3 +132,4 @@ log.json
 # Certs
 *.key
 *.cert
+.vercel

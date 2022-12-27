@@ -1,5 +1,5 @@
 import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, inlineCode, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
+import { FriendlyInteractionError, SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
 import { ClientAdministators, Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
@@ -27,7 +27,8 @@ export default class CustomBranding extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        if (!ClientAdministators.includes(interaction.user.id)) return;
+        await interaction.deferReply({ ephemeral: true });
+        if (!ClientAdministators.includes(interaction.user.id)) return FriendlyInteractionError(interaction, "You're not authorized to use this.");
         const Message = await interaction.reply({
             ephemeral: true,
             fetchReply: true,
