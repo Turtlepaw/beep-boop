@@ -46,6 +46,11 @@ export function Footer() {
                     <Category>
                         <Title>Company</Title>
                         <Link href="/branding">Branding</Link>
+                        <Link href="/discord">Discord</Link>
+                    </Category>
+                    <Category>
+                        <Title>Product</Title>
+                        <Link href="/pricing">Pricing</Link>
                     </Category>
                 </div>
             </div>
