@@ -1,7 +1,7 @@
 import { Client, Guild } from "discord.js";
 import { KeyFileStorage } from "key-file-storage/dist/src/key-file-storage";
 import "reflect-metadata"
-import { CleanupType, CounterChannel, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType } from "../models/Configuration";
+import { CleanupType, CounterChannel, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType, VerificationLevel, VerificationPanel } from "../models/Configuration";
 import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { Profile } from "../models/Profile";
@@ -43,6 +43,14 @@ class ResolvableConfiguration {
     public ModerationChannel: string;
     public ModerationType: JSONArray<ReputationBasedModerationType>;
     public ReputationMod: boolean;
+
+    // Verification
+    public Verification: {
+        Status: boolean;
+        Level: VerificationLevel;
+        Panels: VerificationPanel[];
+        Roles: string[];
+    }
 
     // Invite Blocker
     public InviteBlocker: {
@@ -86,6 +94,10 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
 
     isPremium() {
         return this?.Premium ?? false;
+    }
+
+    isVerification() {
+        return this?.Verification ?? false;
     }
 
     isReputationModeration() {
@@ -309,6 +321,13 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             Premium: config?.Premium ?? false,
             // Counter channels
             CounterChannels: config?.CounterChannels ?? [],
+            // Verification
+            Verification: {
+                Status: config?.Verification ?? false,
+                Level: config?.VerificationLevel ?? VerificationLevel.Low,
+                Panels: config?.VerificationPanels ?? [],
+                Roles: config?.VerificationRoles ?? []
+            },
             // [deprecated] Reputation Based Moderation
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,

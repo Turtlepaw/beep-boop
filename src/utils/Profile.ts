@@ -96,9 +96,9 @@ export function SetSubscription(Id: string, subscription: Subscriptions, expires
     });
 }
 
-export async function Endorse(Id: string, client: Client) {
+export async function Endorse(Id: string, client: Client, n: number = 1) {
     const rep = await FetchUser(Id, client);
     return client.Storage.Profiles.Edit(Id, {
-        reputation: (rep?.reputation || 0) + 1
+        reputation: (rep?.reputation || 0) + n
     });
 }

@@ -8,6 +8,7 @@ import React from 'react'
 import { Footer } from '../components/Footer'
 import { get } from "@vercel/edge-config"
 import { NextResponse } from 'next/server'
+import { Configuration as config } from '../utils/configuration'
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;
@@ -28,29 +29,10 @@ export interface WebsiteConfiguration {
   TagLine: String;
 }
 
-export const Experiments = async () => {
-  const res = get("experiments");
-  return NextResponse.json(res);
-}
-
-export enum Experiment {
-  UpdatedTagline = "Modern bot for the 21st century"
-}
-
 // Configuration*
 // ^ This is required
 // This is what'll appear on your website
-export const Configuration: WebsiteConfiguration = {
-  TagLine: Experiment.UpdatedTagline,
-  WebsiteURL: "https://bop.trtle.xyz/",
-  Title: "Beep Boop",
-  Icon: {
-    SVG: "/Robot.svg",
-    PNG: "/Robot.png"
-  },
-  Description: "Beep Boop is a modern bot designed for large servers.",//"Beep Boop is a multipurpose Discord bot built with large community servers in mind.",
-  Color: "#ff5c5e"
-}
+export const Configuration = config;
 
 
 const colours = {

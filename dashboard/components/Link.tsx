@@ -1,6 +1,7 @@
 import { CSSProperties } from "react";
 import { Configuration } from "../pages/_app";
 import { ExternalIcon } from "./Menu";
+import { BrandBg, BrandBorder, BrandColor } from "../utils/configuration";
 
 export interface LinkProperties {
     href: string;
@@ -30,16 +31,10 @@ export function Link({ children, href, onBrand = true, isExternal, isNewTab, cla
     )
 }
 
-export const BrandColor: CSSProperties = {
-    color: Configuration.Color
-}
-
-export const BrandBg: CSSProperties = {
-    backgroundColor: Configuration.Color
-}
-
-export const BrandBorder: CSSProperties = {
-    borderColor: Configuration.Color
+export {
+    BrandBg,
+    BrandColor,
+    BrandBorder
 }
 
 export class Links {

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder } from "discord.js"
+import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, ThreadMemberFlagsBitField } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
 
@@ -126,6 +126,26 @@ export class Selector<T extends AnySelectMenuBuilder> {
             .addComponents(
                 this.toBuilder()
             );
+    }
+}
+
+export class StringSelectBuilder extends SelectMenuOptionBuilder { };
+
+export class StringSelector extends Selector<StringSelectMenuBuilder> {
+    public options: StringSelectBuilder[] = [];
+
+    public AddOptions(...Options: StringSelectBuilder[]) {
+        this.options.push(...Options);
+        return this;
+    }
+
+    public toBuilder(): StringSelectMenuBuilder {
+        if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
+        const Builder = new StringSelectMenuBuilder()
+            .setCustomId(this.CustomId)
+            .setOptions(this.options);
+        if (this?.Configuration != null) this.Configuration(Builder);
+        return Builder;
     }
 }
 

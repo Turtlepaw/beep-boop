@@ -2,16 +2,17 @@ import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuil
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
-import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
+import { BackComponent, ButtonBoolean, StringBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
-import { Modules } from "../commands/Server";
+import { ModuleInformation, Modules } from "../commands/Server";
 import { ChannelSelectMenu } from "../utils/components";
 import { generateId } from "../utils/Id";
 
+const Module = ModuleInformation.TICKET_CONFIGURATION;
 export default class TicketConfiguration extends SelectOptionBuilder {
     constructor() {
         super({
@@ -65,7 +66,7 @@ export default class TicketConfiguration extends SelectOptionBuilder {
             }, {
                 name: "Current Configuration",
                 value: `
-${TextBoolean(Tickets, "Module Enabled")}
+${TextBoolean(Tickets, `Module ${StringBoolean(Tickets, false)}`)}
 ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(TicketCategory)}`
             }]);
 
@@ -107,7 +108,7 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
             time: 0,
             filter: Filter({
                 member: interaction.member,
-                customIds: [...GenerateIds(Id), [ButtonCollector.BackButton]]
+                customIds: [...GenerateIds(Id), ButtonCollector.BackButton]
             })
         });
 

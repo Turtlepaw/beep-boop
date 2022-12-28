@@ -1,15 +1,16 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, inlineCode, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, time, TimestampStyles, WebhookClient } from "discord.js";
+import { ActionRowBuilder, AnyComponentBuilder, APIButtonComponent, APIButtonComponentWithCustomId, ApplicationCommandType, ButtonBuilder, ButtonComponentData, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, discordSort, EmbedBuilder, Emoji, inlineCode, InteractionButtonComponentData, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, time, TimestampStyles, WebhookClient } from "discord.js";
 import { Embed, Emojis, Icons } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
 import { CreateLinkButton } from "../utils/buttons";
 import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
 import e from "express";
-import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
+import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal, ButtonBuilderModal } from "../utils/components";
 import { generateId } from "../utils/Id";
 import { FindWebhook } from "../utils/Webhook";
 import { GenerateURL, ShortenURL } from "../utils/Discohook";
+import { GetTextInput } from "../utils/components";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -39,7 +40,9 @@ export default class DeleteThis extends ContextMenu {
             interaction.targetMessage.components.find(e =>
                 e.components.find(e => {
                     if (e?.customId == null) return;
-                    return e.customId.startsWith("button-role:")
+                    return e.customId.startsWith("button-role:") ||
+                        e.customId == "VERIFY_USER" ||
+                        e.customId == "OPEN_TICKET";
                 })
             ) != null;
 
@@ -49,7 +52,9 @@ export default class DeleteThis extends ContextMenu {
             RemoveButtons = "Remove_BUTTONS",
             ChannelSelect = "SELECT_CHANNEL_MENU",
             MessageBuilderModal = "MESSAGE_BUILDER_MODAL",
-            ContentField = "MESSAGE_CONTENT_FIELD"
+            ContentField = "MESSAGE_CONTENT_FIELD",
+            EditButtons = "EDIT_BUTTONS",
+            EditButtonModal = "EDIT_BUTTON_MODAL"
         }
 
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
@@ -64,6 +69,11 @@ export default class DeleteThis extends ContextMenu {
                     .setCustomId(CustomIds.MoveEmbed)
                     .setStyle(ButtonStyle.Secondary)
                     .setDisabled(!isTicketMessage && !isCustomMessage && !isButtonMessage),
+                new ButtonBuilder()
+                    .setLabel("Edit Buttons")
+                    .setCustomId(CustomIds.EditButtons)
+                    .setStyle(ButtonStyle.Secondary)
+                    .setDisabled(!isButtonMessage),
                 new ButtonBuilder()
                     .setLabel("Remove Buttons")
                     .setCustomId(CustomIds.RemoveButtons)
@@ -288,6 +298,117 @@ export default class DeleteThis extends ContextMenu {
             Btn.update({
                 components: [],
                 content: `${Icons.Success} Removed button successfully.`
+            });
+        } else if (ButtonInteraction.customId == CustomIds.EditButtons) {
+            const RawButtons =
+                interaction.targetMessage.components.map(e => {
+                    return e.components.map(btn => {
+                        if (btn.type != ComponentType.Button) return null;
+                        if (btn?.customId == null && btn.style == ButtonStyle.Link) return btn;
+                        if (btn.customId.startsWith("button-role:") || btn.customId == "OPEN_TICKET" || btn.customId == "VERIFY_USER") return btn;
+                        else return null;
+                    })
+                }).filter(e => e != null)
+            const Buttons =
+                interaction.targetMessage.components.map(e => {
+                    return new ActionRowBuilder<MessageActionRowComponentBuilder>()
+                        .addComponents(
+                            e.components.map(btn => {
+                                if (btn.type != ComponentType.Button) return null;
+                                else if (btn?.customId == null && btn.style == ButtonStyle.Link) return new ButtonBuilder()
+                                    .setCustomId(`link:${btn.url}`)
+                                    .setLabel(btn.label)
+                                    .setStyle(ButtonStyle.Secondary);
+                                else if (btn.customId.startsWith("button-role:") || btn.customId == "OPEN_TICKET" || btn.customId == "VERIFY_USER") return ButtonBuilder.from(btn)
+                                    .setCustomId(btn.customId == "OPEN_TICKET" ? `edit-role:OPEN_TICKET` : (
+                                        btn.customId == "VERIFY_USER" ? "edit-role:VERIFY_USER" :
+                                            btn.customId.replace("button-role:", "edit-btn:"))
+                                    )
+                                else return null;
+                            })
+                        )
+                }).filter(e => e != null);
+
+            await ButtonInteraction.update({
+                content: `${Icons.Tag} Select a button to edit`,
+                components: Buttons
+            });
+
+            const Btn = await Message.awaitMessageComponent({
+                time: 0,
+                componentType: ComponentType.Button
+            });
+
+            const AllButtons: ButtonBuilder[] = [];
+            for (const ButtonRow of Buttons.map(e => e.components)) {
+                for (const btn of ButtonRow) AllButtons.push(btn as ButtonBuilder);
+            }
+
+            const Selected = AllButtons.find(e => {
+                if (e.data.style == ButtonStyle.Link) return false;
+                else return e.data.custom_id == Btn.customId;
+            });
+
+            Buttons.find(e => {
+                return e.components.find((e) => {
+                    const Component = e.toJSON() as APIButtonComponentWithCustomId;
+                    return Component.custom_id == Btn.customId;
+                })
+            });
+
+            const FilteredButtons = RawButtons.map(btns => {
+                return new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        btns
+                            .map(e => ButtonBuilder.from(e))
+                    )
+            });
+
+            enum Fields {
+                Emoji = "BUTTON_EMOJI",
+                Label = "BUTTON_LABEL",
+                Link = "BUTTON_URL"
+            }
+
+            const ModalFields = {
+                Emoji: Fields.Emoji,
+                Label: Fields.Label,
+                Link: Fields.Link
+            }
+
+            await Btn.showModal(
+                ButtonBuilderModal(CustomIds.EditButtonModal, ModalFields, Selected.data.style == ButtonStyle.Link ? ButtonStyle.Link : null)
+            );
+
+            const ModalSubmit = await Btn.awaitModalSubmit({
+                time: 0
+            });
+
+            const ResolvedFields = {
+                Link: GetTextInput(Fields.Link, ModalSubmit),
+                Label: GetTextInput(Fields.Label, ModalSubmit),
+                Emoji: GetTextInput(Fields.Emoji, ModalSubmit)
+            };
+
+            await (async () => {
+                FilteredButtons[0].components.forEach(component => {
+                    if (component.data.style == ButtonStyle.Link) return;
+                    if (component.data.custom_id == Btn.customId.replace("edit-role:", "")) {
+                        if (Verifiers.String(ResolvedFields.Emoji)) component.setEmoji(ResolvedFields.Emoji);
+                        if (Verifiers.String(ResolvedFields.Label)) component.setLabel(ResolvedFields.Label);
+                        if (Verifiers.String(ResolvedFields.Link)) component.setEmoji(ResolvedFields.Link);
+                    }
+                });
+            })();
+
+            Webhook.editMessage(interaction.targetMessage.id, {
+                components: FilteredButtons
+            });
+
+            ModalSubmit.reply({
+                ephemeral: true,
+                components: [],
+                content: `${Icons.Success} Edited button successfully.`
             });
         }
     }

@@ -16,7 +16,8 @@ function isApiLinkButton(component: APIButtonComponent): component is APIButtonC
 enum ButtonTypes {
     RoleButton = "ROLE_BUTTON",
     LinkButton = "LINK_BUTTON",
-    TicketButton = "TICKET_BUTTON"
+    TicketButton = "TICKET_BUTTON",
+    VerificationButton = "VERIFY_BUTTON"
 }
 
 export {
@@ -84,7 +85,12 @@ export default class AddButton extends ContextMenu {
                             .setLabel("Ticket Button")
                             .setEmoji(Icons.Folder)
                             .setDescription("Create a button to open a server ticket.")
-                            .setValue(ButtonTypes.TicketButton)
+                            .setValue(ButtonTypes.TicketButton),
+                        new SelectMenuOptionBuilder()
+                            .setLabel("Verification Button")
+                            .setEmoji(Icons.Shield)
+                            .setDescription("Create a button to verify members.")
+                            .setValue(ButtonTypes.VerificationButton)
                     )
             );
 
@@ -116,8 +122,9 @@ export default class AddButton extends ContextMenu {
         const isRoleButton = ButtonType.values[0] == ButtonTypes.RoleButton;
         const isLinkButton = ButtonType.values[0] == ButtonTypes.LinkButton;
         const isTicketButton = ButtonType.values[0] == ButtonTypes.TicketButton;
+        const isVerificationButton = ButtonType.values[0] == ButtonTypes.VerificationButton;
         let StyleReplyMessage: MessageComponentInteraction = ButtonType;
-        let ButtonCustomId: string = `OPEN_TICKET`;
+        let ButtonCustomId: string = isTicketButton ? `OPEN_TICKET` : `VERIFY_USER`;
         let SelectedRole: Role | APIRole;
 
         if (isRoleButton) {
@@ -171,7 +178,7 @@ export default class AddButton extends ContextMenu {
             components: [
                 new ActionRowBuilder<ButtonBuilder>()
                     .addComponents(
-                        ...(isRoleButton ? [
+                        ...((isVerificationButton || isTicketButton || isRoleButton) ? [
                             new ButtonBuilder()
                                 .setCustomId(Id.DefaultValues)
                                 .setLabel("Default Values")
@@ -243,11 +250,13 @@ export default class AddButton extends ContextMenu {
             ReplyMessage = Value;
         }
 
-        if (isTicketButton || isRoleButton) {
+        if (isTicketButton || isVerificationButton || isRoleButton) {
             Button.setCustomId(ButtonCustomId);
             if (Button.data?.label == null) {
                 if (isTicketButton) {
                     Button.setLabel("Create Ticket")
+                } else if (isVerificationButton) {
+                    Button.setLabel("Verify")
                 } else if (isRoleButton) {
                     Button.setLabel(SelectedRole.name)
                 }

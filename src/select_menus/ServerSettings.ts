@@ -83,7 +83,7 @@ ${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}`
             time: 0,
             filter: Filter({
                 member: interaction.member,
-                customIds: [...GenerateIds(Id), [ButtonCollector.BackButton]]
+                customIds: [...GenerateIds(Id), ButtonCollector.BackButton]
             })
         });
 

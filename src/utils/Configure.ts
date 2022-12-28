@@ -3,7 +3,7 @@ import { ModuleInformation, Modules } from "../commands/Server";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { ActionRowBuilder, AnyComponentBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Interaction, Message, ModalBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextChannel, TextInputBuilder, channelMention } from "discord.js";
 import { ButtonCollector, Filter, GenerateIds } from "./filter";
-import { CleanupChannel, ResolvedGuildConfiguration } from "./storage";
+import { CleanupChannel, ResolvedGuildConfiguration, StorageManager } from "./storage";
 import { generateId } from "./Id";
 import { CleanupType, GuildConfiguration } from "../models/Configuration";
 import { ChannelSelector as ChannelSelectBuilder, GetTextInput } from "./components";
@@ -16,13 +16,13 @@ export enum ConfigurationButtonType {
 }
 
 export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
-export type SaveFunction = (CurrentConfiguration: GuildConfiguration, config: ResolvedGuildConfiguration) => any;
+export type SaveFunction = (Current: GuildConfiguration, CurrentConfiguration: ResolvedGuildConfiguration, edit: StorageManager<GuildConfiguration>["Edit"]) => any;
 
 export interface GenerateEmbedResult {
     Item: keyof GuildConfiguration;
     Name: string;
     Type: ConfigurationButtonType;
-    Children: Omit<GenerateEmbedResult, "Children">[];
+    Children?: Omit<GenerateEmbedResult, "Children">[];
 }
 
 export type GenerateEmbed = (configuration: GuildConfiguration, conf: ResolvedGuildConfiguration) => GenerateEmbedResult[];
@@ -43,9 +43,10 @@ export interface ConfigurationButton {
     ResolveModalInput?: (value: string, id: string) => string;
 }
 
+export type ConfigurationButtons = (ConfigurationButton | ((config: ResolvedGuildConfiguration) => ConfigurationButton))[];
 export interface ConfigurationBuilderOptions {
     Module: Modules;
-    Buttons: ConfigurationButton[];
+    Buttons: ConfigurationButtons;
     Save: SaveFunction;
     GenerateEmbed: GenerateEmbed;
 }
@@ -55,11 +56,12 @@ export class ConfigurationBuilder {
     public Buttons: ConfigurationButton[];
     public Save: SaveFunction;
     public CurrentConfiguration: GuildConfiguration;
+    public constructorOptions: ConfigurationBuilderOptions;
     public EmbedGenerator: GenerateEmbed;
 
     constructor(options: ConfigurationBuilderOptions) {
+        this.constructorOptions = options
         this.Module = options.Module;
-        this.Buttons = options.Buttons;
         this.Save = options.Save;
         this.EmbedGenerator = options.GenerateEmbed;
     }
@@ -147,7 +149,7 @@ export class ConfigurationBuilder {
     }
 
     private async SaveConf(message: Message, config: ResolvedGuildConfiguration) {
-        await this.Save(this.CurrentConfiguration, config);
+        await this.Save(this.CurrentConfiguration, config, message.client.Storage.Configuration.Edit);
         if (message?.editable == true) message.edit({
 
         })
@@ -202,8 +204,16 @@ export class ConfigurationBuilder {
         );
     };
 
-    async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[]) {
+    async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[], This: any) {
+        Object.entries(This).map(([k, v]) => this[k] = v);
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
+        this.Buttons = await Promise.all(this.constructorOptions.Buttons.map(async e => {
+            let exported;
+            if (typeof e == "function") {
+                exported = e(Configuration)
+            } else exported = e;
+            return exported as ConfigurationButton;
+        }));
 
         const ButtonIds = [];
         const Components = () =>
@@ -252,7 +262,7 @@ export class ConfigurationBuilder {
         ButtonCollector.AttachBackButton(Collector);
     }
 
-    async toJSON() {
+    toJSON() {
         const This = this;
         return class ModuleConfigurationBuilder extends SelectOptionBuilder {
             constructor() {
@@ -264,7 +274,7 @@ export class ConfigurationBuilder {
                 });
             }
 
-            public ExecuteInteraction = this.ExecuteInteraction;
+            public ExecuteInteraction = (interaction: AnySelectMenuInteraction, client: Client<boolean>, values: string[]) => This.ExecuteInteraction(interaction, client, values, This);
         }
     }
 }

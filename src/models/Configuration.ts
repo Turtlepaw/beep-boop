@@ -47,6 +47,11 @@ export enum VerificationLevel {
     High = "Secure"
 }
 
+export interface VerificationPanel {
+    Channel: string;
+    Message: string;
+}
+
 @Entity()
 export class GuildConfiguration {
     @PrimaryGeneratedColumn({ type: "integer" })
@@ -81,7 +86,9 @@ export class GuildConfiguration {
     @Column({ nullable: true })
     VerificationLevel: VerificationLevel;
     @Column({ nullable: true, type: "simple-array" })
-    VerificationPanels: { Channel: string; Message: string; }[];
+    VerificationPanels: VerificationPanel[];
+    @Column({ nullable: true, type: "simple-array" })
+    VerificationRoles: string[];
 
     // Counter Channels
     // -> Show counts of multiple things
