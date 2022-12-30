@@ -7,6 +7,7 @@ import React from 'react';
 import { Footer } from '../components/Footer';
 import { NextResponse } from 'next/server';
 import { Configuration as config } from '../utils/configuration';
+import { Analytics } from '@vercel/analytics/react';
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;
@@ -127,9 +128,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className="Background Text">
       <ChakraProvider theme={theme}>
-        <a href='/'>
-
-        </a>
+        <Analytics />
         <Component {...pageProps} />
         <Footer />
       </ChakraProvider>
