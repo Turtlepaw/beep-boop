@@ -1,14 +1,12 @@
-
-import '../styles/globals.css'
-import '../styles/index.css'
-import type { AppProps } from 'next/app'
-import Head from 'next/head'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-import React from 'react'
-import { Footer } from '../components/Footer'
-import { get } from "@vercel/edge-config"
-import { NextResponse } from 'next/server'
-import { Configuration as config } from '../utils/configuration'
+import '../styles/globals.css';
+import '../styles/index.css';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import React from 'react';
+import { Footer } from '../components/Footer';
+import { NextResponse } from 'next/server';
+import { Configuration as config } from '../utils/configuration';
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;

@@ -143,6 +143,10 @@
   color: #b9bbbe;
 }
 
+.text-light {
+  color: #d0d3d8;
+}
+
 .hover\:TextLight:hover {
   color: #b9bbbe;
 }
@@ -167,6 +171,10 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+.PriceFlexItem {
+  flex: 0 40% !important;
 }
 
 .FlexItem {

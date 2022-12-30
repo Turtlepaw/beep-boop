@@ -26,7 +26,7 @@ export default function Home(props: DefaultProps) {
             </h1>
           </Center>
           <Center>
-            <p className='max-w-md pt-1 font-medium DiscordTag text-lg'>{Configuration.Description}</p>
+            <p className='max-w-md pt-1 font-medium text-light text-lg'>{Configuration.Description}</p>
           </Center>
           <Center className='mt-5'>
             <a href='/beta'>
