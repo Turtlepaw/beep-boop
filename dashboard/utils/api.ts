@@ -47,6 +47,55 @@ export enum Methods {
     Delete = "DELETE"
 }
 
+export enum ActionParam {
+    Boolean = "boolean",
+    String = "string",
+    StringWithVaribles = "string_with_vars"
+}
+
+export interface Action {
+    Id: string;
+    Name: string;
+    Description: string;
+    Author: {
+        Avatar: string;
+        Username: string;
+        Tag: string;
+    };
+    InternalCode: string;
+    ConfigurationParams: {
+        [key: string]: {
+            Name: string;
+            Type: ActionParam;
+            DefaultValue?: any;
+        };
+    };
+}
+
+export async function GetActions(): Promise<Action[]> {
+    return [{
+        Name: "Nickname Manager",
+        Author: {
+            Avatar: "https://cdn.discordapp.com/avatars/820465204411236362/aa4ece5f0f241fad5e3e554e5ef63887.webp",
+            Tag: "Turtlepaw#0001",
+            Username: "Turtlepaw"
+        },
+        Description: "Manages member's nicknames.",
+        ConfigurationParams: {
+            OnJoin: {
+                Type: ActionParam.Boolean,
+                Name: "On Member Join",
+                DefaultValue: true
+            },
+            NicknameBase: {
+                Type: ActionParam.String,
+                Name: "Nickname"
+            }
+        },
+        Id: "any_id",
+        InternalCode: "new NickManger().execute();"
+    }]
+}
 export async function GetUser(Id: string): Promise<OAuthUser> {
     const Result = await fetch(CreateRoute(Routes.OAuth) + `?id=${Id}`, {
         method: Methods.Get,

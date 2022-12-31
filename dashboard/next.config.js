@@ -10,6 +10,9 @@ function MultipleLinks(destination, ...sources) {
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: true,
+  images: {
+    domains: ["cdn.discordapp.com"]
+  },
   async redirects() {
     return [
       ...MultipleLinks("https://discord.gg/Rgxv5M6sq9", "/support", "/discord"),

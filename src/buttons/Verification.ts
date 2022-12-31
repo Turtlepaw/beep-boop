@@ -38,7 +38,7 @@ function shuffle<T = any>(array: T[]): T[] {
     return array;
 }
 
-function GenerateCaptcha(text: string, style: ButtonStyle = ButtonStyle.Success) {
+function GenerateCaptcha(text: string, style: ButtonStyle = ButtonStyle.Secondary) {
     const GenerateString = () => randomText(6);
     const SelectedId = text;
     const Ids = shuffle([
@@ -71,8 +71,8 @@ async function CaptchaVerification(interaction: ButtonInteraction, isCustom = fa
         }`;
     const ImageCaptcha = new Captcha()
         .addDecoy({ opacity: 1 })
-        .drawTrace()
-        .drawCaptcha();
+        .drawTrace({ color: Colors.BrandColor })
+        .drawCaptcha({ color: Colors.BrandColor });
     const captcha = GenerateCaptcha(ImageCaptcha.text);
 
     const Attachment = new AttachmentBuilder(await ImageCaptcha.png, {

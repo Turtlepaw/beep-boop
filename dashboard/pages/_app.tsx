@@ -48,6 +48,16 @@ const colours = {
 
 const { blurple, } = colours;
 
+export enum ButtonStyle {
+  Primary = "primary",
+  Secondary = "secondary",
+  Success = "success",
+  Danger = "danger",
+  BrandColor = "brand",
+  Outline = "outline",
+  OutlineDark = "outline_dark"
+}
+
 const theme = extendTheme({
   colors: colours,
   styles: {
@@ -86,22 +96,22 @@ const theme = extendTheme({
         color: 'white',
       },
       variants: {
-        primary: {
+        [ButtonStyle.Primary]: {
           bg: blurple
         },
-        brand: {
+        [ButtonStyle.BrandColor]: {
           bg: Configuration.Color
         },
-        secondary: {
+        [ButtonStyle.Secondary]: {
           bg: 'grey.light'
         },
-        success: {
+        [ButtonStyle.Success]: {
           bg: 'green'
         },
-        danger: {
+        [ButtonStyle.Danger]: {
           bg: 'red'
         },
-        outline: {
+        [ButtonStyle.Outline]: {
           _hover: {
             bg: 'grey.light'
           }
@@ -112,7 +122,7 @@ const theme = extendTheme({
           },
           bg: "transparent"
         },
-        outlineDark: {
+        [ButtonStyle.OutlineDark]: {
           border: "1px solid #222",
           bgColor: "transparent",
           _hover: {
