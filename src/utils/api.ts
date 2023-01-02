@@ -23,7 +23,9 @@ export enum Routes {
     Channels = "/v1/channels",
     CreateMessage = "/v1/message/create",
     RoleConnections = "/v1/role-connections/verify",
-    Subscription = "/v1/subscription/:guildId"
+    Subscription = "/v1/subscription/:guildId",
+    //Module store
+    Module = "/v1/modules/:id"
 }
 
 enum Messages {
@@ -117,6 +119,11 @@ export async function API(client: Client, token: string) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
 
+    const NotFoundError = () => ({
+        error: true,
+        found: false
+    });
+
     app.get(Routes.GuildConfiguration, async (req, res) => {
         const GuildId = req.params.guildId;
 
@@ -129,7 +136,17 @@ export async function API(client: Client, token: string) {
             id: GuildId
         });
 
-        res.send(Settings);
+        res.send(Settings ?? NotFoundError());
+    });
+
+    app.get(Routes.Module, async (req, res) => {
+        const ModuleId = req.params.id;
+
+        const Module = await client.Storage.Actions.Get({
+            Id: ModuleId
+        });
+
+        res.send(Module ?? NotFoundError());
     });
 
     app.get(Routes.Index, async (req, res) => {

@@ -14,6 +14,7 @@ import { JSONArray } from "./jsonArray";
 import { Gift } from "../models/Gift";
 import { generateId } from "./Id";
 import { OAuth } from "../models/OAuth";
+import { Action } from "../models/Action";
 
 export interface CleanupChannel {
     Type: CleanupType;
@@ -143,7 +144,19 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
     }
 }
 
-const entities = [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message, CustomBot, Gift, OAuth];
+const entities = [
+    GuildConfiguration,
+    CustomWebhook,
+    Profile,
+    MemberRanking,
+    Reminder,
+    Message,
+    CustomBot,
+    Gift,
+    OAuth,
+    Action
+];
+
 export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "database.sqlite",
@@ -165,6 +178,7 @@ export async function InitializeProvider(client: Client) {
         CustomBots: new StorageManager(client.storage, CustomBot.name),
         Gifts: new StorageManager(client.storage, Gift.name),
         OAuth: new StorageManager(client.storage, OAuth.name),
+        Actions: new StorageManager(client.storage, Action.name)
     }
 }
 
