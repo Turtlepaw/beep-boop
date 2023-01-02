@@ -3,7 +3,7 @@ import { ModeratorSettings } from "../buttons/ModeratorSettings";
 import { Emojis, Icons } from "../configuration";
 import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
-import { Verifiers } from "../utils/verify";
+import { Verifiers } from "@airdot/verifiers";
 import { Logger } from "../logger";
 
 export default class InviteBlocker extends Event {
@@ -18,7 +18,7 @@ export default class InviteBlocker extends Event {
         //const Settings: ModeratorSettings = client.storage[`${Message.guild.id}_mod_settings`];
         const Configuration = await client.Storage.Configuration.forGuild(Message.guild);
         try {
-            const isInviteLink = await Verifiers.InviteLink(Message.content);
+            const isInviteLink = (await Verifiers.Web.InviteLink(Message.content)).result;
             if (Configuration.isInviteBlocker() && isInviteLink) {
                 Message.delete();
                 Message.author.send({

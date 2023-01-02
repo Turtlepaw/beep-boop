@@ -40,10 +40,10 @@ export class Action {
     Name: string;
     @Column()
     Description: string;
-    @Column()
+    @Column({ type: "simple-json" })
     Author: ResolvableAuthor;
-    @Column()
+    @Column({ type: "simple-json" })
     InternalCode: InternalCode;
-    @Column()
+    @Column({ type: "simple-json" })
     ConfigurationParams: ActionConfiguration;
 }

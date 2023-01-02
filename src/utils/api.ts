@@ -8,13 +8,6 @@ import fs from "fs";
 import { Verifiers } from "@airdot/verifiers";
 //import { Routes } from "../../shared/types";
 
-enum Status {
-    Initialized = 1,
-    Error = 2,
-    Success = 3,
-    NotFound = 4
-}
-
 export enum Routes {
     GuildConfiguration = "/v1/settings/:guildId",
     Index = "/v1/",
@@ -25,21 +18,7 @@ export enum Routes {
     RoleConnections = "/v1/role-connections/verify",
     Subscription = "/v1/subscription/:guildId",
     //Module store
-    Module = "/v1/modules/:id"
-}
-
-enum Messages {
-    Initialized = 'SERVER_INITIALIZED_AND_READY',
-    Error = 'SERVER_ERROR',
-    Success = 'SERVER_SUCCESS',
-    NotFound = 'NOT_FOUND_ON_SERVER'
-}
-
-const GetMessage = (Message: Messages | string) => {
-    return {
-        error: Message == Messages.Error || Message == Messages.NotFound,
-        message: Message
-    }
+    Module = "/v1/modules"
 }
 
 export interface OAuthUser {
@@ -61,10 +40,6 @@ export interface APIGuild {
 export interface APIChannel {
     Id: string;
     Name: string;
-}
-
-export function Message(Message: Messages, Text: string) {
-    return `[${Message}] ${Text}`;
 }
 
 function VerifyBase(str: any) {
@@ -119,45 +94,80 @@ export async function API(client: Client, token: string) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
 
-    const NotFoundError = () => ({
-        error: true,
-        found: false
-    });
+    const APIMessages = {
+        NotFound: () => ({
+            error: true,
+            message: "Item not found",
+            code: 404
+        }),
+        InternalError: () => ({
+            error: true,
+            message: "Internal Server Error",
+            code: 500
+        }),
+        BadRequest: (param?: string) => ({
+            error: true,
+            message: `Bad Request${param != null ? ` (${param})` : ""}`,
+            code: 400
+        }),
+        Success: (message?: string, more?: object) => ({
+            ...more,
+            error: false,
+            message: message ?? "Success",
+            code: 200
+        }),
+        Created: (message?: string, more?: object) => ({
+            ...more,
+            error: false,
+            message: message ?? "Created",
+            code: 201
+        })
+    }
 
     app.get(Routes.GuildConfiguration, async (req, res) => {
         const GuildId = req.params.guildId;
 
-        if (!StringNumber(GuildId, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
+        if (!StringNumber(GuildId, 19)) return res.send(
+            APIMessages.BadRequest("guildId")
+        );
 
         const Settings = await client.Storage.Configuration.forGuild({
             name: "Unknown Guild",
             id: GuildId
         });
 
-        res.send(Settings ?? NotFoundError());
+        res.send(Settings ?? APIMessages.NotFound());
     });
 
-    app.get(Routes.Module, async (req, res) => {
+    app.get(`${Routes.Module}/:id`, async (req, res) => {
         const ModuleId = req.params.id;
 
         const Module = await client.Storage.Actions.Get({
             Id: ModuleId
         });
 
-        res.send(Module ?? NotFoundError());
+        res.send(Module ?? APIMessages.InternalError());
+    });
+
+    app.post(Routes.Module, async (req, res) => {
+        const Module = await client.Storage.Actions.Create({
+            ...req.body
+        });
+
+        res.send(Module ?? APIMessages.NotFound());
     });
 
     app.get(Routes.Index, async (req, res) => {
-        res.send(Messages.Initialized);
+        res.send(
+            APIMessages.Success("Server online, waiting for requests...")
+        );
     });
 
     app.get(Routes.OAuth, async (req, res) => {
         const UserId = req.query?.id as string;
-        if (!Verifiers.String(UserId)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Id")
-        ));
+        if (!Verifiers.String(UserId)) return res.send(
+            APIMessages.BadRequest("id")
+        );
 
         const User = client.Storage.OAuth.FindBy({ User: UserId });
         res.send(User[0]);
@@ -169,17 +179,17 @@ export async function API(client: Client, token: string) {
         const token_type = req.body?.token_type;
         const jwt_token = req.body?.jwt_token;
 
-        if (VerifyNumber(UserId, 18)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid User Id")
-        ));
+        if (VerifyNumber(UserId, 18)) return res.send(
+            APIMessages.BadRequest("id")
+        );
 
         if (
             !Verifiers.String(access_token) ||
             !Verifiers.String(token_type) ||
             !Verifiers.String(jwt_token)
-        ) return res.send(GetMessage(
-            Message(Messages.Error, "Missing a parameter")
-        ));
+        ) return res.send(
+            APIMessages.BadRequest("missing 1 or more params")
+        );
 
         client.Storage.OAuth.Create({
             User: UserId,
@@ -189,29 +199,29 @@ export async function API(client: Client, token: string) {
         });
 
         res.send(
-            GetMessage(Messages.Success)
+            APIMessages.Created()
         );
     });
 
     app.delete(Routes.OAuth, async (req, res) => {
         const UserId = req.body?.id;
 
-        if (VerifyNumber(UserId, 18)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid User Id")
-        ));
+        if (VerifyNumber(UserId, 18)) return res.send(
+            APIMessages.BadRequest("id")
+        );
 
         delete client.storage[`oauth_${UserId}`];
         res.send(
-            GetMessage(Messages.Success)
+            APIMessages.Created()
         );
     });
 
     app.get(Routes.GuildsWith, async (req, res) => {
         const UserId = req.query?.id;
 
-        if (typeof UserId != "string" || VerifyStringNumber(UserId, 18)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid User Id")
-        ));
+        if (typeof UserId != "string" || VerifyStringNumber(UserId, 18)) return res.send(
+            APIMessages.BadRequest("id")
+        );
 
         const Guilds: APIGuild[] = client.guilds.cache.filter(async e => {
             try {
@@ -239,16 +249,16 @@ export async function API(client: Client, token: string) {
 
     app.get(Routes.Channels, async (req, res) => {
         const GuildId = req.query?.id;
-        if (VerifyStringNumber(GuildId, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
+        if (VerifyStringNumber(GuildId, 19)) return res.send(
+            APIMessages.BadRequest("id")
+        );
 
         //@ts-expect-error
         const Guild = await client.guilds.fetch(GuildId);
 
-        if (Guild == null) return res.send(GetMessage(
-            Message(Messages.Error, "Cannot find guild")
-        ));
+        if (Guild == null) return res.send(
+            APIMessages.NotFound()
+        );
 
         const Channels: APIChannel[] = Guild.channels.cache.filter(e => e.type == ChannelType.GuildText).map(e => ({
             Id: e.id,
@@ -263,13 +273,17 @@ export async function API(client: Client, token: string) {
         const ChannelId = req.body?.channel;
         const MessageContent = req.body?.content;
 
-        if (VerifyStringNumber(GuildId, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
+        if (VerifyStringNumber(GuildId, 19)) return res.send(
+            APIMessages.BadRequest("id")
+        );
 
-        if (VerifyStringNumber(ChannelId, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Channel Id")
-        ));
+        if (VerifyStringNumber(ChannelId, 19)) return res.send(
+            APIMessages.BadRequest("channel")
+        );
+
+        if (!Verifiers.String(MessageContent)) return res.send(
+            APIMessages.BadRequest("content")
+        );
 
         const Guild = await client.guilds.fetch(GuildId);
         const Channel = await Guild.channels.fetch(ChannelId);
@@ -278,22 +292,24 @@ export async function API(client: Client, token: string) {
             content: MessageContent
         });
 
-        res.send(Messages.Success);
+        res.send(
+            APIMessages.Created()
+        );
     });
 
     app.get(Routes.Subscription, async (req, res) => {
         const GuildId = req.params.guildId;
 
-        if (VerifyStringNumber(GuildId, 19)) return res.send(GetMessage(
-            Message(Messages.Error, "Invalid Guild Id")
-        ));
+        if (VerifyStringNumber(GuildId, 19)) return res.send(
+            APIMessages.BadRequest("guildId")
+        );
 
         const Guild = await client.Storage.Configuration.forGuild({
             id: GuildId,
             name: "Unknown Guild"
         });
 
-        res.send(Guild?.Premium || false);
+        res.send(Guild?.Premium ?? false);
     });
 
     //app.listen(4000, () => console.log("API Ready".green, "http://localhost:4000/".gray))

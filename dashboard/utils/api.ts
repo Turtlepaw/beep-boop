@@ -6,31 +6,6 @@ const URL = process.env.API_URI || "http://localhost:4000";
 const token = process.env.API_TOKEN || "Bearer api_token_1490ujdsifh9124yf";
 //const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
 
-export enum Routes {
-    GuildConfiguration = "/v1/settings/:guildId",
-    Index = "/v1/",
-    OAuth = "/v1/oauth",
-    GuildsWith = "/v1/guilds",
-    Channels = "/v1/channels",
-    CreateMessage = "/v1/message/create",
-    RoleConnections = "/v1/role-connections/verify",
-    Subscription = "/v1/subscription/:guildId"
-}
-
-enum Status {
-    Initialized = 1,
-    Error = 2,
-    Success = 3,
-    NotFound = 4
-}
-
-enum Messages {
-    Initialized = 'SERVER_INITIALIZED_AND_READY',
-    Error = 'SERVER_ERROR',
-    Success = 'SERVER_SUCCESS',
-    NotFound = 'NOT_FOUND_ON_SERVER'
-}
-
 export function CreateRoute(route: Routes) {
     return URL + route;
 }
