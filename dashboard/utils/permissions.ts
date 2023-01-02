@@ -1,5 +1,5 @@
 //import { BitField, PermissionFlagsBits, PermissionsBitField } from "discord.js";
-import BitField from "bitfield";
+//import BitField from "bitfield";
 import { APIGuild } from "./types";
 
 
