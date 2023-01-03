@@ -44,23 +44,16 @@ export interface ResolvableAuthor {
 };
 
 export interface InternalCode {
-    Events: Event[];
-    Commands: Command[];
-    ContextMenus: ContextMenu[];
+    Events: any[];
+    Commands: any[];
+    ContextMenus: any[];
 }
 
-@Entity()
-export class Action {
-    @PrimaryGeneratedColumn()
+export interface Action {
     Id: string;
-    @Column()
     Name: string;
-    @Column()
     Description: string;
-    @Column()
     Author: ResolvableAuthor;
-    @Column()
     InternalCode: InternalCode;
-    @Column()
     ConfigurationParams: ActionConfiguration;
 }
