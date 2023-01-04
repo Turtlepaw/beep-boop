@@ -1,5 +1,6 @@
 import { MemberRanking } from "../models/MemberRanking";
 import { DataSource, Repository } from "typeorm";
+import { StorageManager } from "./storage";
 
 export interface Member {
     Level?: number;
@@ -18,9 +19,11 @@ const RankingRepository = "GuildRankings";
 export class Levels {
     public storage: DataSource;
     public repo: Repository<MemberRanking>;
+    public manager: StorageManager<MemberRanking>;
     constructor(storage: DataSource) {
         this.storage = storage;
         this.repo = storage.getRepository(RankingRepository);
+        this.manager = new StorageManager(storage, MemberRanking.name);
     }
 
     CreateMember(Id: string, GuildId: string) {

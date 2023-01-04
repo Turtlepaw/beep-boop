@@ -1,45 +1,48 @@
 import { ChannelType, Client, PermissionFlagsBits, TextChannel, User } from "discord.js";
-import express from "express";
+import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
-import { CLIENT_ID, DEVELOPER_BUILD, TOKEN } from "../index";
-import fetch from "node-fetch";
+import { DEVELOPER_BUILD } from "../index";
 import https from "https";
 import fs from "fs";
 import { Verifiers } from "@airdot/verifiers";
-//import { Routes } from "../../shared/types";
+import {
+    Routes,
+    APIChannel,
+    APIGuild,
+    OAuthUser
+} from "./api-types";
+import APIRoute, { Method } from "../lib/APIRoute";
+import KlawSync from "klaw-sync";
+import { BaseDirectory } from "../configuration";
 
-export enum Routes {
-    GuildConfiguration = "/v1/settings/:guildId",
-    Index = "/v1/",
-    OAuth = "/v1/oauth",
-    GuildsWith = "/v1/guilds",
-    Channels = "/v1/channels",
-    CreateMessage = "/v1/message/create",
-    RoleConnections = "/v1/role-connections/verify",
-    Subscription = "/v1/subscription/:guildId",
-    //Module store
-    Module = "/v1/modules"
-}
-
-export interface OAuthUser {
-    access_token: string;
-    token_type: string;
-    jwt_token: string;
-}
-
-export interface APIGuild {
-    Id: string;
-    Name: string;
-    IconHash: string | null;
-    IconURL: string | null;
-    IsOwner: boolean; //if they are the owner
-    Permissions: string[];
-    Features: any[];
-}
-
-export interface APIChannel {
-    Id: string;
-    Name: string;
+export const APIMessages = {
+    NotFound: () => ({
+        error: true,
+        message: "Item not found",
+        code: 404
+    }),
+    InternalError: () => ({
+        error: true,
+        message: "Internal Server Error",
+        code: 500
+    }),
+    BadRequest: (param?: string) => ({
+        error: true,
+        message: `Bad Request${param != null ? ` (${param})` : ""}`,
+        code: 400
+    }),
+    Success: (message?: string, more?: object) => ({
+        ...more,
+        error: false,
+        message: message ?? "Success",
+        code: 200
+    }),
+    Created: (message?: string, more?: object) => ({
+        ...more,
+        error: false,
+        message: message ?? "Created",
+        code: 201
+    })
 }
 
 function VerifyBase(str: any) {
@@ -81,8 +84,40 @@ export async function API(client: Client, token: string) {
         next();
     });
 
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
+
+    const APIRoutes: APIRoute[] = [];
+    const APIRouteFiles = KlawSync(`${BaseDirectory}/api/routes`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+    for (const File of APIRouteFiles) {
+        const RequiredFile = require(File.path);
+        const route: APIRoute = new RequiredFile.default();
+
+        async function handleAuth(req: Request, res: Response, type: Method) {
+            if (route?.public == null || !route?.public?.includes(type)) {
+                const auth = req.headers.authorization;
+                if (!verifyAuthentication(auth)) {
+                    res.status(401).send('Unauthorized');
+                    return false;
+                } else return true;
+            } else return true;
+        }
+
+        if (route.Get != null) app.get(route.route, async (req, res) => {
+            if (!await handleAuth(req, res, Method.Get)) return;
+            await route.Get(req, res, client);
+        });
+        if (route.Post != null) app.post(route.route, async (req, res) => {
+            if (!await handleAuth(req, res, Method.Post)) return;
+            await route.Post(req, res, client);
+        });
+
+        APIRoutes.push(route);
+    }
+
     //authentication with app.use
     app.use((req, res, next) => {
+        if (APIRoutes.map(e => e.route.replaceAll(/\/:\w+/ig, "")).includes(req.path as Routes)) next();
         const auth = req.headers.authorization;
         if (verifyAuthentication(auth)) {
             next();
@@ -91,71 +126,7 @@ export async function API(client: Client, token: string) {
         }
     });
 
-    app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(bodyParser.json());
-
-    const APIMessages = {
-        NotFound: () => ({
-            error: true,
-            message: "Item not found",
-            code: 404
-        }),
-        InternalError: () => ({
-            error: true,
-            message: "Internal Server Error",
-            code: 500
-        }),
-        BadRequest: (param?: string) => ({
-            error: true,
-            message: `Bad Request${param != null ? ` (${param})` : ""}`,
-            code: 400
-        }),
-        Success: (message?: string, more?: object) => ({
-            ...more,
-            error: false,
-            message: message ?? "Success",
-            code: 200
-        }),
-        Created: (message?: string, more?: object) => ({
-            ...more,
-            error: false,
-            message: message ?? "Created",
-            code: 201
-        })
-    }
-
-    app.get(Routes.GuildConfiguration, async (req, res) => {
-        const GuildId = req.params.guildId;
-
-        if (!StringNumber(GuildId, 19)) return res.send(
-            APIMessages.BadRequest("guildId")
-        );
-
-        const Settings = await client.Storage.Configuration.forGuild({
-            name: "Unknown Guild",
-            id: GuildId
-        });
-
-        res.send(Settings ?? APIMessages.NotFound());
-    });
-
-    app.get(`${Routes.Module}/:id`, async (req, res) => {
-        const ModuleId = req.params.id;
-
-        const Module = await client.Storage.Actions.Get({
-            Id: ModuleId
-        });
-
-        res.send(Module ?? APIMessages.InternalError());
-    });
-
-    app.post(Routes.Module, async (req, res) => {
-        const Module = await client.Storage.Actions.Create({
-            ...req.body
-        });
-
-        res.send(Module ?? APIMessages.NotFound());
-    });
+    console.log(`${`Loaded`.gray} ${`${APIRoutes.length}`.green.bold} ${`API Routes`.gray}`)
 
     app.get(Routes.Index, async (req, res) => {
         res.send(

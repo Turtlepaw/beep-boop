@@ -7,7 +7,7 @@ import KeyFileStorage from "key-file-storage";
 import * as dotenv from 'dotenv';
 dotenv.config()
 import "colors";
-import { API } from "./utils/api";
+import { API } from "./api/index";
 import { Levels } from "./utils/levels";
 import { InitializeProvider, StorageManager } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
@@ -59,7 +59,12 @@ export async function SetClientValues(client: Client) {
 const client = new Client(DEFAULT_CLIENT_OPTIONS);
 
 // Get everything ready...
-client.on(Events.ClientReady, HandleBotStart);
+client.on(Events.ClientReady, async () => {
+    await HandleBotStart();
+    console.log(`Pages:
+    • Dashboard: http://localhost:3000/
+    • API: http://localhost:4000/`.gray)
+});
 
 export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true) {
     // Set client values
