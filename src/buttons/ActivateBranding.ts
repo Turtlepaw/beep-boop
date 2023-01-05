@@ -39,7 +39,7 @@ export default class CustomBranding extends Button {
 
         if (CurrentBot != null) {
             let BotUser = await interaction.client.users.fetch(CurrentBot.BotId);
-            const CurrentChannel = CurrentBot.LoggingChannel != null ? await interaction.guild.channels.fetch(CurrentBot.LoggingChannel) : "None.";
+            const CurrentChannel = CurrentBot.LoggingChannel != null ? `<#${CurrentBot.LoggingChannel}>` : "None";
             enum Id {
                 ChannelSelector = "LOG_CHANNEL_SELECTOR",
                 ResetBot = "RESET_BOT_DANGER",
@@ -76,7 +76,7 @@ export default class CustomBranding extends Button {
                     value: BotUser.username || "Unknown."
                 }, {
                     name: "Configuration",
-                    value: `• Logging Channel: ${CurrentChannel.toString()}`
+                    value: `• Logging Channel: ${CurrentChannel}`
                 }]);
             const isAllowedMore = CustomBots.length != PremiumPerks[Profile.subscription].CustomBots;
             const GenerateComponents = () => new ActionRowBuilder<ButtonBuilder>()
