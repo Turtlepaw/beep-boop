@@ -77,7 +77,7 @@ export default class Send extends Command {
             RequiredPermissions: [],
             SomePermissions: [],
             Category: Categories.Profiles,
-            Subcomamnds: [
+            Subcommands: [
                 new SlashCommandSubcommandBuilder()
                     .setName("view")
                     .setDescription("View someone's profile.")

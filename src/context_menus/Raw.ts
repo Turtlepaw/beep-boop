@@ -20,7 +20,8 @@ export default class Migrate extends ContextMenu {
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: Permissions.Manager,
-            Type: ApplicationCommandType.Message
+            Type: ApplicationCommandType.Message,
+            ClientPermissions: []
         })
     }
 

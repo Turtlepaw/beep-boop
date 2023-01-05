@@ -30,7 +30,8 @@ export default class Channel extends Command {
             RequiredPermissions: [],
             SomePermissions: Permissions.Moderator,
             Category: Categories.Server,
-            Subcomamnds: [
+            ClientPermissions: [PermissionFlagsBits.ManageChannels],
+            Subcommands: [
                 new SlashCommandSubcommandBuilder()
                     .setName("channel")
                     .setDescription("Lock this channel.")

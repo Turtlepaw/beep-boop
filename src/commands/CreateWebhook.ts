@@ -19,7 +19,8 @@ export default class Send extends Command {
             RequiredPermissions: [],
             SomePermissions: Permissions.Manager,
             Category: Categories.Server,
-            Subcomamnds: [
+            ClientPermissions: [PermissionFlagsBits.ManageWebhooks],
+            Subcommands: [
                 new SlashCommandSubcommandBuilder()
                     .setName("create")
                     .setDescription(Description)

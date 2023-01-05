@@ -15,6 +15,7 @@ import { Gift } from "../models/Gift";
 import { generateId } from "./Id";
 import { OAuth } from "../models/OAuth";
 import { Action } from "../models/Action";
+import { Error as CustomError } from "../models/Error";
 
 export interface CleanupChannel {
     Type: CleanupType;
@@ -178,7 +179,8 @@ export async function InitializeProvider(client: Client) {
         CustomBots: new StorageManager(client.storage, CustomBot.name),
         Gifts: new StorageManager(client.storage, Gift.name),
         OAuth: new StorageManager(client.storage, OAuth.name),
-        Actions: new StorageManager(client.storage, Action.name)
+        Actions: new StorageManager(client.storage, Action.name),
+        Errors: new StorageManager(client.storage, CustomError.name)
     }
 }
 

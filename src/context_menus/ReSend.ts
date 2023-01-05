@@ -20,7 +20,8 @@ export default class DeleteThis extends ContextMenu {
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: [],
-            Type: ApplicationCommandType.Message
+            Type: ApplicationCommandType.Message,
+            ClientPermissions: [PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageWebhooks]
         })
     }
 

@@ -1,6 +1,6 @@
 import { ActionRow, ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, EmbedBuilder, OAuth2Scopes, PermissionFlagsBits, SelectMenuOptionBuilder, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
 import SlashCommandBuilder, { Categories } from "../lib/CommandBuilder";
-import { Embed, SupportServerInvite } from "../configuration";
+import { Dot, Embed, SupportServerInvite } from "../configuration";
 import { FormatCommandName } from "../utils/text";
 import ContextMenuBuilder from "../lib/ContextMenuBuilder";
 import { CommandBuilderType } from "../lib/Builder";
@@ -30,7 +30,7 @@ export default class Help extends SlashCommandBuilder {
         const Commands = client.DetailedCommands;
         const Value = interaction.options.getFocused();
 
-        const FilteredCommands = Commands.filter(e => {
+        let FilteredCommands = Commands.filter(e => {
             return (
                 e.Name.toLowerCase().startsWith(Value.toLowerCase()) ||
                 e.Name.toLowerCase().endsWith(Value) ||
@@ -40,6 +40,9 @@ export default class Help extends SlashCommandBuilder {
             name: FormatCommandName(e.Name),
             value: e.Id
         }));
+
+        FilteredCommands.length = 25;
+        FilteredCommands = FilteredCommands.filter(e => e != null);
 
         interaction.respond([
             ...FilteredCommands
@@ -190,7 +193,7 @@ export default class Help extends SlashCommandBuilder {
             const Command: (SlashCommandBuilder | ContextMenuBuilder) = (SlashCommand || ContextMenu);
 
             interaction.reply({
-                components: [Buttons],
+                components: [Links],
                 embeds: [
                     new Embed(interaction.guild)
                         .setAuthor({
@@ -201,7 +204,7 @@ export default class Help extends SlashCommandBuilder {
                         .setDescription((Command as SlashCommandBuilder)?.Description || "This command has no description.")
                         .addFields([{
                             name: "Command Information",
-                            value: `- ${Command.GuildOnly ? `This command can only be used within a server.` : `This command can be used in DMs.`}\n- ${Command.CanaryCommand ? `This command is still in development.` : `This command is public.`}`
+                            value: `${Dot.System} ${Command.GuildOnly ? `This command can only be used within a server.` : `This command can be used in DMs.`}\n${Dot.System} ${Command.CanaryCommand ? `This command is still in development.` : `This command is public.`}`
                         }, {
                             name: "Try it out",
                             value: `</${APICommand.Name}:${APICommand.Id}>`

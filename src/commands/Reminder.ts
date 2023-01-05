@@ -23,7 +23,7 @@ export default class Send extends Command {
             RequiredPermissions: [],
             SomePermissions: [],
             Category: Categories.Other,
-            Subcomamnds: [
+            Subcommands: [
                 new SlashCommandSubcommandBuilder()
                     .setName("list")
                     .setDescription("Show all your current reminders."),

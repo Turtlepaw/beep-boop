@@ -9,19 +9,12 @@ export default class DeleteThis extends ContextMenu {
             CanaryCommand: false,
             GuildOnly: false,
             RequiredPermissions: [],
-            SomePermissions: [],
+            SomePermissions: ["ManageMessages"],
             Type: ApplicationCommandType.Message
         })
     }
 
     public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
-        if (interaction.inGuild() && interaction.inCachedGuild() && !interaction.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-            await interaction.reply({
-                content: "You're missing the required permissions to run this...",
-                ephemeral: true
-            });
-        }
-
         const CustomId = {
             DeleteMessage: "DELETE_MESSAGE",
             BulkDelete: "BULK_DELETE"
@@ -34,7 +27,7 @@ export default class DeleteThis extends ContextMenu {
                     .setCustomId(CustomId.DeleteMessage)
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
-                    .setLabel("Bulk Delete")
+                    .setLabel("Delete up to here")
                     .setCustomId(CustomId.BulkDelete)
                     .setStyle(ButtonStyle.Secondary)
             );

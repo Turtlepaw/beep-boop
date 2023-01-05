@@ -115,6 +115,11 @@ export enum Icons {
     RoleAdd = "<:RoleAdd:1053887102187741304>"
 }
 
+export const Dot = {
+    System: "•",
+    Default: Icons.Dot
+}
+
 export enum DefaultIcons {
     Clock = "⏱️",
     MemberAdd = "➕",

@@ -14,6 +14,7 @@ import { CustomBot } from "../models/CustomBot";
 import { Gift } from "../models/Gift";
 import { OAuth } from "../models/OAuth";
 import { Action } from "../models/Action";
+import { Error as CustomError } from "../models/Error";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -25,6 +26,7 @@ export interface StorageManagers {
     Gifts: StorageManager<Gift>;
     OAuth: StorageManager<OAuth>;
     Actions: StorageManager<Action>;
+    Errors: StorageManager<CustomError>;
 }
 
 declare module 'discord.js' {

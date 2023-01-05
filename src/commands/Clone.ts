@@ -14,7 +14,8 @@ export default class Channel extends Command {
             RequiredPermissions: [],
             SomePermissions: [PermissionsBitField.Flags.ManageChannels],
             Category: Categories.Server,
-            Subcomamnds: [
+            ClientPermissions: [PermissionFlagsBits.ManageChannels],
+            Subcommands: [
                 new SlashCommandSubcommandBuilder()
                     .setName("channel")
                     .setDescription("Clone a channel.")

@@ -1,4 +1,4 @@
-import { ChannelType, Client, Events as ClientEvents, Guild, InteractionReplyOptions, TextChannel } from "discord.js";
+import { ChannelType, Client, Events as ClientEvents, Guild, GuildBasedChannel, Interaction, InteractionReplyOptions, PermissionResolvable, RepliableInteraction, TextChannel, inlineCode } from "discord.js";
 import klawSync from "klaw-sync";
 import { DEVELOPER_BUILD } from "../index";
 import { BaseDirectory, Embed, Emojis, guildId, Icons, Logs } from "../configuration";
@@ -6,9 +6,10 @@ import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import EventBuilder from "../lib/Event";
 import { CreateLinkButton } from "./buttons";
-import { SendError } from "./error";
+import { InteractionError, SendError } from "./error";
 import SelectOptionBuilder from "src/lib/SelectMenuBuilder";
 import { Logger } from "../logger";
+import { Verifiers } from "@airdot/verifiers";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
     content: `${Icons.Error} You don't have the required permissions to run this command.`,
@@ -79,6 +80,26 @@ async function StartEventService(client: Client) {
     }
 }
 
+function isGuildBased(channel: any): channel is GuildBasedChannel {
+    return channel.guild != null;
+}
+
+async function HandleBotPermissions(interaction: RepliableInteraction, permisisons: PermissionResolvable[]) {
+    const Channel = interaction.channel;
+    if (!isGuildBased(Channel)) return;
+    if (interaction.channel.permissionsFor(interaction.guild.members.me).any(permisisons)) {
+        return true;
+    } else {
+        const Missing = interaction.channel.permissionsFor(interaction.guild.members.me).missing(permisisons);
+        await InteractionError({
+            createError: false,
+            interaction,
+            message: `The bot doesn't have the correct permissions to run this command. Missing: ${Missing.map(e => inlineCode(e)).join(" ")}`
+        });
+        return false;
+    };
+}
+
 async function StartButtonService(client: Client) {
     try {
         //Find the button files
@@ -115,7 +136,7 @@ async function StartButtonService(client: Client) {
                             return true;
                         } else return false;
                     }
-                })
+                });
 
                 if (Button == null) return;
                 if (interaction.guild == null && Button.GuildOnly) {
@@ -135,6 +156,7 @@ async function StartButtonService(client: Client) {
                 }
 
                 if (CustomId != interaction.customId) return;
+                if (await HandleBotPermissions(interaction, Button.ClientPermissions) == false) return;
 
                 try {
                     await Button.ExecuteInteraction(interaction, client, Id);
@@ -197,6 +219,7 @@ async function StartSelectMenuService(client: Client) {
                 }
 
                 if (!Values.includes(SelectOption.Value)) return;
+                if (await HandleBotPermissions(interaction, SelectOption.ClientPermissions) == false) return;
 
                 try {
                     await SelectOption.ExecuteInteraction(interaction, client, Values);
@@ -248,6 +271,7 @@ async function StartContextMenuService(client: Client) {
                     }
                 }
 
+                if (await HandleBotPermissions(interaction, ContextMenu.ClientPermissions) == false) return;
                 try {
                     await ContextMenu.ExecuteContextMenu(interaction, client);
                 } catch (e) {
@@ -316,6 +340,8 @@ export async function StartService(client: Client, logs = false) {
                         return;
                     }
                 }
+
+                if (await HandleBotPermissions(interaction, command.ClientPermissions) == false) return;
 
                 try {
                     await command?.ExecuteCommand(interaction, client);

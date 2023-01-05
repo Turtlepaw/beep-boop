@@ -3,7 +3,7 @@ import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
 import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
 import { FriendlyInteractionError, SendError } from "../utils/error";
-import { ServerSettings } from "src/buttons/ServerSettings";
+import { ServerSettings } from "../buttons/ServerSettings";
 
 export default class Activities extends Command {
     constructor() {

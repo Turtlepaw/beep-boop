@@ -6,12 +6,12 @@ import { Colors, Embed, Emojis, Icons } from "../configuration";
 import { MemberInformation } from "../utils/info";
 import { CleanMember } from "../utils/Clean";
 import { Verifiers } from "@airdot/verifiers";
-import { FriendlyInteractionError } from "../utils/error";
+import { FriendlyInteractionError, InteractionError } from "../utils/error";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
         super({
-            Name: "Clean Username",
+            Name: "Clean Nickname",
             CanaryCommand: false,
             GuildOnly: true,
             RequiredPermissions: [],
@@ -22,9 +22,12 @@ export default class DeleteThis extends ContextMenu {
 
     public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction, client: Client) {
         if (!Verifiers.Discord.Member(interaction.targetMember)) {
-            FriendlyInteractionError(interaction, "The member provided is returned a API Member... Contact support about this.")
-            return;
+            return await InteractionError({
+                interaction,
+                error: "Member provided failed verifiers (returned API member instead of Discord.js member)"
+            });
         };
+
         const cleaned = await CleanMember(interaction.targetMember);
         await interaction.reply({
             content: `${Icons.Flag} Cleaned up their username.`,

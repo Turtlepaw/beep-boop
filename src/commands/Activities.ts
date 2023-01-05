@@ -14,7 +14,7 @@ export default class Activities extends Command {
             RequiredPermissions: [],
             SomePermissions: [],
             Category: Categories.Activites,
-            Subcomamnds: [
+            Subcommands: [
                 new SlashCommandSubcommandBuilder()
                     .setName("rock_paper_scissors")
                     .setDescription("🪨📄✂️ Rock Paper Scissors!")

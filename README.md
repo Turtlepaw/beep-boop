@@ -1,36 +1,37 @@
 <div align="center">
 <img src="./media/robot.png" width="100rem"/>
+
+<a href="https://bop.trtle.xyz/">
+    <h3>🔎 bop.trtle.xyz</h3>
+</a>
 <h1>Beep Boop</h1>
 Beep Boop is a Discord bot designed for use in large community servers.
 </div>
 
 ### Notices
-- **🔒 Not open-source:** This repository is currently not open-source, and we don't have plans to open-source it.
-- **📝 Dashboard WIP:** The dashboard's still a work-in-progress, some stuff may not work.
+- **🔒 No open-source plans:** This repository is currently not open-source, and we don't have plans to open-source it.
+- **🧪 Dashboard is in a experimental state:** Many dashboard pages haven't been completed, and their extremely unstable.
 
 ### Welcome
 Welcome to Beep Boop's Github repository, here you'll find all the source to Beep Boop.
 
 ### Requirements
-- Make sure to use our custom classes (e.g. `Selector`, `Filter`, etc...)
-- Don't change software in a commit, if you want to change software open a issue
-- Make sure to use the `interface`, `type` and `enum` system objects in your changes.
+- Make sure to use our custom classes (e.g. `Selector`, `Filter`, etc...) found in [`src/utils`](https://github.com/Turtlepaw/beep-boop/blob/37dea1b4eec22005c7d67835f7fb91964729dc59/src/utils).
+- Don't change software or upgrade a package with a breaking change in a commit, open an issue or a PR with your changes first.
 
 ### Website Requirements
-- Always show if the user has no JavaScript enabled
-- The non-dashboard pages should use little to no JavaScript
+- Always show if the user has no JavaScript enabled.
+- The branding pages should use little or no JavaScript.
 
 ### Software Requirements
 - Yarn (1.22.19 or latest)
-- Node.js
+- Node.js (16.19.0 or latest)
 
 ### Upcoming Changes
-We're working hard on building the future of Beep Boop, here's our internal roadmap and our public roadmap.
+Here's the internal roadmap and the public roadmap.
 
 - [Public Roadmap](https://www.craft.do/s/JJVExvuEq3ftaw)
 - [Internal Roadmap](https://www.craft.do/s/ervTJxSCzWR0cZ)
 
-### Discord Server
-🎉 Join our Discord server!
-
+### Official Discord Server
 [![](http://invidget.switchblade.xyz/Rgxv5M6sq9)](https://discord.gg/Rgxv5M6sq9)

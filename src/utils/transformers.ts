@@ -37,3 +37,13 @@ export class MapTransformer<K, V> {
         return map;
     }
 }
+
+export class DateTransformer {
+    to(value: Date) {
+        return value.toString()
+    }
+
+    from(value: string) {
+        return new Date(value);
+    }
+}
