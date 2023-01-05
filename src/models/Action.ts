@@ -46,4 +46,8 @@ export class Action {
     InternalCode: InternalCode;
     @Column({ type: "simple-json" })
     ConfigurationParams: ActionConfiguration;
+    @Column({ nullable: true })
+    Approved: boolean;
+    @Column({ nullable: true })
+    Verified: boolean;
 }

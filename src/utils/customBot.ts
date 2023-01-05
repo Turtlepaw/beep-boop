@@ -100,7 +100,7 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
                 if (options != null) await SetupBot(CustomClient, options.client, {
                     ...options,
                     token: botToken
-                }, (value) => resolve(value));
+                }, (value) => "");
 
                 const Bot = await client.Storage.CustomBots.Get({
                     Token: botToken
@@ -169,7 +169,8 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
                     ]
                 });
 
-                Logger.info(`${CustomClient.user.tag} is now online.`)
+                Logger.info(`${CustomClient.user.tag} is now online.`);
+                resolve(Bot);
             });
         })
 
