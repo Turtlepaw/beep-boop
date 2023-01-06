@@ -9,7 +9,7 @@ import { generateId } from "../utils/Id";
 import { Ticket } from "./CreateTicket";
 import { Filter } from "../utils/filter";
 import { CreateLinkButton } from "../utils/buttons";
-import { ChannelSelectMenu } from "../utils/components";
+import { ChannelSelectMenu, Selector, StringSelector, StringSelectBuilder } from "../utils/components";
 import { customClients, StartCustomBot } from "../utils/customBot";
 import { ResolveUser } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
@@ -198,10 +198,39 @@ export default class CustomBranding extends Button {
 
                     (customClients[CurrentBot.BotId] as Client).destroy();
                 } else if (Interaction.isButton() && Interaction.customId == Id.EditStatus) {
+                    enum SelectFieldIds {
+                        SelectMenu = "SELECT_STATUS_TYPE"
+                    }
                     enum FieldId {
                         Text = "STATUS_TEXT",
                         Type = "STATUS_TYPE"
                     }
+                    const FilteredOptions = Object.entries(ActivityType).filter(e => isNaN(Number(e[0]))).filter(e => e[1] != ActivityType.Custom && e[1] != ActivityType.Streaming);
+                    const StatusTypeFields = new StringSelector()
+                        .AddOptions(
+                            ...FilteredOptions.map(([k, v]) =>
+                                new StringSelectBuilder()
+                                    .setLabel(`${k}${CurrentBot.CustomStatus == v ? " (current)" : ""}`)
+                                    .setValue(k)
+                                    .setDescription(`${v == ActivityType.Listening ? "Listening to" : (v == ActivityType.Competing ? "Competing in" : k)} something`)
+                            )
+                        )
+                        .SetCustomId(SelectFieldIds.SelectMenu)
+                        .Configure(e => e.setPlaceholder("Select a status type"))
+                        .toActionRow();
+
+                    const TypeMessage = await Interaction.reply({
+                        content: `${Icons.Tag} Select an status type`,
+                        components: [StatusTypeFields],
+                        fetchReply: true,
+                        ephemeral: true
+                    });
+
+                    const ModalButton = await TypeMessage.awaitMessageComponent({
+                        componentType: ComponentType.StringSelect,
+                        time: 0
+                    })
+
                     const TextComponent = new TextInputBuilder()
                         .setLabel("Status Text")
                         .setCustomId(FieldId.Text)
@@ -210,19 +239,19 @@ export default class CustomBranding extends Button {
                         .setRequired(true)
                         .setStyle(TextInputStyle.Short)
                         .setPlaceholder("discord.gg");
-                    const TypeComponent = new TextInputBuilder()
-                        .setLabel("Status Type")
-                        .setCustomId(FieldId.Type)
-                        .setMaxLength(128)
-                        .setMinLength(1)
-                        .setRequired(true)
-                        .setStyle(TextInputStyle.Short)
-                        .setPlaceholder([ActivityType.Competing, ActivityType.Listening, ActivityType.Playing, ActivityType.Watching].map(e => ActivityType[e]).join(" | "));
+                    // const TypeComponent = new TextInputBuilder()
+                    //     .setLabel("Status Type")
+                    //     .setCustomId(FieldId.Type)
+                    //     .setMaxLength(128)
+                    //     .setMinLength(1)
+                    //     .setRequired(true)
+                    //     .setStyle(TextInputStyle.Short)
+                    //     .setPlaceholder([ActivityType.Competing, ActivityType.Listening, ActivityType.Playing, ActivityType.Watching].map(e => ActivityType[e]).join(" | "));
 
                     if (Verifiers.String(CurrentBot.CustomStatus)) TextComponent.setValue(CurrentBot.CustomStatus);
-                    if (CurrentBot.CustomStatusType != null) TypeComponent.setValue(ActivityType[CurrentBot.CustomStatusType]);
+                    //if (CurrentBot.CustomStatusType != null) TypeComponent.setValue(ActivityType[CurrentBot.CustomStatusType]);
 
-                    await Interaction.showModal(
+                    await ModalButton.showModal(
                         new ModalBuilder()
                             .setTitle("Editing Custom Status")
                             .setCustomId(Id.EditStatusModal)
@@ -232,42 +261,48 @@ export default class CustomBranding extends Button {
                                         TextComponent,
 
                                     ),
-                                new ActionRowBuilder<TextInputBuilder>()
-                                    .setComponents(
-                                        TypeComponent
-                                    )
+                                // new ActionRowBuilder<TextInputBuilder>()
+                                //     .setComponents(
+                                //         TypeComponent
+                                //     )
                             )
                     )
 
-                    const ModalInteraction = await Interaction.awaitModalSubmit({
+                    const ModalInteraction = await ModalButton.awaitModalSubmit({
                         time: 0
                     });
 
                     const Fields = {
                         Text: ModalInteraction.fields.getTextInputValue(FieldId.Text),
-                        Type: ModalInteraction.fields.getTextInputValue(FieldId.Type)
+                        //Type: ModalInteraction.fields.getTextInputValue(FieldId.Type)
                     }
 
                     await client.Storage.CustomBots.Edit({
                         CustomId: CurrentBot.CustomId
                     }, {
                         CustomStatus: Fields.Text,
-                        CustomStatusType: ActivityType[Fields.Type]
+                        CustomStatusType: ActivityType[ModalButton.values[0]]
+                    });
+
+                    const hasBot = (customClients[CurrentBot.BotId] as Client) != null;
+
+                    if (hasBot) (customClients[CurrentBot.BotId] as Client).user.setActivity({
+                        type: ActivityType[ModalButton.values[0]],
+                        name: Fields.Text
                     });
 
                     await ModalInteraction.reply({
                         ephemeral: true,
-                        content: `${Icons.Discover} Saved your configuration.`
+                        content: `${Icons.Discover} Saved your configuration${hasBot ? " and set status." : " but couldn't set bot's status, try restarting your bot."}`
                     });
                 } else if (Interaction.isButton() && Interaction.customId == Id.RestartBot) {
-                    const CustomClient: Client = customClients[CurrentBot.BotId];
-                    CustomClient.destroy();
-                    StartCustomBot(CurrentBot.Token, client);
-
                     await Interaction.reply({
                         ephemeral: true,
-                        content: `${Icons.Discover} Restarted your bot, it should come online in a few minutes...`
+                        content: `${Icons.Discover} Shutting down your bot, it should come back online in a few minutes...`
                     });
+
+                    await (customClients[CurrentBot.BotId] as Client).destroy();
+                    StartCustomBot(CurrentBot.Token, client);
                 } else if (Interaction.isButton() && Interaction.customId == Id.NewBot) {
                     const ModalMessage = await Interaction.reply({
                         ephemeral: true,
