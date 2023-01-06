@@ -192,12 +192,15 @@ export default class CustomBranding extends Button {
                     });
 
                     DeleteComponent.update({
-                        content: "Bot Deleted"
-                    })
+                        content: "Bot deleted, shutting down...",
+                        components: []
+                    });
+
+                    (customClients[CurrentBot.BotId] as Client).destroy();
                 } else if (Interaction.isButton() && Interaction.customId == Id.EditStatus) {
                     enum FieldId {
                         Text = "STATUS_TEXT",
-                        Type = "STATUS_TYPE "
+                        Type = "STATUS_TYPE"
                     }
                     const TextComponent = new TextInputBuilder()
                         .setLabel("Status Text")
