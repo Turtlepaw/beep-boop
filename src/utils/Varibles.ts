@@ -1,22 +1,75 @@
-import { Guild, GuildMember } from "discord.js";
+import { Guild, GuildMember, User } from "discord.js";
 
-export const Varibles: Record<string, {
-    Run: (guild: Guild) => string;
+export interface Varible<T> {
+    Run: (t: T) => string;
     Name: string
-}> = {
-    MemberCount: {
-        Name: "{&MemberCount}",
-        Run: (guild) => guild.memberCount.toString()
+};
+
+export interface Varibles {
+    Guild: {
+        [key: string]: Varible<Guild>;
+    };
+    User: {
+        [key: string]: Varible<User>;
+    };
+    Member: {
+        [key: string]: Varible<GuildMember>;
+    };
+}
+
+export type GenericVarible = Varible<GuildMember | User | Guild>;
+export interface GenericVaribles {
+    [key: string]: GenericVarible;
+};
+
+export const Varibles: Varibles = {
+    Guild: {
+        MemberCount: {
+            Name: "{&MemberCount}",
+            Run: (guild) => guild.memberCount.toString()
+        },
+        HumanCount: {
+            Name: "{&HumanCount}",
+            Run: (guild) => guild.members.cache.filter(e => !e.user.bot).size.toString()
+        },
+        BotCount: {
+            Name: "{&BotCount}",
+            Run: (guild) => guild.members.cache.filter(e => e.user.bot).size.toString()
+        }
     },
-    HumanCount: {
-        Name: "{&HumanCount}",
-        Run: (guild) => guild.members.cache.filter(e => !e.user.bot).size.toString()
+    Member: {
+        Nickname: {
+            Name: "{&Memberickname}",
+            Run: (m) => m.nickname
+        }
     },
-    BotCount: {
-        Name: "{&BotCount}",
-        Run: (guild) => guild.members.cache.filter(e => e.user.bot).size.toString()
+    User: {
+        Tag: {
+            Name: "{&UserTag}",
+            Run: (u) => u.tag
+        },
+        Username: {
+            Name: "{&Username}",
+            Run: (u) => u.username
+        },
+        Discriminator: {
+            Name: "{&UserDiscriminator}",
+            Run: (u) => u.discriminator
+        }
     }
 }
+
+export function DocGen<Result>(
+    //@ts-expect-error
+    resolveInput: (name: string, varible: Varible<any>, type: "Member" | "User" | "Guild") => Result = (n, v, t) => `• ${n} (${v.Name})`
+) {
+    return (Object.entries(Varibles) as [string, GenericVaribles][]).map(([k, v]) => {
+        return Object.entries(v).map(([k2, v2]) => {
+            return resolveInput(k2, v2, k as any);
+        })
+    })
+}
+
 export const Varible = "{&count}";
 export const VaribleRegEx = /(({&))((\w+))(})?$/igm;
 
@@ -35,13 +88,20 @@ export class VaribleRunner {
         this.text = text;
     }
 
-    run({ guild, member }: {
-        guild: Guild;
+    run({ guild, member, user }: {
+        guild?: Guild;
         member?: GuildMember;
+        user?: User;
     }) {
+        if (member != null && user == null) user = member.user;
+        const value = [member != null ? "member" : (user != null ? "user" : null), guild != null ? "guild" : null].filter(e => e != null);
         const text = this.text;
-        Object.values(Varibles).map(e => {
-            text.replaceAll(e.Name, e.Run(guild))
+        [
+            ...(Object.values(value.includes("member") ? member : null)),
+            ...(Object.values(value.includes("user") ? user : null)),
+            ...(Object.values(value.includes("guild") ? guild : null))
+        ].filter(e => e != null).map(v => {
+            text.replaceAll(v.Name, v.Run(guild))
         });
 
         return text;
