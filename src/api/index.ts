@@ -1,7 +1,7 @@
 import { ChannelType, Client, PermissionFlagsBits, TextChannel, User } from "discord.js";
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
-import { DEVELOPER_BUILD } from "../index";
+import { API_PORT, API_URL, DEVELOPER_BUILD } from "../index";
 import https from "https";
 import fs from "fs";
 import { Verifiers } from "@airdot/verifiers";
@@ -287,14 +287,17 @@ export async function API(client: Client, token: string) {
     var privateKey = fs.readFileSync('server.key');
     var certificate = fs.readFileSync('server.cert');
 
-    const port = DEVELOPER_BUILD ? 4000 : 443;
-
+    const port = API_PORT; //DEVELOPER_BUILD ? 4000 : 443;
+    const uri = API_URL;
+    if (isNaN(port)) throw new Error("API_PORT must be a valid number");
+    if (uri == null || typeof uri != "string") throw new Error("API_URL must be a valid string");
+    const onListen = () => console.log("API Running: ".green + `${uri}`.gray);
     if (DEVELOPER_BUILD) {
-        app.listen(port, () => console.log("API Running: ".green + "http://localhost:4000/".gray));
+        app.listen(port, onListen);
     } else {
         https.createServer({
             key: privateKey,
             cert: certificate
-        }, app).listen(port, () => console.log("API Running: ".green + "https://api.trtle.xyz/".gray));
+        }, app).listen(port, onListen);
     }
 }

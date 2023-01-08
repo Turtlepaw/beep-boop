@@ -26,6 +26,8 @@ export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
 export const API_ENABLED = process.env.START_API;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
+export const API_PORT = Number(process.env?.API_PORT);
+export const API_URL = process.env?.API_URL;
 export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
         IntentsBitField.Flags.Guilds,
