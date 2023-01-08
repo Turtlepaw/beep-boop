@@ -27,11 +27,9 @@ export default class CustomBranding extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        await interaction.deferReply({ ephemeral: true });
+        const Message = await interaction.deferReply({ ephemeral: true, fetchReply: true });
         if (!ClientAdministators.includes(interaction.user.id)) return FriendlyInteractionError(interaction, "You're not authorized to use this.");
-        const Message = await interaction.editReply({
-          //  ephemeral: true,
-            fetchReply: true,
+        await interaction.editReply({
             content: "Select a gift type.",
             components: [
                 new ActionRowBuilder<StringSelectMenuBuilder>()
