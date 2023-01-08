@@ -30,7 +30,7 @@ export default class CustomBranding extends Button {
         await interaction.deferReply({ ephemeral: true });
         if (!ClientAdministators.includes(interaction.user.id)) return FriendlyInteractionError(interaction, "You're not authorized to use this.");
         const Message = await interaction.editReply({
-            ephemeral: true,
+          //  ephemeral: true,
             fetchReply: true,
             content: "Select a gift type.",
             components: [
