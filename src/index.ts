@@ -1,5 +1,5 @@
 //Import packages
-import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData, ClientOptions } from "discord.js";
+import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData, ClientOptions, Collection } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
@@ -55,6 +55,7 @@ export async function SetClientValues(client: Client) {
     client.Errors = new ErrorManager();
     client.Levels = new Levels(client.storage);
     client.LegacyStorage = KeyFileStorage("storage", false);
+    client.TriviaGames = new Collection();
 }
 
 // Create Discord.js client
