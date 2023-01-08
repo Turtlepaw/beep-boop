@@ -15,6 +15,8 @@ import { Gift } from "../models/Gift";
 import { OAuth } from "../models/OAuth";
 import { Action } from "../models/Action";
 import { Error as CustomError } from "../models/Error";
+import { Collection } from "discord.js";
+import { TriviaGame } from "discord-trivia";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -44,5 +46,6 @@ declare module 'discord.js' {
         LegacyStorage: KeyFileStorage;
         CustomIcons: boolean;
         LogWebhook: WebhookClient;
+        TriviaGames: Collection<string, TriviaGame>;
     }
 }

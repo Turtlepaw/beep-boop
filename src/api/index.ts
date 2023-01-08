@@ -284,8 +284,6 @@ export async function API(client: Client, token: string) {
     });
 
     //app.listen(4000, () => console.log("API Ready".green, "http://localhost:4000/".gray))
-    var privateKey = fs.readFileSync('server.key');
-    var certificate = fs.readFileSync('server.cert');
 
     const port = API_PORT; //DEVELOPER_BUILD ? 4000 : 443;
     const uri = API_URL;
@@ -295,6 +293,8 @@ export async function API(client: Client, token: string) {
     if (DEVELOPER_BUILD) {
         app.listen(port, onListen);
     } else {
+        var privateKey = fs.readFileSync('server.key');
+        var certificate = fs.readFileSync('server.cert');
         https.createServer({
             key: privateKey,
             cert: certificate

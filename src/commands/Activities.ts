@@ -1,8 +1,14 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Colors, CommandInteraction, GuildMember, PermissionsBitField, SlashCommandSubcommandBuilder } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction, GuildMember, PermissionFlagsBits, PermissionsBitField, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed } from "../configuration";
+import { Colors, Embed } from "../configuration";
 import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
-import { SendError } from "../utils/error";
+import { InteractionError, SendError } from "../utils/error";
+import { TriviaManager } from 'discord-trivia';
+import TriviaSubcommandBuilder from "../lib/TriviaCommandBuilder";
+
+const CommandData = new TriviaSubcommandBuilder("start", "❓ Play some trivia.");
+
+const trivia = new TriviaManager();
 
 export default class Activities extends Command {
     constructor() {
@@ -21,6 +27,14 @@ export default class Activities extends Command {
                     .addUserOption(e =>
                         e.setName("member")
                             .setDescription("Play with a friend, select the member to invite below.")
+                    ),
+                new SlashCommandSubcommandGroupBuilder()
+                    .setName("trivia")
+                    .setDescription("Trivia game stuff")
+                    .addSubcommand(CommandData.toBuilder())
+                    .addSubcommand(subcmd =>
+                        subcmd.setName("end")
+                            .setDescription("Ends the current game. Must be the owner of the game or a moderator.")
                     )
             ]
         });
@@ -28,7 +42,9 @@ export default class Activities extends Command {
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
         enum Subcommands {
-            RockPaperScissors = "rock_paper_scissors"
+            RockPaperScissors = "rock_paper_scissors",
+            Trivia = "start",
+            EndTriviaGame = "end"
         }
         const SubcomamndName = interaction.options.getSubcommand();
         if (SubcomamndName == Subcommands.RockPaperScissors) {
@@ -45,6 +61,31 @@ export default class Activities extends Command {
                 new RockPaperScissors()
                     .StartGame(interaction)
             }
+        } else if (SubcomamndName == Subcommands.Trivia) {
+            const Options = CommandData.getOptions(interaction);
+            const game = trivia.createGame(interaction, {
+                ...Options
+            });
+
+            game.start();
+
+            client.TriviaGames.set(interaction.channel.id, game);
+        } else if (SubcomamndName == Subcommands.EndTriviaGame) {
+            const Game = client.TriviaGames.get(interaction.channel.id);
+            if (Game.hostMember.id != interaction.user.id && interaction.memberPermissions.any([
+                PermissionFlagsBits.ManageMessages,
+                PermissionFlagsBits.ModerateMembers
+            ])) return InteractionError({
+                createError: false,
+                interaction,
+                ephemeral: true,
+                message: `You must be the host or you must have have the Manage Messages permission to end a trivia game.`
+            });
+
+            Game.end();
+            await interaction.reply({
+                content: `📜 The ongoing game has been ended.`
+            });
         }
     }
 }
