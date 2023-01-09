@@ -2,18 +2,27 @@
 <img src="./media/robot.png" width="100rem"/>
 
 <a href="https://bop.trtle.xyz/">
-    <h3>🔎 bop.trtle.xyz</h3>
+    <h3>
+    <a href="https://bop.trtle.xyz/">🔎 bop.trtle.xyz</a>
+    </h3>
 </a>
 <h1>Beep Boop</h1>
 Beep Boop is a Discord bot designed for use in large community servers.
 </div>
 
 ### Notices
-- **🔒 No open-source plans:** This repository is currently not open-source, and we don't have plans to open-source it.
+- **🔒 Not open-source:** This repository is currently not open-source, and we have limited plans to open-source it.
 - **🧪 Dashboard is in a experimental state:** Many dashboard pages haven't been completed, and their extremely unstable.
 
 ### Welcome
 Welcome to Beep Boop's Github repository, here you'll find all the source to Beep Boop.
+
+### What needs to be done
+1. Complete bot features
+    - New configuration menu
+    - Fix Bugs
+    - Add API routes
+2. Complete Dashboard
 
 ### Requirements
 - Make sure to use our custom classes (e.g. `Selector`, `Filter`, etc...) found in [`src/utils`](https://github.com/Turtlepaw/beep-boop/blob/37dea1b4eec22005c7d67835f7fb91964729dc59/src/utils).
