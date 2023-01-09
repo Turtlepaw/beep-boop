@@ -2,7 +2,7 @@ import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonSt
 import { SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
-import { ClientAdministators, Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
+import { ClientAdministrators, Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../utils/Id";
@@ -23,7 +23,7 @@ export default class RealtimeLogs extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        if (!ClientAdministators.includes(interaction.user.id)) return;
+        if (!ClientAdministrators.includes(interaction.user.id)) return;
 
         interface LogMessage { level: number; msg: string; time: number; type: string; };
         const ResolveLogs = (expand: boolean = false) => {

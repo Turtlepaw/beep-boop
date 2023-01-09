@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { ClientAdministators, Embed } from "../configuration";
+import { ClientAdministrators, Embed } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class EvalCode extends Button {
@@ -8,12 +8,12 @@ export default class EvalCode extends Button {
             CustomId: "EVAL_CODE",
             GuildOnly: false,
             RequiredPermissions: [],
-            SomePermissions: ["Administrator", "ManageGuild"]
+            SomePermissions: []
         })
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        if (!ClientAdministators.includes(interaction.user.id)) return;
+        if (!ClientAdministrators.includes(interaction.user.id)) return;
         const Modal = new ModalBuilder()
             .addComponents(
                 new ActionRowBuilder<TextInputBuilder>()

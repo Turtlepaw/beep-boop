@@ -1,12 +1,14 @@
-import { ActionRow, ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, EmbedBuilder, OAuth2Scopes, PermissionFlagsBits, SelectMenuOptionBuilder, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
+import { ActionRow, ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, EmbedBuilder, OAuth2Scopes, PermissionFlagsBits, SelectMenuOptionBuilder, SlashCommandBooleanOption, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
 import SlashCommandBuilder, { Categories } from "../lib/CommandBuilder";
-import { Dot, Embed, SupportServerInvite } from "../configuration";
+import { ClientAdministrators, Dot, Embed, SupportServerInvite } from "../configuration";
 import { FormatCommandName } from "../utils/text";
 import ContextMenuBuilder from "../lib/ContextMenuBuilder";
 import { CommandBuilderType } from "../lib/Builder";
 import { Pages } from "../utils/Pages";
 import { Filter } from "../utils/filter";
+import { CommandOptions } from "../utils/defaults";
 
+export const DeveloperPortal = "DEV_PORTAL";
 export default class Help extends SlashCommandBuilder {
     constructor() {
         super({
@@ -21,7 +23,8 @@ export default class Help extends SlashCommandBuilder {
                 new SlashCommandStringOption()
                     .setAutocomplete(true)
                     .setName("command")
-                    .setDescription("The name of the command.")
+                    .setDescription("The name of the command."),
+                CommandOptions.Hidden()
             ]
         });
     }
@@ -54,6 +57,7 @@ export default class Help extends SlashCommandBuilder {
             Categories = "CategorySelectMenu"
         }
         const CommandId = interaction.options.getString("command", false);
+        const ephemeral = interaction.options.getBoolean("hidden") ?? false;
         const CategoryDescriptions = {
             Server: "Server configuration, moderation, other server-related commands.",
             Images: "Add a shine to your profile picture!",
@@ -94,7 +98,13 @@ export default class Help extends SlashCommandBuilder {
                 new ButtonBuilder()
                     .setStyle(ButtonStyle.Link)
                     .setURL(SupportServerInvite)
-                    .setLabel("Discord Server")
+                    .setLabel("Discord Server"),
+                ...(ClientAdministrators.includes(interaction.user.id) ? [
+                    new ButtonBuilder()
+                        .setLabel("Developer Portal")
+                        .setStyle(ButtonStyle.Danger)
+                        .setCustomId(DeveloperPortal)
+                ] : [])
             )
 
         //@ts-expect-error
@@ -169,7 +179,8 @@ export default class Help extends SlashCommandBuilder {
 
             const Message = await interaction.reply({
                 embeds: [MessageEmbed],
-                components: [Buttons, Links]
+                components: [Buttons, Links],
+                ephemeral
             })
 
             const collect = Message.createMessageComponentCollector({
@@ -183,7 +194,8 @@ export default class Help extends SlashCommandBuilder {
 
             collect.on("collect", async (i) => {
                 (CategoryPages[i.values[0]] as Pages).send(i, {
-                    disableCustomButtons: false
+                    disableCustomButtons: false,
+                    ephemeral
                 });
             });
         } else {
@@ -209,7 +221,8 @@ export default class Help extends SlashCommandBuilder {
                             name: "Try it out",
                             value: `</${APICommand.Name}:${APICommand.Id}>`
                         }])
-                ]
+                ],
+                ephemeral
             })
         }
     }

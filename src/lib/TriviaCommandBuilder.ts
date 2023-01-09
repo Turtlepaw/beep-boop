@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, CommandInteraction } from "discord.js";
 import {
     CategoryNameResolvable,
     Question,
@@ -11,6 +11,7 @@ import {
     TriviaGame,
     TriviaGameOptions
 } from "discord-trivia";
+import ms from "ms";
 
 export default class TriviaSubcommandBuilder {
     private build: SlashCommandSubcommandBuilder;
@@ -28,17 +29,7 @@ export default class TriviaSubcommandBuilder {
                 opt
                     .setName("maximum_player_count")
                     .setDescription(
-                        "The maximum amount of players allowed to join this match"
-                    )
-                    .setRequired(false)
-            );
-        },
-        maximumPoints: () => {
-            this.build.addIntegerOption((opt) =>
-                opt
-                    .setName("maximum_points")
-                    .setDescription(
-                        "The maximum amount of points a player can earn per question"
+                        "The maximum amount of players allowed to join this game"
                     )
                     .setRequired(false)
             );
@@ -48,17 +39,7 @@ export default class TriviaSubcommandBuilder {
                 opt
                     .setName("minimum_player_count")
                     .setDescription(
-                        "The minimum amount of players required to start the match"
-                    )
-                    .setRequired(false)
-            );
-        },
-        minimumPoints: () => {
-            this.build.addIntegerOption((opt) =>
-                opt
-                    .setName("minimum_points")
-                    .setDescription(
-                        "The minimum amount of points a player can earn per question"
+                        "The minimum amount of players required to start the game"
                     )
                     .setRequired(false)
             );
@@ -100,7 +81,7 @@ export default class TriviaSubcommandBuilder {
             this.build.addIntegerOption((opt) =>
                 opt
                     .setName("queue_time")
-                    .setDescription("How long to await players before starting the match")
+                    .setDescription("How long to wait for players to join before starting the game (e.g. 5m 2s)")
                     .setRequired(false)
             );
         },
@@ -108,7 +89,7 @@ export default class TriviaSubcommandBuilder {
             this.build.addIntegerOption((opt) =>
                 opt
                     .setName("time_per_question")
-                    .setDescription("How long each round should last (in milliseconds)")
+                    .setDescription("How long each round should last (e.g. 5m 2s)")
                     .setRequired(false)
             );
         },
@@ -145,41 +126,7 @@ export default class TriviaSubcommandBuilder {
                     )
                     .setRequired(false)
             );
-        },
-        timeBetweenRounds: () => {
-            this.build.addIntegerOption((opt) =>
-                opt
-                    .setName("time_between_rounds")
-                    .setDescription("How long to wait between rounds in ms")
-                    .setRequired(false)
-            );
-        },
-        pointsPerStreakAmount: () => {
-            this.build.addIntegerOption((opt) =>
-                opt
-                    .setName("points_per_streak")
-                    .setDescription(
-                        "How many bonus points to award per streak accumulation"
-                    )
-                    .setRequired(false)
-            );
-        },
-        maximumStreakBonus: () => {
-            this.build.addIntegerOption((opt) =>
-                opt
-                    .setName("max_streak_bonus")
-                    .setDescription("Maximum bonus for accumulated streaks")
-                    .setRequired(false)
-            );
-        },
-        streakDefinitionLevel: () => {
-            this.build.addIntegerOption((opt) =>
-                opt
-                    .setName("streak_level")
-                    .setDescription("At which consecutive correct answer to start streak")
-                    .setRequired(false)
-            );
-        },
+        }
     };
 
     private applyOptions() {
@@ -203,7 +150,7 @@ export default class TriviaSubcommandBuilder {
     }
 
     getOptions(
-        int: CommandInteraction
+        int: ChatInputCommandInteraction
     ) {
         const maximumPlayerCount = int.options.get("maximum_player_count", false)
             ?.value as number;
@@ -219,9 +166,8 @@ export default class TriviaSubcommandBuilder {
             ?.value as QuestionDifficulty;
         const questionType = int.options.get("question_type", false)
             ?.value as QuestionType;
-        const queueTime = int.options.get("queue_time", false)?.value as number;
-        const timePerQuestion = int.options.get("time_per_question", false)
-            ?.value as number;
+        const queueTime = ms(int.options.getString("queue_time", false)) as number;
+        const timePerQuestion = ms(int.options.getString("time_per_question", false)) as number;
         const triviaCategory = int.options.get("category", false)
             ?.value as CategoryNameResolvable;
         const timeBetweenRounds = int.options.get("time_between_rounds", false)

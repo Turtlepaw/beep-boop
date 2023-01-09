@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, ThreadMemberFlagsBitField } from "discord.js"
+import { Utils, StringSelectMenuOptionBuilder, Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, ThreadMemberFlagsBitField } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
 
@@ -9,6 +9,7 @@ export enum EmbedModalFields {
     FooterText = "BUILDER_FOOTER_TEXT_FIELD",
     Color = "BUILDER_COLOR_FIELD"
 }
+
 export function EmbedModal(CustomId: string = "CONFIGURE_EMBED", Message: GuildMessage) {
     const Fields = {
         Title: new TextInputBuilder()
@@ -129,7 +130,7 @@ export class Selector<T extends AnySelectMenuBuilder> {
     }
 }
 
-export class StringSelectBuilder extends SelectMenuOptionBuilder { };
+export class StringSelectBuilder extends StringSelectMenuOptionBuilder { };
 
 export class StringSelector extends Selector<StringSelectMenuBuilder> {
     public options: StringSelectBuilder[] = [];

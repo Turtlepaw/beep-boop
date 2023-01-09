@@ -32,7 +32,7 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
     [Modules.AutonomousCleanup]: {
         Label: "Autonomous Cleanup",
         Description: "Autonomous cleanup cleans up old messages that members sent. (e.g. system welcome messages)",
-        Icon: Icons.Trash
+        Icon: Icons.TrashDefault
     },
     [Modules.JoinActions]: {
         Label: "Join Actions",
@@ -51,19 +51,26 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
     }
 }
 
+export const AdvancedButtonId = "ADVANCED_GUILD_CONF";
 export function ServerConfiguration(interaction: RepliableInteraction) {
     const Buttons = [
         new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId("ADD_AS_BIRTHDAY")
+                    .setEmoji(Icons.Sync)
                     .setLabel("Add Birthday as Event")
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
                     .setLabel("Error Logs")
-                    .setEmoji("⚠️")
+                    .setEmoji(Icons.Print)
                     .setCustomId("ERROR_LOG")
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setLabel("Advanced")
+                    .setEmoji(Icons.Advanced)
                     .setStyle(ButtonStyle.Secondary)
+                    .setCustomId(AdvancedButtonId)
             ),
         new ActionRowBuilder<StringSelectMenuBuilder>()
             .addComponents(

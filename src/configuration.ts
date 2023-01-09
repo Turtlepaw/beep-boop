@@ -11,8 +11,16 @@ export const SupportServerComponent = new ButtonBuilder()
     .setStyle(ButtonStyle.Link)
     .setURL(SupportServerInvite);
 // The channel that you post updates about your bot
-export const NewsChannel = "1030689173784510504";
-export const ClientAdministators: string[] = [
+export const News = {
+    Channel: "1030689173784510504",
+    Guild: "1028789308401918004"
+};
+/**
+ * Array of user Ids that are have admin permissions for the bot.
+ * 
+ * **DANGER (READ THIS):** Someone with this permission has access to the entire bot (they could ping `@everyone` or even leave every guild), be careful with this permission.
+ */
+export const ClientAdministrators: string[] = [
     "820465204411236362",
     //...
 ];
@@ -67,6 +75,14 @@ export enum Emojis {
 }
 
 export enum Icons {
+    Date = "<:Date:1061841890384814081>",
+    Refresh = "<:Refresh:1043579950197903430>",
+    Sync = "<:Sync:1061826576171421736>",
+    Star = "<:Star:1061826573222826014>",
+    Print = "<:Print:1061826569800253441>",
+    Advanced = "<:Advanced:1061826562514751508>",
+    Dark = "<:Dark:1061826566373527644>",
+    TrashDefault = "<:DefaultTrash:1049878137917419631>",
     Dot = "<:ListItem:1043218649940508712>",
     Clock = "<:Clock:1043579937690497044>",
     MemberAdd = "<:MemberAdd:1043579947639386292>",

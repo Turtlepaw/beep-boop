@@ -18,12 +18,12 @@ export function GenerateGiftCode(codes: string[]) {
     }
 }
 
-export async function CreateGift(from: User, sub: Subscriptions) {
+export async function CreateGift(from: User, sub: Subscriptions, expires?: Date) {
     const { client } = from;
     const codes = await client.Storage.Gifts.GetAll();
     const GiftCode = GenerateGiftCode(codes.map(e => e.GiftCode));
-    const Expires = new Date();
-    Expires.setMonth(Expires.getMonth() + 2);
+    const Expires = expires ?? new Date();
+    if (expires == null) Expires.setMonth(Expires.getMonth() + 2);
     await client.Storage.Gifts.Create({
         From: from.id,
         Redeemed: false,
