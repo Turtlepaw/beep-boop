@@ -6,7 +6,7 @@ import ContextMenu from "../lib/ContextMenuBuilder";
 import { CLIENT_ID, TOKEN } from "../index";
 import { Logger } from "../logger";
 
-export async function Deploy(client: Client, logs = true) {
+export async function Deploy(client: Client, logs = true, isCustom: boolean) {
     const DeveloperCommands: any[] = [];
     const PublicCommands: any[] = [];
     const clientId = client.user.id;
@@ -45,7 +45,7 @@ export async function Deploy(client: Client, logs = true) {
 
     const rest = new REST({ version: '10' }).setToken(client.token) //token);
 
-    rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: DeveloperCommands })
+    if (!isCustom) rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: DeveloperCommands })
         .then((data: any) => {
             if (logs) console.log(`Successfully registered ${data?.length} dev application commands.`)
             Logger.info(`Registered application commands (dev) for ${client.user.tag}.`);

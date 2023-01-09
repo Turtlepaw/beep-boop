@@ -92,7 +92,7 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
     // Deploy slash commands
     if (!isCustom) console.log("Deploying commands...".grey);
     Logger.info(`Deploying commands for ${ProvidedClient.user.username}...`);
-    Deploy(ProvidedClient, !isCustom).then(() => {
+    Deploy(ProvidedClient, !isCustom, isCustom).then(() => {
         if (!isCustom) console.log("Registered all commands successfully.".green)
         Logger.info(`Registered all commands for ${ProvidedClient.user.username}.`);
     });

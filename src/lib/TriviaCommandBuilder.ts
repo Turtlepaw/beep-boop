@@ -144,7 +144,7 @@ export default class TriviaSubcommandBuilder {
     toBuilder() {
         if (!this.isApplied) {
             this.applyOptions();
-            this.isApplied = false;
+            this.isApplied = true;
         }
         return this.build;
     }
