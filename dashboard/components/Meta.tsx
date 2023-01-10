@@ -8,6 +8,7 @@ export interface MetaProperties {
 export function Meta({ children: Title }: MetaProperties) {
     const PageTitle = `${Configuration.Title} - ${Title == null ? "" : ` ${Title}`}`;
     const EmbedTitle = `${Configuration.Title} - ${Configuration.TagLine}`;
+    const Thumbnail = `${Configuration.WebsiteURL}meta.png`
     return (
         <Head>
             <title>{PageTitle}</title>
@@ -16,7 +17,7 @@ export function Meta({ children: Title }: MetaProperties) {
             <meta name="title" content={EmbedTitle} />
             <meta name="description" content={Configuration.Description} />
             <meta name="theme-color" content={Configuration.Color} />
-            <meta property="og:image" content={Configuration.Icon.PNG} />
+            <meta property="og:image" content={Thumbnail} />
             <meta property="og:image:type" content="image/png" />
             <meta property="og:image:width" content="250" />
             <meta property="og:image:height" content="250" />
@@ -32,7 +33,7 @@ export function Meta({ children: Title }: MetaProperties) {
             <meta property="twitter:url" content={Configuration.WebsiteURL} />
             <meta property="twitter:title" content={EmbedTitle} />
             <meta property="twitter:description" content={Configuration.Description} />
-            <meta property="twitter:image" content={Configuration.Icon.PNG} />
+            <meta property="twitter:image" content={Thumbnail} />
         </Head>
     );
 }
