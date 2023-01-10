@@ -20,11 +20,11 @@ export interface PageProperties extends DefaultProps {
     action: Action;
 }
 
-export default function Home({ user, action }: PageProperties) {
+export default function Home({ user, action, mobile }: PageProperties) {
     return (
         <div className='pb-10'>
 
-            <Menu {...props} />
+            <Menu user={user} mobile={mobile} />
             <AutoCenter>
                 <div className='pb-2'>
                     <Image src={action.Author.Avatar} width={40} className="rounded-full inline" />
