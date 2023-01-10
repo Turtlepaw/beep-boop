@@ -47,7 +47,8 @@ export const getServerSideProps: GetServerSideProps<PageProperties> = async func
     return {
         props: {
             user,
-            actions: await GetActions()
+            actions: await GetActions(),
+            mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
         }
     };
 };
