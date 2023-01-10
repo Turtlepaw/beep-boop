@@ -1,6 +1,6 @@
 //import React, { Component } from 'react';
 import React, { PropsWithChildren, useState } from 'react';
-import Faq from 'react-faq-component';
+//import Faq from 'react-faq-component';
 import { Image } from './Image';
 import { Center } from '@chakra-ui/react';
 
