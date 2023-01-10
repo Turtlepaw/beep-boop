@@ -3,6 +3,7 @@ import React from "react";
 import { DefaultProps } from "../utils/parse-user";
 import { DownIcon, UpIcon } from "./Icons";
 import { BrandColor } from "./Link";
+import { AutoCenter } from "./AutoCenter";
 
 export interface MenuProps extends DefaultProps {
     isDashboard?: boolean;
@@ -40,11 +41,13 @@ export function Link({ children, href }: {
 }
 
 export function Menu(props: MenuProps) {
+    const mobile = props.mobile;
+    const Component = mobile ? AutoCenter : Center;
     return (
         <Center>
-            <div className="pr-5 pt-5 z-50">
-                <Center>
-                    <a style={BrandColor} className="!inline font-bold text-2xl pr-6 hover:opacity-80" href="/">
+            <div className={`${mobile ? "" : "pr-5 pt-5"} z-50`}>
+                <Component>
+                    <a style={BrandColor} className={`${mobile ? "pb-1" : "!inline"} font-bold text-2xl pr-6 hover:opacity-80`} href="/">
                         Beep Boop
                     </a>
                     <div className="pr-6">
@@ -58,7 +61,7 @@ export function Menu(props: MenuProps) {
                             Pricing
                         </Link>
                     </div>
-                    <div className="!float-right !inline">
+                    <div className={`${mobile ? "pt-1" : ""} !float-right !inline`}>
                         {
                             props.user != null ? (
                                 <>
@@ -96,7 +99,7 @@ export function Menu(props: MenuProps) {
                             )
                         }
                     </div>
-                </Center>
+                </Component>
             </div >
         </Center>
     );

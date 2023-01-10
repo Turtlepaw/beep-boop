@@ -8,6 +8,7 @@ import { Footer } from '../components/Footer';
 import { NextResponse } from 'next/server';
 import { Configuration as config } from '../utils/configuration';
 import { Analytics } from '@vercel/analytics/react';
+import { SSRProvider } from 'react-aria';
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;
@@ -137,11 +138,13 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className="Background Text">
-      <ChakraProvider theme={theme}>
-        <Analytics />
-        <Component {...pageProps} />
-        <Footer />
-      </ChakraProvider>
+      <SSRProvider>
+        <ChakraProvider theme={theme}>
+          <Analytics />
+          <Component {...pageProps} />
+          <Footer />
+        </ChakraProvider>
+      </SSRProvider>
     </div >
   )
 }

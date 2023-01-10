@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 import { AutoCenter } from '../components/AutoCenter';
 import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
-import { Configuration } from './_app';
+import { Configuration } from '../pages/_app';
 import { Meta } from '../components/Meta';
 import { BrandBg, BrandBorder, BrandColor, Link, Links } from '../components/Link';
 import { FAQ, FaqItem } from '../components/FAQ';
@@ -92,7 +92,7 @@ export default function Home(props: DefaultProps) {
     const FAQDescription = "text-lg max-w-xl pt-1 font-medium";
     return (
         <div className='pb-10'>
-            <Menu {...props} />
+            <Menu user={props.user} />
             <Meta>Pricing</Meta>
             <AutoCenter>
                 <div className='text-center'>
@@ -125,7 +125,7 @@ export default function Home(props: DefaultProps) {
                         Description='The smaller subscription with all the perks'
                         Features={<>
                             <Feature included>2 Servers</Feature>
-                            <Feature included><Link href='#server-perks'>Server Perks</Link></Feature>
+                            <Feature included>Server Perks</Feature>
                             <Feature included>1 Custom Bot</Feature>
                             <Feature included>Pro Badge</Feature>
                             <Feature included>Vote for future updates</Feature>
@@ -152,9 +152,9 @@ export default function Home(props: DefaultProps) {
                     <div className='max-w-sm text-center'>Subscription names are not final and subscriptions may change at any time.</div>
                 </AutoCenter>
                 <AutoCenter className='text-center'>
-                    <h1 className='uppercase text-xl pb- 5 font-bold DiscordTag' id='faq'>FAQ</h1>
+                    <h1 className='uppercase text-xl pb- 5 font-bold DiscordTag'>FAQ</h1>
                     <FAQ>
-                        <FaqItem title='What perks do servers get?' id='server-perks'>
+                        <FaqItem title='What perks do servers get?'>
                             Servers with an active subscription:
                             <div className=''>
                                 <Feature included>Can set a custom color for all messages</Feature>
@@ -176,10 +176,5 @@ export default function Home(props: DefaultProps) {
 
 export const getServerSideProps: GetServerSideProps<DefaultProps> = async function (ctx) {
     const user = await parseUser(ctx);
-    return {
-        props: {
-            user,
-            mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
-        }
-    };
+    return { props: { user } };
 };

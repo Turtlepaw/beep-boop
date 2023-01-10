@@ -198,6 +198,12 @@
 .Guild {
   max-width: 13rem;
   min-width: 13rem;
+  max-height: 8rem;
+  min-height: 8rem;
+}
+
+.SingleLineGuild {
+  padding-top: 2rem;
 }
 
 .loader,

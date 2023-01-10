@@ -86,7 +86,7 @@ export function BrandAsset({ image, children: name, rounded }: {
 export default function Branding(props: DefaultProps) {
     return (
         <>
-            <Menu user={props.user} />
+            <Menu {...props} />
             <Meta>Branding</Meta>
             <div className="pb-20 pt-5">
                 <AutoCenter className="text-center">
@@ -129,5 +129,10 @@ export default function Branding(props: DefaultProps) {
 
 export const getServerSideProps: GetServerSideProps<DefaultProps> = async function (ctx) {
     const user = await parseUser(ctx);
-    return { props: { user } };
+    return {
+        props: {
+            user,
+            mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
+        }
+    };
 };

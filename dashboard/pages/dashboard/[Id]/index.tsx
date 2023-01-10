@@ -89,12 +89,12 @@ export default function Home(props: Props) {
 
     return (
         <>
-            <Menu user={props.user} isDashboard />
+            <Menu user={props.user} isDashboard mobile={props.mobile} />
             <Meta>Dashboard</Meta>
             <div className='!flex'>
                 <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
                 <AutoCenter className='text-center'>
-                    <div className='pb-5'>
+                    <div className='pb-5 card px-10 py-5'>
                         <Center>
                             <img src={guild.IconURL || ""} className="rounded-full w-16" />
                         </Center>
@@ -102,7 +102,7 @@ export default function Home(props: Props) {
                             {guild?.Name}
                         </h1>
                         <Center>
-                            <Mentions.Role className='w-[8.6rem]'>{Permissions.Role(props.guild)}</Mentions.Role>
+                            <Mentions.Role className='w-[8.6rem] font-semibold'>{Permissions.Role(props.guild)}</Mentions.Role>
                         </Center>
                     </div>
 
@@ -129,7 +129,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (ctx
             props: {
                 user: null,
                 guild: null,
-                channels: []
+                channels: [],
+                mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
             }
         }
     }
@@ -141,7 +142,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (ctx
             props: {
                 user: null,
                 guild: null,
-                channels: []
+                channels: [],
+                mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
             }
         }
     }
@@ -151,7 +153,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (ctx
 
     return {
         props: {
-            user, guild, channels, channel
+            user,
+            guild,
+            channels,
+            channel,
+            mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
         }
     };
 };

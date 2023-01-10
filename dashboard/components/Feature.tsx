@@ -1,11 +1,12 @@
 import React from "react";
+import { Image } from "./Image";
 
 export function FeatureIcon({ Icon }: {
     Icon: string;
 }) {
     return (
         <div className="inline p-3 border border-white/20 rounded-md w-fit h-fit mr-5">
-            <img src={Icon} className="inline" />
+            <Image src={Icon} className="inline" width={30} alt="Feature Icon" />
         </div>
     )
 }

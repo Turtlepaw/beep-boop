@@ -14,7 +14,7 @@ import { CustomBadge, Presets } from '../components/Common';
 export default function Home(props: DefaultProps) {
   return (
     <div className='pb-10'>
-      <Menu user={props.user} />
+      <Menu {...props} />
       <Meta>Home</Meta>
       <AutoCenter>
         <div className='text-center'>
@@ -90,5 +90,10 @@ export default function Home(props: DefaultProps) {
 
 export const getServerSideProps: GetServerSideProps<DefaultProps> = async function (ctx) {
   const user = await parseUser(ctx);
-  return { props: { user } };
+  return {
+    props: {
+      user,
+      mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
+    }
+  };
 };
