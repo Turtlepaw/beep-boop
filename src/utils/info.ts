@@ -240,12 +240,12 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                     inline: false
                 }, {
                     name: `${Icons.Emoji} Emojis`,
-                    value: `${Icons.Emoji}(emojis) ${Guild.emojis.cache.size} | ${Icons.Image}(stickers) ${Guild.stickers.cache.size}`
+                    value: `${Icons.Emoji} (emojis) ${Guild.emojis.cache.size} | ${Icons.Image} (stickers) ${Guild.stickers.cache.size}`
                 }, {
                     name: `${Icons.Channel} Channels`,
-                    value: `${Icons.Folder}(categories) ${(
+                    value: `${Icons.Folder} (categories) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildCategory)
-                    ).size} | ${Icons.Channel}(channels) ${(
+                    ).size} | ${Icons.Channel} (channels) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildText || e.type == ChannelType.GuildAnnouncement)
                     ).size} | ${Icons.Voice} (voice) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildVoice || e.type == ChannelType.GuildStageVoice)
