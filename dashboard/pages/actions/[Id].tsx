@@ -24,7 +24,7 @@ export default function Home({ user, action }: PageProperties) {
     return (
         <div className='pb-10'>
             <Menu user={user} />
-            <Meta>{action.Name}</Meta>
+            <Menu {...props} />
             <AutoCenter>
                 <div className='pb-2'>
                     <Image src={action.Author.Avatar} width={40} className="rounded-full inline" />
