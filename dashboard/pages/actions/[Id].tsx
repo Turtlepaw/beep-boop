@@ -23,7 +23,7 @@ export interface PageProperties extends DefaultProps {
 export default function Home({ user, action }: PageProperties) {
     return (
         <div className='pb-10'>
-            <Menu user={user} />
+
             <Menu {...props} />
             <AutoCenter>
                 <div className='pb-2'>
