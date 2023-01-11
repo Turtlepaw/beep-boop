@@ -6,6 +6,8 @@ export interface ImageProperties {
     width: number | `${number}`;
     height?: number | `${number}`;
     alt?: string;
+    loading?: "eager" | "lazy";
+    layout?: boolean;
 }
 
 export function Image({
@@ -13,7 +15,9 @@ export function Image({
     src,
     width,
     height,
-    alt
+    alt,
+    loading,
+    layout
 }: ImageProperties) {
     return (
         <NextImage
@@ -22,6 +26,19 @@ export function Image({
             width={width}
             alt={alt ?? ""}
             className={className}
+            loading={loading}
+            fill={layout}
         />
     )
+}
+
+export interface ImageOptions {
+    size?: number;
+    className?: string;
+}
+
+export class Images {
+    static Discord({ className, size }: ImageOptions) {
+        return <Image width={size ?? 25} alt="Discord Logo" src='/Discord.svg' className={className} />
+    }
 }

@@ -10,9 +10,11 @@ export interface LinkProperties {
     isExternal?: boolean;
     isNewTab?: boolean;
     className?: string;
+    textColor?: string;
+    externalIconColor?: string;
 }
 
-export function Link({ children, href, onBrand = true, isExternal, isNewTab, className }: LinkProperties) {
+export function Link({ children, href, onBrand = true, isExternal, isNewTab, className, textColor, externalIconColor }: LinkProperties) {
     if (isExternal != false && (
         href.startsWith("https://") ||
         href.startsWith("http://")
@@ -20,13 +22,13 @@ export function Link({ children, href, onBrand = true, isExternal, isNewTab, cla
     if (isExternal == true && isNewTab != false) isNewTab = true;
 
     const Style: CSSProperties = {
-        color: onBrand ? Configuration.Color : "#5865f2"
+        color: textColor ?? (onBrand ? Configuration.Color : "#5865f2")
     }
 
     return (
         <a href={href} style={Style} className={`hover:underline ${className}`} target={isNewTab ? "_blank" : null}>
             {children}
-            {isExternal && <ExternalIcon />}
+            {isExternal && <ExternalIcon color={externalIconColor ?? "currentColor"} />}
         </a>
     )
 }

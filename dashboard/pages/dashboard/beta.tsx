@@ -12,9 +12,11 @@ import { GenerateInviteURL } from '../../utils/Invite';
 import { Meta } from '../../components/Meta';
 import { SearchBar } from '../../components/Search';
 import { useState } from 'react';
+import { NotLoggedIn } from '../../components/User';
 
 export type PageProps = DefaultProps & { inviteURL: string; }
 export default function Home(props: PageProps) {
+    if (props.user == null) return <NotLoggedIn {...props} />;
     const state = useState("");
     return (
         <div>

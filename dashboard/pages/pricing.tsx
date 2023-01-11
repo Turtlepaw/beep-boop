@@ -1,7 +1,6 @@
 import { Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
-import Image from 'next/image'
 import React, { useState } from 'react';
 import { AutoCenter } from '../components/AutoCenter';
 import { ExternalIcon, Menu } from '../components/Menu';
@@ -10,6 +9,7 @@ import { Configuration } from './_app';
 import { Meta } from '../components/Meta';
 import { BrandBg, BrandBorder, BrandColor, Link, Links } from '../components/Link';
 import { FAQ, FaqItem } from '../components/FAQ';
+import { Image } from '../components/Image';
 
 export function Feature({ included, children }: {
     included?: boolean;
@@ -73,7 +73,7 @@ export function PricingTier({
         className: `inlin e-grid ${Style == PricingStyle.Outlined ? "border-2" : ""} rounded-lg py-8 px-8 mx -3 h- 40 min-h -[32rem] max-h -[32rem] !w-96 my-5 Price FlexItem`
     }
     return (
-        <div style={CurrentStyle} className={ClassName.className} >
+        <div id={Title.toLocaleLowerCase()} style={CurrentStyle} className={ClassName.className} >
             <h1 className="text-2xl font-bold">{Title}</h1>
             <p className="font-semibold pt-2 pb-2">{Description}</p>
             {Features}
@@ -90,17 +90,19 @@ export default function Home(props: DefaultProps) {
     const FAQCard = "py-4";
     const FAQTitle = "text-2xl font-bold";
     const FAQDescription = "text-lg max-w-xl pt-1 font-medium";
+    const hasUnderline = false;
     return (
         <div className='pb-10'>
             <Menu {...props} />
             <Meta>Pricing</Meta>
             <AutoCenter>
                 <div className='text-center'>
-                    <Center>
-                        <h1 className='font-bold text-4xl pt-5 pb-1.5 max-w-lg'>
-                            Get a pro subscription and <span style={BrandColor} className="">level up</span> your server
+                    <AutoCenter>
+                        <h2 className='font-bold text-2xl'>Introducing <span style={BrandColor} className={hasUnderline ? "underline" : ""}>Subscriptions</span>,</h2>
+                        <h1 className='font-black text-4xl pt-5 pb-1.5 max-w-[38rem]'>
+                            <Image className='mr-2 !w-[3.6rem] !h-[3.6rem] inline' loading='eager' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Magic%20Wand.png" alt="Magic Wand" width={200} /> <span className={hasUnderline ? "underline" : ""} style={BrandColor}>Level up</span> and <Image className='mr-2 !w-[3.6rem] !h-[3.6rem] inline' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Artist%20Palette.png" alt="Artist Palette" width={200} /><span style={BrandColor} className={hasUnderline ? "underline" : ""}>customize</span> your server.
                         </h1>
-                    </Center>
+                    </AutoCenter>
                     <Center>
                         <p className='max-w-sm text-lg font-medium text-light'>Get your own custom bot and more with an active pro subscription.</p>
                     </Center>
@@ -115,7 +117,7 @@ export default function Home(props: DefaultProps) {
                         Features={<>
                             <Feature included>5 Servers</Feature>
                             <Feature included>3 Custom Bots</Feature>
-                            <Feature included>Everything in Basic</Feature>
+                            <Feature included>Everything in <Link isNewTab={false} href='#basic' textColor='white' isExternal externalIconColor='white'>Basic</Link></Feature>
                         </>}
                     />
                     <PricingTier
@@ -125,7 +127,7 @@ export default function Home(props: DefaultProps) {
                         Description='The smaller subscription with all the perks'
                         Features={<>
                             <Feature included>2 Servers</Feature>
-                            <Feature included><Link href='#server-perks'>Server Perks</Link></Feature>
+                            <Feature included><Link isNewTab={false} isExternal href='#server-perks'>Server Perks</Link></Feature>
                             <Feature included>1 Custom Bot</Feature>
                             <Feature included>Pro Badge</Feature>
                             <Feature included>Vote for future updates</Feature>

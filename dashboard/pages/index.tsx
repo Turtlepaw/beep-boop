@@ -42,9 +42,10 @@ export default function Home(props: DefaultProps) {
           </Center>
         </div>
         <div>
-          <Center>
+          <AutoCenter>
             <h1 className='text-center font-bold text-2xl pt-10 max-w-sm'>Packed with features for your community</h1>
-          </Center>
+            {/* <h2 className='text-center font-semibold pt-5 text-lg uppercase DiscordTag'>Feature Overview</h2> */}
+          </AutoCenter>
           <div className='FlexContainer'>
             <Feature>
               <FeatureIcon Icon='/Icons/Settings.svg' />

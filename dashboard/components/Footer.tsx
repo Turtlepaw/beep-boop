@@ -1,5 +1,7 @@
 import React from "react";
-import { BrandColor } from "../utils/configuration";
+import { BrandColor, Configuration } from "../utils/configuration";
+import { Image } from "./Image";
+import { Center } from "@chakra-ui/react";
 
 function Title({ children }: { children: string; }) {
     return (
@@ -27,15 +29,21 @@ export function Footer() {
         <div className="bg -[#121314]">
             <hr className="w-full" />
             <div className="pl-10 py- 10 py-16 flex justify-between max-w-screen-xl w-full z-10 flex-wrap">
-                <div className="float-left">
+                <div className="float-left flex flex-nowrap flex-row">
+                    {/* <Image className='mr-2 block !w-[3.6rem] !h-[3.6rem]' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Smilies/Robot.png" alt="Sad Face" width={30} /> */}
                     <a href="/">
-                        <h1 className="font-bold text-2xl pb-0.5 hover:opacity-80" style={BrandColor}>
-                            Beep Boop
-                        </h1>
+                        <Image className='hover:opacity-80 mr-5 block !w-[3.4rem] !h-[3.4rem]' src={Configuration.Icon.ColoredSVG} alt="Sad Face" width={30} />
                     </a>
-                    <a href="/airdot" className="hover:opacity-80">
-                        <h2 className="DiscordTag">© 2022 Airdot</h2>
-                    </a>
+                    <div>
+                        <a href="/" className="hover:opacity-80">
+                            <Center>
+                                <h1 className="font-bold text-2xl pb-0.5" style={BrandColor}>Beep Boop</h1>
+                            </Center>
+                        </a>
+                        <a href="/airdot" className="hover:opacity-80">
+                            <h2 className="DiscordTag">© 2022 Airdot</h2>
+                        </a>
+                    </div>
                 </div>
                 <div className="float-right pr-10 flex flex-wrap">
                     <Category>

@@ -1,13 +1,13 @@
 import { Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
-import Image from 'next/image'
 import { AutoCenter } from '../components/AutoCenter';
 import { ExternalIcon, Menu } from '../components/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
 import { CSSProperties } from 'react';
 import { Meta } from '../components/Meta';
+import { Image } from '../components/Image';
 
 export function Feature({ included, children }: {
     included?: boolean;
@@ -94,7 +94,10 @@ export default function Branding(props: DefaultProps) {
                         <h1 className="font-bold text-4xl">Brand Assets</h1>
                         <p className='pt-2 font-medium text-lg max-w-2xl'>Here you'll find our logos, branding colors, and other brand related stuff.</p>
                     </div> */}
-                    <h1 className="font-bold text-3xl">Brand Images</h1>
+                    {/* <Image className='mr-2 !w-[4.3rem] !h-[4.3rem] mb-3' loading='eager' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Framed%20Picture.png" alt="Photo" width={200} /> */}
+                    <h1 className="font-bold text-3xl">
+                        Brand Images
+                    </h1>
                     <p className='pt-2 pb-5 font-medium text-lg max-w-2xl'>Please do not edit, change, distort, recolor, or reconfigure our brand images.</p>
                     <Center className="flexContainer">
                         <BrandAsset image={{
