@@ -3,7 +3,7 @@ import { config } from "./config";
 import { APIGuild } from "./types";
 import { Routes } from "./api-types";
 const URL = process.env.API_URI || "http://localhost:4000";
-const token = process.env.API_TOKEN || "Bearer api_token_1490ujdsifh9124yf";
+const token = `Bearer ${process.env.API_TOKEN}` || "Bearer api_token_1490ujdsifh9124yf";
 //const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
 
 export function CreateRoute(route: Routes) {
