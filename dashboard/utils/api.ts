@@ -109,7 +109,7 @@ export async function CreateUser(Id: string, Options: OAuthUser): Promise<any> {
             Authorization: token
         }
     });
-
+    console.log(Result)
     return Result.json();
 }
 
