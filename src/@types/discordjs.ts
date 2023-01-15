@@ -5,6 +5,7 @@ import { Levels as LevelManager } from "../utils/levels";
 import { GuildConfigurationManager, StorageManager } from "../utils/storage";
 import { ErrorManager } from "../utils/error";
 import { DataSource } from "typeorm";
+// Import Models...
 import { GuildConfiguration } from "../models/Configuration";
 import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
@@ -17,6 +18,8 @@ import { Action } from "../models/Action";
 import { Error as CustomError } from "../models/Error";
 import { Collection } from "discord.js";
 import { TriviaGame } from "discord-trivia";
+import { APIUser } from "../models/APIUser";
+import { Ticket } from "../models/Ticket";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -29,6 +32,8 @@ export interface StorageManagers {
     OAuth: StorageManager<OAuth>;
     Actions: StorageManager<Action>;
     Errors: StorageManager<CustomError>;
+    ApiUsers: StorageManager<APIUser>;
+    Tickets: StorageManager<Ticket>;
 }
 
 declare module 'discord.js' {

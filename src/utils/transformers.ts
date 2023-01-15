@@ -40,10 +40,12 @@ export class MapTransformer<K, V> {
 
 export class DateTransformer {
     to(value: Date) {
+        if (value == null) return "null";
         return value.toString()
     }
 
     from(value: string) {
+        if (value == "null") return null;
         return new Date(value);
     }
 }

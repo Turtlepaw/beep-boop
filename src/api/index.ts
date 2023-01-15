@@ -117,7 +117,7 @@ export async function API(client: Client, token: string) {
 
     //authentication with app.use
     app.use((req, res, next) => {
-        if (APIRoutes.map(e => e.route.replaceAll(/\/:\w+/ig, "")).includes(req.path as Routes)) next();
+        if (APIRoutes.map(e => (Array.isArray(e.route) ? e.route.map(e => e.replaceAll(/\/:\w+/ig, "")) : e.route.replaceAll(/\/:\w+/ig, ""))).includes(req.path as Routes)) next();
         const auth = req.headers.authorization;
         if (verifyAuthentication(auth)) {
             next();

@@ -6,7 +6,14 @@ export enum Routes {
     Channels = "/v1/channels",
     CreateMessage = "/v1/message/create",
     RoleConnections = "/v1/role-connections/verify",
-    Subscription = "/v1/subscription/:guildId"
+    Subscription = "/v1/subscription/:guildId",
+    //Module store
+    Modules = "/v1/modules/:id",
+    Module = "/v1/module",
+    //Public Routes
+    Profile = "/v1/profile/:id",
+    Ranking = "/v1/rank/:id",
+    Leaderboard = "/v1/leaderboard/:id"
 }
 
 enum Status {

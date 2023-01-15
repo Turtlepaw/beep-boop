@@ -48,6 +48,7 @@ export interface Action {
 }
 
 export async function GetActions(): Promise<Action[]> {
+    return CallAPI(CreateRoute(Routes.Modules.replace(":id", "all") as Routes));
     return [{
         Name: "Nickname Manager",
         Author: {
@@ -69,8 +70,9 @@ export async function GetActions(): Promise<Action[]> {
         },
         Id: "any_id",
         InternalCode: "new NickManger().execute();"
-    }]
+    }];
 }
+
 export async function GetUser(Id: string): Promise<OAuthUser> {
     const Result = await fetch(CreateRoute(Routes.OAuth) + `?id=${Id}`, {
         method: Methods.Get,

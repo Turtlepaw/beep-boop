@@ -15,10 +15,18 @@ export default class Modules extends APIRoute {
     async Get(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const ModuleId = req.params.id;
 
-        const Module = await client.Storage.Actions.Get({
-            Id: ModuleId
-        });
+        if (ModuleId == "all") {
+            const Modules = await client.Storage.Actions.FindBy({
+                Approved: true
+            });
 
-        res.send(Module ?? APIMessages.NotFound());
+            res.send(Modules ?? APIMessages.NotFound());
+        } else {
+            const Module = await client.Storage.Actions.Get({
+                Id: ModuleId
+            });
+
+            res.send(Module ?? APIMessages.NotFound());
+        }
     }
 }

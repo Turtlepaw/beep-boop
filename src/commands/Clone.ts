@@ -12,7 +12,7 @@ export default class Channel extends Command {
             GuildOnly: true,
             Name: "clone",
             RequiredPermissions: [],
-            SomePermissions: [PermissionsBitField.Flags.ManageChannels],
+            SomePermissions: [PermissionFlagsBits.ManageChannels],
             Category: Categories.Server,
             ClientPermissions: [PermissionFlagsBits.ManageChannels],
             Subcommands: [

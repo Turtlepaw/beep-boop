@@ -86,7 +86,8 @@ function isGuildBased(channel: any): channel is GuildBasedChannel {
 
 async function HandleBotPermissions(interaction: RepliableInteraction, permisisons: PermissionResolvable[]) {
     const Channel = interaction.channel;
-    if (!isGuildBased(Channel)) return;
+    if (!isGuildBased(Channel)) return true;
+    if (permisisons == null || permisisons.length == 0) return true;
     if (interaction.channel.permissionsFor(interaction.guild.members.me).any(permisisons)) {
         return true;
     } else {

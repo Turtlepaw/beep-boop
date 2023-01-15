@@ -2,7 +2,7 @@ import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonSt
 import { SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis } from "../configuration";
+import { Embed, Emojis, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../utils/Id";
@@ -26,12 +26,12 @@ export default class ClaimTicket extends Button {
                         new ButtonBuilder()
                             .setLabel("Close")
                             .setStyle(ButtonStyle.Danger)
-                            .setEmoji("🔒")
+                            //.setEmoji("🔒")
                             .setCustomId("CLOSE_TICKET"),
                         new ButtonBuilder()
                             .setLabel("Claim")
                             .setStyle(ButtonStyle.Success)
-                            .setEmoji("🔍")
+                            //.setEmoji("🔍")
                             .setCustomId("CLAIM_TICKET")
                             .setDisabled(true)
                     )
@@ -49,7 +49,7 @@ export default class ClaimTicket extends Button {
         });
 
         await interaction.followUp({
-            content: `🔍 ${interaction.user} has claimed the ticket.`
+            content: `${Icons.Flag} ${interaction.user} has claimed the ticket.`
         })
     }
 }

@@ -7,6 +7,8 @@ export enum Routes {
     CreateMessage = "/v1/message/create",
     RoleConnections = "/v1/role-connections/verify",
     Subscription = "/v1/subscription/:guildId",
+    //API Users
+    ApiUser = "/v1/api-users/:id",
     //Module store
     Modules = "/v1/modules/:id",
     Module = "/v1/module",

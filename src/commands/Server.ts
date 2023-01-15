@@ -52,7 +52,7 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
 }
 
 export const AdvancedButtonId = "ADVANCED_GUILD_CONF";
-export function ServerConfiguration(interaction: RepliableInteraction) {
+export async function ServerConfiguration(interaction: RepliableInteraction) {
     const Buttons = [
         new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -60,7 +60,7 @@ export function ServerConfiguration(interaction: RepliableInteraction) {
                     .setCustomId("ADD_AS_BIRTHDAY")
                     .setEmoji(Icons.Sync)
                     .setLabel("Add Birthday as Event")
-                    .setStyle(ButtonStyle.Primary),
+                    .setStyle(ButtonStyle.Secondary),
                 new ButtonBuilder()
                     .setLabel("Error Logs")
                     .setEmoji(Icons.Print)
@@ -90,19 +90,19 @@ export function ServerConfiguration(interaction: RepliableInteraction) {
             )
     ];
 
-    const payload = {
+    const payload = async () => ({
         embeds: [
-            new Embed(interaction.guild)
+            await new Embed(interaction.guild)
                 .setTitle(`Managing ${interaction.guild.name}`)
-                .setColor(Colors.Blurple)
                 .setDescription(`Since you're managing ${interaction.guild.name}, you're able to configure ${interaction.guild.name}'s modules. Select a module to get started!`)
+                .Resolve()
         ],
         components: Buttons
-    }
+    })
 
     if (interaction.isButton()) {
-        interaction.update(payload);
-    } else return interaction.reply(payload);
+        interaction.update(await payload());
+    } else return interaction.reply(await payload());
 }
 
 export default class Server extends Command {

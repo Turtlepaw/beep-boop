@@ -4,18 +4,21 @@ import "reflect-metadata"
 import { CleanupType, CounterChannel, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType, VerificationLevel, VerificationPanel } from "../models/Configuration";
 import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { CustomBot } from "../models/CustomBot";
+import { JSONArray } from "./jsonArray";
+import { generateId } from "./Id";
+// Import Models
 import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
 import { Reminder } from "../models/Reminders";
 import { MemberRanking } from "../models/MemberRanking";
 import { Message } from "../models/Message";
-import { CustomBot } from "../models/CustomBot";
-import { JSONArray } from "./jsonArray";
 import { Gift } from "../models/Gift";
-import { generateId } from "./Id";
 import { OAuth } from "../models/OAuth";
 import { Action } from "../models/Action";
 import { Error as CustomError } from "../models/Error";
+import { APIUser } from "../models/APIUser";
+import { Ticket } from "../models/Ticket";
 
 export interface CleanupChannel {
     Type: CleanupType;
@@ -155,7 +158,9 @@ const entities = [
     CustomBot,
     Gift,
     OAuth,
-    Action
+    Action,
+    APIUser,
+    Ticket
 ];
 
 export const AppDataSource = new DataSource({
@@ -180,7 +185,9 @@ export async function InitializeProvider(client: Client) {
         Gifts: new StorageManager(client.storage, Gift.name),
         OAuth: new StorageManager(client.storage, OAuth.name),
         Actions: new StorageManager(client.storage, Action.name),
-        Errors: new StorageManager(client.storage, CustomError.name)
+        Errors: new StorageManager(client.storage, CustomError.name),
+        ApiUsers: new StorageManager(client.storage, APIUser.name),
+        Tickets: new StorageManager(client.storage, Ticket.name),
     }
 }
 

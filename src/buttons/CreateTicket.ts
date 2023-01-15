@@ -1,8 +1,8 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, quote, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
 import { SendError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
 import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis } from "../configuration";
+import { Embed, Emojis, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 import { DiscordButtonBuilder } from "../lib/DiscordButton";
 import { generateId } from "../utils/Id";
@@ -38,7 +38,7 @@ export default class CreateTicket extends Button {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(Id.AddReason)
-                    .setEmoji("👆")
+                    //.setEmoji(Icons.Flag)
                     .setLabel("Add Reason")
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
@@ -60,10 +60,11 @@ export default class CreateTicket extends Button {
             .setTitle("Reason")
             .setCustomId("REASON_MODAL");
 
-        const Channel = await interaction.guild.channels.fetch(client.storage[`${interaction.guild.id}_tickets`]);
-        if (Channel.type != ChannelType.GuildCategory) {
+        const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
+        const Channel = Configuration?.Tickets?.Category == null ? null : await interaction.guild.channels.fetch(Configuration.Tickets.Category);
+        if (Channel?.type != ChannelType.GuildCategory) {
             await interaction.reply({
-                content: "Tickets haven't been setup properly in this server, contact server moderators about this.",
+                content: `${Icons.Folder} Tickets haven't been setup properly in this server, contact server managers about this.`,
                 ephemeral: true
             });
             return;
@@ -73,7 +74,7 @@ export default class CreateTicket extends Button {
             embeds: [
                 new Embed(interaction.guild)
                     .setColor(Colors.Blurple)
-                    .setTitle(`${Emojis.Reason} Add a Reason`)
+                    .setTitle(`${Icons.Flag} Add a Reason`)
                     .setDescription("If you add a reason, you're more likely to get help faster.")
             ],
             components: [Buttons],
@@ -90,7 +91,7 @@ export default class CreateTicket extends Button {
             })
         });
 
-        let Reason = "None provided.";
+        let Reason = "No reason provided";
         let Interaction: ModalSubmitInteraction | ButtonInteraction = ButtonInteraction;
         if (ButtonInteraction.customId == "ADD_REASON") {
             ButtonInteraction.showModal(Modal);
@@ -104,7 +105,7 @@ export default class CreateTicket extends Button {
 
         const TicketChannel = await Channel.children.create({
             name: `ticket-${interaction.user.username}`,
-            topic: `Created by ${interaction.user.tag}`,
+            topic: `This ticket has been created by ${interaction.user.tag} (${interaction.user.toString()}) for the following reason: ${Reason}`,
             permissionOverwrites: [
                 {
                     id: interaction.user.id,
@@ -139,7 +140,7 @@ export default class CreateTicket extends Button {
                         inline: true
                     }, {
                         name: "Claimed By",
-                        value: "No one has claimed this ticket yet.",
+                        value: "No one has claimed this ticket yet",
                         inline: true
                     }])
             ],
@@ -149,12 +150,12 @@ export default class CreateTicket extends Button {
                         new ButtonBuilder()
                             .setLabel("Close")
                             .setStyle(ButtonStyle.Danger)
-                            .setEmoji("🔒")
+                            //.setEmoji(Icons.Lock)
                             .setCustomId("CLOSE_TICKET"),
                         new ButtonBuilder()
                             .setLabel("Claim")
                             .setStyle(ButtonStyle.Success)
-                            .setEmoji("🔍")
+                            //.setEmoji(Icons.Sync)
                             .setCustomId("CLAIM_TICKET")
                     )
             ]
@@ -162,7 +163,7 @@ export default class CreateTicket extends Button {
 
         await Interaction.reply({
             ephemeral: true,
-            content: `${Emojis.Success} Created a ticket in ${TicketChannel}`
+            content: `${Icons.Success} Created a ticket in ${TicketChannel}`
         });
 
         await interaction.editReply({
@@ -174,14 +175,15 @@ export default class CreateTicket extends Button {
             ]
         });
 
-        client.storage[`ticket_${TicketChannel.id}`] = {
+        client.Storage.Tickets.Create({
             CreatedBy: interaction.user.id,
             CreatedAt: new Date(),
             ClosedBy: null,
             ClosedAt: null,
             ChannelId: TicketChannel.id,
             GuildId: interaction.guild.id,
-            Reason
-        }
+            Reason,
+            Messages: new Map()
+        });
     }
 }

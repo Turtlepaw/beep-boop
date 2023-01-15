@@ -1,3 +1,6 @@
+import crypto from "crypto";
+import { v4 } from "uuid";
+
 const numbers = [
     "1",
     "2",
@@ -40,7 +43,11 @@ const letters = [
 const booleans = [
     true,
     false
-]
+];
+const symbols = [
+    ".",
+    "-"
+];
 
 //Default length is 5 (e.g. 40814)
 
@@ -107,4 +114,20 @@ export function advancedId(existing: string[]) {
     }
 
     return finalId;
+}
+
+const generateArrayFromLength = (l: number) => {
+    let array = [];
+    for (let index = 0; index < l; index++) array.push(null);
+    return array;
+}
+
+export function GenerateToken() {
+    const tokenLength = 72;
+    const TokenStrings = [
+        ...numbers,
+        ...letters
+    ];
+
+    return `ApiToken.${crypto.randomUUID()}`;
 }
