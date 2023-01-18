@@ -12,10 +12,11 @@ export default class DMService extends Event {
     }
 
     async ExecuteEvent(client: Client, Message: GuildMessage) {
+        try {
         if (Message.channel.type != ChannelType.DM) return;
         if (Logs.DM == null) return;
         const Guild = await client.guilds.fetch(guildId);
-        const Channel = await Guild.channels.fetch(Logs.DM);
+        const Channel = await Guild.channels.fetch(Logs.Guild);
         if (Channel.type != ChannelType.GuildText) throw Error("Logs.DM must be a text channel id");
         if (Message.author.id == client.user.id) return;
 
@@ -31,5 +32,6 @@ export default class DMService extends Event {
                 ...(Message.embeds != null ? Message.embeds : [])
             ]
         });
+    } catch {}
     }
 }
