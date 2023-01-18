@@ -113,6 +113,7 @@ dist
 
 # legacy storage
 storage
+cache
 
 # ratelimits storage
 ratelimits.json

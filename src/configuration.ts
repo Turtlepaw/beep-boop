@@ -75,6 +75,8 @@ export enum Emojis {
 }
 
 export enum Icons {
+    Member = "<:Member:1065090193494904913>",
+    Plane = "<:Plane:1065079776546660512>",
     Date = "<:Date:1061841890384814081>",
     Refresh = "<:Refresh:1043579950197903430>",
     Sync = "<:Sync:1061826576171421736>",

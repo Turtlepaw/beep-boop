@@ -49,6 +49,7 @@ declare module 'discord.js' {
         Storage: StorageManagers;
         Errors: ErrorManager;
         LegacyStorage: KeyFileStorage;
+        QuickStorage: KeyFileStorage;
         CustomIcons: boolean;
         LogWebhook: WebhookClient;
         TriviaGames: Collection<string, TriviaGame>;

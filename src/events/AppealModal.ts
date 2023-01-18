@@ -1,7 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
 import { Filter } from "../utils/filter";
-import { Embed } from "../configuration";
+import { Embed, Icons } from "../configuration";
 import Event from "../lib/Event";
+import { ModalId, ModalQuestions } from "../buttons/AppealButton";
+import { InteractionError } from "../utils/error";
 
 export default class AppealModal extends Event {
     constructor() {
@@ -12,25 +14,27 @@ export default class AppealModal extends Event {
 
     async ExecuteEvent(client: Client, ModalInteraction: Interaction) {
         if (!ModalInteraction.isModalSubmit()) return;
-        if (ModalInteraction.customId != "APPEAL_MODAL") return;
+        if (ModalInteraction.customId != ModalId) return;
+        const config = await client.Storage.Configuration.forGuild(ModalInteraction.guild);
         const Fields = {
-            BanReason: ModalInteraction.fields.getTextInputValue("Q1"),
-            RequestReason: ModalInteraction.fields.getTextInputValue("Q2"),
-            //DiscordId: ModalInteraction.fields.getTextInputValue("Q3")
-        }
-        const SendButtonId = "SEND_APPEAL_BUTTON"
+            BanReason: ModalInteraction.fields.getTextInputValue(ModalQuestions.BanReason),
+            RequestReason: ModalInteraction.fields.getTextInputValue(ModalQuestions.UnbanReason)
+        };
+
+        const SendButtonId = "SEND_APPEAL_BUTTON";
         const Buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(SendButtonId)
-                    .setEmoji("✉️")
+                    .setEmoji(Icons.Zap)
                     .setLabel("Send")
                     .setStyle(ButtonStyle.Success)
-            )
+            );
+
         await ModalInteraction.reply({
             ephemeral: true,
             components: [Buttons],
-            content: "Here's what you'll be sending",
+            content: `${Icons.Plane} Here's what you'll be sending`,
             embeds: [
                 new Embed(ModalInteraction.guild)
                     .setAuthor({
@@ -62,7 +66,15 @@ export default class AppealModal extends Event {
 
         const GuildId = client.storage[ModalInteraction.message.id];
         const Guild = await client.guilds.fetch(GuildId);
-        const Channel = await Guild.channels.fetch(client.storage[`${Guild.id}_appeal_channel`]);
+        if (config?.Appeals?.Channel == null) return InteractionError({
+            createError: false,
+            ephemeral: true,
+            interaction: ModalInteraction,
+            message: `Uh oh... It seems that the server hasn't set up appeals properly yet!`,
+            error: "APPEAL_CHANNEL_NULLISH",
+        });
+
+        const Channel = await Guild.channels.fetch(config?.Appeals?.Channel);
 
         if (Channel.type != ChannelType.GuildText) return;
         const Components = new ActionRowBuilder<ButtonBuilder>()
@@ -70,16 +82,18 @@ export default class AppealModal extends Event {
                 new ButtonBuilder()
                     .setCustomId("2RJ4JDWO_ACCEPT")
                     .setLabel("Accept")
-                    .setStyle(ButtonStyle.Success),
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji(Icons.Success),
                 new ButtonBuilder()
                     .setCustomId("2RJ4JDWO_DENY")
                     .setLabel("Deny")
-                    .setStyle(ButtonStyle.Secondary),
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji(Icons.Error),
                 new ButtonBuilder()
                     .setCustomId(`BLOCK_${ModalInteraction.user.id}`)
-                    .setEmoji("🔨")
                     .setLabel("Block User")
-                    .setStyle(ButtonStyle.Danger)
+                    .setEmoji(Icons.Lock)
+                    .setStyle(ButtonStyle.Secondary)
             )
 
 
@@ -103,13 +117,13 @@ export default class AppealModal extends Event {
                         value: `${ModalInteraction.user.username} (${ModalInteraction.user.id})`
                     }])
             ]
-        })
+        });
 
-        client.storage[`pending_${(await Message).id}`] = ModalInteraction.user.id;
+        client.QuickStorage[`pending_${(await Message).id}`] = ModalInteraction.user.id;
 
         Button.reply({
-            content: "👀 Appeal successfully sent, we'll DM you again when the status changes.",
+            content: `${Icons.Date} Appeal successfully sent, we'll DM you again when the status changes.`,
             ephemeral: true
-        })
+        });
     }
 }

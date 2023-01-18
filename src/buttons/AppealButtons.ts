@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-import { SendError } from "../utils/error";
-import { Embed, Emojis } from "../configuration";
+import { InteractionError, SendError } from "../utils/error";
+import { Embed, Emojis, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class AppealButtons extends Button {
@@ -16,7 +16,7 @@ export default class AppealButtons extends Button {
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client, Id: "DENY" | "ACCEPT") {
         //await interaction.deferReply();
-        const UserId = client.storage[`pending_${interaction.message.id}`];
+        const UserId = client.QuickStorage[`pending_${interaction.message.id}`];
         const User = await interaction.guild.members.fetch({
             user: UserId
         });
@@ -24,18 +24,25 @@ export default class AppealButtons extends Button {
 
         if (Id == "ACCEPT") {
             try {
-                await interaction.guild.members.unban(UserId, `${interaction.user} accepted the appeal`)
+                await interaction.guild.members.unban(UserId, `${interaction.user.username} accepted the appeal`)
             } catch (e) {
-                await SendError(interaction, e);
+                await InteractionError({
+                    interaction,
+                    createError: true,
+                    ephemeral: false,
+                    error: e
+                });
             }
-            interaction.reply({
+
+            await interaction.reply({
                 embeds: [
-                    new Embed(interaction.guild)
-                        .setTitle(`Member successfully unbanned.`)
+                    await new Embed(interaction.guild)
+                        .setTitle(`${Icons.Flag} Member successfully unbanned.`)
                         .setAuthor({
                             iconURL: interaction.user.displayAvatarURL(),
                             name: interaction.user.username
                         })
+                        .Resolve()
                 ]
             });
 
@@ -47,35 +54,44 @@ export default class AppealButtons extends Button {
             });
 
             Channel.send({
-                content: `${Emojis.Tada} Your appeal was accepted, you're now able to rejoin! ${Invite.url}`
+                content: `${Icons.Flag} Your appeal was accepted, you're now able to rejoin! Here's an invite link: ${Invite.url}`
             });
         } else if (Id == "DENY") {
+            const ModalId = "APPEAL_DENY_REASON";
+            enum Fields {
+                Reason = "DENY_REASON"
+            }
             await interaction.showModal(
                 new ModalBuilder()
                     .setTitle("Reason")
-                    .setCustomId("SET_REASON_F25")
+                    .setCustomId(ModalId)
                     .addComponents(
                         new ActionRowBuilder<TextInputBuilder>()
                             .addComponents(
                                 new TextInputBuilder()
                                     .setLabel("Reason")
-                                    .setCustomId("REASON")
+                                    .setCustomId(Fields.Reason)
+                                    .setPlaceholder("Why did you deny their appeal? (this will be sent to them)")
                                     .setRequired(true)
                                     .setStyle(TextInputStyle.Paragraph)
                             )
                     )
-            )
+            );
 
             const ModalInteraction = await interaction.awaitModalSubmit({
                 time: 0
             });
 
-            const Reason = ModalInteraction.fields.getTextInputValue("REASON");
-            ModalInteraction.reply({
+            const Reason = ModalInteraction.fields.getTextInputValue(Fields.Reason);
+            await ModalInteraction.reply({
                 embeds: [
                     new Embed(interaction.guild)
-                        .setTitle(`Appeal denied.`)
-                        .setDescription(`Reason:\n\n\`\`\`${Reason}\`\`\``)
+                        .setTitle(`${Icons.TrashDefault} Appeal Denied`)
+                        .setDescription(`Reason (sent to appeal user):\n\n\`\`\`${Reason}\`\`\``)
+                        .addFields([{
+                            name: `${Icons.Member} Denied By`,
+                            value: `${interaction.user}`
+                        }])
                         .setAuthor({
                             iconURL: interaction.user.displayAvatarURL(),
                             name: interaction.user.username
@@ -84,11 +100,11 @@ export default class AppealButtons extends Button {
             });
 
             Channel.send({
-                content: `${Emojis.ModerationAction} Your appeal was denied, here's what we know:\n\n\`\`\`${Reason}\`\`\``
+                content: `${Icons.Flag} Your appeal was denied, here's what we know:\n\n\`\`\`${Reason}\`\`\``
             });
         } else {
-            interaction.reply({
-                content: "Something didn't go quite right..."
+            await interaction.reply({
+                content: "Unknown button"
             })
         }
     }

@@ -1,7 +1,7 @@
 import { Events, HexColorString } from 'discord.js';
 import { JSONArray } from '../utils/jsonArray';
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ValueTransformer } from "typeorm"
-import { JSONTransformer } from '../utils/transformers';
+import { JSONTransformer, SetTransformer } from '../utils/transformers';
 
 export enum CleanupType {
     System = "SYSTEM_CLEANUP",
@@ -78,6 +78,8 @@ export class GuildConfiguration {
     Appeals: boolean;
     @Column({ nullable: true })
     AppealChannel: string;
+    @Column({ nullable: true, transformer: new SetTransformer<string>(), type: "varchar" })
+    AppealBlocks: Set<string>;
 
     // Verification
     // -> Verify users, etc...

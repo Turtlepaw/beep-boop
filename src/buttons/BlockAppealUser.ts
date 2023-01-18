@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-import { Embed, Emojis } from "../configuration";
+import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, inlineCode, userMention } from "discord.js";
+import { Embed, Emojis, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class BlockAppealUser extends Button {
@@ -15,20 +15,23 @@ export default class BlockAppealUser extends Button {
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client, Id: string) {
         const UserId = Id;
-        const User = await interaction.guild.members.fetch({
-            user: UserId
-        });
+        const config = await client.Storage.Configuration.forGuild(interaction.guild);
 
+        const ModalId = "SET_BLOCK_REASON";
+        enum Fields {
+            Reason = "BLOCK_REASON"
+        }
         await interaction.showModal(
             new ModalBuilder()
-                .setCustomId("SET_REASON_UT9")
+                .setCustomId(ModalId)
                 .setTitle("Reason")
                 .addComponents(
                     new ActionRowBuilder<TextInputBuilder>()
                         .addComponents(
                             new TextInputBuilder()
                                 .setLabel("Reason")
-                                .setCustomId("REASON")
+                                .setCustomId(Fields.Reason)
+                                .setPlaceholder("Why are you blocking this user?")
                                 .setRequired(true)
                                 .setStyle(TextInputStyle.Paragraph)
                         )
@@ -39,16 +42,16 @@ export default class BlockAppealUser extends Button {
             time: 0
         });
 
-        const Reason = ModalInteraction.fields.getTextInputValue("REASON");
+        const Reason = ModalInteraction.fields.getTextInputValue(Fields.Reason);
         ModalInteraction.reply({
             embeds: [
                 new Embed()
                     .setFields([{
-                        name: "User Blocked",
-                        value: User.user.tag
+                        name: `${Icons.Member} User Blocked`,
+                        value: `${inlineCode(Id)} (${userMention(Id)})`
                     }])
-                    .setTitle(`User blocked.`)
-                    .setDescription(`Reason:\n\n\`\`\`${Reason}\`\`\``)
+                    .setTitle(`${Icons.Shield} User blocked`)
+                    .setDescription(`Reason (sent to blocked user):\n\n\`\`\`${Reason}\`\`\``)
                     .setAuthor({
                         iconURL: interaction.user.displayAvatarURL(),
                         name: interaction.user.username
@@ -56,14 +59,15 @@ export default class BlockAppealUser extends Button {
             ]
         });
 
-        client.storage["blocked"] = [
-            Id,
-            ...(client.storage["blocked"] == null ? [] : client.storage["blocked"])
-        ];
+        await client.Storage.Configuration.Edit(config.CustomId, {
+            AppealBlocks: config.Appeals.Blocked.add(Id)
+        });
 
-        const Channel = await User.user.createDM(true);
+        const User = client.users.cache.get(Id);
+
+        const Channel = await User.createDM(true);
         Channel.send({
-            content: `${Emojis.ModerationAction} You've been blocked from appealing, here's what we know:\n\n\`\`\`${Reason}\`\`\``
+            content: `${Icons.Flag} You've been blocked from appealing, here's what we know:\n\n\`\`\`${Reason}\`\`\``
         });
     }
 }

@@ -55,6 +55,7 @@ export async function SetClientValues(client: Client) {
     client.Errors = new ErrorManager();
     client.Levels = new Levels(client.storage);
     client.LegacyStorage = KeyFileStorage("storage", false);
+    client.QuickStorage = KeyFileStorage("cache", false);
     client.TriviaGames = new Collection();
 }
 

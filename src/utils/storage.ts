@@ -57,6 +57,13 @@ class ResolvableConfiguration {
         Roles: string[];
     }
 
+    // Appeals
+    public Appeals: {
+        Status: boolean;
+        Channel: string;
+        Blocked: Set<string>;
+    };
+
     // Invite Blocker
     public InviteBlocker: {
         Status: boolean;
@@ -107,6 +114,14 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
 
     isReputationModeration() {
         return this?.ReputationMod ?? false;
+    }
+
+    hasAppeals() {
+        return this.Appeals;
+    }
+
+    isUserAppealBlocked(userId: string) {
+        return this.Appeals.Blocked.has(userId);
     }
 
     isCleanup(type: CleanupType) {
@@ -299,6 +314,19 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             // Invite Blocker
             InviteBlockerStatus: false,
             InviteBlockerExceptions: [],
+            // appeals
+            Appeals: false,
+            AppealChannel: null,
+            AppealBlocks: new Set<string>(),
+            //counter channels
+            CounterChannels: [],
+            // premium
+            Premium: false,
+            // verification
+            Verification: false,
+            VerificationLevel: VerificationLevel.Medium,
+            VerificationRoles: [],
+            VerificationPanels: [],
             // [deprecated] Reputation Based Moderation
             ReputationMod: false,
             MaxReputation: 5,
@@ -366,6 +394,12 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
                 Channel: config?.StarboardChannel || null,
                 Status: config?.StarboardStatus ?? false,
                 Reaction: config?.StarboardReaction ?? "⭐"
+            },
+            // Appeals
+            Appeals: {
+                Status: config?.Appeals ?? false,
+                Channel: config?.AppealChannel,
+                Blocked: config?.AppealBlocks ?? new Set()
             },
             // Tickets
             Tickets: {

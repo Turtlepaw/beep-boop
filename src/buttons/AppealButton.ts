@@ -1,5 +1,13 @@
 import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Button from "../lib/ButtonBuilder";
+import { Icons } from "../configuration";
+
+export enum ModalQuestions {
+    BanReason = "question_1",
+    UnbanReason = "question_2",
+}
+
+export const ModalId = "APPEAL_MODAL";
 
 export default class AppealButton extends Button {
     constructor() {
@@ -12,42 +20,35 @@ export default class AppealButton extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        if (client.storage["blocked"] != null && client.storage["blocked"].includes(interaction.user.id)) {
+        const config = await client.Storage.Configuration.forGuild(interaction.guild);
+        if (config.isUserAppealBlocked(interaction.user.id)) {
             await interaction.reply({
-                content: "You're blocked from appealing, we sent you a message about why you were blocked.",
+                content: `${Icons.Date} You're blocked from appealing, we already sent you a message about why you were blocked.`,
                 ephemeral: true
             })
             return;
         }
+
         const Modal = new ModalBuilder()
             .setComponents(
                 new ActionRowBuilder<ModalActionRowComponentBuilder>()
                     .addComponents(
                         new TextInputBuilder()
-                            .setCustomId("Q1")
+                            .setCustomId(ModalQuestions.BanReason)
                             .setLabel("What did you do to get banned?")
                             .setStyle(TextInputStyle.Paragraph)
                             .setRequired(true),
                     ),
                 new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
                     new TextInputBuilder()
-                        .setCustomId("Q2")
+                        .setCustomId(ModalQuestions.UnbanReason)
                         .setLabel("Why should you be unbanned?")
                         .setStyle(TextInputStyle.Paragraph)
                         .setRequired(true),
-                ),
-                /*new ActionRowBuilder<ModalActionRowComponentBuilder>()
-                    .addComponents(
-                        new TextInputBuilder()
-                            .setCustomId("Q3")
-                            .setLabel("What's your Discord tag and Id?")
-                            .setPlaceholder("DiscordUser#0000/1028790472879128676")
-                            .setStyle(TextInputStyle.Short)
-                            .setRequired(true)
-                    )*/
+                )
             )
-            .setCustomId("APPEAL_MODAL")
-            .setTitle("Requesting an Appeal")
+            .setCustomId(ModalId)
+            .setTitle("Requesting an Appeal");
 
         await interaction.showModal(Modal);
     }
