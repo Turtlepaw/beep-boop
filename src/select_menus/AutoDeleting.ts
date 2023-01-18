@@ -174,6 +174,7 @@ ${StringTimedChannels}`
             .SetCustomId(Id.ChannelSelector)
             .SetChannelTypes(ChannelType.GuildText);
         Collector.on("collect", async button => {
+            if(button.customId == ButtonCollector.BackButton) return;
             if (button.customId == Id.TimedCleanup) {
                 const TimerField = new TextInputBuilder()
                     .setLabel("Time to delete")
