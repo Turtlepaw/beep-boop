@@ -19,7 +19,7 @@ export default class LeaveAppealMessage extends Event {
 
     async ExecuteEvent(client: Client, member: GuildMember) {
         const Server = await client.Storage.Configuration.forGuild(member.guild);
-        if (Server == null || (JSONArray.isArray(Server.CleanupType) && Server.CleanupType.includes(CleanupType.System)))
+        if (Server == null || !Array.isArray(Server.CleanupType) || !Server.CleanupType.includes(CleanupType.System))
             return;
         const JoinMessage = await client.Storage.Messages.Get({
             CustomName: `${member.guild.id}_add_${member.id}`

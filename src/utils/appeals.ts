@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, GuildMember } from "discord.js";
-import { Icons } from "src/configuration";
+import { Icons } from "../configuration";
 import { createStore } from "storage-async";
 
 export async function SendAppealMessage(member: GuildMember) {
