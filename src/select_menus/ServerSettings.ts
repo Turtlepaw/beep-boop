@@ -88,6 +88,7 @@ ${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}`
         });
 
         Collector.on("collect", async button => {
+            if(button.customId == ButtonCollector.BackButton) return;
             if (button.customId == Id.SetColorButton) {
                 const ColorField = new TextInputBuilder()
                     .setLabel("Color to display on embeds")
