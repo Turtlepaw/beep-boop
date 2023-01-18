@@ -100,9 +100,11 @@ export async function ServerConfiguration(interaction: RepliableInteraction) {
         components: Buttons
     })
 
+    try {
     if (interaction.isButton()) {
-        interaction.update(await payload());
-    } else return interaction.reply(await payload());
+        await interaction.update(await payload());
+    } else return await interaction.reply(await payload());
+} catch {}
 }
 
 export default class Server extends Command {
