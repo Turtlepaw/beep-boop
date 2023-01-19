@@ -166,6 +166,7 @@ ${Icons.StemEnd} Roles: ${(Roles == null || Roles.length == 0) ? "None" : Roles.
         });
 
         Collector.on("collect", async button => {
+            if(button.customId == ButtonCollector.BackButton) return;
             if (button.isButton() && button.customId == Id.ToggleModule) {
                 Verification = true;
                 await Save()

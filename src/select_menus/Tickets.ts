@@ -113,6 +113,7 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
         });
 
         Collector.on("collect", async button => {
+            if(button.customId == ButtonCollector.BackButton) return;
             if (button.customId == Id.ToggleModule) {
                 if (Tickets == false && TicketCategory == null) {
                     Tickets = true;
