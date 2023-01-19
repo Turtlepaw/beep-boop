@@ -25,6 +25,8 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
     async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[]) {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         let Color = Configuration?.Color;
+        let Events = Configuration?.Logging.Categories;
+        let LoggingStatus = Configuration?.Logging.Status;
 
         enum Id {
             SetColorButton = "SET_COLOR",
@@ -54,7 +56,10 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
                     name: "Current Configuration",
                     value: `
 ${Icons.Dot} Color
-${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}`
+${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}
+${Icons.Dot} Logging
+${Icons.StemItem} Status: ${LoggingStatus}
+${Icons.StemEnd} Events: ${Events.size} event${Events.size > 1 ? "s" : ""}`
                 }]).Resolve();
         }
 
@@ -88,6 +93,7 @@ ${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}`
         });
 
         Collector.on("collect", async button => {
+
             if (button.customId == Id.SetColorButton) {
                 const ColorField = new TextInputBuilder()
                     .setLabel("Color to display on embeds")

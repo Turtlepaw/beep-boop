@@ -19,6 +19,7 @@ import { Action } from "../models/Action";
 import { Error as CustomError } from "../models/Error";
 import { APIUser } from "../models/APIUser";
 import { Ticket } from "../models/Ticket";
+import { ConfigurationEvents } from "../@types/Logging";
 
 export interface CleanupChannel {
     Type: CleanupType;
@@ -94,6 +95,11 @@ class ResolvableConfiguration {
         Trigger: JoinTriggers;
     }[];
 
+    // Logging
+    public Logging: {
+        Status: boolean;
+        Categories: Set<ConfigurationEvents>;
+    }
     // Raw configuration
     public raw: GuildConfiguration;
 }
@@ -415,6 +421,10 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
                 Action: e[1],
                 Trigger: e[0]
             })),
+            Logging: {
+                Status: config?.LoggingStatus ?? false,
+                Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>()
+            },
             // Raw configuration
             raw: config
         });

@@ -1,7 +1,8 @@
-import { Events, HexColorString } from 'discord.js';
+import { Events, HexColorString, ClientEvents } from 'discord.js';
 import { JSONArray } from '../utils/jsonArray';
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ValueTransformer } from "typeorm"
 import { JSONTransformer, SetTransformer } from '../utils/transformers';
+import { ConfigurationEvents, GuildEvents } from '../@types/Logging';
 
 export enum CleanupType {
     System = "SYSTEM_CLEANUP",
@@ -166,4 +167,12 @@ export class GuildConfiguration {
     StarboardChannel: string;
     @Column({ nullable: true, default: "⭐" })
     StarboardReaction: string;
+
+    // Logging
+    // -> Log your server's most important events
+    //    and keep an eye on your server.
+    @Column({ nullable: true, default: false })
+    LoggingStatus: boolean;
+    @Column({ nullable: true, transformer: new SetTransformer<ConfigurationEvents>(), type: "varchar" })
+    LoggingCategories: Set<ConfigurationEvents>;
 }
