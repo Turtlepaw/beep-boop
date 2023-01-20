@@ -2,15 +2,16 @@ import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuil
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Emojis, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
-import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
+import { BackComponent, ButtonBoolean, EmojiBoolean, StringBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 import { CleanupType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
 import { Modules } from "../commands/Server";
-import { ChannelSelectMenu } from "../utils/components";
+import { ChannelSelectMenu, StringSelectBuilder, StringSelector } from "../utils/components";
 import { CleanupChannel } from "../utils/storage";
+import { ConfigurationEvents } from "../@types/Logging";
 
 export default class BasicServerConfiguration extends SelectOptionBuilder {
     constructor() {
@@ -31,7 +32,10 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
         enum Id {
             SetColorButton = "SET_COLOR",
             ColorModal = "SET_COLOR_MODAL",
-            ColorField = "COLOR_MODAL_FIELD"
+            ColorField = "COLOR_MODAL_FIELD",
+            EnableLogging = "ENABLE_LOGGING",
+            SetEvents = "SET_LOGGING_EVENTS",
+            SetEventsSelector = "SET_LOGGING_EVENTS_SELECTOR"
         }
 
         const Components = () => [
@@ -42,7 +46,15 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
                         .setCustomId(Id.SetColorButton)
                         .setLabel("Set Color")
                         .setStyle(ButtonStyle.Primary)
-                        .setDisabled(!Configuration.isPremium())
+                        .setDisabled(!Configuration.isPremium()),
+                    new ButtonBuilder()
+                        .setCustomId(Id.EnableLogging)
+                        .setLabel("Enable Logging")
+                        .setStyle(ButtonBoolean(LoggingStatus)),
+                    new ButtonBuilder()
+                        .setCustomId(Id.SetEvents)
+                        .setLabel("Logging Events")
+                        .setStyle(ButtonStyle.Secondary),
                 )
         ];
 
@@ -58,14 +70,16 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
 ${Icons.Dot} Color
 ${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}
 ${Icons.Dot} Logging
-${Icons.StemItem} Status: ${LoggingStatus}
-${Icons.StemEnd} Events: ${Events.size} event${Events.size > 1 ? "s" : ""}`
+${Icons.StemItem} Status: ${StringBoolean(LoggingStatus, true)} ${EmojiBoolean(LoggingStatus)}
+${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Events.size > 1 ? "s" : ""}`}`
                 }]).Resolve();
         }
 
         const Save = async (editMessage: boolean = true) => {
             await client.Storage.Configuration.Edit(Configuration.CustomId, {
-                Color
+                Color,
+                LoggingStatus,
+                LoggingCategories: Events
             });
 
             if (editMessage) await Message.edit({
@@ -121,12 +135,47 @@ ${Icons.StemEnd} Events: ${Events.size} event${Events.size > 1 ? "s" : ""}`
                 Color = ModalInteraction.fields.getTextInputValue(Id.ColorField);
                 await Save();
                 await ModalInteraction.reply(Messages.Saved);
-                await Message.edit({
+                // await Message.edit({
+                //     embeds: [
+                //         await GenerateEmbed()
+                //     ],
+                //     components: Components()
+                // });
+            } else if (button.customId == Id.EnableLogging) {
+                LoggingStatus = !LoggingStatus;
+                await Save(false);
+                await button.update({
                     embeds: [
                         await GenerateEmbed()
                     ],
                     components: Components()
                 });
+            } else if (button.customId == Id.SetEvents) {
+                const Selector = new StringSelector()
+                    .SetCustomId(Id.SetEventsSelector)
+                    .Placeholder("Select events to log...")
+                    .Min(1)
+                    .Max(Object.values(ConfigurationEvents).length)
+                    .AddOptions(
+                        ...Object.entries(ConfigurationEvents).map(([k, v]) =>
+                            new StringSelectBuilder()
+                                .setLabel(v)
+                                .setValue(k)
+                                .setDefault(Events.has(v))
+                        )
+                    );
+
+                const SelectorMessage = await button.reply({
+                    components: Selector.toComponents(),
+                    content: `${Icons.Flag} Select events to log`,
+                    ephemeral: true,
+                    fetchReply: true
+                });
+
+                const component = await Selector.CollectComponents(SelectorMessage, button);
+                Events = new Set(component.values.map(e => ConfigurationEvents[e]));
+                await Save();
+                await component.update(Messages.Saved);
             }
         });
 

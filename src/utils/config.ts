@@ -29,3 +29,7 @@ export function StringBoolean(bool: boolean, relative: boolean = true, text?: st
 export function TextBoolean(bool: boolean, text?: string) {
     return `${bool == true ? Icons.Enabled : Icons.Disabled} ${text}`
 }
+
+export function EmojiBoolean(bool: boolean) {
+    return bool == true ? Icons.Enabled : Icons.Disabled
+}

@@ -1,7 +1,8 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Utils, StringSelectMenuOptionBuilder, Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, ThreadMemberFlagsBitField } from "discord.js"
+import { Utils, StringSelectMenuOptionBuilder, Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, ThreadMemberFlagsBitField, Message, Interaction, ComponentType } from "discord.js"
 import { Emojis } from "../configuration";
 import { Verifiers } from "./verify";
+import { Filter } from "./filter";
 
 export enum EmbedModalFields {
     Title = "BUILDER_TITLE_FIELD",
@@ -103,14 +104,29 @@ export type AnySelectMenuBuilder = StringSelectMenuBuilder |
     ChannelSelectMenuBuilder |
     UserSelectMenuBuilder |
     MentionableSelectMenuBuilder;
+export type SelectComponentType = ComponentType.RoleSelect |
+    ComponentType.UserSelect |
+    ComponentType.StringSelect |
+    ComponentType.ChannelSelect |
+    ComponentType.MentionableSelect;
 
 export type SelectorConfiguration<T extends AnySelectMenuBuilder> = (SelectMenu: T) => AnySelectMenuBuilder;
 export class Selector<T extends AnySelectMenuBuilder> {
     public Configuration: SelectorConfiguration<T>;
     public CustomId: string;
+    public componentType: SelectComponentType;
+    private placeholder: string = null;
+    constructor(componentType: SelectComponentType) {
+        this.componentType = componentType;
+    }
 
     public SetCustomId(customId: string) {
         this.CustomId = customId;
+        return this;
+    }
+
+    public Placeholder(placeholder: string) {
+        this.placeholder = placeholder;
         return this;
     }
 
@@ -120,7 +136,12 @@ export class Selector<T extends AnySelectMenuBuilder> {
     }
 
     //@ts-expect-error
-    public toBuilder(): T { };
+    protected toInternalBuilder(): T { };
+
+    public toBuilder(): T {
+        return this.toInternalBuilder()
+            .setPlaceholder(this.placeholder) as T;
+    };
 
     public toActionRow(): ActionRowBuilder<T> {
         return new ActionRowBuilder<T>()
@@ -128,23 +149,59 @@ export class Selector<T extends AnySelectMenuBuilder> {
                 this.toBuilder()
             );
     }
+
+    public toComponents(): ActionRowBuilder<T>[] {
+        return [this.toActionRow()];
+    }
+
+    public async CollectComponents(message: Message, interaction?: Interaction) {
+        const CustomIds = [];
+        if (interaction != null) message.components.forEach(e => e.components.forEach(e => CustomIds.push(e.customId)));
+        const Message = await message.awaitMessageComponent({
+            time: 0,
+            filter: interaction == null ? null : Filter({
+                customIds: CustomIds,
+                member: interaction.member
+            }),
+            componentType: this.componentType
+        });
+        return Message;
+    }
 }
 
 export class StringSelectBuilder extends StringSelectMenuOptionBuilder { };
 
 export class StringSelector extends Selector<StringSelectMenuBuilder> {
     public options: StringSelectBuilder[] = [];
+    public max: number = null;
+    public min: number = null;
+
+    constructor() {
+        super(ComponentType.StringSelect)
+    }
 
     public AddOptions(...Options: StringSelectBuilder[]) {
         this.options.push(...Options);
         return this;
     }
 
-    public toBuilder(): StringSelectMenuBuilder {
+    public Min(min: number) {
+        this.min = min;
+        return this;
+    }
+
+    public Max(max: number) {
+        this.max = max;
+        return this;
+    }
+
+    protected toInternalBuilder(): StringSelectMenuBuilder {
         if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
         const Builder = new StringSelectMenuBuilder()
             .setCustomId(this.CustomId)
-            .setOptions(this.options);
+            .setOptions(this.options)
+            .setMaxValues(this.min)
+            .setMaxValues(this.max);
         if (this?.Configuration != null) this.Configuration(Builder);
         return Builder;
     }
@@ -152,13 +209,16 @@ export class StringSelector extends Selector<StringSelectMenuBuilder> {
 
 export class ChannelSelector extends Selector<ChannelSelectMenuBuilder> {
     public ChannelTypes: ChannelType[] = [ChannelType.GuildText];
+    constructor() {
+        super(ComponentType.ChannelSelect)
+    }
 
     public SetChannelTypes(...Types: ChannelType[]) {
         this.ChannelTypes = Types;
         return this;
     }
 
-    public toBuilder(): ChannelSelectMenuBuilder {
+    protected toInternalBuilder(): ChannelSelectMenuBuilder {
         if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
         const Builder = new ChannelSelectMenuBuilder()
             .setCustomId(this.CustomId)
@@ -169,7 +229,11 @@ export class ChannelSelector extends Selector<ChannelSelectMenuBuilder> {
 }
 
 export class RoleSelector extends Selector<RoleSelectMenuBuilder> {
-    public toBuilder(): RoleSelectMenuBuilder {
+    constructor() {
+        super(ComponentType.RoleSelect)
+    }
+
+    protected toInternalBuilder(): RoleSelectMenuBuilder {
         if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
         const Builder = new RoleSelectMenuBuilder()
             .setCustomId(this.CustomId);
