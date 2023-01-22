@@ -1,11 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Client } from "discord.js";
 import { Request, Response } from "express";
 import { ParamsDictionary } from "express-serve-static-core";
 import { ParsedQs } from "qs";
-import APIRoute, { AllMethods, Method } from "../../lib/APIRoute";
-import { Routes } from "../api-types";
-import { Verifiers } from "@airdot/verifiers";
 import { APIMessages } from "..";
-import { Client } from "discord.js";
+import APIRoute, { Method } from "../../lib/APIRoute";
+import { Routes } from "../api-types";
 
 export default class Profile extends APIRoute {
     constructor() {
@@ -17,7 +17,7 @@ export default class Profile extends APIRoute {
     async Get(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const userId = req.params.id;
 
-        let Profile = await client.Storage.Profiles.Get({
+        const Profile = await client.Storage.Profiles.Get({
             userId
         }) as any;
 

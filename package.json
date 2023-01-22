@@ -37,7 +37,8 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "run": "node ./dist/index.js",
-    "dev": "yarn build && yarn run run",
+    "lint": "npx eslint \"src/**\"",
+    "dev": "yarn lint && yarn build && yarn run run",
     "dash": "cd dashboard/ && yarn dev",
     "start": "yarn dev & yarn dash",
     "cache": "yarn run run",
@@ -47,8 +48,11 @@
     "pm2": "pm2 start yarn --interpreter bash --watch --ignore-watch=\"dist storage database.sqlite log.json database.sqlite-journal\" -- dev"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
     "colors": "^1.4.0",
+    "eslint": "^8.32.0",
     "typeorm": "^0.3.11",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.4"
   }
 }

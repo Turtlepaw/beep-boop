@@ -1,6 +1,5 @@
-import { ActivityType, HexColorString } from 'discord.js';
-import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
+import { ActivityType } from 'discord.js';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class CustomBot {

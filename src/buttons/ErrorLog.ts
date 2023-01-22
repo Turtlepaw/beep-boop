@@ -1,8 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
+import { ButtonInteraction, Client, EmbedBuilder } from "discord.js";
 import { Embed, Emojis } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { Filter } from "../utils/filter";
 import { FriendlyInteractionError } from "../utils/error";
 import { Pages } from "utilsfordiscordjs";
 

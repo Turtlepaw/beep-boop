@@ -1,7 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, CategoryChannel, CategoryCreateChannelOptions, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Guild, GuildBasedChannel, GuildTextBasedChannel, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, OverwriteType, PermissionFlagsBits, PermissionsBitField, PermissionsString, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextBasedChannel, TextChannel, TextChannelResolvable, TextInputBuilder, TextInputStyle, Webhook, WebhookClient } from "discord.js";
+import { CategoryChannel, CategoryCreateChannelOptions, ChannelType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandSubcommandBuilder } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons, Permissions } from "../configuration";
-import { Filter } from "../utils/filter";
+import { Icons } from "../configuration";
 import { Verifiers } from "@airdot/verifiers";
 
 export default class Channel extends Command {
@@ -49,12 +48,12 @@ export default class Channel extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         enum Subcommands {
             Channel = "channel",
             Role = "role",
             Category = "category"
-        };
+        }
         const Subcommand = interaction.options.getSubcommand() as Subcommands;
 
         if (Subcommand == Subcommands.Category) {

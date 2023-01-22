@@ -1,12 +1,12 @@
 //@ts-nocheck
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis } from "../configuration";
-import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { Filter } from "../utils/filter";
+import { SendError } from "../src/utils/error";
+import { Verifiers } from "../src/utils/verify";
+import { SendAppealMessage } from "../src/utils/appeals";
+import { Embed, Emojis } from "../src/configuration";
+import Button from "../src/lib/ButtonBuilder";
+import { DiscordButtonBuilder } from "../src/lib/DiscordButton";
+import { Filter } from "../src/utils/filter";
 
 export default class SetupTickets extends Button {
     constructor() {
@@ -40,7 +40,7 @@ export default class SetupTickets extends Button {
                 filter: Filter(interaction.member, "CONTINUE"),
                 componentType: ComponentType.Button
             });
-        };
+        }
 
         const CustomIds = {
             ButtonModal: "CONFIGURE_BUTTON_MODAL"
@@ -192,7 +192,7 @@ export default class SetupTickets extends Button {
             time: 0
         });
 
-        let Settings = {
+        const Settings = {
             Embed: null,
             TicketChannel: null,
             ModeratorChannel: null,

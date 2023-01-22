@@ -1,4 +1,4 @@
-import { ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel } from "discord.js";
+import { ButtonInteraction, Client } from "discord.js";
 import { Embed } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 

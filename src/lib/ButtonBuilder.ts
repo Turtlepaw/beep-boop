@@ -1,5 +1,7 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionResolvable, PermissionsString } from "discord.js";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ButtonInteraction, Client } from "discord.js";
 import { Builder, BuilderOptions } from "./Builder";
 
 export interface ButtonBuilderOptions extends BuilderOptions {
@@ -15,7 +17,7 @@ export interface ButtonBuilderOptions extends BuilderOptions {
 
 export default class Button extends Builder {
     public CustomId: string;
-    public RequireIdFetching: boolean = false;
+    public RequireIdFetching = false;
 
     constructor(options: ButtonBuilderOptions) {
         super(options);
@@ -28,5 +30,6 @@ export default class Button extends Builder {
         interaction: ButtonInteraction,
         client: Client,
         customId: string
-    ): Promise<void> { }
+        //@ts-expect-error
+    ): Promise<unknown> { }
 }

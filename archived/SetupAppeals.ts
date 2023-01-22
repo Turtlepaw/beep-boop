@@ -1,8 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { Filter } from "../utils/filter";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis } from "../configuration";
-import Button from "../lib/ButtonBuilder";
+import { Filter } from "../src/utils/filter";
+import { SendAppealMessage } from "../src/utils/appeals";
+import { Embed, Emojis } from "../src/configuration";
+import Button from "../src/lib/ButtonBuilder";
 
 export default class SetupAppeals extends Button {
     constructor() {
@@ -44,7 +44,7 @@ export default class SetupAppeals extends Button {
                 }),
                 componentType: ComponentType.Button
             });
-        };
+        }
 
         const Menu = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(

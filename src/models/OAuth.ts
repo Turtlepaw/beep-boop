@@ -1,7 +1,4 @@
-import { Events, HexColorString } from 'discord.js';
-import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ValueTransformer } from "typeorm"
-import { JSONTransformer } from '../utils/transformers';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class OAuth {

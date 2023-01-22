@@ -1,9 +1,7 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, codeBlock, Colors, CommandInteraction, inlineCode, PermissionsBitField } from "discord.js";
+import { CommandInteraction, inlineCode } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Dot, Embed } from "../configuration";
-import { Logger } from "../logger";
-import fs from "fs";
-import { DocGen, GenericVarible, Varible } from "../utils/Varibles";
+import { Dot } from "../configuration";
+import { DocGen, GenericVarible } from "../utils/Varibles";
 
 export default class Varibles extends Command {
     constructor() {
@@ -18,13 +16,13 @@ export default class Varibles extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: CommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: CommandInteraction) {
         const Resolver = (name: string, varible: GenericVarible, type: "Member" | "User" | "Guild") => ({
             Input: `${Dot.System} ${name} ${inlineCode(varible.Name)}`,
             Type: type
         });
-        let Results = DocGen<{ Input: string; Type: "Member" | "User" | "Guild" }>(Resolver) as any as ({ Input: string; Type: "Member" | "User" | "Guild" })[];
-        //@ts-expect-error
+        let Results = DocGen<{ Input: string; Type: "Member" | "User" | "Guild" }>(Resolver) as unknown as ({ Input: string; Type: "Member" | "User" | "Guild" })[];
+        //@ts-expect-error we know this is ok
         Results = [...Results[0], ...Results[1], ...Results[2]];
         const Run = (v) => `${v.Input}`;
         await interaction.reply({

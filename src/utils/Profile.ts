@@ -1,6 +1,7 @@
-import { Client, ColorResolvable, HexColorString, User } from "discord.js";
+import { Client, ColorResolvable, User } from "discord.js";
 import { Subscriptions } from "../models/Profile";
 import { Colors } from "../configuration";
+import { HexColorString } from "@airdot/verifiers";
 
 export interface Profile {
     bio?: string;
@@ -34,8 +35,7 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
     }
 
     return {
-        //@ts-expect-error
-        accentColor: user?.accentColor || ResolvedUser.hexAccentColor || Colors.Transparent,
+        accentColor: (user?.accentColor as HexColorString) || ResolvedUser.hexAccentColor || Colors.Transparent,
         bio: user?.bio || "This user has no bio.",
         displayName: user?.displayName || ResolvedUser.username,
         reputation: user?.reputation || 0,
@@ -96,7 +96,7 @@ export function SetSubscription(Id: string, subscription: Subscriptions, expires
     });
 }
 
-export async function Endorse(Id: string, client: Client, n: number = 1) {
+export async function Endorse(Id: string, client: Client, n = 1) {
     const rep = await FetchUser(Id, client);
     return client.Storage.Profiles.Edit(Id, {
         reputation: (rep?.reputation || 0) + n

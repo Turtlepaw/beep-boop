@@ -3,7 +3,7 @@ import { Guild, GuildMember, User } from "discord.js";
 export interface Varible<T> {
     Run: (t: T) => string;
     Name: string
-};
+}
 
 export interface Varibles {
     Guild: {
@@ -20,7 +20,7 @@ export interface Varibles {
 export type GenericVarible = Varible<GuildMember | User | Guild>;
 export interface GenericVaribles {
     [key: string]: GenericVarible;
-};
+}
 
 export const Varibles: Varibles = {
     Guild: {
@@ -59,13 +59,14 @@ export const Varibles: Varibles = {
     }
 }
 
-export function DocGen<Result>(
-    //@ts-expect-error
-    resolveInput: (name: string, varible: Varible<any>, type: "Member" | "User" | "Guild") => Result = (n, v, t) => `• ${n} (${v.Name})`
+export type InputType = "Member" | "User" | "Guild";
+export function DocGen<Result = string>(
+    //@ts-expect-error this is the default when Result is null and resolveInput is null
+    resolveInput: (name: string, varible: Varible<unknown>, type: InputType) => Result = (n, v) => `• ${n} (${v.Name})`
 ) {
     return (Object.entries(Varibles) as [string, GenericVaribles][]).map(([k, v]) => {
         return Object.entries(v).map(([k2, v2]) => {
-            return resolveInput(k2, v2, k as any);
+            return resolveInput(k2, v2, k as InputType);
         })
     })
 }

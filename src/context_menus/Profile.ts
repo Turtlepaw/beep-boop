@@ -1,14 +1,4 @@
-import { ActionRow, ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, UserContextMenuCommandInteraction, Webhook, WebhookClient } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
-import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import { GuildInformation, MemberInformation } from "../utils/info";
-import { Endorse, FetchUser, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
-import { Subscriptions } from "../models/Profile";
+import { ApplicationCommandType, UserContextMenuCommandInteraction } from "discord.js";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { ViewProfile } from "../commands/Profile";
 
@@ -24,7 +14,7 @@ export default class DeleteThis extends ContextMenu {
         })
     }
 
-    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction, client: Client) {
+    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction) {
         await ViewProfile(interaction, true);
     }
 }

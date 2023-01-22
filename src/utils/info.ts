@@ -1,6 +1,5 @@
 import {
     Guild as DiscordGuild,
-    GuildMember,
     ImageFormat,
     RepliableInteraction,
     TimestampStyles,
@@ -11,8 +10,6 @@ import {
     ButtonStyle,
     inlineCode,
     ChannelType,
-    Locale,
-    PresenceUpdateStatus
 } from "discord.js";
 import { Colors, Embed, Emojis, Icons } from "../configuration";
 
@@ -82,12 +79,13 @@ export const LocaleNames = {
     "vi": "Vietnamese"
 }
 
-export function Language(locale: string, emoji: boolean = false) {
+export function Language(locale: string, emoji = false) {
     return `${emoji ? `:flag_${Locales[locale]}: ` : ""}${LocaleNames[locale]}`
 }
 
 const Or = " or ";
-export async function MemberInformation(interaction: RepliableInteraction, targetUser: User, hidden: boolean = false) {
+export type Flags = "Bot" | "ServerOwner";
+export async function MemberInformation(interaction: RepliableInteraction, targetUser: User, hidden = false) {
     const { guild } = interaction;
     if (guild == null) return interaction.reply({
         ephemeral: true,
@@ -115,10 +113,8 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
         ServerOwner: Icons.FlagServerOwner
     };
 
-    const flags = User.flags.toArray();
-    //@ts-expect-error
+    const flags = User.flags.toArray() as (Flags | string)[];
     if (User.bot) flags.push("Bot");
-    //@ts-expect-error
     if (interaction.guild.ownerId == User.id) flags.push("ServerOwner");
 
     const MemberRoles = Member.roles.cache.filter(e => e.name != "@everyone");
@@ -180,7 +176,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     });
 }
 
-export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden: boolean = false) {
+export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden = false) {
     const { guild } = interaction;
     if (guild == null) return interaction.reply({
         ephemeral: true,

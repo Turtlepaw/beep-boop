@@ -1,4 +1,11 @@
-import { APIGuildMember, ButtonInteraction, GuildMember, MessageComponentInteraction, CollectorFilter, Interaction, InteractionCollector, ComponentType, CollectedInteraction, CacheType } from "discord.js";
+import {
+    APIGuildMember,
+    GuildMember,
+    MessageComponentInteraction,
+    InteractionCollector,
+    CollectedInteraction,
+    CacheType
+} from "discord.js";
 import { ButtonId } from "./config";
 
 export type InteractionFilter = (interaction: MessageComponentInteraction) => boolean;

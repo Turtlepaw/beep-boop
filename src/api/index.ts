@@ -1,4 +1,5 @@
-import { ChannelType, Client, PermissionFlagsBits, TextChannel, User } from "discord.js";
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { ChannelType, Client, Collection, GuildMember, PermissionFlagsBits, TextChannel } from "discord.js";
 import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import { API_PORT, API_URL, DEVELOPER_BUILD } from "../index";
@@ -8,8 +9,7 @@ import { Verifiers } from "@airdot/verifiers";
 import {
     Routes,
     APIChannel,
-    APIGuild,
-    OAuthUser
+    APIGuild
 } from "./api-types";
 import APIRoute, { Method } from "../lib/APIRoute";
 import KlawSync from "klaw-sync";
@@ -45,26 +45,18 @@ export const APIMessages = {
     })
 }
 
-function VerifyBase(str: any) {
+function VerifyBase(str: unknown) {
     return (str == null);
 }
 
-function VerifyString(str: any): str is string {
-    return VerifyBase(str) || (str != typeof String) || (str.length <= 0);
-}
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function VerifyNumber(str: any, length?: number): str is number {
     if (isNaN(str)) str = Number(str);
     if (length != null && str.length != length) return true;
     return VerifyBase(str) || (isNaN(str));
 }
 
-function StringNumber(str: any, length?: number): str is number {
-    if (isNaN(str)) str = Number(str);
-    if (length != null && str.length != length) return false;
-    return !isNaN(str);
-}
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function VerifyStringNumber(str: any, length?: number): str is string {
     if (isNaN(str)) str = Number(str);
     if (length != null && str.length != length) return true;
@@ -93,6 +85,7 @@ export async function API(client: Client, token: string) {
         const RequiredFile = require(File.path);
         const route: APIRoute = new RequiredFile.default();
 
+        // eslint-disable-next-line no-inner-declarations
         async function handleAuth(req: Request, res: Response, type: Method) {
             if (route?.public == null || !route?.public?.includes(type)) {
                 const auth = req.headers.authorization;
@@ -196,14 +189,12 @@ export async function API(client: Client, token: string) {
 
         const Guilds: APIGuild[] = client.guilds.cache.filter(async e => {
             try {
-                const Members = await e.members.fetch().catch(() => { });
-                //@ts-expect-error
+                const Members = await e.members.fetch().catch(() => null) as Collection<string, GuildMember>;
                 if (!Members.has(UserId)) return;
-                //@ts-expect-error
                 const Member = Members.get(UserId);
                 return Member.permissions.has(PermissionFlagsBits.ManageGuild);
             } catch (e) {
-
+                return null;
             }
         }).map(e => ({
             Features: e.features,
@@ -224,7 +215,7 @@ export async function API(client: Client, token: string) {
             APIMessages.BadRequest("id")
         );
 
-        //@ts-expect-error
+        //@ts-expect-error its an id
         const Guild = await client.guilds.fetch(GuildId);
 
         if (Guild == null) return res.send(
@@ -293,8 +284,8 @@ export async function API(client: Client, token: string) {
     if (DEVELOPER_BUILD) {
         app.listen(port, onListen);
     } else {
-        var privateKey = fs.readFileSync('server.key');
-        var certificate = fs.readFileSync('server.cert');
+        const privateKey = fs.readFileSync('server.key');
+        const certificate = fs.readFileSync('server.cert');
         https.createServer({
             key: privateKey,
             cert: certificate

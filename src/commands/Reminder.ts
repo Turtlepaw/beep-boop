@@ -1,16 +1,10 @@
-import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, EmbedBuilder, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandUserOption, time, TimestampStyles, Webhook, WebhookClient } from "discord.js";
+import { ChatInputCommandInteraction, Client, EmbedBuilder, SlashCommandSubcommandBuilder, time, TimestampStyles } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
+import { Embed, Icons } from "../configuration";
 import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import Jimp from "jimp";
-import Canvas, { createCanvas } from "canvas";
 import ms from "ms";
 import { generateId } from "../utils/Id";
-import { Delete, FormatAll, Refresh, Reminder } from "../utils/reminders";
+import { Delete, FormatAll, Refresh } from "../utils/reminders";
 import { Pages } from "utilsfordiscordjs";
 
 export default class Send extends Command {
@@ -125,7 +119,7 @@ export default class Send extends Command {
                     continue;
                 }
 
-                const CreatedAt = new Date(Reminder.CreatedAt);
+                //const CreatedAt = new Date(Reminder.CreatedAt);
                 const In = new Date((Reminder.CreatedAt + Reminder.Time));
                 CurrentEmbed.addFields([{
                     name: Reminder.Title,

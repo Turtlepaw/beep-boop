@@ -17,7 +17,7 @@ export function StatusBoolean(bool: boolean, text?: string) {
     return `${bool == true ? "Enabled" : "Disabled"}${text != null ? ` ${text}` : ""}`
 }
 
-export function StringBoolean(bool: boolean, relative: boolean = true, text?: string) {
+export function StringBoolean(bool: boolean, relative = true, text?: string) {
     const Ending = relative ? "d" : "";
     const Words = {
         Enable: `Enable${Ending}`,

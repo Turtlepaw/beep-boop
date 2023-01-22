@@ -1,5 +1,5 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, Client, ComponentType, ContextMenuCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ComponentType, MessageContextMenuCommandInteraction } from "discord.js";
 import { Filter } from "../utils/filter";
 
 export default class DeleteThis extends ContextMenu {
@@ -14,7 +14,7 @@ export default class DeleteThis extends ContextMenu {
         })
     }
 
-    public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction, client: Client) {
+    public async ExecuteContextMenu(interaction: MessageContextMenuCommandInteraction) {
         const CustomId = {
             DeleteMessage: "DELETE_MESSAGE",
             BulkDelete: "BULK_DELETE"

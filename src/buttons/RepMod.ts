@@ -1,9 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextBasedChannel, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, ComponentType, ModalBuilder, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Filter } from "../utils/filter";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis, Icons } from "../configuration";
+import { Embed, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import ms from "ms";
 import { ChannelSelectMenu } from "../utils/components";
 import { ReputationBasedModerationType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
@@ -74,7 +72,7 @@ export default class SetupAppeals extends Button {
                 }),
                 componentType: ComponentType.Button
             });
-        };
+        }
 
         const ChannelMenu = ChannelSelectMenu(Id.ChannelSelector, interaction.guild.channels.cache);
 
@@ -147,7 +145,7 @@ export default class SetupAppeals extends Button {
             Ban = modal.fields.getTextInputValue("REP");
         }
 
-        let int: RepliableInteraction = btn;
+        const int: RepliableInteraction = btn;
 
         client.Storage.Configuration.Create({
             ModerationChannel: WarnChannel,

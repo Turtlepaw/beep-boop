@@ -1,12 +1,5 @@
-import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandUserOption, Webhook, WebhookClient } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, ImageFormat, SlashCommandAttachmentOption, SlashCommandUserOption } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
-import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import Jimp from "jimp";
 import Canvas, { createCanvas } from "canvas";
 
 export default class Send extends Command {
@@ -30,7 +23,7 @@ export default class Send extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         //await interaction.deferReply();
         const user = interaction.options.getUser("member", false) || interaction.user;
         const image = interaction.options.getAttachment("image", false);

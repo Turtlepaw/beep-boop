@@ -1,12 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, Webhook, WebhookClient } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBooleanOption } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
-import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import { GuildInformation, MemberInformation } from "../utils/info";
+import { GuildInformation } from "../utils/info";
 
 export default class Send extends Command {
     constructor() {
@@ -26,7 +20,7 @@ export default class Send extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         await GuildInformation(
             interaction,
             interaction.guild,

@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Utils, StringSelectMenuOptionBuilder, Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder, AnySelectMenuInteraction, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, ThreadMemberFlagsBitField, Message, Interaction, ComponentType } from "discord.js"
-import { Emojis } from "../configuration";
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
+import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType } from "discord.js";
 import { Verifiers } from "./verify";
 import { Filter } from "./filter";
 
@@ -11,7 +10,7 @@ export enum EmbedModalFields {
     Color = "BUILDER_COLOR_FIELD"
 }
 
-export function EmbedModal(CustomId: string = "CONFIGURE_EMBED", Message: GuildMessage) {
+export function EmbedModal(CustomId = "CONFIGURE_EMBED", Message: GuildMessage) {
     const Fields = {
         Title: new TextInputBuilder()
             .setCustomId(EmbedModalFields.Title)
@@ -87,8 +86,7 @@ export function EmbedFrom(Modal: ModalSubmitInteraction) {
     if (Verifiers.String(Fields.Description)) Embed.setDescription(Fields.Description);
     if (Verifiers.String(Fields.Title)) Embed.setTitle(Fields.Title);
     if (Verifiers.String(Fields.Footer)) Embed.setFooter({ text: Fields.Footer });
-    //@ts-expect-error
-    if (Verifiers.String(Fields.Color)) Embed.setColor(Fields.Color);
+    if (Verifiers.String(Fields.Color) && Verifiers.isHexColor(Fields.Color)) Embed.setColor(Fields.Color);
 
     return Embed;
 }
@@ -135,13 +133,14 @@ export class Selector<T extends AnySelectMenuBuilder> {
         return this;
     }
 
-    //@ts-expect-error
-    protected toInternalBuilder(): T { };
+    //@ts-expect-error this is a builder
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    protected toInternalBuilder(): T { }
 
     public toBuilder(): T {
         return this.toInternalBuilder()
             .setPlaceholder(this.placeholder) as T;
-    };
+    }
 
     public toActionRow(): ActionRowBuilder<T> {
         return new ActionRowBuilder<T>()
@@ -169,7 +168,7 @@ export class Selector<T extends AnySelectMenuBuilder> {
     }
 }
 
-export class StringSelectBuilder extends StringSelectMenuOptionBuilder { };
+export class StringSelectBuilder extends StringSelectMenuOptionBuilder { }
 
 export class StringSelector extends Selector<StringSelectMenuBuilder> {
     public options: StringSelectBuilder[] = [];
@@ -245,7 +244,7 @@ export class RoleSelector extends Selector<RoleSelectMenuBuilder> {
 /**
  * @deprecated use ChannelSelector class instead
  */
-export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Type?: Channels | ChannelType, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => any) {
+export function ChannelSelectMenu(CustomId = "CHANNEL_SELECT", Type?: Channels | ChannelType, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => unknown) {
     if (typeof Type != "number") Type = ChannelType.GuildText
     const Component = new ChannelSelectMenuBuilder()
         .setCustomId(CustomId)
@@ -268,7 +267,7 @@ export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Type?: Ch
         )
 }
 
-export function MessageBuilderModal(CustomId: string = "MESSAGE_BUILDER_MODAL", FieldId: string = "MESSAGE_CONTENT_FIELD", Message: GuildMessage) {
+export function MessageBuilderModal(CustomId = "MESSAGE_BUILDER_MODAL", FieldId = "MESSAGE_CONTENT_FIELD", Message: GuildMessage) {
     const ContentField = new TextInputBuilder()
         .setCustomId(FieldId)
         .setLabel("Message Content")
@@ -295,7 +294,7 @@ export interface ButtonFields {
     Link?: string;
 }
 
-export function ButtonBuilderModal(CustomId: string = "BUTTON_BUILDER_MODAL", Fields: ButtonFields, ButtonType: ButtonStyle = ButtonStyle.Primary) {
+export function ButtonBuilderModal(CustomId = "BUTTON_BUILDER_MODAL", Fields: ButtonFields, ButtonType: ButtonStyle = ButtonStyle.Primary) {
     const Components = [
         new ActionRowBuilder<TextInputBuilder>()
             .addComponents(

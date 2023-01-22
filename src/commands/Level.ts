@@ -1,8 +1,7 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Colors, CommandInteraction, GuildMember, PermissionsBitField, SlashCommandSubcommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed } from "../configuration";
-import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
-import { FriendlyInteractionError, SendError } from "../utils/error";
+import { FriendlyInteractionError } from "../utils/error";
 import { ServerSettings } from "../buttons/ServerSettings";
 
 export default class Activities extends Command {

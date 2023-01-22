@@ -1,14 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, codeBlock, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, inlineCode, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { ClientAdministrators, Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, codeBlock, ComponentType } from "discord.js";
+import { ClientAdministrators } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
-import { Ticket } from "./CreateTicket";
-import { Filter } from "../utils/filter";
-import { CreateLinkButton } from "../utils/buttons";
 import { Logger } from "../logger";
 import fs from "fs";
 
@@ -22,11 +14,11 @@ export default class RealtimeLogs extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         if (!ClientAdministrators.includes(interaction.user.id)) return;
 
-        interface LogMessage { level: number; msg: string; time: number; type: string; };
-        const ResolveLogs = (expand: boolean = false) => {
+        interface LogMessage { level: number; msg: string; time: number; type: string; }
+        const ResolveLogs = (expand = false) => {
             const logs = fs.readFileSync("./log.json");
             const raw = logs.toString().split("\n").filter(e => e != "").slice(expand ? -15 : -6);
             const ResolvedLogs: LogMessage[] = raw.map(e => ({

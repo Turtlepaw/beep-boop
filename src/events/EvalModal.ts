@@ -1,5 +1,5 @@
-import { NewsChannel as GuildNewsChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
-import { ClientAdministrators, Embed, guildId } from "../configuration";
+import { Client, Events, ModalSubmitInteraction } from "discord.js";
+import { ClientAdministrators, Embed, Icons } from "../configuration";
 import Event from "../lib/Event";
 
 export default class EvalModal extends Event {
@@ -19,19 +19,21 @@ export default class EvalModal extends Event {
             const EvalResponse = await eval(Code);
             await interaction.reply({
                 ephemeral: true,
-                content: "\📦 Evaluating code...",
+                content: `${Icons.Info} Evaluating code...`,
                 embeds: [
-                    new Embed(interaction.guild)
+                    await new Embed(interaction.guild)
                         .setDescription(`\`\`\`\n${EvalResponse}\`\`\``)
+                        .Resolve()
                 ]
             });
         } catch (e) {
             await interaction.reply({
                 ephemeral: true,
-                content: "\📦 Something didn't go right...",
+                content: `${Icons.Flag} Something went wrong evaluating that...`,
                 embeds: [
-                    new Embed(interaction.guild)
+                    await new Embed(interaction.guild)
                         .setDescription(`\`\`\`\n${e}\`\`\``)
+                        .Resolve()
                 ]
             });
         }

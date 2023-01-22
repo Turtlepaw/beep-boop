@@ -1,9 +1,5 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Colors, CommandInteraction, ComponentType, GuildMember, PermissionsBitField, SlashCommandSubcommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed } from "../configuration";
-import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
-import { FriendlyInteractionError, SendError } from "../utils/error";
-import { ServerSettings } from "src/buttons/ServerSettings";
 
 export default class Resources extends Command {
     constructor() {
@@ -18,7 +14,7 @@ export default class Resources extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()

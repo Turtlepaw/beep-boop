@@ -1,10 +1,8 @@
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
-import { ChatInputCommandInteraction, CommandInteraction } from "discord.js";
+import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
+import { ChatInputCommandInteraction } from "discord.js";
 import {
-    CategoryNameResolvable,
-    Question,
-    QuestionDifficulty,
-    QuestionType,
+    CategoryNameResolvable, QuestionDifficulty,
+    QuestionType
 } from "open-trivia-db";
 import {
     QuestionData,
@@ -15,7 +13,7 @@ import ms from "ms";
 
 export default class TriviaSubcommandBuilder {
     private build: SlashCommandSubcommandBuilder;
-    private isApplied: Boolean = false;
+    private isApplied = false;
 
     constructor(name?: string, description?: string) {
         this.build = new SlashCommandSubcommandBuilder()
@@ -179,7 +177,7 @@ export default class TriviaSubcommandBuilder {
         const streakDefinitionLevel = int.options.get("streak_level", false)
             ?.value as number;
 
-        let options = {} as TriviaGameOptions;
+        const options = {} as TriviaGameOptions;
         options.maximumPlayerCount =
             maximumPlayerCount || TriviaGame.defaults.maximumPlayerCount;
         options.maximumPoints = maximumPoints || TriviaGame.defaults.maximumPoints;

@@ -31,7 +31,7 @@ export interface APIGuild {
     IconURL: string | null;
     IsOwner: boolean; //if they are the owner
     Permissions: string[];
-    Features: any[];
+    Features: string[];
 }
 
 export interface APIChannel {

@@ -1,5 +1,6 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, Client, CommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType, PermissionResolvable, PermissionsString } from "discord.js";
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Client, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType } from "discord.js";
 import { Builder, BuilderOptions, CommandBuilderType } from "./Builder";
 
 export interface ContextMenuBuilderOptions extends BuilderOptions {
@@ -35,5 +36,6 @@ export default class ContextMenu extends Builder {
     public async ExecuteContextMenu(
         interaction: ContextMenuCommandInteraction,
         client: Client
-    ): Promise<void> { }
+        // @ts-expect-error this is a builder
+    ): Promise<unknown | void> { }
 }

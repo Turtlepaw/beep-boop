@@ -1,12 +1,12 @@
 //@ts-nocheck
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, RepliableInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { Filter } from "../utils/filter";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis } from "../configuration";
-import Button from "../lib/ButtonBuilder";
+import { Filter } from "../src/utils/filter";
+import { SendAppealMessage } from "../src/utils/appeals";
+import { Embed, Emojis } from "../src/configuration";
+import Button from "../src/lib/ButtonBuilder";
 import ms from "ms";
-import { StartAutoDeleteService, StopAutoDeleteService } from "../utils/AutoDelete";
-import { ChannelSelectMenu } from "../utils/components";
+import { StartAutoDeleteService, StopAutoDeleteService } from "../src/utils/AutoDelete";
+import { ChannelSelectMenu } from "../src/utils/components";
 
 export default class SetupAppeals extends Button {
     constructor() {
@@ -65,7 +65,7 @@ export default class SetupAppeals extends Button {
                 }),
                 componentType: ComponentType.Button
             });
-        };
+        }
 
         const Menu = ChannelSelectMenu(Id.ChannelSelector);
 

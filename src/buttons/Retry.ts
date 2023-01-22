@@ -1,8 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, codeBlock, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, WebhookClient } from "discord.js";
-import { SendError } from "../utils/error";
-import { Embed, Emojis, Icons, SupportServerComponent, SupportServerInvite, SupportServerInviteEmbedded } from "../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, codeBlock, WebhookClient } from "discord.js";
+import { Icons, SupportServerComponent, SupportServerInvite, SupportServerInviteEmbedded } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { HandleBot, StartCustomBot } from "../utils/customBot";
+import { StartCustomBot } from "../utils/customBot";
 import { Logger } from "../logger";
 
 export default class RetryBot extends Button {

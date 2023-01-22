@@ -1,8 +1,9 @@
-import { ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel } from "discord.js";
+import { ButtonInteraction } from "discord.js";
 import { ServerConfiguration } from "../commands/Server";
 import Button from "../lib/ButtonBuilder";
 import { ButtonId } from "../utils/config";
 import { Permissions } from "../configuration";
+import { Logger } from "../logger";
 
 export default class ReturnButton extends Button {
     constructor() {
@@ -14,11 +15,11 @@ export default class ReturnButton extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         try {
             await ServerConfiguration(interaction);
         } catch (e) {
-
+            Logger.error(`Couldn't return the config panel: ${e}`);
         }
     }
 }

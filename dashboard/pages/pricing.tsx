@@ -149,7 +149,7 @@ export default function Home(props: DefaultProps) {
                     </a>
                 </div> */}
                 <AutoCenter className='card px-10 pb-10'>
-                    <img src="/Beta.svg" className="w-14 rotate-12 pt-3 pb-8" />
+                    <Image src={"/Beta.svg"} loading='eager' className="rotate-12 pt-3 pb-8" width={68} />
                     <h1 className='font-bold text-xl pb-1'>Early Access</h1>
                     <div className='max-w-sm text-center'>Subscription names are not final and subscriptions may change at any time.</div>
                 </AutoCenter>

@@ -1,8 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage, TextChannel } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, GuildMember, TextChannel } from "discord.js";
 import Event from "../lib/Event";
-import { ServerSettings } from "../buttons/ServerSettings";
 import { MessageType } from "../models/Message";
+import { Logger } from "../logger";
 
 export interface MemberMessage {
     MessageId: string;
@@ -33,7 +32,7 @@ export default class LeaveAppealMessage extends Event {
 
                 if (Message.deletable) Message.delete();
             } catch (e) {
-
+                Logger.error(`Could not remove welcome message: ${e}`);
             }
         }
     }

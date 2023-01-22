@@ -1,8 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, NewsChannel as GuildNewsChannel, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle, WebhookType } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
-import { ClientAdministrators, Dot, Embed, Emojis, guildId, Icons, News } from "../configuration";
+import { ButtonInteraction, Client, NewsChannel as GuildNewsChannel, WebhookType } from "discord.js";
+import { ClientAdministrators, Dot, Icons, News } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { Filter } from "../utils/filter";
 
 export interface ModeratorSettings {
     BlockInvites?: boolean;
@@ -28,7 +26,7 @@ export default class ModeratorGuildSettings extends Button {
         for (const guild of guilds.values()) {
             try {
                 const Guild = await guild.fetch();
-                const Channels = await Guild.channels.fetch();
+                //const Channels = await Guild.channels.fetch();
                 const UpdatesGuild = await client.guilds.fetch(News.Guild);
                 const UpdatesChannel = await UpdatesGuild.channels.fetch(News.Channel) as GuildNewsChannel;
                 const PublicUpdatesChannel = Guild.publicUpdatesChannel;

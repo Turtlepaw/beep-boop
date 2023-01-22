@@ -8,24 +8,7 @@ import { CleanupType } from "../models/Configuration";
 import { Modules } from "../commands/Server";
 import { ChannelSelector as ChannelSelectBuilder } from "../utils/components";
 import { CleanupChannel } from "../utils/storage";
-
-export function ResolveEnumValue(selectedEnum: object, selectedValue: string) {
-    for (const [k, v] of Object.entries(selectedEnum)) {
-        if (k == selectedValue || v == selectedValue) return selectedEnum[k];
-    }
-}
-
-export function EmbedChildren<T>(array: T[], item: (item: T) => string, noneMessage = "None") {
-    const GetEmoji = (last = false) => last ? `${Icons.StemEnd}` : `${Icons.StemItem}`;
-    let StringArray = "";
-    let at = 0;
-    array.forEach(e => {
-        at++
-        StringArray += `${GetEmoji(at == array.length)} ${item(e)}${at == array.length ? "" : "\n"}`;
-    });
-    if (array.length <= 0) StringArray = `${Icons.StemEnd} ${noneMessage}`;
-    return StringArray;
-}
+import { EmbedChildren, ResolveEnumValue } from "./AutoDeleting";
 
 export default class AutonomousCleaningConfiguration extends SelectOptionBuilder {
     constructor() {
@@ -33,7 +16,7 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: Permissions.Manager,
-            Value: Modules.AutonomousCleanup
+            Value: Modules.Appeals
         });
     }
 

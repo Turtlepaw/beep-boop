@@ -1,11 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, quote, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis, Icons } from "../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, Colors, ComponentType, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
+import { Embed, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
 import { Filter } from "../utils/filter";
 
 export interface Ticket {
@@ -82,7 +77,7 @@ export default class CreateTicket extends Button {
             ephemeral: true
         });
 
-        const ButtonInteraction = await interaction.channel.awaitMessageComponent({
+        const ButtonInteraction = await Message.awaitMessageComponent({
             time: 0,
             componentType: ComponentType.Button,
             filter: Filter({

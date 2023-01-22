@@ -1,16 +1,10 @@
-import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, Channel, channelMention, ChannelType, Client, Colors, CommandInteraction, ComponentType, GuildTextBasedChannel, inlineCode, ModalBuilder, NewsChannel, PermissionsBitField, PrivateThreadChannel, SelectMenuOptionBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextBasedChannel, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons, Messages, Permissions } from "../configuration";
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, Client, inlineCode, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
-import { BackComponent, ButtonBoolean, EmojiBoolean, StringBoolean, TextBoolean } from "../utils/config";
-import ms from "ms";
+import { BackComponent, ButtonBoolean, EmojiBoolean, StringBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
-import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
-import { CleanupType } from "../models/Configuration";
-import { JSONArray } from "../utils/jsonArray";
 import { Modules } from "../commands/Server";
-import { ChannelSelectMenu, StringSelectBuilder, StringSelector } from "../utils/components";
-import { CleanupChannel } from "../utils/storage";
+import { StringSelectBuilder, StringSelector } from "../utils/components";
 import { ConfigurationEvents } from "../@types/Logging";
 
 export default class BasicServerConfiguration extends SelectOptionBuilder {
@@ -23,7 +17,7 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
         });
     }
 
-    async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[]) {
+    async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client) {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         let Color = Configuration?.Color;
         let Events = Configuration?.Logging.Categories;
@@ -75,7 +69,7 @@ ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Ev
                 }]).Resolve();
         }
 
-        const Save = async (editMessage: boolean = true) => {
+        const Save = async (editMessage = true) => {
             await client.Storage.Configuration.Edit(Configuration.CustomId, {
                 Color,
                 LoggingStatus,

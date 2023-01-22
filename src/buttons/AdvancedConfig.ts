@@ -1,10 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, codeBlock, Colors, CommandInteraction, PermissionsBitField } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons, Permissions } from "../configuration";
-import { Logger } from "../logger";
-import fs from "fs";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
+import { Icons, Permissions } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DeveloperPortal } from "../commands/Help";
 import { AdvancedButtonId } from "../commands/Server";
 
 export default class AdvancedConfiguration extends Button {
@@ -17,7 +13,7 @@ export default class AdvancedConfiguration extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         const Buttons = [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(

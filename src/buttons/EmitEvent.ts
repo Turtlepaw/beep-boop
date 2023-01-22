@@ -1,5 +1,6 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, SelectMenuBuilder, SelectMenuOptionBuilder } from "discord.js";
+import { ButtonInteraction } from "discord.js";
 import Button from "../lib/ButtonBuilder";
+import { StringSelectBuilder, StringSelector } from "../utils/components";
 
 export const DiscordEvents = [
     "ChannelCreate",
@@ -33,25 +34,24 @@ export default class EmitEvent extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const Components = new ActionRowBuilder<SelectMenuBuilder>()
-            .addComponents(
-                new SelectMenuBuilder()
-                    .addOptions(
-                        DiscordEvents.map(e =>
-                            new SelectMenuOptionBuilder()
-                                .setEmoji("📦")
-                                .setLabel(e)
-                                .setValue(e)
-                        )
-                    )
-                    .setCustomId("EVENT_LIST")
-                    .setPlaceholder("Select an event to emit")
-            );
+    async ExecuteInteraction(interaction: ButtonInteraction) {
+        const Selector = new StringSelector()
+            .AddOptions(
+                ...DiscordEvents.map(e =>
+                    new StringSelectBuilder()
+                        .setEmoji({
+                            name: "📦"
+                        })
+                        .setLabel(e)
+                        .setValue(e)
+                )
+            )
+            .SetCustomId("EVENT_LIST")
+            .Placeholder("Select an event to emit")
 
         await interaction.reply({
             content: `**⚠️ BEEP! This could cuase unexpected side effects or consequences, use at your own risk.**\nWhat event do you want to emit.`,
-            components: [Components],
+            components: Selector.toComponents(),
             ephemeral: true
         });
     }

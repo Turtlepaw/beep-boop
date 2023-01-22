@@ -1,6 +1,5 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, CommandInteraction } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed } from "../configuration";
 
 export default class WhatsNew extends Command {
     constructor() {
@@ -15,7 +14,7 @@ export default class WhatsNew extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: CommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: CommandInteraction) {
         const Buttons = new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
                 new ButtonBuilder()

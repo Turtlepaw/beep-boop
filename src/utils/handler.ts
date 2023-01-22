@@ -1,15 +1,14 @@
-import { ChannelType, Client, Events as ClientEvents, Guild, GuildBasedChannel, Interaction, InteractionReplyOptions, PermissionResolvable, RepliableInteraction, TextChannel, inlineCode } from "discord.js";
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { ChannelType, Client, Events as ClientEvents, Guild, GuildBasedChannel, InteractionReplyOptions, PermissionResolvable, RepliableInteraction, TextChannel, inlineCode } from "discord.js";
 import klawSync from "klaw-sync";
 import { DEVELOPER_BUILD } from "../index";
-import { BaseDirectory, Embed, Emojis, guildId, Icons, Logs } from "../configuration";
-import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
-import ContextMenu from "../lib/ContextMenuBuilder";
+import { BaseDirectory, Embed, guildId, Icons, Logs } from "../configuration";
+import ButtonBuilder from "../lib/ButtonBuilder";
 import EventBuilder from "../lib/Event";
 import { CreateLinkButton } from "./buttons";
 import { InteractionError, SendError } from "./error";
 import SelectOptionBuilder from "src/lib/SelectMenuBuilder";
 import { Logger } from "../logger";
-import { Verifiers } from "@airdot/verifiers";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
     content: `${Icons.Error} You don't have the required permissions to run this command.`,
@@ -41,7 +40,7 @@ async function CreateError(Summary: string, ExecutingGuild: Guild, client: Clien
         maxAge: 0,
         maxUses: 0,
         reason: "Something didn't go right, this might help developers locate the error."
-    }).catch(() => { }) || { url: "https://discord.com/no_invite" };
+    }).catch(e => Logger.warn(`Failed Creating Invite: ${e}`)) || { url: "https://discord.com/no_invite" };
 
     await (Channel as TextChannel).send({
         embeds: [
@@ -71,8 +70,14 @@ async function StartEventService(client: Client) {
 
         //Handle Event
         for (const Event of Events) {
-            //@ts-expect-error
-            client.on(Event.EventName, (...args) => Event.ExecuteEvent(client, ...args));
+
+            client.on(Event.EventName, (...args) => {
+                try {
+                    Event.ExecuteEvent(client, ...args)
+                } catch (e) {
+                    Logger.error(`Could not execute event: ${e}`)
+                }
+            });
         }
     } catch (e) {
         console.log("Error:".red, e);
@@ -80,8 +85,8 @@ async function StartEventService(client: Client) {
     }
 }
 
-function isGuildBased(channel: any): channel is GuildBasedChannel {
-    return channel.guild != null;
+function isGuildBased(channel: unknown): channel is GuildBasedChannel {
+    return channel?.["guild"] != null;
 }
 
 async function HandleBotPermissions(interaction: RepliableInteraction, permisisons: PermissionResolvable[]) {
@@ -98,7 +103,7 @@ async function HandleBotPermissions(interaction: RepliableInteraction, permisiso
             message: `The bot doesn't have the correct permissions to run this command. Missing: ${Missing.map(e => inlineCode(e)).join(" ")}`
         });
         return false;
-    };
+    }
 }
 
 async function StartButtonService(client: Client) {
@@ -120,7 +125,7 @@ async function StartButtonService(client: Client) {
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isButton()) {
                 let Id = interaction.customId;
-                let CustomId: string = "";
+                let CustomId = "";
                 const Button = Buttons.find(e => {
                     if (e.RequireIdFetching) {
                         //Set Id to the custom id
@@ -130,7 +135,7 @@ async function StartButtonService(client: Client) {
                         if (interaction.customId.startsWith(FullId)) {
                             CustomId = interaction.customId;
                             return true;
-                        };
+                        }
                     } else {
                         if (e.CustomId == interaction.customId) {
                             CustomId = interaction.customId
@@ -198,8 +203,7 @@ async function StartSelectMenuService(client: Client) {
         //Handle button interactions
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isAnySelectMenu()) {
-                let Values = interaction.values;
-                let CustomId: string = "";
+                const Values = interaction.values;
                 const SelectOption = SelectOptions.find(e => Values.includes(e.Value));
 
                 if (SelectOption == null) return;
@@ -319,7 +323,7 @@ export async function StartAutocompleteService(client: Client) {
     }
 }
 
-export async function StartService(client: Client, logs = false) {
+export async function StartService(client: Client) {
     try {
         //Handle command interactions
         client.on(ClientEvents.InteractionCreate, async (interaction) => {

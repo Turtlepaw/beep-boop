@@ -1,22 +1,21 @@
 //Import packages
-import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData, ClientOptions, Collection } from "discord.js";
+import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
 //dotenv stuff
 import * as dotenv from 'dotenv';
-dotenv.config()
 import "colors";
 import { API } from "./api/index";
 import { Levels } from "./utils/levels";
-import { InitializeProvider, StorageManager } from "./utils/storage";
+import { InitializeProvider } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
 import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
-import { GuildConfiguration } from "./models/Configuration";
 import { Logger } from "./logger";
+dotenv.config()
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)

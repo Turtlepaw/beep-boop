@@ -1,15 +1,17 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, ButtonInteraction, Client, ClientEvents, CommandInteraction, Events, PermissionsString } from "discord.js";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { Client, ClientEvents, Events } from "discord.js";
 
 export type EventBuilderOptions = {
     /**
      * The event to listen for.
      */
-    EventName: Events;
+    EventName: keyof ClientEvents;
 }
 
 export default class Event {
-    public EventName: Events;
+    public EventName: keyof ClientEvents;
 
     constructor(options: EventBuilderOptions) {
         //Set EventName

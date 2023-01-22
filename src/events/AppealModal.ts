@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, Interaction } from "discord.js";
 import { Filter } from "../utils/filter";
 import { Embed, Icons } from "../configuration";
 import Event from "../lib/Event";

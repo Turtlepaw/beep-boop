@@ -23,7 +23,7 @@ export function FaqItem(e: {
     const HandleInteraction = () => setOpen(!isOpen);
     return (
         <div className='card px 5 py -4 max-w-[30rem] min-w-[30rem] overflow-hidden'>
-            <div onClick={HandleInteraction} className="cursor-pointer px-5 py-5">
+            <div onClick={HandleInteraction} className="cursor-pointer px-5 py-5 hover:bg-[#212225]">
                 <h1 className='inline' id={e.id ?? encodeURI(e.title)}>{e.title}</h1>
                 <Image src={isOpen ? '/Icons/Up.svg' : '/Icons/Down.svg'} alt='Down' width={20} className="inline float-right mr-5" />
             </div>

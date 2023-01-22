@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
+import { ButtonInteraction } from "discord.js";
 import { SendAppealMessage } from "../utils/appeals";
-import { Embed } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class TestAppeals extends Button {
@@ -13,8 +12,8 @@ export default class TestAppeals extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        //@ts-expect-error
+    async ExecuteInteraction(interaction: ButtonInteraction) {
+        //@ts-expect-error member is a d.js member
         const res = await SendAppealMessage(interaction.member);
 
         if (res == null) {

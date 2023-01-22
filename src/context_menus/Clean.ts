@@ -1,12 +1,9 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { Locale, ActionRowBuilder, time, ApplicationCommandType, ButtonBuilder, ButtonStyle, Client, ComponentType, ContextMenuCommandType, ImageFormat, MessageContextMenuCommandInteraction, PermissionFlagsBits, UserContextMenuCommandInteraction, TimestampStyles, codeBlock, blockQuote, inlineCode } from "discord.js";
-import { Filter } from "../utils/filter";
-import { CreateLinkButton } from "../utils/buttons";
-import { Colors, Embed, Emojis, Icons } from "../configuration";
-import { MemberInformation } from "../utils/info";
+import { ApplicationCommandType, UserContextMenuCommandInteraction, inlineCode } from "discord.js";
+import { Embed, Icons } from "../configuration";
 import { CleanMember } from "../utils/Clean";
 import { Verifiers } from "@airdot/verifiers";
-import { FriendlyInteractionError, InteractionError } from "../utils/error";
+import { InteractionError } from "../utils/error";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {
@@ -20,13 +17,13 @@ export default class DeleteThis extends ContextMenu {
         })
     }
 
-    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction, client: Client) {
+    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction) {
         if (!Verifiers.Discord.Member(interaction.targetMember)) {
             return await InteractionError({
                 interaction,
                 error: "Member provided failed verifiers (returned API member instead of Discord.js member)"
             });
-        };
+        }
 
         const cleaned = await CleanMember(interaction.targetMember);
         await interaction.reply({

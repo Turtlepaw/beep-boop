@@ -1,7 +1,4 @@
-import { HexColorString } from 'discord.js';
-import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
-import { Subscriptions } from './Profile';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import Event from '../lib/Event';
 import Command from '../lib/CommandBuilder';
 import ContextMenu from '../lib/ContextMenuBuilder';
@@ -16,15 +13,15 @@ export interface ActionConfiguration {
     [key: string]: {
         Name: string;
         Type: ActionParam;
-        DefaultValue?: any;
+        DefaultValue?: string | number;
     };
-};
+}
 
 export interface ResolvableAuthor {
     Avatar: string;
     Username: string;
     Tag: string;
-};
+}
 
 export interface InternalCode {
     Events: Event[];

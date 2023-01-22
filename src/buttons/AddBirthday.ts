@@ -1,4 +1,4 @@
-import { ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel } from "discord.js";
+import { ButtonInteraction, ChannelType, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, PermissionFlagsBits } from "discord.js";
 import Button from "../lib/ButtonBuilder";
 
 export default class AddBirthday extends Button {
@@ -11,7 +11,7 @@ export default class AddBirthday extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         const event = await interaction.guild.scheduledEvents.create({
             entityType: GuildScheduledEventEntityType.External,
             name: "🎉 Server Birthday",
@@ -27,8 +27,8 @@ export default class AddBirthday extends Button {
             temporary: false,
             maxAge: 0,
             maxUses: 0,
-            //@ts-expect-error
-            channel: interaction.guild.rulesChannel || interaction.guild.channels.cache.filter(e => e.type = ChannelType.GuildText).first()
+            //@ts-expect-error we can create invites
+            channel: interaction.guild.rulesChannel || interaction.guild.channels.cache.filter(e => e.type = ChannelType.GuildText && e.permissionsFor(interaction.guild.members.me).has(PermissionFlagsBits.CreateInstantInvite)).first()
         });
 
         interaction.reply({

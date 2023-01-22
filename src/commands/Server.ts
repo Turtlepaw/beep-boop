@@ -1,6 +1,7 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, Colors, CommandInteraction, Interaction, PermissionsBitField, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Icons } from "../configuration";
+import { Logger } from "../logger";
 
 export enum Modules {
     AutonomousCleanup = "AUTO_DELETE_SETTINGS",
@@ -101,10 +102,12 @@ export async function ServerConfiguration(interaction: RepliableInteraction) {
     })
 
     try {
-    if (interaction.isButton()) {
-        await interaction.update(await payload());
-    } else return await interaction.reply(await payload());
-} catch {}
+        if (interaction.isButton()) {
+            return await interaction.update(await payload());
+        } else return await interaction.reply(await payload());
+    } catch (e) {
+        Logger.error(`Couldn't send server config: ${e}`)
+    }
 }
 
 export default class Server extends Command {
@@ -120,11 +123,7 @@ export default class Server extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
-        if (interaction.inCachedGuild() /*&& interaction.member?.permissions.has(PermissionsBitField.Flags.ManageGuild)*/) {
-            await ServerConfiguration(interaction);
-        } else {
-
-        }
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
+        await ServerConfiguration(interaction);
     }
 }

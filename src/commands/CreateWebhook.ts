@@ -1,12 +1,9 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, inlineCode, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, spoiler, Webhook, WebhookClient } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, inlineCode, PermissionFlagsBits, SlashCommandSubcommandBuilder, spoiler, Webhook, WebhookClient } from "discord.js";
+import { Embed, Icons, Permissions } from "../configuration";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons, Permissions } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
+import { GenerateURL } from "../utils/Discohook";
 import { FriendlyInteractionError } from "../utils/error";
 import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import { GenerateURL } from "../utils/Discohook";
 
 export default class Send extends Command {
     constructor() {
@@ -48,7 +45,7 @@ export default class Send extends Command {
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
-        const Message = await interaction.deferReply({ ephemeral: true, fetchReply: true });
+        //const Message = await interaction.deferReply({ ephemeral: true, fetchReply: true });
         const Channel = interaction.options.getChannel("channel", false) || interaction.channel;
         if (!Verifiers.GuildText(Channel)) return FriendlyInteractionError(interaction, "Channel must be a text channel.")
         if (!Verifiers.TextChannel(Channel)) return FriendlyInteractionError(interaction, "API Channel recived")
@@ -115,121 +112,5 @@ export default class Send extends Command {
             channelId: interaction.channel.id,
             url: Webhook.url
         });
-
-        //client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
-        return;
-
-        enum CustomId {
-            AsMessage = "AS_MESSAGE_CONTENT",
-            AsEmbed = "AS_EMBED_BUILDER",
-            ContentField = "MESSAGE_CONTENT_FIELD",
-            MessageModal = "MESSAGE_BUILDER_MODAL"
-        }
-
-        /*const MessageBuilder = MessageBuilderModal(
-            CustomId.MessageModal,
-            CustomId.ContentField,
-            null
-        );
-
-        const Buttons = new ActionRowBuilder<ButtonBuilder>()
-            .addComponents(
-                new ButtonBuilder()
-                    .setStyle(ButtonStyle.Primary)
-                    .setCustomId(CustomId.AsMessage)
-                    .setLabel("As Message"),
-                new ButtonBuilder()
-                    .setStyle(ButtonStyle.Secondary)
-                    .setCustomId(CustomId.AsEmbed)
-                    .setLabel("As Embed"),
-            );
-
-        await interaction.editReply({
-            content: "Select an option below.",
-            components: [Buttons],
-            //fetchReply: true,
-            //ephemeral: true
-        });
-
-        const Button = await Message.awaitMessageComponent({
-            time: 0,
-            componentType: ComponentType.Button,
-            filter: Filter(interaction.member, CustomId.AsMessage, CustomId.AsEmbed)
-        });
-
-        await interaction.editReply({
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(
-                        //@ts-expect-error
-                        Button.message.components[0].components.map(e => ButtonBuilder.from(e).setDisabled(true))
-                    )
-            ]
-        });
-
-        if (Button.customId == CustomId.AsEmbed) {
-            await Button.showModal(
-                EmbedModal("EMBED_MODAL", Message)
-            );
-
-            const Modal = await Button.awaitModalSubmit({
-                time: 0
-            });
-
-            const ModalEmbed = EmbedFrom(Modal);
-            const SentMessage = await Webhook.send({
-                embeds: [
-                    ModalEmbed
-                ]
-            }) as Message;
-
-            client.Storage.Create("custom_messages", [
-                ...client.Storage.GetArray("custom_messages"),
-                SentMessage.id
-            ]);
-
-            client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
-
-            await interaction.deleteReply();
-            await Modal.reply({
-                content: `${Emojis.Success} Successfully sent embed`,
-                ephemeral: true,
-                components: [
-                    CreateLinkButton(SentMessage.url, "Message")
-                ]
-            });
-        } else if (Button.customId == CustomId.AsMessage) {
-            await Button.showModal(
-                MessageBuilder
-            );
-
-            const Modal = await Button.awaitModalSubmit({
-                time: 0
-            });
-
-            const Fields = {
-                MessageContent: Modal.fields.getTextInputValue(CustomId.ContentField)
-            };
-
-            const SentMessage = await Webhook.send({
-                content: Fields.MessageContent
-            }) as Message;
-
-            client.Storage.Create("custom_messages", [
-                ...client.Storage.GetArray("custom_messages"),
-                SentMessage.id
-            ]);
-
-            client.Storage.Create(`custom_${SentMessage.id}`, Webhook.url);
-
-            await interaction.deleteReply();
-            await Modal.reply({
-                content: `${Emojis.Success} Successfully sent message`,
-                ephemeral: true,
-                components: [
-                    CreateLinkButton(SentMessage.url, "Message")
-                ]
-            });
-        }*/
     }
 }

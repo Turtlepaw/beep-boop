@@ -1,9 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage, MessageReaction, User } from "discord.js";
-import { Emojis } from "../configuration";
-import { SendAppealMessage } from "../utils/appeals";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Client, Events, MessageReaction, User } from "discord.js";
 import Event from "../lib/Event";
-import { Verifiers } from "../utils/verify";
-import { Ticket } from "../buttons/CreateTicket";
 
 export default class TicketService extends Event {
     constructor() {

@@ -1,5 +1,5 @@
 import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, PermissionFlagsBits } from "discord.js";
-import { Logging, SavedMessages } from "./@types/config";
+import { Logging } from "./@types/config";
 import { Embed as EmbedBuilder } from "./utils/EmbedBuilder";
 
 //export const token = process.env.TOKEN;
@@ -29,7 +29,7 @@ export const Logs: Logging = {
     // the `guildId` server (line 16)
     DM: "1040431450798956594",
     Error: "1042231033627684904",
-        Guild: "1028789308401918004"
+    Guild: "1028789308401918004"
 
 }
 export const guildId = "1049143063978709063"; //"1028789308401918004";
@@ -77,6 +77,7 @@ export enum Emojis {
 }
 
 export enum Icons {
+    Quotes = "<:Quotes:1066185365523792042>",
     Member = "<:Member:1065090193494904913>",
     Plane = "<:Plane:1065079776546660512>",
     Date = "<:Date:1061841890384814081>",
@@ -181,6 +182,7 @@ export enum DefaultIcons {
     ProUser = "⚡ (pro user) "
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const ResolvableIcons = (client: Client) => Icons;
 export const Messages = {
     Saved: {

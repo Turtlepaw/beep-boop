@@ -1,15 +1,12 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, APIButtonComponent, APIButtonComponentWithCustomId, ApplicationCommandType, ButtonBuilder, ButtonComponentData, ButtonStyle, ChannelType, Client, ComponentType, ContextMenuCommandType, discordSort, EmbedBuilder, Emoji, inlineCode, InteractionButtonComponentData, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, time, TimestampStyles, WebhookClient } from "discord.js";
-import { Embed, Emojis, Icons } from "../configuration";
+import { ActionRowBuilder, APIButtonComponentWithCustomId, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, MessageActionRowComponentBuilder, MessageContextMenuCommandInteraction, time, TimestampStyles } from "discord.js";
+import { Embed, Icons } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
-import { CreateLinkButton } from "../utils/buttons";
 import { Verifiers } from "../utils/verify";
 import { Filter } from "../utils/filter";
-import e from "express";
-import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal, ButtonBuilderModal } from "../utils/components";
-import { generateId } from "../utils/Id";
+import { ButtonBuilderModal, ChannelSelector } from "../utils/components";
 import { FindWebhook } from "../utils/Webhook";
-import { GenerateURL, ShortenURL } from "../utils/Discohook";
+import { ShortenURL } from "../utils/Discohook";
 import { GetTextInput } from "../utils/components";
 
 export default class DeleteThis extends ContextMenu {
@@ -29,7 +26,7 @@ export default class DeleteThis extends ContextMenu {
         const Webhook = await FindWebhook(interaction.targetId, interaction.channelId, client);
         if (Webhook == null) {
             return FriendlyInteractionError(interaction, "That message wasn't sent by me");
-        };
+        }
 
         const isTicketMessage =
             interaction.targetMessage.components[0]?.components != null &&
@@ -81,14 +78,10 @@ export default class DeleteThis extends ContextMenu {
                     .setDisabled(!isButtonMessage)
             );
 
-        const MessageBuilderModal = CreateMessageModal(
-            CustomIds.MessageBuilderModal,
-            CustomIds.ContentField,
-            interaction.targetMessage
-        );
+        const ChannelSelect = new ChannelSelector()
+            .SetChannelTypes(ChannelType.GuildText)
+            .SetCustomId(CustomIds.ChannelSelect);
 
-        const EmbedBuilderModal = EmbedModal(CustomIds.MessageBuilderModal, interaction.targetMessage);
-        const ChannelSelect = ChannelSelectMenu(CustomIds.ChannelSelect, interaction.guild.channels.cache);
         const Message = await interaction.reply({
             content: `${Icons.Flag} Select an option below.`,
             ephemeral: true,
@@ -106,13 +99,8 @@ export default class DeleteThis extends ContextMenu {
         });
 
         if (ButtonInteraction.customId == CustomIds.EditEmbed) {
-            await ButtonInteraction.deferUpdate()
-            const { targetMessage } = interaction;
-            const isMessage = targetMessage.content != '';
-            //const Webhook = await FindWebhook(targetMessage.id, interaction.channel.id, client);
+            await ButtonInteraction.deferUpdate();
 
-            // const date = new Date();
-            // date.setDate(date.getDate() + 7);
             const URL = await ShortenURL(interaction.targetMessage, Webhook)
             const date = new Date(URL.expires);
             await ButtonInteraction.editReply({
@@ -139,44 +127,10 @@ export default class DeleteThis extends ContextMenu {
                 ],
                 //ephemeral: true
             });
-            return;
-            await ButtonInteraction.showModal(
-                isMessage ?
-                    MessageBuilderModal :
-                    EmbedBuilderModal
-            );
-
-            const ModalInteraction = await ButtonInteraction.awaitModalSubmit({
-                time: 0
-            });
-
-            const targetEmbed = targetMessage.embeds[0];
-
-            if (isMessage) {
-                const Fields = {
-                    MessageContent: ModalInteraction.fields.getTextInputValue(CustomIds.ContentField)
-                };
-
-                await Webhook.editMessage(interaction.targetMessage.id, {
-                    content: Fields.MessageContent
-                });
-            } else {
-                const Embed = EmbedFrom(ModalInteraction)
-                await Webhook.editMessage(interaction.targetMessage.id, {
-                    embeds: [
-                        Embed
-                    ]
-                });
-            }
-
-            ModalInteraction.reply({
-                content: `${Emojis.Success} Message successfully edited.`,
-                ephemeral: true
-            })
         } else if (ButtonInteraction.customId == CustomIds.MoveEmbed) {
             await ButtonInteraction.update({
-                content: `${Emojis.TextChannel} Select a channel below`,
-                components: [ChannelSelect]
+                content: `${Icons.Channel} Select a channel below`,
+                components: ChannelSelect.toComponents()
             });
 
             const SelectInteraction = await Message.awaitMessageComponent({

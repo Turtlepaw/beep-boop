@@ -1,7 +1,7 @@
 import { Client, User } from "discord.js";
 import { Gift } from "../models/Gift";
 import { Subscriptions } from "../models/Profile";
-import { generateId, generatePassword } from "./Id";
+import { generatePassword } from "./Id";
 
 /**
  * Generates a unique gift code by looping until it generates a gift code that doesn't exist in the provided codes.

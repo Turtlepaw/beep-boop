@@ -1,16 +1,11 @@
-import { ActionRow, ActionRowBuilder, AnySelectMenuInteraction, bold, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, Colors, CommandInteraction, ComponentType, inlineCode, ModalBuilder, PermissionsBitField, roleMention, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, Client, ComponentType, roleMention } from "discord.js";
 import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
-import { BackComponent, ButtonBoolean, StatusBoolean, StringBoolean, TextBoolean } from "../utils/config";
-import ms from "ms";
+import { BackComponent, ButtonBoolean, StringBoolean, TextBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
-import { DisableButtons, ResolvedComponent, ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
-import { CleanupType, VerificationLevel } from "../models/Configuration";
-import { JSONArray } from "../utils/jsonArray";
+import { VerificationLevel } from "../models/Configuration";
 import { ModuleInformation, Modules } from "../commands/Server";
-import { ChannelSelectMenu, RoleSelector, Selector, StringSelectBuilder, StringSelector } from "../utils/components";
-import { generateId } from "../utils/Id";
+import { RoleSelector, StringSelectBuilder, StringSelector } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
 
 const Module = ModuleInformation.SERVER_VERIFICATION;
@@ -34,7 +29,7 @@ export default class VerificationConfiguration extends SelectOptionBuilder {
         });
     }
 
-    async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client, values: string[]) {
+    async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client) {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         let Verification = Configuration.Verification.Status;
         let Roles = Configuration.Verification.Roles;

@@ -1,8 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export enum ArrayType {
     JSONArray = "JSON_ARRAY",
     DefaultArray = "DEFAULT_ARRAY"
 }
 
+/**
+ * @deprecated use `simple-json` or a JSON transformer instead
+ */
 export class JSONArray<type = any> {
     public array: type[] = [];
     public type = ArrayType.JSONArray;

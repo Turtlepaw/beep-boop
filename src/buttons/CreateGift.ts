@@ -1,18 +1,10 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, inlineCode, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { FriendlyInteractionError, SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { ClientAdministrators, Embed, Emojis, GenerateTranscriptionURL, Icons } from "../configuration";
+import { ButtonInteraction, ComponentType, inlineCode, time, TimestampStyles } from "discord.js";
+import { FriendlyInteractionError } from "../utils/error";
+import { ClientAdministrators, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
-import { Ticket } from "./CreateTicket";
-import { Filter } from "../utils/filter";
-import { CreateLinkButton } from "../utils/buttons";
 import { CreateGift } from "../utils/Gift";
 import { Subscriptions } from "../models/Profile";
 import { StringSelectBuilder, StringSelector } from "../utils/components";
-import ms from "ms";
 
 export function GetSubscriptionName(name: Subscriptions | string) {
     return Object.entries(Subscriptions).find(e => e[1] == name)[0]
@@ -28,7 +20,7 @@ export default class CustomBranding extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         const Message = await interaction.deferReply({ ephemeral: true, fetchReply: true });
         if (!ClientAdministrators.includes(interaction.user.id)) return FriendlyInteractionError(interaction, "You're not authorized to use this.");
         await interaction.editReply({
@@ -75,7 +67,7 @@ export default class CustomBranding extends Button {
             .SetCustomId("SELECT_DATE")
             .Configure(e => e.setMaxValues(1));
 
-        const DateReply = await Type.update({
+        await Type.update({
             content: `${Icons.Date} Pick how long the gift's subscription should last.`,
             components: [Datepicker.toActionRow()]
         })

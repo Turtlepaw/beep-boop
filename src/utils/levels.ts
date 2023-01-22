@@ -50,7 +50,7 @@ export class Levels {
     }
 
     async AddXP(Id: string, GuildId: string, xp: number) {
-        let Current = await this.Level(Id, GuildId);
+        const Current = await this.Level(Id, GuildId);
         //const NewLevel = Math.floor(0.1 * Math.sqrt(xp));
         let NewLevel = xp >= 100 ? (Current.Level + 1) : Current.Level;
         let NewXP = (NewLevel > Current.Level) ? 0 : (xp + Current.XP); //old: xp + parseInt(xp.toString(), 10);
@@ -58,7 +58,7 @@ export class Levels {
         if (NewXP >= 100) {
             NewXP = 0;
             NewLevel = Current.Level + 1;
-        };
+        }
 
         this.repo.update(this.CreateId(Id, GuildId), {
             LastUpdated: new Date(),

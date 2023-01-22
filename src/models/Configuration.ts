@@ -1,8 +1,7 @@
-import { Events, HexColorString, ClientEvents } from 'discord.js';
-import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ValueTransformer } from "typeorm"
+import { Events, HexColorString } from 'discord.js';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 import { JSONTransformer, SetTransformer } from '../utils/transformers';
-import { ConfigurationEvents, GuildEvents } from '../@types/Logging';
+import { ConfigurationEvents } from '../@types/Logging';
 
 export enum CleanupType {
     System = "SYSTEM_CLEANUP",

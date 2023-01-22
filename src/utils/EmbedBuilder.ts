@@ -1,4 +1,4 @@
-import { Client, EmbedBuilder, Guild } from "discord.js";
+import { EmbedBuilder, Guild } from "discord.js";
 import { Colors } from "../configuration";
 import { Verifiers } from "@airdot/verifiers";
 

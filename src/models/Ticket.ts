@@ -1,12 +1,12 @@
-import { ColorResolvable, EmbedData, HexColorString } from 'discord.js';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, Generated } from "typeorm"
+import { EmbedData } from 'discord.js';
+import { Entity, Column, PrimaryColumn } from "typeorm";
 import { DateTransformer, MapTransformer } from "../utils/transformers";
 
 export interface DatabaseUser {
     Avatar: string;
     Username: string;
     Tag: string;
-};
+}
 
 export interface TicketMessage {
     Id: string;

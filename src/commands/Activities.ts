@@ -1,6 +1,5 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction, GuildMember, PermissionFlagsBits, PermissionsBitField, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
+import { ChatInputCommandInteraction, Client, GuildMember, PermissionFlagsBits, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Colors, Embed } from "../configuration";
 import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
 import { InteractionError, SendError } from "../utils/error";
 import { TriviaManager } from 'discord-trivia';
@@ -53,7 +52,7 @@ export default class Activities extends Command {
                 if (!(Member instanceof GuildMember)) {
                     SendError(interaction, "CANNOT PROCESS REQUEST: INVALID GUILD MEMBER")
                     return;
-                };
+                }
                 new MultiplayerRockPaperScissors()
                     .setMember(Member)
                     .StartGame(interaction);

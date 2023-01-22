@@ -1,6 +1,5 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, codeBlock, Colors, CommandInteraction, PermissionsBitField } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons } from "../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, codeBlock } from "discord.js";
+import { Icons } from "../configuration";
 import { Logger } from "../logger";
 import fs from "fs";
 import Button from "../lib/ButtonBuilder";
@@ -16,7 +15,7 @@ export default class DeveloperPortalButton extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         const Buttons = [
             new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(

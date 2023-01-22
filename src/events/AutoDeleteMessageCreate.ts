@@ -1,7 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, Message } from "discord.js";
 import Event from "../lib/Event";
-import { ServerSettings } from "../buttons/ServerSettings";
 import { MessageType } from "../models/Message";
 import { Logger } from "../logger";
 
@@ -14,6 +12,7 @@ export class ObjectArray {
     static includes(item: string, array: object[]) {
         for (const arrayItem of array) {
             if (typeof arrayItem != "object") throw new Error("array must be an array of objects");
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [k, v] of Object.entries(arrayItem)) {
                 if (v == item) return true;
                 else continue;

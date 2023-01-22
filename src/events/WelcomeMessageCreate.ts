@@ -1,7 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message, MessageType } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, Message, MessageType } from "discord.js";
 import Event from "../lib/Event";
-import { ServerSettings } from "../buttons/ServerSettings";
 import { MessageType as StoredMessageType } from "../models/Message";
 
 export default class LeaveAppealMessage extends Event {

@@ -1,8 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
-import { Emojis } from "../configuration";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, Message as GuildMessage } from "discord.js";
 import Event from "../lib/Event";
-import { Verifiers } from "../utils/verify";
 import { Ticket } from "../buttons/CreateTicket";
 
 export default class TicketService extends Event {

@@ -1,12 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis, Icons } from "../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
+import { Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
-import { Ticket } from "./CreateTicket";
 
 export default class ClaimTicket extends Button {
     constructor() {
@@ -18,7 +12,7 @@ export default class ClaimTicket extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         await interaction.update({
             components: [
                 new ActionRowBuilder<ButtonBuilder>()

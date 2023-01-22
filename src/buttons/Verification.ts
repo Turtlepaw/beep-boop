@@ -1,15 +1,8 @@
-import { ActionRow, ActionRowBuilder, ActivityType, AttachmentBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, ComponentType, EmbedBuilder, Events, GuildMember, GuildMemberRoleManager, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, InteractionReplyOptions, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { FriendlyInteractionError, SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { Colors, Embed, GenerateTranscriptionURL, Icons } from "../configuration";
+import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, GuildMember, GuildMemberRoleManager } from "discord.js";
+import { FriendlyInteractionError } from "../utils/error";
+import { Colors, Embed, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { Filter } from "../utils/filter";
 import { VerificationLevel } from "../models/Configuration";
-import { generateId, generatePassword } from "../utils/Id";
-import { create } from "svg-captcha";
-import ConvertSVG from "svg2img";
-import { Canvas } from "canvas";
 import { Captcha } from "captcha-canvas";
 import { isSuspicious as isMemberSuspicious } from "../utils/verifyMember";
 import { randomBytes } from "crypto";
@@ -19,7 +12,7 @@ export function randomText(characters: number): string {
     return randomBytes(characters).toString('hex').toUpperCase().substr(0, characters);
 }
 
-function shuffle<T = any>(array: T[]): T[] {
+function shuffle<T = unknown>(array: T[]): T[] {
     let currentIndex = array.length;
     let randomIndex: number;
 
@@ -128,7 +121,7 @@ export default class Verification extends Button {
         let MemberRoles = interaction.member.roles as GuildMemberRoleManager;
         if (Array.isArray(MemberRoles)) {
             MemberRoles = (await interaction.guild.members.fetch(interaction.user.id)).roles;
-        };
+        }
 
         if (Configuration.Verification.Roles.map(e => MemberRoles.cache.has(e)).includes(true)) {
             FriendlyInteractionError(interaction, "You're already verified.");
@@ -137,9 +130,9 @@ export default class Verification extends Button {
 
         async function AssignRoles() {
             Roles.forEach(Role => MemberRoles.add(Role));
-        };
+        }
 
-        const Verified: any = {
+        const Verified = {
             ephemeral: true,
             components: [],
             files: [],
@@ -147,7 +140,7 @@ export default class Verification extends Button {
             content: `${Icons.Unlock} You've completed the captcha, you can now continue in this server${GiveEndorsements ? ", and since you've completed the captcha, we've given you an endorsement" : ""}.`
         };
 
-        const Failed: any = {
+        const Failed = {
             ephemeral: true,
             components: [],
             embeds: [],

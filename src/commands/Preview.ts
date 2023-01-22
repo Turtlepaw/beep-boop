@@ -1,12 +1,6 @@
-import { ActionRow, inlineCode, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, Webhook, WebhookClient } from "discord.js";
+import { inlineCode, AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBooleanOption, SlashCommandStringOption } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "@airdot/verifiers";
-import { CreateLinkButton } from "../utils/buttons";
-import { GuildInformation, MemberInformation } from "../utils/info";
 import { getScreenshot, ResolveURL } from "../utils/Web";
 
 export default class Send extends Command {
@@ -31,7 +25,7 @@ export default class Send extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         const Link = interaction.options.getString("website")
         const ephemeral = interaction.options.getBoolean("hidden") ?? true;
 

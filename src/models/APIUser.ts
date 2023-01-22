@@ -1,8 +1,4 @@
-import { HexColorString } from 'discord.js';
-import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
-import { Subscriptions } from './Profile';
-import { DateTransformer } from '../utils/transformers';
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
 @Entity()
 export class APIUser {

@@ -1,16 +1,8 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, codeBlock, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, inlineCode, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextInputBuilder, TextInputStyle, time, TimestampStyles, WebhookClient } from "discord.js";
-import { Embed, Emojis, Icons, Permissions } from "../configuration";
-import { FriendlyInteractionError, SendError } from "../utils/error";
-import { CreateLinkButton } from "../utils/buttons";
-import { Verifiers } from "../utils/verify";
-import { Filter } from "../utils/filter";
-import e from "express";
-import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
-import { generateId } from "../utils/Id";
-import { FindLegacyWebhook, FindWebhook } from "../utils/Webhook";
-import { GenerateURL, ShortenURL } from "../utils/Discohook";
-import { CreatePaste } from "../utils/Vaultbin";
+import { ApplicationCommandType, Client, MessageContextMenuCommandInteraction } from "discord.js";
+import { Permissions } from "../configuration";
+import { FriendlyInteractionError } from "../utils/error";
+import { FindLegacyWebhook } from "../utils/Webhook";
 
 export default class Migrate extends ContextMenu {
     constructor() {

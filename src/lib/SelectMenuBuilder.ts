@@ -1,5 +1,6 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AnySelectMenuInteraction, AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionFlags, PermissionResolvable, PermissionsString } from "discord.js";
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { AnySelectMenuInteraction, Client } from "discord.js";
 import { Builder, BuilderOptions } from "./Builder";
 
 export interface ButtonBuilderOptions extends BuilderOptions {
@@ -21,5 +22,6 @@ export default class SelectOptionBuilder extends Builder {
         interaction: AnySelectMenuInteraction,
         client: Client,
         value: string[]
-    ): Promise<any> { }
+        //@ts-expect-error this is a builder
+    ): Promise<unknown> { }
 }

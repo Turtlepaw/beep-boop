@@ -1,7 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
-import { ModeratorSettings } from "../buttons/ModeratorSettings";
-import { Emojis, Icons } from "../configuration";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, Message as GuildMessage } from "discord.js";
+import { Icons } from "../configuration";
 import Event from "../lib/Event";
 import { Verifiers } from "@airdot/verifiers";
 import { Logger } from "../logger";

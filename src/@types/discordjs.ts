@@ -6,7 +6,6 @@ import { GuildConfigurationManager, StorageManager } from "../utils/storage";
 import { ErrorManager } from "../utils/error";
 import { DataSource } from "typeorm";
 // Import Models...
-import { GuildConfiguration } from "../models/Configuration";
 import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
 import { Reminder } from "../models/Reminders";

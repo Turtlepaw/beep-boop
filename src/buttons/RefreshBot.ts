@@ -1,8 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, NewsChannel as GuildNewsChannel, SelectMenuBuilder, SelectMenuOptionBuilder, TextInputBuilder, TextInputComponent, TextInputStyle } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
-import { ClientAdministrators, Embed, Emojis, guildId, Icons } from "../configuration";
+import { ButtonInteraction, Client } from "discord.js";
+import { ClientAdministrators, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { Filter } from "../utils/filter";
 import { Components } from "../utils/defaults";
 
 export interface ModeratorSettings {

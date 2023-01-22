@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, inlineCode, userMention } from "discord.js";
-import { Embed, Emojis, Icons } from "../configuration";
+import { ActionRowBuilder, ButtonInteraction, Client, ModalBuilder, TextInputBuilder, TextInputStyle, inlineCode, userMention } from "discord.js";
+import { Embed, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class BlockAppealUser extends Button {
@@ -14,7 +14,6 @@ export default class BlockAppealUser extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client, Id: string) {
-        const UserId = Id;
         const config = await client.Storage.Configuration.forGuild(interaction.guild);
 
         const ModalId = "SET_BLOCK_REASON";

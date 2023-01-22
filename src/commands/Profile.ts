@@ -1,16 +1,11 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, InteractionType, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, User, UserContextMenuCommandInteraction, Webhook, WebhookClient } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, ComponentType, ModalBuilder, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, User, UserContextMenuCommandInteraction } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
 import { Embed, Emojis, Icons } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import { GuildInformation, MemberInformation } from "../utils/info";
-import { Endorse, FetchUser, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
+import { Endorse, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
 
-export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral: boolean = true, user?: User) {
+export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral = true, user?: User) {
     if (user == null && interaction.isContextMenuCommand()) user = interaction.targetUser;
     const { client } = interaction;
     const profile = await ResolveUser(user.id, client);
@@ -113,7 +108,7 @@ export default class Send extends Command {
             View = "view",
             Endorse = "endorse",
             Customimize = "customimize"
-        };
+        }
         const Subcommand = interaction.options.getSubcommand() as Subcommands;
         const user = interaction.options.getUser("member") || interaction.user;
         const ephemeral = interaction.options.getBoolean("hidden", false) || true;

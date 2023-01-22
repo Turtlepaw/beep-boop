@@ -1,6 +1,6 @@
-import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalActionRowComponentBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
-import { InteractionError, SendError } from "../utils/error";
-import { Embed, Emojis, Icons } from "../configuration";
+import { ActionRowBuilder, ButtonInteraction, ChannelType, Client, ModalBuilder, PermissionFlagsBits, TextInputBuilder, TextInputStyle } from "discord.js";
+import { InteractionError } from "../utils/error";
+import { Embed, Icons } from "../configuration";
 import Button from "../lib/ButtonBuilder";
 
 export default class AppealButtons extends Button {
@@ -47,8 +47,8 @@ export default class AppealButtons extends Button {
             });
 
             const Invite = await interaction.guild.invites.create(
-                //@ts-expect-error
-                interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText).first(), {
+                //@ts-expect-error we can create invites in here
+                interaction.guild.channels.cache.filter(e => e.type == ChannelType.GuildText && e.permissionsFor(interaction.guild.members.me).has(PermissionFlagsBits.CreateInstantInvite)).first(), {
                 maxAge: 0,
                 maxUses: 3
             });

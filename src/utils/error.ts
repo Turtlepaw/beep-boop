@@ -1,8 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, codeBlock } from "@discordjs/builders";
-import { ButtonStyle, ComponentType, Guild, Interaction, RepliableInteraction, RequestManager, inlineCode } from "discord.js";
+import { ButtonStyle, ComponentType, Guild, Interaction, RepliableInteraction, inlineCode } from "discord.js";
 import { DEVELOPER_BUILD } from "../index";
-import { Embed, Emojis, Icons, SupportServerInvite } from "../configuration";
-import { generateId, generatePassword } from "./Id";
+import { Embed, Icons, SupportServerInvite } from "../configuration";
 import { InteractionReplyManager } from "./classes";
 
 export interface ErrorMessage {
@@ -86,7 +85,7 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
     }
 }
 
-export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string, ephemeral: boolean = true) {
+export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string, ephemeral = true) {
     if (interaction.isRepliable()) {
         if (interaction.deferred || interaction.replied) {
             await interaction.editReply({
@@ -109,7 +108,7 @@ export interface InteractionErrorOptions {
     ephemeral?: boolean;
     error?: string;
     createError?: boolean;
-};
+}
 
 const DefaultInteractionErrorOptions: Partial<InteractionErrorOptions> = {
     icon: Icons.Error,

@@ -1,6 +1,5 @@
-import { ColorResolvable, HexColorString } from 'discord.js';
 import { SetTransformer } from '../utils/transformers';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 export enum Subscriptions {
     Pro = "PRO",

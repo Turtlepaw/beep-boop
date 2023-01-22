@@ -1,14 +1,5 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
+import { ActionRowBuilder, ButtonInteraction, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
-import { Ticket } from "./CreateTicket";
-import { Filter } from "../utils/filter";
-import { CreateLinkButton } from "../utils/buttons";
 
 export const RedeemCodeModal = "REDEEM_CODE_MODAL";
 export default class RedeemCode extends Button {
@@ -21,7 +12,7 @@ export default class RedeemCode extends Button {
         })
     }
 
-    async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+    async ExecuteInteraction(interaction: ButtonInteraction) {
         await interaction.showModal(
             new ModalBuilder()
                 .setTitle("Redeem Code")

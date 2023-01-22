@@ -1,14 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, Guild, Message, MessageActivityType, ModalBuilder, OAuth2Scopes, OverwriteType, PermissionFlagsBits, PermissionsString, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, TextBasedChannel, TextChannel, TextChannelResolvable, TextInputBuilder, TextInputStyle, Webhook, WebhookClient } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Guild, PermissionFlagsBits, SlashCommandSubcommandBuilder, TextChannel } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons, Permissions } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
-import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
-import { GuildInformation, MemberInformation } from "../utils/info";
-import { Endorse, FetchUser, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
-import e from "express";
+import { Embed, Icons, Permissions } from "../configuration";
 
 export async function Lock(guild: Guild, channel: TextChannel) {
     await channel.permissionOverwrites.edit(guild.id, {
@@ -57,12 +49,12 @@ export default class Channel extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         enum Subcommands {
             Lock = "channel",
             Unlock = "remove",
             LockServer = "server"
-        };
+        }
         const Subcommand = interaction.options.getSubcommand() as Subcommands;
 
         const ActionButtons = new ActionRowBuilder<ButtonBuilder>()

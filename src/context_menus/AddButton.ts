@@ -1,15 +1,14 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { APIButtonComponent, APIButtonComponentWithURL, APIRole, ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, Client, ComponentType, ContextMenuCommandType, InteractionType, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageComponent, MessageComponentInteraction, MessageContextMenuCommandInteraction, PermissionFlagsBits, RepliableInteraction, Role, RoleSelectMenuInteraction, SelectMenuBuilder, SelectMenuInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder, WebhookClient } from "discord.js";
+import { APIButtonComponent, APIButtonComponentWithURL, APIRole, ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, ComponentType, MessageActionRowComponentBuilder, MessageComponentInteraction, MessageContextMenuCommandInteraction, ModalSubmitInteraction, Role, RoleSelectMenuInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
 import { Filter } from "../utils/filter";
-import { Emojis, Icons, Permissions } from "../configuration";
+import { Icons, Permissions } from "../configuration";
 import { ButtonBuilderModal, GetTextInput, RoleSelector } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
 import { FindWebhook } from "../utils/Webhook";
 import { ArrayUtils } from "../utils/classes";
-import { ResolveComponent } from "@airdot/activities/dist/utils/Buttons";
 
 function isApiLinkButton(component: APIButtonComponent): component is APIButtonComponentWithURL {
-    //@ts-expect-error
+    //@ts-expect-error were checking if thats not null
     return component?.url != null;
 }
 
@@ -64,8 +63,8 @@ export default class AddButton extends ContextMenu {
         //const Webhook = new WebhookClient({ url: WebhookURL });
         const ButtonModal = ButtonBuilderModal(ModalId.Modal, Ids);
         const LinkButtonModal = ButtonBuilderModal(ModalId.Modal, Ids, ButtonStyle.Link);
-        let Button: ButtonBuilder = new ButtonBuilder();
-        let ReplyMessage: any;
+        const Button: ButtonBuilder = new ButtonBuilder();
+        let ReplyMessage: ButtonInteraction | ModalSubmitInteraction;
         const ButtonTypeSelector = new ActionRowBuilder<SelectMenuBuilder>()
             .addComponents(
                 new StringSelectMenuBuilder()
@@ -202,7 +201,7 @@ export default class AddButton extends ContextMenu {
             time: 0
         });
 
-        let ReplyTo: any;
+        let ReplyTo: ButtonInteraction | ModalSubmitInteraction;
         if (Value.customId == Id.CustomValues) {
             Value.showModal(
                 isLinkButton ? LinkButtonModal : ButtonModal
@@ -277,10 +276,11 @@ export default class AddButton extends ContextMenu {
                         .setCustomId(ButtonStyle[ButtonStyle.Success])
                 );
 
-            const StyleMessage = await ReplyTo.update({
-                content: `${Icons.Tag} Select a button style`,
-                components: [ButtonStyles]
-            });
+                //@ts-expect-error this error doesn't matter
+            /*const StyleMessage =*/ await (ReplyTo.isButton() ? ReplyTo.update : ReplyTo.reply)({
+                    content: `${Icons.Tag} Select a button style`,
+                    components: [ButtonStyles]
+                });
 
             ReplyMessage = await Message.awaitMessageComponent({
                 componentType: ComponentType.Button,
@@ -320,10 +320,10 @@ export default class AddButton extends ContextMenu {
             components: []
         };
 
-        if (ReplyMessage?.update != null) {
-            await (ReplyMessage as MessageComponentInteraction).update(Options);
+        if (ReplyMessage.isButton()) {
+            await ReplyMessage.update(Options);
         } else {
-            await (ReplyMessage as RepliableInteraction).editReply({
+            await ReplyMessage.editReply({
                 components: [],
                 content: "\u200B"
             });

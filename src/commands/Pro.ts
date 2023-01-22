@@ -1,11 +1,6 @@
-import { ActionRow, ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, Emoji, ImageFormat, Message, OAuth2Scopes, PermissionFlagsBits, SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandChannelOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandUserOption, time, TimestampStyles, Webhook, WebhookClient } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, time, TimestampStyles } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Colors, Embed, Emojis, Icons, SupportServerInvite } from "../configuration";
-import { Filter } from "../utils/filter";
-import { EmbedFrom, EmbedModal, MessageBuilderModal } from "../utils/components";
-import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { CreateLinkButton } from "../utils/buttons";
+import { Embed, Icons, SupportServerInvite } from "../configuration";
 import { ResolveUser } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
 import { GetSubscriptionName } from "../buttons/CreateGift";

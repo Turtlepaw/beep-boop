@@ -1,11 +1,6 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, SelectMenuBuilder, SelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, Colors, ComponentType, ModalBuilder, ModalSubmitInteraction, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
 import { Embed, Emojis, GenerateTranscriptionURL } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
 import { Ticket } from "./CreateTicket";
 import { Filter } from "../utils/filter";
 import { CreateLinkButton } from "../utils/buttons";
@@ -81,7 +76,7 @@ export default class CloseTicket extends Button {
             ephemeral: true
         });
 
-        const ButtonInteraction = await interaction.channel.awaitMessageComponent({
+        const ButtonInteraction = await Message.awaitMessageComponent({
             time: 0,
             componentType: ComponentType.Button,
             filter: Filter({
@@ -107,7 +102,7 @@ export default class CloseTicket extends Button {
         if (LogChannel.type != ChannelType.GuildText) {
             await interaction.reply("Something didn't go right, contact the server owner about this.");
             return;
-        };
+        }
 
         LogChannel.send({
             embeds: [

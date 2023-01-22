@@ -1,12 +1,10 @@
-import { Client, Guild } from "discord.js";
-import { KeyFileStorage } from "key-file-storage/dist/src/key-file-storage";
+import { Client } from "discord.js";
 import "reflect-metadata"
 import { CleanupType, CounterChannel, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType, VerificationLevel, VerificationPanel } from "../models/Configuration";
-import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
+import { DataSource, DeepPartial, FindOptionsWhere, ObjectID, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 import { CustomBot } from "../models/CustomBot";
 import { JSONArray } from "./jsonArray";
-import { generateId } from "./Id";
 // Import Models
 import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
@@ -24,7 +22,7 @@ import { ConfigurationEvents } from "../@types/Logging";
 export interface CleanupChannel {
     Type: CleanupType;
     ChannelId: string;
-};
+}
 
 class ResolvableConfiguration {
     // Guild Information
@@ -212,7 +210,7 @@ export async function InitializeProvider(client: Client) {
     }
 }
 
-export class StorageManager<repo = any> {
+export class StorageManager<repo = unknown> {
     public Storage: DataSource;
     public Repository: Repository<repo>;
     constructor(storage: DataSource, repository: string) {
@@ -241,13 +239,13 @@ export class StorageManager<repo = any> {
         return this.Repository.findOneBy(findBy);
     }
 
-    ResolveArray<arrayType = any>(array: arrayType[]): arrayType[] {
+    ResolveArray<arrayType = unknown>(array: arrayType[]): arrayType[] {
         if (array == null || array.length <= 0) return [];
         return array;
     }
 
     Create(value: DeepPartial<repo> | DeepPartial<repo>[]) {
-        //@ts-expect-error
+        //@ts-expect-error we're giving the correct data
         return this.Repository.save(value);
     }
 
@@ -256,15 +254,15 @@ export class StorageManager<repo = any> {
     }
 
     async HasInArray(findBy: FindOptionsWhere<repo>, key: string) {
-        const found = await this.Repository.findOneBy(findBy) as any[];
-        const Resolved = this.ResolveArray<any>(found);
+        const found = await this.Repository.findOneBy(findBy) as unknown[];
+        const Resolved = this.ResolveArray<unknown>(found);
         return Resolved.includes(key);
     }
 
     async EditOrCreate(findBy: FindOptionsWhere<repo>, newValue: DeepPartial<repo>) {
         const entity = await this.Get(findBy);
         if (entity == null) return this.Create(newValue);
-        //@ts-expect-error
+        //@ts-expect-error newValue should be working
         await this.Repository.update(findBy, newValue);
     }
 
@@ -274,7 +272,7 @@ export class StorageManager<repo = any> {
 
     async EditArray(findBy: FindOptionsWhere<repo>, ItemKey: string, AddedItems: repo[]) {
         const value = await this.Repository.findOneBy(findBy) as repo[];
-        //@ts-expect-error
+        //@ts-expect-error this is correct
         return await this.Repository.update(findBy, [
             ...value,
             ...AddedItems
@@ -301,12 +299,6 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
     }
 
     CreateConfiguration(guild: { id: string; name: string; }) {
-        //if (this.CreatedGuilds.includes(guild.id)) return;
-        const EmptyArray = JSON.stringify({
-            array: []
-        });
-        //if (this.CreatedGuilds.includes(guild.id)) return;
-        //this.CreatedGuilds.push(guild.id);
         return this.Repository.save({
             // Server Information
             Id: guild.id,

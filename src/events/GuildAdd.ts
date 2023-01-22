@@ -1,8 +1,6 @@
-import { Colors as DiscordColors, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelFlagsBitField, ChannelType, Client, Events, Guild, GuildMember, Message as GuildMessage, NewsChannel as GuildNewsChannel } from "discord.js";
-import { Colors, Embed, Emojis, guildId, Logs, News } from "../configuration";
-import { SendAppealMessage } from "../utils/appeals";
+import { Colors as DiscordColors, Client, Events, Guild, NewsChannel as GuildNewsChannel } from "discord.js";
+import { Colors, News } from "../configuration";
 import Event from "../lib/Event";
-import { Verifiers } from "../utils/verify";
 import { Logger } from "../logger";
 
 export default class DMService extends Event {
@@ -14,7 +12,7 @@ export default class DMService extends Event {
 
     async ExecuteEvent(client: Client, Guild: Guild) {
         try {
-            const Channels = await Guild.channels.fetch();
+            //const Channels = await Guild.channels.fetch();
             const UpdatesGuild = await client.guilds.fetch(News.Guild);
             const UpdatesChannel = await UpdatesGuild.channels.fetch(News.Channel) as GuildNewsChannel;
             const PublicUpdatesChannel = Guild.publicUpdatesChannel;
@@ -31,7 +29,7 @@ export default class DMService extends Event {
                 color: client.user.username.includes("Canary") ? DiscordColors.Blurple : Colors.BrandColor
             });
         } catch (e) {
-
+            Logger.error(`Failed chaning my role: ${e}`);
         }
     }
 }

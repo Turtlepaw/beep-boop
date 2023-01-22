@@ -1,9 +1,8 @@
-import { ActionRow, ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction, ComponentType, EmbedBuilder, OAuth2Scopes, PermissionFlagsBits, SelectMenuOptionBuilder, SlashCommandBooleanOption, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, ComponentType, EmbedBuilder, OAuth2Scopes, PermissionFlagsBits, SelectMenuOptionBuilder, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
 import SlashCommandBuilder, { Categories } from "../lib/CommandBuilder";
 import { ClientAdministrators, Dot, Embed, SupportServerInvite } from "../configuration";
 import { FormatCommandName } from "../utils/text";
 import ContextMenuBuilder from "../lib/ContextMenuBuilder";
-import { CommandBuilderType } from "../lib/Builder";
 import { Pages } from "../utils/Pages";
 import { Filter } from "../utils/filter";
 import { CommandOptions } from "../utils/defaults";
@@ -107,8 +106,8 @@ export default class Help extends SlashCommandBuilder {
                 ] : [])
             )
 
-        //@ts-expect-error
-        let CategoryPages: {
+        //@ts-expect-error there's going to be something there
+        const CategoryPages: {
             Server: Pages;
             Images: Pages;
             Information: Pages;

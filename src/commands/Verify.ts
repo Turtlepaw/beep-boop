@@ -1,6 +1,5 @@
-import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed } from "../configuration";
 import { Verification } from "../utils/Verification";
 
 export default class Verify extends Command {
@@ -16,7 +15,7 @@ export default class Verify extends Command {
         });
     }
 
-    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+    async ExecuteCommand(interaction: ChatInputCommandInteraction) {
         await Verification({
             interaction
         });

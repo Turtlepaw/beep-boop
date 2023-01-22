@@ -1,5 +1,8 @@
-import { SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandOptionsOnlyBuilder, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
-import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, CommandInteraction, PermissionResolvable, PermissionsString, SlashCommandUserOption } from "discord.js";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { SharedSlashCommandOptions, SlashCommandAttachmentOption, SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandIntegerOption, SlashCommandMentionableOption, SlashCommandNumberOption, SlashCommandRoleOption, SlashCommandStringOption, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
+import { ApplicationCommandOptionType, AutocompleteInteraction, ChatInputCommandInteraction, Client, SlashCommandUserOption } from "discord.js";
 import { Builder, BuilderOptions, CommandBuilderType } from "./Builder";
 
 export type SlashCommandOption = SlashCommandRoleOption |
@@ -79,10 +82,12 @@ export default class Command extends Builder {
     public async ExecuteCommand(
         interaction: ChatInputCommandInteraction,
         client: Client
-    ): Promise<any> { }
+        //@ts-expect-error
+    ): Promise<unknown> { }
 
     public async ExecuteAutocompleteRequest(
         interaction: AutocompleteInteraction,
         client: Client
-    ): Promise<any> { }
+        //@ts-expect-error
+    ): Promise<unknown> { }
 }

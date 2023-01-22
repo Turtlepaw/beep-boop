@@ -1,16 +1,7 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ActionRowBuilder, AnyComponentBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, codeBlock, ComponentType, ContextMenuCommandType, EmbedBuilder, Emoji, ImageFormat, inlineCode, MessageActionRowComponentBuilder, MessageComponentBuilder, MessageContextMenuCommandInteraction, ModalBuilder, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, spoiler, TextChannel, TextInputBuilder, TextInputStyle, time, TimestampStyles, WebhookClient } from "discord.js";
-import { Embed, Emojis, Icons } from "../configuration";
-import { FriendlyInteractionError, SendError } from "../utils/error";
-import { CreateLinkButton } from "../utils/buttons";
-import { Verifiers } from "../utils/verify";
-import { Filter } from "../utils/filter";
-import e from "express";
-import { ChannelSelectMenu, EmbedFrom, EmbedModal, EmbedModalFields, MessageBuilderModal as CreateMessageModal } from "../utils/components";
-import { generateId } from "../utils/Id";
-import { FindWebhook } from "../utils/Webhook";
-import { GenerateURL, ShortenURL } from "../utils/Discohook";
-import fetch from "node-fetch";
+import { ActionRowBuilder, ApplicationCommandType, ButtonBuilder, ButtonStyle, Client, ImageFormat, inlineCode, MessageContextMenuCommandInteraction, PermissionFlagsBits, spoiler, TextChannel } from "discord.js";
+import { Embed, Icons } from "../configuration";
+import { ShortenURL } from "../utils/Discohook";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {

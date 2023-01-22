@@ -1,16 +1,7 @@
-import { ActionRow, ActionRowBuilder, ActivityType, ButtonBuilder, ButtonInteraction, ButtonStyle, CategoryChannel, ChannelType, Client, Colors, ComponentType, EmbedBuilder, Events, Guild, GuildScheduledEventEntityType, GuildScheduledEventPrivacyLevel, ModalBuilder, ModalSubmitInteraction, PermissionFlagsBits, SelectMenuBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, TextChannel, TextInputBuilder, TextInputComponent, TextInputStyle, time, TimestampStyles, } from "discord.js";
-import { FriendlyInteractionError, SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
-import { SendAppealMessage } from "../utils/appeals";
-import { Embed, Emojis, GenerateTranscriptionURL, Icons, Permissions } from "../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, Guild, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
+import { FriendlyInteractionError } from "../utils/error";
+import { Embed, Icons, Permissions } from "../configuration";
 import Button from "../lib/ButtonBuilder";
-import { DiscordButtonBuilder } from "../lib/DiscordButton";
-import { generateId } from "../utils/Id";
-import { Ticket } from "./CreateTicket";
-import { Filter } from "../utils/filter";
-import { CreateLinkButton } from "../utils/buttons";
-import { ChannelSelectMenu } from "../utils/components";
-import { customClients, StartCustomBot } from "../utils/customBot";
 import { AddGuild, RemoveGuild, ResolveUser } from "../utils/Profile";
 import { Subscriptions } from "../models/Profile";
 
@@ -27,7 +18,7 @@ export default class SubscriptionManageGuilds extends Button {
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
         await interaction.deferReply({ ephemeral: true });
         const Profile = await ResolveUser(interaction.user.id, client);
-        let ProfileGuilds: Set<string> = Profile.guilds ?? new Set();
+        const ProfileGuilds: Set<string> = Profile.guilds ?? new Set();
         if (Profile.subscription == Subscriptions.None) return FriendlyInteractionError(interaction, "You don't have an active subscription on your account.")
         enum Id {
             RemoveGuildSelector = "REMOVE_A_GUILD_SELECTOR",
@@ -58,7 +49,7 @@ export default class SubscriptionManageGuilds extends Button {
             .setMinValues(1);
 
         const PremiumGuilds: Guild[] = [];
-        if (Profile.guilds != null) for (const ProGuild of Profile?.guilds.values()) {
+        if (Profile?.guilds != null && Profile?.guilds != undefined) for (const ProGuild of Profile.guilds.values()) {
             const resolved = await client.guilds.fetch(ProGuild);
             PremiumGuilds.push(resolved)
         }

@@ -1,9 +1,9 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, Events, Guild, GuildMember, Interaction, ModalSubmitInteraction, User } from "discord.js";
+import { Client, ComponentType, Events, Interaction } from "discord.js";
 import { Filter } from "../utils/filter";
-import { Embed, Icons } from "../configuration";
+import { Icons } from "../configuration";
 import Event from "../lib/Event";
 import { CustomBrandingModal } from "../buttons/ActivateBranding";
-import { CustomBotOptions, HandleBot, StartCustomBot } from "../utils/customBot";
+import { CustomBotOptions, HandleBot } from "../utils/customBot";
 import { ChannelSelectMenu } from "../utils/components";
 import { Verifiers } from "@airdot/verifiers";
 import { FriendlyInteractionError } from "../utils/error";
@@ -11,7 +11,7 @@ import { Logger } from "../logger";
 import { CustomBot } from "../models/CustomBot";
 import { DeepPartial } from "typeorm";
 
-export async function SetupBot(customClient: Client, client: Client, options: CustomBotOptions & { token: string; }, callback?: (value: DeepPartial<CustomBot>) => any) {
+export async function SetupBot(customClient: Client, client: Client, options: CustomBotOptions & { token: string; }, callback?: (value: DeepPartial<CustomBot>) => unknown) {
     const value = await client.Storage.CustomBots.Create({
         Token: options.token,
         GuildId: options.guild.id,
@@ -74,11 +74,11 @@ export default class AppealModal extends Event {
             botToken: Fields.BotToken
         });
 
-        function isResolvable(c: any): c is {
+        function isResolvable(c: unknown): c is {
             CustomClient: Client<boolean>;
             config: DeepPartial<CustomBot>;
         } {
-            return c?.CustomClient != null;
+            return c?.["CustomClient"] != null;
         }
 
         if (bot == null) {

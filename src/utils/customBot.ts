@@ -1,9 +1,7 @@
-import { ActionRowBuilder, ActivityType, ButtonBuilder, ButtonStyle, ChannelType, Client, codeBlock, Events, Guild, inlineCode, OAuth2Scopes, Partials, PermissionFlagsBits, TextBasedChannel, TextChannel, time, TimestampStyles, User, WebhookClient } from "discord.js";
+import { ActionRowBuilder, ActivityType, ButtonBuilder, ButtonStyle, Client, codeBlock, Events, Guild, inlineCode, OAuth2Scopes, PermissionFlagsBits, TextBasedChannel, TextChannel, time, TimestampStyles, User, WebhookClient } from "discord.js";
 import { SetupBot } from "../events/BotTokenModal";
-import { DEFAULT_CLIENT_OPTIONS, HandleAnyBotStart, HandleBotStart } from "..";
-import { Colors, Embed, ResolvableIcons, SupportServerInvite, Website, WebsiteLink } from "../configuration";
-import { CreateLinkButton } from "./buttons";
-import { GuildConfiguration } from "../models/Configuration";
+import { DEFAULT_CLIENT_OPTIONS, HandleAnyBotStart } from "..";
+import { Embed, ResolvableIcons, SupportServerInvite } from "../configuration";
 import { Logger } from "../logger";
 import { DeepPartial } from "typeorm";
 import { CustomBot } from "../models/CustomBot";
@@ -15,49 +13,7 @@ export interface CustomBotOptions {
     channel: TextBasedChannel;
 }
 
-export let customClients = {};
-
-export async function CreateLimitedBot(botToken: string, client: Client, error: string, options?: CustomBotOptions) {
-    console.log("a")
-    const CustomClient = new Client({
-        intents: [
-            "GuildWebhooks"
-        ],
-        partials: [
-            Partials.Channel
-        ]
-    });
-
-    // Get everything ready...
-    CustomClient.on(Events.ClientReady, async () => {
-        if (options != null) await SetupBot(CustomClient, options.client, {
-            ...options,
-            token: botToken
-        });
-
-        const Bot = await client.Storage.CustomBots.Get({
-            Token: botToken
-        });
-
-        try {
-            const Guild = await CustomClient.guilds.fetch(Bot.GuildId);
-            const Channel = await Guild.channels.fetch(Bot.LoggingChannel) as TextChannel;
-
-            await Channel.send({
-                content: `The bot didn't start, here's what we know:\n\n${codeBlock(error)}`,
-                components: [
-                    CreateLinkButton(WebsiteLink("/learn/custom-bots-troubleshooting"))
-                ]
-            });
-        } catch (e) {
-
-        }
-
-        CustomClient.destroy();
-    });
-
-    CustomClient.login(botToken);
-}
+export const customClients = {};
 
 export function CreateConfiguration(client: Client) {
     setTimeout(async () => {
@@ -85,6 +41,7 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
     return new Promise<{
         CustomClient: Client;
         config: DeepPartial<CustomBot>;
+        // eslint-disable-next-line no-async-promise-executor
     }>(async (resolve, reject) => {
         const started = new Date();
         // Create Discord.js client
@@ -94,13 +51,13 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
 
         CustomClient.login(botToken).catch(reject);
 
-        const config = await new Promise<DeepPartial<CustomBot>>((resolve, reject) => {
+        const config = await new Promise<DeepPartial<CustomBot>>((resolve) => {
             // Get everything ready...
             CustomClient.on(Events.ClientReady, async () => {
                 if (options != null) await SetupBot(CustomClient, options.client, {
                     ...options,
                     token: botToken
-                }, (value) => "");
+                }, () => "");
 
                 const Bot = await client.Storage.CustomBots.Get({
                     Token: botToken
@@ -181,17 +138,39 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
     });
 }
 
-export async function HandleBot(options?: CustomBotOptions & { client: Client, botToken: string; }) {
-    function ErrorBot(e) {
-        return CreateLimitedBot(options.botToken, options.client, e, options);
-    }
-
+export async function HandleBot(options?: CustomBotOptions & { client: Client, botToken: string; webhook?: string; }) {
     try {
-        return await StartCustomBot(options.botToken, options.client, options).catch((e) => ErrorBot(e));
+        return await StartCustomBot(options.botToken, options.client, options);
     } catch (e) {
-        await ErrorBot(e);
+        const hook = new WebhookClient({ url: options.webhook });
+        await SendWebhookError(hook, e);
         return e as string;
     }
+}
+
+export function SendWebhookError(webhook: WebhookClient, e: string, customBotId?: string) {
+    return webhook.send({
+        content: `**Your custom bot couldn't start, here's what we know:**\n${codeBlock(e.toString())}`,
+        components: [
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setLabel("Troubleshooting")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL("https://docs.trtle.xyz/pro/troubleshooting"),
+                    new ButtonBuilder()
+                        .setLabel("Support Server")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(SupportServerInvite),
+                    customBotId != null ? (
+                        new ButtonBuilder()
+                            .setLabel("Retry")
+                            .setStyle(ButtonStyle.Primary)
+                            .setCustomId(`RETRY_${customBotId}`)
+                    ) : null
+                )
+        ]
+    });
 }
 
 export async function StartCustomBots(client: Client) {
@@ -204,26 +183,7 @@ export async function StartCustomBots(client: Client) {
         } catch (e) {
             try {
                 const webhook = new WebhookClient({ url: CustomBot.WebhookURL });
-                await webhook.send({
-                    content: `**Your custom bot couldn't start, here's what we know:**\n${codeBlock(e.toString())}`,
-                    components: [
-                        new ActionRowBuilder<ButtonBuilder>()
-                            .addComponents(
-                                new ButtonBuilder()
-                                    .setLabel("Troubleshooting")
-                                    .setStyle(ButtonStyle.Link)
-                                    .setURL("https://docs.trtle.xyz/pro/troubleshooting"),
-                                new ButtonBuilder()
-                                    .setLabel("Support Server")
-                                    .setStyle(ButtonStyle.Link)
-                                    .setURL(SupportServerInvite),
-                                new ButtonBuilder()
-                                    .setLabel("Retry")
-                                    .setStyle(ButtonStyle.Primary)
-                                    .setCustomId(`RETRY_${CustomBot.CustomId}`)
-                            )
-                    ]
-                });
+                await SendWebhookError(webhook, e, CustomBot.BotId);
             } catch (e) {
                 Logger.error(`Couldn't get webhook for ${CustomBot.Owner}'s custom bot`)
             }

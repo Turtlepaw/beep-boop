@@ -1,6 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
-import { Filter } from "../utils/filter";
-import { Embed, Emojis, Icons } from "../configuration";
+import { ButtonInteraction, Client, Events } from "discord.js";
+import { Icons } from "../configuration";
 import Event from "../lib/Event";
 import { Logger } from "../logger";
 import { FriendlyInteractionError } from "../utils/error";
