@@ -5,7 +5,7 @@ export async function SendAppealMessage(member: GuildMember) {
     const { client, guild } = member;
     const config = await client.Storage.Configuration.forGuild(guild);
 
-    if (!config.hasAppeals()) return;
+    if (!config.hasAppeals()) return false;
     const Channel = await member.createDM(true);
     const Components = new ActionRowBuilder<ButtonBuilder>()
         .addComponents(
@@ -21,6 +21,10 @@ export async function SendAppealMessage(member: GuildMember) {
         content: `**${Icons.Info} This feature is in preview, some features may not work as expected.**\nWe've noticed you were banned from ${guild.name}, since this server has set up appeals you're able to request an appeal through the button below.`
     });
 
-    client.storage[`${Message.id}`] = guild.id
-    client.Storage
+    client.QuickStorage[`appealmsg_${Message.id}`] = {
+        user: member.id,
+        guild: guild.id
+    };
+
+    return null;
 }

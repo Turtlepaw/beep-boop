@@ -1,15 +1,14 @@
-import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, ComponentType, ModalBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
-import { Embed, Emojis, Icons, Messages, Permissions } from "../configuration";
+/* eslint-disable prefer-const */
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, ChannelType, Client, channelMention, userMention } from "discord.js";
+import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
-import ms from "ms";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
-import { CleanupType } from "../models/Configuration";
-import { Modules } from "../commands/Server";
-import { ChannelSelector as ChannelSelectBuilder } from "../utils/components";
-import { CleanupChannel } from "../utils/storage";
-import { EmbedChildren, ResolveEnumValue } from "./AutoDeleting";
+import { ModuleInformation, Modules } from "../commands/Server";
+import { ChannelSelector as ChannelSelectBuilder, StringSelectBuilder, StringSelector } from "../utils/components";
+import { EmbedChildren } from "./AutoDeleting";
 
+export const Module = ModuleInformation.APPEAL_CONFIGURATION;
 export default class AutonomousCleaningConfiguration extends SelectOptionBuilder {
     constructor() {
         super({
@@ -22,26 +21,15 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
 
     async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client) {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
-        let SystemCleanup = Configuration.isSystemCleanup();
-        let MessageCleanup = Configuration.isMessageCleanup();
-        let TimedCleanup = Configuration.isTimedCleanup();
-        let Timer = Configuration?.CleanupTimer;
-        let MessageChannels = Configuration?.getCleanupChannels(CleanupType.Message);
-        let SystemChannels = Configuration?.getCleanupChannels(CleanupType.System);
-        let TimedChannels = Configuration?.getCleanupChannels(CleanupType.Timed);
-        let Channels = Configuration?.CleanupChannels;
+        let AppealStatus = Configuration.Appeals.Status;
+        let AppealChannel = Configuration.Appeals.Channel;
+        let AppealBlocks = Configuration.Appeals.Blocked;
 
         enum Id {
-            TimedCleanup = "timed_cleanup",
-            MessageCleanup = "message_cleanup",
-            SystemCleanup = "system_cleanup",
-            TimeModal = "timer_modal",
-            TimeField = "timer_field",
-            AddChannel = "add_channels",
-            RemoveChannel = "remove_channels",
-            ChannelSelector = "select_a_channel",
-            RemoveChannelSelector = "remove_a_channel",
-            TypeSelector = "select_a_type"
+            Appeals = "APPEAL_TOGGLE",
+            AppealBlockRemove = "REMOVE_APPEAL_BLOCK",
+            BlockSelector = "BLOCK_SELECTOR",
+            ChannelSelector = "CHANNEL_SELECTOR",
         }
 
         const Components = () => [
@@ -49,71 +37,48 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
                 .addComponents(
                     BackComponent,
                     new ButtonBuilder()
-                        .setCustomId(Id.SystemCleanup)
-                        .setLabel("System Cleanup")
+                        .setCustomId(Id.Appeals)
+                        .setLabel("Appeals")
                         .setStyle(
-                            ButtonBoolean(SystemCleanup)
+                            ButtonBoolean(AppealStatus)
                         ),
                     new ButtonBuilder()
-                        .setCustomId(Id.MessageCleanup)
-                        .setLabel("Message Cleanup")
-                        .setStyle(
-                            ButtonBoolean(MessageCleanup)
-                        ),
-                    new ButtonBuilder()
-                        .setCustomId(Id.TimedCleanup)
-                        .setLabel("Timed Cleanup")
-                        .setStyle(
-                            ButtonBoolean(TimedCleanup)
-                        )
-                ),
-            new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setCustomId(Id.AddChannel)
-                        .setLabel("Add Channel")
+                        .setCustomId(Id.ChannelSelector)
+                        .setLabel("Set Channel")
                         .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
-                        .setCustomId(Id.RemoveChannel)
-                        .setLabel("Remove Channel")
-                        .setStyle(ButtonStyle.Secondary)
+                        .setCustomId(Id.AppealBlockRemove)
+                        .setLabel("Remove Block")
+                        .setStyle(ButtonStyle.Danger)
                 )
         ];
 
         const GenerateEmbed = () => {
-            MessageChannels = Channels.filter(e => e.Type == CleanupType.Message)
-            SystemChannels = Channels.filter(e => e.Type == CleanupType.System)
-            TimedChannels = Channels.filter(e => e.Type == CleanupType.Timed)
-            const StringSystemChannels = EmbedChildren<CleanupChannel>(SystemChannels, (item) => channelMention(item.ChannelId), "No channels set")
-            const StringMessageChannels = EmbedChildren<CleanupChannel>(MessageChannels, (item) => channelMention(item.ChannelId), "No channels set")
-            const StringTimedChannels = EmbedChildren<CleanupChannel>(TimedChannels, (item) => channelMention(item.ChannelId), "No channels set")
+            const Blocks = EmbedChildren<string>(Array.from(AppealBlocks.values()), (item) => {
+                const CacheUser = client.users.cache.get(item);
+                if (CacheUser == null) return userMention(item);
+                else return CacheUser.tag;
+            })
             return new Embed(interaction.guild)
-                .setTitle("Managing Autonomous Cleanup")
+                .setTitle("Managing Appeals")
                 .addFields([{
-                    name: "About Autonomous Cleanup Module",
-                    value: `Autonomous Cleanup can cleanup old messages like member's message if they've left or if they left the server their system welcome message will be deleted.`
+                    name: "About Appeals",
+                    value: Module.Description
                 }, {
                     name: "Current Configuration",
                     value: `
-${TextBoolean(SystemCleanup, "System Cleanup")}
-${StringSystemChannels}
-${TextBoolean(MessageCleanup, "Message Cleanup")}
-${StringMessageChannels}
-${TextBoolean(TimedCleanup, "Timed Cleanup")}
-${Icons.StemItem} Deletes after: ${Timer == null ? "Nothing set" : ms(Timer)}
-${StringTimedChannels}`
+${TextBoolean(AppealStatus, "Appeals Status")}
+${Icons.StemItem} Appeal Channel: ${AppealChannel == null ? "None" : channelMention(AppealChannel)}
+${Icons.StemItem} Appeal Block List:
+${AppealBlocks.size == 0 ? `${Icons.StemEnd} None` : Blocks}`
                 }]);
         }
 
         const Save = async (editMessage = true) => {
             await client.Storage.Configuration.Edit(Configuration.CustomId, {
-                CleanupType: [
-                    ...(SystemCleanup ? [CleanupType.System] : []),
-                    ...(MessageCleanup ? [CleanupType.Message] : []),
-                    ...(TimedCleanup ? [CleanupType.Timed] : [])
-                ],
-                CleanupTimer: Timer ?? null,
-                CleanupChannels: Channels
+                Appeals: AppealStatus,
+                AppealChannel,
+                AppealBlocks
             });
 
             if (editMessage) await Message.edit({
@@ -141,173 +106,64 @@ ${StringTimedChannels}`
         });
 
         function HandleToggle(id: string) {
-            if (id == Id.MessageCleanup) {
-                MessageCleanup = !MessageCleanup
-            } else if (id == Id.SystemCleanup) {
-                SystemCleanup = !SystemCleanup
-            } else if (id == Id.TimedCleanup) {
-                TimedCleanup = true
+            if (id == Id.Appeals) {
+                AppealStatus = !AppealStatus;
             }
         }
 
         const ChannelSelector = new ChannelSelectBuilder()
             .SetCustomId(Id.ChannelSelector)
             .SetChannelTypes(ChannelType.GuildText);
+
         Collector.on("collect", async button => {
             if (button.customId == ButtonCollector.BackButton) return;
-            if (button.customId == Id.TimedCleanup) {
-                const TimerField = new TextInputBuilder()
-                    .setLabel("Time to delete")
-                    .setPlaceholder("1m 6s")
-                    .setCustomId(Id.TimeField)
-                    .setStyle(TextInputStyle.Short)
-                    .setRequired(true);
-
-                await button.showModal(
-                    new ModalBuilder()
-                        .setTitle("Timed Cleanup")
-                        .setCustomId(Id.TimeModal)
-                        .addComponents(
-                            new ActionRowBuilder<TextInputBuilder>()
-                                .addComponents(
-                                    TimerField
-                                )
-                        )
-                );
-
-                const ModalInteraction = await button.awaitModalSubmit({
-                    time: 0
-                });
-
-                Timer = ms(ModalInteraction.fields.getTextInputValue(Id.TimeField));
-                TimedCleanup = true;
-                await Save();
-                await ModalInteraction.reply(Messages.Saved);
-                await Message.edit({
-                    embeds: [
-                        GenerateEmbed()
-                    ],
-                    components: Components()
-                });
-            } else if (button.customId == Id.AddChannel) {
-                const TypeSelector = new StringSelectMenuBuilder()
-                    .addOptions(
-                        Object.entries(CleanupType).map(([k, v]) =>
-                            new SelectMenuOptionBuilder()
-                                .setLabel(k)
-                                .setValue(v)
-                        )
-                    )
-                    .setCustomId(Id.TypeSelector);
-
-                const ReplyMessage = await button.reply({
-                    ephemeral: true,
-                    fetchReply: true,
-                    content: `${Icons.Flag} Select a type`,
-                    components: [
-                        new ActionRowBuilder<StringSelectMenuBuilder>()
-                            .addComponents(
-                                TypeSelector
-                            )
-                    ]
-                });
-
-                const TypeInteraction = await ReplyMessage.awaitMessageComponent({
-                    time: 0,
-                    componentType: ComponentType.StringSelect,
-                    filter: Filter({
-                        member: interaction.member,
-                        customIds: [Id.TypeSelector]
+            if (button.customId == Id.AppealBlockRemove) {
+                if (AppealBlocks.size == 0) {
+                    button.reply({
+                        ephemeral: true,
+                        content: `${Icons.Discover} You haven't blocked anyone yet.`
                     })
-                });
-
-                await TypeInteraction.update({
-                    content: `${Icons.Channel} Select a channel`,
-                    components: [
-                        ChannelSelector.toActionRow()
-                    ]
-                });
-
-                const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
-                    time: 0,
-                    componentType: ComponentType.ChannelSelect,
-                    filter: Filter({
-                        member: interaction.member,
-                        customIds: [Id.ChannelSelector]
-                    })
-                });
-
-                const Channel = ChannelInteraction.channels.first();
-                const CleanupTypeSelected = TypeInteraction.values[0];
-                //const ResolvedChannel = await interaction.guild.channels.fetch(Channel.id);
-
-                if (Channels.includes({
-                    ChannelId: Channel.id,
-                    Type: ResolveEnumValue(CleanupType, CleanupTypeSelected)
-                })) {
-                    ChannelInteraction.update({
-                        content: `${Icons.Configure} The selected channel already exists.`,
-                        components: []
-                    });
-                    return
+                    return;
                 }
+                const Selector = new StringSelector()
+                    .AddOptions(
+                        ...Array.from(AppealBlocks.values()).map(e => {
+                            const CacheUser = client.users.cache.get(e);
+                            const User = CacheUser != null ? CacheUser.tag : e;
+                            return new StringSelectBuilder()
+                                .setLabel(User)
+                                .setValue(e);
+                        })
+                    )
+                    .Placeholder("Select a user...")
+                    .SetCustomId(Id.BlockSelector)
+                    .Min(1)
+                    .Max(AppealBlocks.size);
 
-                Channels.push({
-                    ChannelId: Channel.id,
-                    Type: ResolveEnumValue(CleanupType, CleanupTypeSelected)
+                const Message = await button.reply({
+                    ephemeral: true,
+                    content: `${Icons.Flag} Select a user to unblock`,
+                    components: Selector.toComponents(),
+                    fetchReply: true
                 });
+
+                const Component = await Selector.CollectComponents(Message, interaction);
+
+                Component.values.map(e => AppealBlocks.delete(e));
                 await Save();
-                await ChannelInteraction.update(Messages.Saved);
-            } else if (button.customId == Id.RemoveChannel) {
-                if (Channels.length == 0) await button.reply({
-                    content: `${Icons.Configure} There's no channels to remove, try adding one first.`,
+                await Component.update(Messages.Saved);
+            } else if (button.customId == Id.ChannelSelector) {
+                const Message = await button.reply({
+                    content: `${Icons.Channel} Select a channel`,
+                    components: ChannelSelector.toComponents(),
+                    fetchReply: true,
                     ephemeral: true
                 });
 
-                const ResolvedChannels = await new Promise<TextChannel[]>((resolve) => {
-                    const channels = Promise.all(Channels.map(async e => {
-                        const ResolvedChannel = await interaction.guild.channels.fetch(e.ChannelId);
-                        if (ResolvedChannel.type != ChannelType.GuildText) return;
-                        return ResolvedChannel;
-                    }));
-                    resolve(channels);
-                })
-                const RemovalMenu = new StringSelectMenuBuilder()
-                    .addOptions(
-                        ResolvedChannels.map(e =>
-                            new SelectMenuOptionBuilder()
-                                .setLabel(e.name)
-                                .setValue(e.id)
-                                .setEmoji(Emojis.TextChannel)
-                        )
-                    )
-                    .setCustomId(Id.RemoveChannelSelector);
+                const ChannelInteraction = await ChannelSelector.CollectComponents(Message, interaction);
+                const Channel = ChannelInteraction.channels.first();
 
-                const ReplyMessage = await button.reply({
-                    ephemeral: true,
-                    fetchReply: true,
-                    content: `${Icons.Channel} Select a channel to remove`,
-                    components: [
-                        new ActionRowBuilder<StringSelectMenuBuilder>()
-                            .addComponents(
-                                RemovalMenu
-                            )
-                    ]
-                });
-
-                const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
-                    time: 0,
-                    componentType: ComponentType.StringSelect,
-                    filter: Filter({
-                        member: interaction.member,
-                        customIds: [Id.RemoveChannelSelector]
-                    })
-                });
-
-                const StringChannels = ChannelInteraction.values;
-                //const ResolvedChannel = await interaction.guild.channels.fetch(Channel.id);
-
-                Channels = Channels.filter(e => !StringChannels.includes(e.ChannelId));
+                AppealChannel = Channel.id;
                 await Save();
                 await ChannelInteraction.update(Messages.Saved);
             } else {

@@ -126,12 +126,14 @@ export async function InteractionError(options: InteractionErrorOptions) {
         CreatedAt: new Date(),
         Stack: `${error}`,
         Title: `${error.length >= 25 ? (error.slice(0, 25) + "...") : error}`
-    }))[0] : null;
+    })) : null;
 
+    console.log(ErrorDB)
     await Interaction.send({
         content: `${icon} ${message}`,
         embeds: createError ? [
             await new Embed(interaction.guild)
+                //@ts-expect-error aaa
                 .setDescription(`Show this ID when reporting this bug: ${inlineCode(ErrorDB.Error)}`)
                 .Resolve()
         ] : [],

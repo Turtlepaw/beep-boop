@@ -107,6 +107,8 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
 
     // Refresh reminders
     Refresh(ProvidedClient);
+
+    ProvidedClient.on(Events.Error, console.log)
 }
 
 export async function HandleBotStart() {

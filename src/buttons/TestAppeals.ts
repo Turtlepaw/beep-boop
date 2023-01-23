@@ -1,6 +1,7 @@
 import { ButtonInteraction } from "discord.js";
 import { SendAppealMessage } from "../utils/appeals";
 import Button from "../lib/ButtonBuilder";
+import { Icons } from "../configuration";
 
 export default class TestAppeals extends Button {
     constructor() {
@@ -16,11 +17,16 @@ export default class TestAppeals extends Button {
         //@ts-expect-error member is a d.js member
         const res = await SendAppealMessage(interaction.member);
 
-        if (res == null) {
+        if (res == false) {
             interaction.reply({
                 ephemeral: true,
-                content: "You haven't set up appeals yet, you can set up appeals using </server:1030997072175968328>"
-            })
+                content: `${Icons.Configure} You haven't set up appeals yet, you can set up appeals using </configuration:1044771997726548031>`
+            });
+        } else {
+            interaction.reply({
+                ephemeral: true,
+                content: `${Icons.Channel} Sent you a test appeal message.`
+            });
         }
     }
 }

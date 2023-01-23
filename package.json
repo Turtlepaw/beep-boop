@@ -39,6 +39,7 @@
     "run": "node ./dist/index.js",
     "lint": "npx eslint \"src/**\"",
     "dev": "yarn lint && yarn build && yarn run run",
+    "dev_": "node ./dev.js",
     "dash": "cd dashboard/ && yarn dev",
     "start": "yarn dev & yarn dash",
     "cache": "yarn run run",

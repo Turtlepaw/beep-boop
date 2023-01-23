@@ -24,7 +24,8 @@ export function Filter({ customIds, member, debug, messageId, errorMessages }: F
 
     return (Interaction: MessageComponentInteraction) => {
         const result = (() => {
-            const debugJson = JSON.stringify({
+            if (messageId != null && messageId != Interaction.message.id) return false;
+            if (debug == true) console.log(`Filter Interaction Received:`.green, JSON.stringify({
                 user: Interaction.user.username,
                 customId: Interaction.customId,
                 memberMatches: !(member != null && Interaction.user.id != member.user.id),
@@ -33,9 +34,7 @@ export function Filter({ customIds, member, debug, messageId, errorMessages }: F
                 member: member.user.username,
                 messageId,
                 ResolvedIds
-            });
-            if (messageId != null && messageId != Interaction.message.id) return false;
-            if (debug == true) console.log(`Filter Interaction Received:`.green, debugJson)//` {\n   user: "${Interaction.user.username}",\n   customId: "${Interaction.customId}",\n  matches: ${customIds.includes(Interaction.customId) && (member != null && Interaction.user.id != member.user.id)},\n   ...\n}`.gray)
+            }));
             if (member != null && Interaction.user.id != member.user.id) return false;
             return ResolvedIds.includes(Interaction.customId);
         })();

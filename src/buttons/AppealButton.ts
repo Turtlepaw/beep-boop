@@ -20,7 +20,8 @@ export default class AppealButton extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
-        const config = await client.Storage.Configuration.forGuild(interaction.guild);
+        const Info = client.QuickStorage[`appealmsg_${interaction.message.id}`];
+        const config = await client.Storage.Configuration.forGuild({ id: Info.guild, name: "Unknown" });
         if (config.isUserAppealBlocked(interaction.user.id)) {
             await interaction.reply({
                 content: `${Icons.Date} You're blocked from appealing, we already sent you a message about why you were blocked.`,

@@ -15,7 +15,11 @@ export default class AppealModal extends Event {
     async ExecuteEvent(client: Client, ModalInteraction: Interaction) {
         if (!ModalInteraction.isModalSubmit()) return;
         if (ModalInteraction.customId != ModalId) return;
-        const config = await client.Storage.Configuration.forGuild(ModalInteraction.guild);
+        const AppealMessage = client.QuickStorage[`appealmsg_${ModalInteraction.message.id}`];
+        const config = await client.Storage.Configuration.forGuild({
+            id: AppealMessage.guild,
+            name: "Unknown"
+        });
         const Fields = {
             BanReason: ModalInteraction.fields.getTextInputValue(ModalQuestions.BanReason),
             RequestReason: ModalInteraction.fields.getTextInputValue(ModalQuestions.UnbanReason)
@@ -26,15 +30,15 @@ export default class AppealModal extends Event {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId(SendButtonId)
-                    .setEmoji(Icons.Zap)
+                    .setEmoji(Icons.Plane)
                     .setLabel("Send")
-                    .setStyle(ButtonStyle.Success)
+                    .setStyle(ButtonStyle.Secondary)
             );
 
         await ModalInteraction.reply({
             ephemeral: true,
             components: [Buttons],
-            content: `${Icons.Plane} Here's what you'll be sending`,
+            //content: `${Icons.Plane} Here's what you'll be sending`,
             embeds: [
                 new Embed(ModalInteraction.guild)
                     .setAuthor({
@@ -64,8 +68,6 @@ export default class AppealModal extends Event {
             })
         });
 
-        const GuildId = client.storage[ModalInteraction.message.id];
-        const Guild = await client.guilds.fetch(GuildId);
         if (config?.Appeals?.Channel == null) return InteractionError({
             createError: false,
             ephemeral: true,
@@ -74,6 +76,7 @@ export default class AppealModal extends Event {
             error: "APPEAL_CHANNEL_NULLISH",
         });
 
+        const Guild = await client.guilds.fetch(AppealMessage.guild);
         const Channel = await Guild.channels.fetch(config?.Appeals?.Channel);
 
         if (Channel.type != ChannelType.GuildText) return;

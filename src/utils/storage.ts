@@ -121,7 +121,7 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
     }
 
     hasAppeals() {
-        return this.Appeals;
+        return this.Appeals.Status;
     }
 
     isUserAppealBlocked(userId: string) {
@@ -179,7 +179,8 @@ const entities = [
     OAuth,
     Action,
     APIUser,
-    Ticket
+    Ticket,
+    CustomError
 ];
 
 export const AppDataSource = new DataSource({

@@ -20,6 +20,7 @@
         "./node_modules/*",
         "./node_modules/@types/node/index.d.ts",
         "./wip",
-        "./dashboard"
+        "./dashboard",
+        "./archived"
     ],
 }

@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
-import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType } from "discord.js";
+import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType, RoleSelectMenuInteraction, AnySelectMenuInteraction, StringSelectMenuInteraction, ChannelSelectMenuInteraction } from "discord.js";
 import { Verifiers } from "./verify";
 import { Filter } from "./filter";
 
@@ -109,7 +109,8 @@ export type SelectComponentType = ComponentType.RoleSelect |
     ComponentType.MentionableSelect;
 
 export type SelectorConfiguration<T extends AnySelectMenuBuilder> = (SelectMenu: T) => AnySelectMenuBuilder;
-export class Selector<T extends AnySelectMenuBuilder> {
+
+export class Selector<T extends AnySelectMenuBuilder, I = AnySelectMenuInteraction> {
     public Configuration: SelectorConfiguration<T>;
     public CustomId: string;
     public componentType: SelectComponentType;
@@ -138,8 +139,9 @@ export class Selector<T extends AnySelectMenuBuilder> {
     protected toInternalBuilder(): T { }
 
     public toBuilder(): T {
-        return this.toInternalBuilder()
-            .setPlaceholder(this.placeholder) as T;
+        const Builder = this.toInternalBuilder() as T;
+        if (this.placeholder != null) Builder.setPlaceholder(this.placeholder)
+        return Builder;
     }
 
     public toActionRow(): ActionRowBuilder<T> {
@@ -153,7 +155,7 @@ export class Selector<T extends AnySelectMenuBuilder> {
         return [this.toActionRow()];
     }
 
-    public async CollectComponents(message: Message, interaction?: Interaction) {
+    public async CollectComponents(message: Message, interaction?: Interaction): Promise<Awaited<I>> {
         const CustomIds = [];
         if (interaction != null) message.components.forEach(e => e.components.forEach(e => CustomIds.push(e.customId)));
         const Message = await message.awaitMessageComponent({
@@ -164,16 +166,16 @@ export class Selector<T extends AnySelectMenuBuilder> {
             }),
             componentType: this.componentType
         });
-        return Message;
+        return Message as Awaited<I>;
     }
 }
 
 export class StringSelectBuilder extends StringSelectMenuOptionBuilder { }
 
-export class StringSelector extends Selector<StringSelectMenuBuilder> {
+export class StringSelector extends Selector<StringSelectMenuBuilder, StringSelectMenuInteraction> {
     public options: StringSelectBuilder[] = [];
-    public max: number = null;
-    public min: number = null;
+    private max: number = null;
+    private min: number = null;
 
     constructor() {
         super(ComponentType.StringSelect)
@@ -206,7 +208,7 @@ export class StringSelector extends Selector<StringSelectMenuBuilder> {
     }
 }
 
-export class ChannelSelector extends Selector<ChannelSelectMenuBuilder> {
+export class ChannelSelector extends Selector<ChannelSelectMenuBuilder, ChannelSelectMenuInteraction> {
     public ChannelTypes: ChannelType[] = [ChannelType.GuildText];
     constructor() {
         super(ComponentType.ChannelSelect)
@@ -227,7 +229,7 @@ export class ChannelSelector extends Selector<ChannelSelectMenuBuilder> {
     }
 }
 
-export class RoleSelector extends Selector<RoleSelectMenuBuilder> {
+export class RoleSelector extends Selector<RoleSelectMenuBuilder, RoleSelectMenuInteraction> {
     constructor() {
         super(ComponentType.RoleSelect)
     }
