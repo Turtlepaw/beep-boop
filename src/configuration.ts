@@ -133,7 +133,8 @@ export enum Icons {
     Remove = "<:Remove:1053887107921363034>",
     Add = "<:Add:1053887100551966771>",
     RoleRemove = "<:RoleRemove:1053887104842735677>",
-    RoleAdd = "<:RoleAdd:1053887102187741304>"
+    RoleAdd = "<:RoleAdd:1053887102187741304>",
+    Search = "<:Search:1066924460495622196>"
 }
 
 export const Dot = {

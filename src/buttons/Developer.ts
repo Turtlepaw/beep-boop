@@ -51,6 +51,11 @@ export default class DeveloperPortalButton extends Button {
                         .setLabel("Realtime Logs")
                         .setEmoji(Icons.Configure)
                         .setCustomId("REALTIME_LOGS")
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel("Error Lookup")
+                        .setEmoji(Icons.Search)
+                        .setCustomId("ERROR_LOOKUP")
                         .setStyle(ButtonStyle.Secondary)
                 )
         ]
