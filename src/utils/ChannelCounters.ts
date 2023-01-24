@@ -11,7 +11,7 @@ const Guilds = await client.Storage.Configuration.GetAll();
             try {
 const ResolvedGuild = await client.guilds.fetch(Guild.Id);
             const Config = await client.Storage.Configuration.forGuild(ResolvedGuild);
-            if (config?.CounterChannels == null || config?.CounterChannels?.size <= 0) return;
+            if (Config?.CounterChannels == null || Config?.CounterChannels?.size <= 0) return;
             const Channels = Config?.CounterChannels;
             for (const [id, Counter] of Channels) {
                 let Channel: GuildBasedChannel;
