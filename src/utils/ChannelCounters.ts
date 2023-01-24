@@ -50,7 +50,7 @@ const ResolvedGuild = await client.guilds.fetch(Guild.Id);
                 // }, Time);
             }
 } catch(e){
-console.log(e)
+console.log(e, Guild.Name)
 }
 });
         }, Time)
