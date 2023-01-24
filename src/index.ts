@@ -15,6 +15,7 @@ import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
 import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
 import { Logger } from "./logger";
+import { ChannelCounterService } from "./utils/ChannelCounters";
 dotenv.config()
 
 //Debug logs
@@ -104,6 +105,9 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
 
     // Start auto delete service
     StartAutoDeleteService(ProvidedClient);
+
+    // Channel Counter
+    ChannelCounterService(ProvidedClient);
 
     // Refresh reminders
     Refresh(ProvidedClient);

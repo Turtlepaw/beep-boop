@@ -36,7 +36,7 @@ class ResolvableConfiguration {
     public CleanupType: CleanupType[];
 
     // Counter Channels
-    public CounterChannels: CounterChannel[];
+    public CounterChannels: Map<string, CounterChannel>;
 
     // Premium (basic and pro)
     public Color: string;
@@ -143,7 +143,7 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
     }
 
     hasCounterChannels() {
-        return this?.CounterChannels != null && this.CounterChannels.length >= 1;
+        return this?.CounterChannels != null && this.CounterChannels.size >= 1;
     }
 
     hasTickets() {
@@ -318,7 +318,7 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             AppealChannel: null,
             AppealBlocks: new Set<string>(),
             //counter channels
-            CounterChannels: [],
+            CounterChannels: new Map(),
             // premium
             Premium: false,
             // verification
@@ -370,7 +370,7 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             Color: config?.Color ?? null,
             Premium: config?.Premium ?? false,
             // Counter channels
-            CounterChannels: config?.CounterChannels ?? [],
+            CounterChannels: config?.CounterChannels ?? new Map(),
             // Verification
             Verification: {
                 Status: config?.Verification ?? false,

@@ -1,4 +1,4 @@
-import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, ComponentType, ModalBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, ComponentType, ModalBuilder, SelectMenuOptionBuilder, StringSelectMenuBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Embed, Emojis, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
@@ -281,17 +281,12 @@ ${StringTimedChannels}`
                     ephemeral: true
                 });
 
-                const ResolvedChannels = await new Promise<TextChannel[]>((resolve) => {
-                    const channels = Promise.all(Channels.map(async e => {
-                        const ResolvedChannel = await interaction.guild.channels.fetch(e.ChannelId);
-                        if (ResolvedChannel.type != ChannelType.GuildText) return;
-                        return ResolvedChannel;
-                    }));
-                    resolve(channels);
-                })
+                const MappedChannels = await Promise.all(
+                    Channels.map(async k => await interaction.guild.channels.fetch(k.ChannelId))
+                );
                 const RemovalMenu = new StringSelectMenuBuilder()
                     .addOptions(
-                        ResolvedChannels.map(e =>
+                        MappedChannels.map(e =>
                             new SelectMenuOptionBuilder()
                                 .setLabel(e.name)
                                 .setValue(e.id)

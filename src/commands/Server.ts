@@ -11,7 +11,8 @@ export enum Modules {
     AutonomousModeration = "AUTO_MODERATION",
     JoinActions = "MEMBER_JOIN_ACTIONS",
     ServerConfiguration = "MAIN_SERVER_CONFIG",
-    Verification = "SERVER_VERIFICATION"
+    Verification = "SERVER_VERIFICATION",
+    StatisticsChannels = "STAT_CHANNELS"
 }
 
 export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; }> = {
@@ -49,6 +50,11 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
         Label: "Verification",
         Description: "Protect your server with member verification.",
         Icon: Icons.Unlock
+    },
+    [Modules.StatisticsChannels]: {
+        Label: "Statistic Channels",
+        Description: "Show useful statistics in voice channels, text channels, or categories.",
+        Icon: Icons.Statistics
     }
 }
 

@@ -77,6 +77,7 @@ export enum Emojis {
 }
 
 export enum Icons {
+    Statistics = "<:Statistics:1067239843152793660>",
     Quotes = "<:Quotes:1066185365523792042>",
     Member = "<:Member:1065090193494904913>",
     Plane = "<:Plane:1065079776546660512>",

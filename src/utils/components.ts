@@ -201,8 +201,8 @@ export class StringSelector extends Selector<StringSelectMenuBuilder, StringSele
         const Builder = new StringSelectMenuBuilder()
             .setCustomId(this.CustomId)
             .setOptions(this.options)
-            .setMaxValues(this.min)
-            .setMaxValues(this.max);
+        if (this.min != null) Builder.setMaxValues(this.min)
+        if (this.max != null) Builder.setMaxValues(this.max);
         if (this?.Configuration != null) this.Configuration(Builder);
         return Builder;
     }

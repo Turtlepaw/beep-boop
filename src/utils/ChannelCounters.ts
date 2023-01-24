@@ -1,24 +1,54 @@
-import { Client } from "discord.js";
-import ms from "ms";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Client, GuildBasedChannel } from "discord.js";
 import { VaribleRunner } from "./Varibles";
-const Time = ms("10m");
+const Time = 10000;
 
 export async function ChannelCounterService(client: Client) {
     const Guilds = await client.Storage.Configuration.GetAll();
 
-    for (const Guild of Guilds) {
-        if (Guild.CounterChannels == null || Guild.CounterChannels.length <= 0) return;
-        const ResolvedGuild = await client.guilds.fetch(Guild.Id);
-        const Channels = Guild?.CounterChannels;
+    Guilds.forEach(async Guild => {
+        if (Guild.CounterChannels == null || Guild.CounterChannels.size <= 0) return;
 
-        for (const Counter of Channels) {
-            const Channel = await ResolvedGuild.channels.fetch(Counter.Id);
+        setInterval(async () => {
+            const ResolvedGuild = await client.guilds.fetch(Guild.Id);
+            const Config = await client.Storage.Configuration.forGuild(ResolvedGuild);
+            const Channels = Config?.CounterChannels;
+            for (const [id, Counter] of Channels) {
+                let Channel: GuildBasedChannel;
+                try {
+                    Channel = await ResolvedGuild.channels.fetch(id);
+                } catch (e) {
+                    Config.CounterChannels.delete(id);
+                    client.Storage.Configuration.Edit(Config.CustomId, {
+                        CounterChannels: Config.CounterChannels
+                    });
+                    return;
+                }
 
-            setInterval(() => {
                 Channel.edit({
-                    name: new VaribleRunner(Counter.Name).run({ guild: ResolvedGuild })
+                    name: await new VaribleRunner(Counter.Name)
+                        .run({ guild: ResolvedGuild })
                 });
-            }, Time);
-        }
-    }
+
+                // const timer = setInterval(async () => {
+                //     Guild = await client.Storage.Configuration.Get({ CustomId: Guild.CustomId });
+                //     try {
+                //         Channel = await Channel.fetch() as any;
+                //     } catch (e) {
+                //         Guild.CounterChannels.delete(id);
+                //         client.Storage.Configuration.Edit(Guild.CustomId, {
+                //             CounterChannels: Guild.CounterChannels
+                //         });
+                //         clearInterval(timer);
+                //     }
+
+                //     console.log("Running", await new VaribleRunner(Counter.Name).run({ guild: ResolvedGuild }))
+                //     Channel.edit({
+                //         name: await new VaribleRunner(Counter.Name)
+                //             .run({ guild: ResolvedGuild })
+                //     });
+                // }, Time);
+            }
+        }, Time)
+    });
 }

@@ -1,6 +1,6 @@
 import { Events, HexColorString } from 'discord.js';
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { JSONTransformer, SetTransformer } from '../utils/transformers';
+import { JSONTransformer, MapTransformer, SetTransformer } from '../utils/transformers';
 import { ConfigurationEvents } from '../@types/Logging';
 
 export enum CleanupType {
@@ -39,6 +39,7 @@ export enum CounterType {
 export interface CounterChannel {
     Id: string;
     Name: string;
+    Disabled: boolean;
 }
 
 export enum VerificationLevel {
@@ -94,8 +95,8 @@ export class GuildConfiguration {
 
     // Counter Channels
     // -> Show counts of multiple things
-    @Column({ type: "simple-array", nullable: true })
-    CounterChannels: CounterChannel[];
+    @Column({ type: "varchar", nullable: true, transformer: new MapTransformer<string, CounterChannel>() })
+    CounterChannels: Map<string, CounterChannel>;
 
     // Autonomous Cleaning
     // -> Clean up old messages from members.

@@ -89,21 +89,28 @@ export class VaribleRunner {
         this.text = text;
     }
 
-    run({ guild, member, user }: {
+    async run({ guild, member, user }: {
         guild?: Guild;
         member?: GuildMember;
         user?: User;
     }) {
         if (member != null && user == null) user = member.user;
         const value = [member != null ? "member" : (user != null ? "user" : null), guild != null ? "guild" : null].filter(e => e != null);
-        const text = this.text;
-        [
-            ...(Object.values(value.includes("member") ? member : null)),
-            ...(Object.values(value.includes("user") ? user : null)),
-            ...(Object.values(value.includes("guild") ? guild : null))
-        ].filter(e => e != null).map(v => {
-            text.replaceAll(v.Name, v.Run(guild))
-        });
+        let text = this.text;
+
+        await Promise.all(
+            [
+                ...(value.includes("member") ? Object.values(Varibles.Member) : []),
+                ...(value.includes("user") ? Object.values(Varibles.User) : []),
+                ...(value.includes("guild") ? Object.values(Varibles.Guild) : [])
+            ].filter(e => e != null).map(async v => {
+                let arg;
+                if (Object.values(Varibles.Member).map(e => e.Name).includes(v.Name)) arg = member;
+                if (Object.values(Varibles.Guild).map(e => e.Name).includes(v.Name)) arg = guild;
+                if (Object.values(Varibles.User).map(e => e.Name).includes(v.Name)) arg = user;
+                return text = text.replaceAll(v.Name, v.Run(arg));
+            })
+        );
 
         return text;
     }

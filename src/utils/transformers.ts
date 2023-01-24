@@ -31,9 +31,11 @@ export class MapTransformer<K, V> {
         return JSON.stringify(array);
     }
 
-    from(values: [K, V][]) {
+    from(values: string) {
+        const data = JSON.parse(values);
+        if (values == null || data == "") return new Map();
         const map = new Map<K, V>();
-        for (const [k, v] of values) map.set(k, v);
+        for (const [k, v] of data) map.set(k, v);
         return map;
     }
 }
