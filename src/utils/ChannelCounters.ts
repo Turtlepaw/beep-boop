@@ -8,7 +8,8 @@ export async function ChannelCounterService(client: Client) {
 const Guilds = await client.Storage.Configuration.GetAll();
 
     Guilds.forEach(async Guild => {
-            const ResolvedGuild = await client.guilds.fetch(Guild.Id);
+            try {
+const ResolvedGuild = await client.guilds.fetch(Guild.Id);
             const Config = await client.Storage.Configuration.forGuild(ResolvedGuild);
             if (config?.CounterChannels == null || config?.CounterChannels?.size <= 0) return;
             const Channels = Config?.CounterChannels;
@@ -48,6 +49,9 @@ const Guilds = await client.Storage.Configuration.GetAll();
                 //     });
                 // }, Time);
             }
+} catch(e){
+console.log(e)
+}
 });
         }, Time)
 }
