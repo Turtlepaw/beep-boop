@@ -32,7 +32,7 @@ export class MapTransformer<K, V> {
     }
 
     from(values: string) {
-        if (values == null || data == "") return new Map();
+        if (values == null || values == "") return new Map();
         const data = JSON.parse(values);
         const map = new Map<K, V>();
         for (const [k, v] of data) map.set(k, v);
