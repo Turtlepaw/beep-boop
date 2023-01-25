@@ -4,14 +4,14 @@ import { VaribleRunner } from "./Varibles";
 const Time = 10000;
 
 export async function ChannelCounterService(client: Client) {
-    const Guilds = await client.Storage.Configuration.GetAll();
+        setInterval(async () => {
+const Guilds = await client.Storage.Configuration.GetAll();
 
     Guilds.forEach(async Guild => {
-        if (Guild.CounterChannels == null || Guild.CounterChannels.size <= 0) return;
-
-        setInterval(async () => {
-            const ResolvedGuild = await client.guilds.fetch(Guild.Id);
+            try {
+const ResolvedGuild = await client.guilds.fetch(Guild.Id);
             const Config = await client.Storage.Configuration.forGuild(ResolvedGuild);
+            if (Config?.CounterChannels == null || Config?.CounterChannels?.size <= 0) return;
             const Channels = Config?.CounterChannels;
             for (const [id, Counter] of Channels) {
                 let Channel: GuildBasedChannel;
@@ -49,6 +49,9 @@ export async function ChannelCounterService(client: Client) {
                 //     });
                 // }, Time);
             }
+} catch(e){
+console.log(e, Guild.Name)
+}
+});
         }, Time)
-    });
 }
