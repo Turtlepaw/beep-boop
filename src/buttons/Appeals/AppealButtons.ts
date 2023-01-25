@@ -17,9 +17,7 @@ export default class AppealButtons extends Button {
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client, Id: "DENY" | "ACCEPT") {
         //await interaction.deferReply();
         const UserId = client.QuickStorage[`pending_${interaction.message.id}`];
-        const User = await interaction.guild.members.fetch({
-            user: UserId
-        });
+        const User = await client.users.fetch(UserId);
         const Channel = await User.createDM(true);
 
         if (Id == "ACCEPT") {
