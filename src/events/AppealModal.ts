@@ -2,7 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, Client, Comp
 import { Filter } from "../utils/filter";
 import { Embed, Icons } from "../configuration";
 import Event from "../lib/Event";
-import { ModalId, ModalQuestions } from "../buttons/AppealButton";
+import { ModalId, ModalQuestions } from "../buttons/Appeals/AppealButton";
 import { InteractionError } from "../utils/error";
 
 export default class AppealModal extends Event {

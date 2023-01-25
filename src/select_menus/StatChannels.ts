@@ -98,7 +98,9 @@ ${FormattedChannels}`
             .SetCustomId(Id.AddChannel)
             .SetChannelTypes(
                 ChannelType.GuildText,
-                ChannelType.GuildVoice
+                ChannelType.GuildVoice,
+                ChannelType.GuildCategory,
+                ChannelType.GuildAnnouncement
             );
 
         Collector.on("collect", async button => {

@@ -1,6 +1,6 @@
 import { Client, Events, Message as GuildMessage } from "discord.js";
 import Event from "../lib/Event";
-import { Ticket } from "../buttons/CreateTicket";
+import { Ticket } from "../buttons/Tickets/CreateTicket";
 
 export default class TicketService extends Event {
     constructor() {

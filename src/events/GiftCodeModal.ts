@@ -1,10 +1,10 @@
 import { Client, Events, Interaction, time, TimestampStyles } from "discord.js";
 import Event from "../lib/Event";
-import { RedeemCodeModal } from "../buttons/RedeemCode";
+import { RedeemCodeModal } from "../buttons/Subscription/RedeemCode";
 import { RedeemGiftAndExpire, ResolveGift } from "../utils/Gift";
 import { FriendlyInteractionError } from "../utils/error";
 import { SetSubscription } from "../utils/Profile";
-import { GetSubscriptionName } from "../buttons/CreateGift";
+import { GetSubscriptionName } from "../buttons/Developer/CreateGift";
 
 export default class AppealModal extends Event {
     constructor() {

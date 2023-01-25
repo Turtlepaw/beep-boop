@@ -7,7 +7,7 @@ import ButtonBuilder from "../lib/ButtonBuilder";
 import EventBuilder from "../lib/Event";
 import { CreateLinkButton } from "./buttons";
 import { InteractionError, SendError } from "./error";
-import SelectOptionBuilder from "src/lib/SelectMenuBuilder";
+import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { Logger } from "../logger";
 
 const InputPermissionsMessage: InteractionReplyOptions = {

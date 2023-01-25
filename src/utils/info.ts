@@ -9,7 +9,7 @@ import {
     ActionRowBuilder,
     ButtonStyle,
     inlineCode,
-    ChannelType,
+    ChannelType
 } from "discord.js";
 import { Colors, Embed, Emojis, Icons } from "../configuration";
 
@@ -176,7 +176,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     });
 }
 
-export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden = false) {
+export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden = false, withComponents: ActionRowBuilder<ButtonBuilder>[] = []) {
     const { guild } = interaction;
     if (guild == null) return interaction.reply({
         ephemeral: true,
@@ -200,7 +200,7 @@ export async function GuildInformation(interaction: RepliableInteraction, target
         APPLICATION_COMMAND_PERMISSIONS_V2: `${Emojis.Tag} Application Command Permissions V2`
     };
 
-    await interaction.reply({
+    return await interaction.reply({
         embeds: [
             new Embed(interaction.guild)
                 .setAuthor({
@@ -248,7 +248,7 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                     ).size
                         } `
                 }])
-                .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)
+                .setColor(Colors.Transparent)
                 .setFooter({
                     text: `ID: ${Guild.id}`
                 })
@@ -265,7 +265,8 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                         .setURL(hasBanner ? BannerURL : "https://bop.trtle.xyz/")
                         .setDisabled(!hasBanner)
                         .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"} `)
-                )
+                ),
+            ...withComponents
         ],
         ephemeral: hidden
     });

@@ -10,7 +10,7 @@
         "sourceMap": true,
         "pretty": true,
         "outDir": "./dist/",
-        "baseUrl": ".",
+        "baseUrl": "./src/",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
     },
@@ -21,6 +21,11 @@
         "./node_modules/@types/node/index.d.ts",
         "./wip",
         "./dashboard",
-        "./archived"
+        "./archived/",
+        "./archived/*",
+        "archived"
     ],
+    "include": [
+        "src"
+    ]
 }

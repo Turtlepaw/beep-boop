@@ -1,7 +1,10 @@
 import { Client, Events, Message as GuildMessage } from "discord.js";
 import { Emojis } from "../configuration";
 import Event from "../lib/Event";
-import { ServerSettings } from "src/buttons/ServerSettings";
+export interface ServerSettings {
+    Levels?: boolean;
+    WelcomeDelete?: boolean;
+}
 
 export default class LevelService extends Event {
     constructor() {

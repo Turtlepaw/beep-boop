@@ -4,7 +4,7 @@ import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, StringBoolean, TextBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { ModuleInformation, Modules } from "../commands/Server";
-import { ChannelSelectMenu } from "../utils/components";
+import { ChannelSelector as ChannelSelectorBuilder } from "../utils/components";
 
 const Module = ModuleInformation.TICKET_CONFIGURATION;
 export default class TicketConfiguration extends SelectOptionBuilder {
@@ -22,22 +22,17 @@ export default class TicketConfiguration extends SelectOptionBuilder {
         let Tickets = Configuration.hasTickets();
         let TicketCategory = Configuration?.Tickets?.Category;
 
-        if (Configuration?.CustomId == null) {
-            console.log("fixing guild", Configuration)
-            // client.Storage.Configuration.Edit({
-            //     Id: interaction.guild.id
-            // }, {
-            //     CustomId: Number(generateId(10))
-            // });
-        }
-
         enum Id {
             ToggleModule = "TOGGLE_MODULE",
             SetChannel = "SET_CHANNEL",
             ChannelSelector = "CHANNEL_SELECTOR"
         }
 
-        const ChannelSelector = ChannelSelectMenu(Id.ChannelSelector, ChannelType.GuildCategory);
+        const ChannelSelector = new ChannelSelectorBuilder()
+            .SetCustomId(Id.ChannelSelector)
+            .SetChannelTypes(
+                ChannelType.GuildCategory
+            );
 
         const Components = () => [
             new ButtonBuilder()
@@ -115,9 +110,7 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
                         ephemeral: true,
                         fetchReply: true,
                         content: `${Icons.Channel} Select a channel`,
-                        components: [
-                            ChannelSelector
-                        ]
+                        components: ChannelSelector.toComponents()
                     });
 
                     const ChannelInteraction = await ReplyMessage.awaitMessageComponent({
@@ -145,9 +138,7 @@ ${Icons.StemEnd} Category: ${TicketCategory == null ? "None" : channelMention(Ti
                     ephemeral: true,
                     fetchReply: true,
                     content: `${Icons.Channel} Select a channel`,
-                    components: [
-                        ChannelSelector
-                    ]
+                    components: ChannelSelector.toComponents()
                 });
 
                 const ChannelInteraction = await ReplyMessage.awaitMessageComponent({

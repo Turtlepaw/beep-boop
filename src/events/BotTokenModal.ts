@@ -2,7 +2,7 @@ import { Client, ComponentType, Events, Interaction } from "discord.js";
 import { Filter } from "../utils/filter";
 import { Icons } from "../configuration";
 import Event from "../lib/Event";
-import { CustomBrandingModal } from "../buttons/ActivateBranding";
+import { CustomBrandingModal } from "../buttons/Subscription/CustomBranding";
 import { CustomBotOptions, HandleBot } from "../utils/customBot";
 import { ChannelSelectMenu } from "../utils/components";
 import { Verifiers } from "@airdot/verifiers";
