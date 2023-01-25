@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonInteraction, TextChannel } from "discord.js";
-import { Unlock } from "../../commands/Channel";
+import { Unlock } from "../../commands/Channel/Channel";
 import { Embed, Icons, Permissions } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
 

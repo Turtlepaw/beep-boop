@@ -1,7 +1,7 @@
 import { CommandInteraction, inlineCode } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Dot } from "../configuration";
-import { DocGen, GenericVarible } from "../utils/Varibles";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Dot } from "../../configuration";
+import { DocGen, GenericVarible } from "../../utils/Varibles";
 
 export default class Varibles extends Command {
     constructor() {

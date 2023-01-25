@@ -1,9 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, time, TimestampStyles } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons, SupportServerInvite } from "../configuration";
-import { ResolveUser } from "../utils/Profile";
-import { Subscriptions } from "../models/Profile";
-import { GetSubscriptionName } from "../buttons/Developer/CreateGift";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Embed, Icons, SupportServerInvite } from "../../configuration";
+import { ResolveUser } from "../../utils/Profile";
+import { Subscriptions } from "../../models/Profile";
+import { GetSubscriptionName } from "../../buttons/Developer/CreateGift";
 
 export default class Send extends Command {
     constructor() {

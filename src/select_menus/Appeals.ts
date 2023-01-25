@@ -4,7 +4,7 @@ import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
-import { ModuleInformation, Modules } from "../commands/Server";
+import { ModuleInformation, Modules } from "../commands/Guild/Server";
 import { ChannelSelector as ChannelSelectBuilder, StringSelectBuilder, StringSelector } from "../utils/components";
 import { EmbedChildren } from "./AutoDeleting";
 

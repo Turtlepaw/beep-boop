@@ -4,7 +4,7 @@ import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, StringBoolean, TextBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { VerificationLevel } from "../models/Configuration";
-import { ModuleInformation, Modules } from "../commands/Server";
+import { ModuleInformation, Modules } from "../commands/Guild/Server";
 import { RoleSelector, StringSelectBuilder, StringSelector } from "../utils/components";
 import { FriendlyInteractionError } from "../utils/error";
 
@@ -161,7 +161,7 @@ ${Icons.StemEnd} Roles: ${(Roles == null || Roles.length == 0) ? "None" : Roles.
         });
 
         Collector.on("collect", async button => {
-            if(button.customId == ButtonCollector.BackButton) return;
+            if (button.customId == ButtonCollector.BackButton) return;
             if (button.isButton() && button.customId == Id.ToggleModule) {
                 Verification = true;
                 await Save()

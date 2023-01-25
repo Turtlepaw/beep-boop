@@ -1,5 +1,5 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, ImageFormat, SlashCommandAttachmentOption, SlashCommandUserOption } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
+import Command, { Categories } from "../../lib/CommandBuilder";
 import Canvas, { createCanvas } from "canvas";
 
 export default class Send extends Command {

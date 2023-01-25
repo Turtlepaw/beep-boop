@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, Guild, PermissionFlagsBits, SlashCommandSubcommandBuilder, TextChannel } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons, Permissions } from "../configuration";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Embed, Icons, Permissions } from "../../configuration";
 
 export async function Lock(guild: Guild, channel: TextChannel) {
     await channel.permissionOverwrites.edit(guild.id, {

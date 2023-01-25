@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, ComponentType } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
+import Command, { Categories } from "../../lib/CommandBuilder";
 
 export default class Resources extends Command {
     constructor() {

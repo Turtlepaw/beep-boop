@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBooleanOption } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { GuildInformation } from "../utils/info";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { GuildInformation } from "../../utils/info";
 
 export default class Send extends Command {
     constructor() {

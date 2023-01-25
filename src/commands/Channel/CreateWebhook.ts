@@ -1,9 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, inlineCode, PermissionFlagsBits, SlashCommandSubcommandBuilder, spoiler, Webhook, WebhookClient } from "discord.js";
-import { Embed, Icons, Permissions } from "../configuration";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { GenerateURL } from "../utils/Discohook";
-import { FriendlyInteractionError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
+import { Embed, Icons, Permissions } from "../../configuration";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { GenerateURL } from "../../utils/Discohook";
+import { FriendlyInteractionError } from "../../utils/error";
+import { Verifiers } from "../../utils/verify";
 
 export default class Send extends Command {
     constructor() {

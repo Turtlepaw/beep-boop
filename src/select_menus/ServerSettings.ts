@@ -3,7 +3,7 @@ import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, EmojiBoolean, StringBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
-import { Modules } from "../commands/Server";
+import { Modules } from "../commands/Guild/Server";
 import { StringSelectBuilder, StringSelector } from "../utils/components";
 import { ConfigurationEvents } from "../@types/Logging";
 

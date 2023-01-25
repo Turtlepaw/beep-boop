@@ -1,7 +1,7 @@
 import { inlineCode, AttachmentBuilder, ChatInputCommandInteraction, SlashCommandBooleanOption, SlashCommandStringOption } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { FriendlyInteractionError } from "../utils/error";
-import { getScreenshot, ResolveURL } from "../utils/Web";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { FriendlyInteractionError } from "../../utils/error";
+import { getScreenshot, ResolveURL } from "../../utils/Web";
 
 export default class Send extends Command {
     constructor() {

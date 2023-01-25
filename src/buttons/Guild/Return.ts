@@ -1,5 +1,5 @@
 import { ButtonInteraction } from "discord.js";
-import { ServerConfiguration } from "../../commands/Server";
+import { ServerConfiguration } from "../../commands/Guild/Server";
 import Button from "../../lib/ButtonBuilder";
 import { ButtonId } from "../../utils/config";
 import { Permissions } from "../../configuration";

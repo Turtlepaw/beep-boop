@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle } from "discord.js";
 import { Icons, Permissions } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
-import { AdvancedButtonId } from "../../commands/Server";
+import { AdvancedButtonId } from "../../commands/Guild/Server";
 
 export default class AdvancedConfiguration extends Button {
     constructor() {

@@ -6,7 +6,7 @@ import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { CounterChannel } from "../models/Configuration";
-import { ModuleInformation, Modules } from "../commands/Server";
+import { ModuleInformation, Modules } from "../commands/Guild/Server";
 import { ChannelSelector as ChannelSelectBuilder, StringSelector } from "../utils/components";
 import { EmbedChildren } from "./AutoDeleting";
 

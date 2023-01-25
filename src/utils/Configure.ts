@@ -1,5 +1,5 @@
 import { Icons, Messages, Permissions, Embed } from "../configuration";
-import { ModuleInformation, Modules } from "../commands/Server";
+import { ModuleInformation, Modules } from "../commands/Guild/Server";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { ActionRowBuilder, AnyComponentBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, ComponentType, Interaction, Message, ModalBuilder, TextInputBuilder } from "discord.js";
 import { ButtonCollector, Filter } from "./filter";

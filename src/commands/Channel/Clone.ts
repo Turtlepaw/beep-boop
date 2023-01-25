@@ -1,6 +1,6 @@
 import { CategoryChannel, CategoryCreateChannelOptions, ChannelType, ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandSubcommandBuilder } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Icons } from "../configuration";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Icons } from "../../configuration";
 import { Verifiers } from "@airdot/verifiers";
 
 export default class Channel extends Command {

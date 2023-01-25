@@ -1,10 +1,10 @@
 import { ChatInputCommandInteraction, Client, EmbedBuilder, SlashCommandSubcommandBuilder, time, TimestampStyles } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons } from "../configuration";
-import { FriendlyInteractionError } from "../utils/error";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Embed, Icons } from "../../configuration";
+import { FriendlyInteractionError } from "../../utils/error";
 import ms from "ms";
-import { generateId } from "../utils/Id";
-import { Delete, FormatAll, Refresh } from "../utils/reminders";
+import { generateId } from "../../utils/Id";
+import { Delete, FormatAll, Refresh } from "../../utils/reminders";
 import { Pages } from "utilsfordiscordjs";
 
 export default class Send extends Command {

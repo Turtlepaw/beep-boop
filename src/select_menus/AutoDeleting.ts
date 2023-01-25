@@ -5,7 +5,7 @@ import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
 import ms from "ms";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { CleanupType } from "../models/Configuration";
-import { Modules } from "../commands/Server";
+import { Modules } from "../commands/Guild/Server";
 import { ChannelSelector as ChannelSelectBuilder } from "../utils/components";
 import { CleanupChannel } from "../utils/storage";
 

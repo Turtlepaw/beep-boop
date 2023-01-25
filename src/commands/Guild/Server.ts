@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Icons } from "../configuration";
-import { Logger } from "../logger";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Embed, Icons } from "../../configuration";
+import { Logger } from "../../logger";
 
 export enum Modules {
     AutonomousCleanup = "AUTO_DELETE_SETTINGS",

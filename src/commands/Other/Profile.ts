@@ -1,9 +1,9 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, ComponentType, ModalBuilder, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, User, UserContextMenuCommandInteraction } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../configuration";
-import { FriendlyInteractionError } from "../utils/error";
-import { Endorse, ResolveUser, SetBio, SetDisplayName } from "../utils/Profile";
-import { Subscriptions } from "../models/Profile";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Embed, Emojis, Icons } from "../../configuration";
+import { FriendlyInteractionError } from "../../utils/error";
+import { Endorse, ResolveUser, SetBio, SetDisplayName } from "../../utils/Profile";
+import { Subscriptions } from "../../models/Profile";
 
 export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral = true, user?: User) {
     if (user == null && interaction.isContextMenuCommand()) user = interaction.targetUser;

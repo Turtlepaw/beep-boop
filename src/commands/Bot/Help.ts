@@ -1,11 +1,11 @@
 import { ActionRowBuilder, AutocompleteInteraction, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, ComponentType, EmbedBuilder, OAuth2Scopes, PermissionFlagsBits, SelectMenuOptionBuilder, SlashCommandStringOption, StringSelectMenuBuilder } from "discord.js";
-import SlashCommandBuilder, { Categories } from "../lib/CommandBuilder";
-import { ClientAdministrators, Dot, Embed, SupportServerInvite } from "../configuration";
-import { FormatCommandName } from "../utils/text";
-import ContextMenuBuilder from "../lib/ContextMenuBuilder";
-import { Pages } from "../utils/Pages";
-import { Filter } from "../utils/filter";
-import { CommandOptions } from "../utils/defaults";
+import SlashCommandBuilder, { Categories } from "../../lib/CommandBuilder";
+import { ClientAdministrators, Dot, Embed, SupportServerInvite } from "../../configuration";
+import { FormatCommandName } from "../../utils/text";
+import ContextMenuBuilder from "../../lib/ContextMenuBuilder";
+import { Pages } from "../../utils/Pages";
+import { Filter } from "../../utils/filter";
+import { CommandOptions } from "../../utils/defaults";
 
 export const DeveloperPortal = "DEV_PORTAL";
 export default class Help extends SlashCommandBuilder {

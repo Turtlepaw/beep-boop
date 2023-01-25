@@ -1,6 +1,6 @@
 import { ApplicationCommandType, UserContextMenuCommandInteraction } from "discord.js";
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ViewProfile } from "../commands/Profile";
+import { ViewProfile } from "../commands/Other/Profile";
 
 export default class DeleteThis extends ContextMenu {
     constructor() {

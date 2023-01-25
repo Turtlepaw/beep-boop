@@ -3,7 +3,7 @@ import { Icons } from "../../configuration";
 import { Logger } from "../../logger";
 import fs from "fs";
 import Button from "../../lib/ButtonBuilder";
-import { DeveloperPortal } from "../../commands/Help";
+import { DeveloperPortal } from "../../commands/Bot/Help";
 
 export default class DeveloperPortalButton extends Button {
     constructor() {

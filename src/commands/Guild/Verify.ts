@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction } from "discord.js";
-import Command, { Categories } from "../lib/CommandBuilder";
-import { Verification } from "../utils/Verification";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Verification } from "../../utils/Verification";
 
 export default class Verify extends Command {
     constructor() {
