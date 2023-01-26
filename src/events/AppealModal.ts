@@ -124,9 +124,11 @@ export default class AppealModal extends Event {
 
         client.QuickStorage[`pending_${(await Message).id}`] = ModalInteraction.user.id;
 
-        Button.reply({
+        Button.update({
             content: `${Icons.Date} Appeal successfully sent, we'll DM you again when the status changes.`,
-            ephemeral: true
+            //ephemeral: true
+            embeds: [],
+            components: []
         });
     }
 }
