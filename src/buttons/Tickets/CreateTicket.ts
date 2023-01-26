@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, Colors, ComponentType, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
 import { Embed, Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
 import { Filter } from "../../utils/filter";
@@ -68,7 +68,6 @@ export default class CreateTicket extends Button {
         const Message = await interaction.reply({
             embeds: [
                 new Embed(interaction.guild)
-                    .setColor(Colors.Blurple)
                     .setTitle(`${Icons.Flag} Add a Reason`)
                     .setDescription("If you add a reason, you're more likely to get help faster.")
             ],

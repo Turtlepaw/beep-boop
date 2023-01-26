@@ -45,7 +45,7 @@ export default class Send extends Command {
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
-        //const Message = await interaction.deferReply({ ephemeral: true, fetchReply: true });
+        await interaction.deferReply({ ephemeral: true });
         const Channel = interaction.options.getChannel("channel", false) || interaction.channel;
         if (!Verifiers.GuildText(Channel)) return FriendlyInteractionError(interaction, "Channel must be a text channel.")
         if (!Verifiers.TextChannel(Channel)) return FriendlyInteractionError(interaction, "API Channel recived")

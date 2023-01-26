@@ -2,7 +2,7 @@ import ContextMenu from "../lib/ContextMenuBuilder";
 import { ActionRowBuilder, APIButtonComponentWithCustomId, ApplicationCommandType, ButtonBuilder, ButtonStyle, ChannelType, Client, ComponentType, MessageActionRowComponentBuilder, MessageContextMenuCommandInteraction, time, TimestampStyles } from "discord.js";
 import { Embed, Icons } from "../configuration";
 import { FriendlyInteractionError, SendError } from "../utils/error";
-import { Verifiers } from "../utils/verify";
+import { Verifiers } from "@airdot/verifiers";
 import { Filter } from "../utils/filter";
 import { ButtonBuilderModal, ChannelSelector } from "../utils/components";
 import { FindWebhook } from "../utils/Webhook";
@@ -303,12 +303,16 @@ export default class DeleteThis extends ContextMenu {
                 else return e.data.custom_id == Btn.customId;
             });
 
-            Buttons.find(e => {
+            const ActionRow = Buttons.find(e => {
                 return e.components.find((e) => {
                     const Component = e.toJSON() as APIButtonComponentWithCustomId;
                     return Component.custom_id == Btn.customId;
                 })
             });
+            const Button = ActionRow.components.find(e => {
+                const Component = e.toJSON() as APIButtonComponentWithCustomId;
+                return Component.custom_id == Btn.customId;
+            }).toJSON() as APIButtonComponentWithCustomId;
 
             const FilteredButtons = RawButtons.map(btns => {
                 return new ActionRowBuilder<ButtonBuilder>()
@@ -330,7 +334,34 @@ export default class DeleteThis extends ContextMenu {
                 Link: Fields.Link
             }
 
-            await Btn.showModal(
+            const ButtonStyles = new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(Button.style.toString())
+                        .setLabel("Skip")
+                        .setStyle(ButtonStyle.Secondary),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Primary)
+                        .setCustomId(ButtonStyle[ButtonStyle.Primary]),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setCustomId(ButtonStyle[ButtonStyle.Secondary]),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Danger)
+                        .setCustomId(ButtonStyle[ButtonStyle.Danger]),
+                    ButtonBuilder.from(Button)
+                        .setStyle(ButtonStyle.Success)
+                        .setCustomId(ButtonStyle[ButtonStyle.Success])
+                );
+
+            const StyleSelector = await Btn.update({
+                components: [ButtonStyles],
+                content: `${Icons.Tag} Select a button style or skip`
+            });
+
+            const Style = await StyleSelector.awaitMessageComponent({ time: 0 });
+
+            await Style.showModal(
                 ButtonBuilderModal(CustomIds.EditButtonModal, ModalFields, Selected.data.style == ButtonStyle.Link ? ButtonStyle.Link : null)
             );
 
@@ -341,7 +372,8 @@ export default class DeleteThis extends ContextMenu {
             const ResolvedFields = {
                 Link: GetTextInput(Fields.Link, ModalSubmit),
                 Label: GetTextInput(Fields.Label, ModalSubmit),
-                Emoji: GetTextInput(Fields.Emoji, ModalSubmit)
+                Emoji: GetTextInput(Fields.Emoji, ModalSubmit),
+                Style: ButtonStyle[Style.customId]
             };
 
             await (async () => {
@@ -351,6 +383,7 @@ export default class DeleteThis extends ContextMenu {
                         if (Verifiers.String(ResolvedFields.Emoji)) component.setEmoji(ResolvedFields.Emoji);
                         if (Verifiers.String(ResolvedFields.Label)) component.setLabel(ResolvedFields.Label);
                         if (Verifiers.String(ResolvedFields.Link)) component.setEmoji(ResolvedFields.Link);
+                        if (!isNaN(ResolvedFields.Style)) component.setStyle(ResolvedFields.Style);
                     }
                 });
             })();

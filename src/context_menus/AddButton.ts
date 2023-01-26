@@ -276,11 +276,12 @@ export default class AddButton extends ContextMenu {
                         .setCustomId(ButtonStyle[ButtonStyle.Success])
                 );
 
-                //@ts-expect-error this error doesn't matter
-            /*const StyleMessage =*/ await (ReplyTo.isButton() ? ReplyTo.update : ReplyTo.reply)({
-                    content: `${Icons.Tag} Select a button style`,
-                    components: [ButtonStyles]
-                });
+
+            const Method = ReplyTo.isButton() ? "update" : "reply";
+            await ReplyTo[Method]({
+                content: `${Icons.Tag} Select a button style`,
+                components: [ButtonStyles]
+            });
 
             ReplyMessage = await Message.awaitMessageComponent({
                 componentType: ComponentType.Button,

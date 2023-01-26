@@ -1,7 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, Colors, ComponentType, ModalBuilder, ModalSubmitInteraction, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
-import { Embed, Emojis, GenerateTranscriptionURL } from "../../configuration";
+import { Embed, GenerateTranscriptionURL, Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
-import { Ticket } from "./CreateTicket";
 import { Filter } from "../../utils/filter";
 import { CreateLinkButton } from "../../utils/buttons";
 
@@ -16,6 +15,7 @@ export default class CloseTicket extends Button {
     }
 
     async ExecuteInteraction(interaction: ButtonInteraction, client: Client) {
+        const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         enum Id {
             AddReason = "ADD_REASON_TICKET",
             SkipReason = "SKIP_ADD_REASON_TICKET"
@@ -47,18 +47,20 @@ export default class CloseTicket extends Button {
             .setTitle("Reason")
             .setCustomId("REASON_MODAL");
 
-        const OldTicket: Ticket = client.storage[`ticket_${interaction.channel.id}`];
-        client.storage[`ticket_${interaction.channel.id}`] = {
-            CreatedBy: OldTicket.CreatedBy,
-            CreatedAt: OldTicket.CreatedAt,
+        const OldTicket = await client.Storage.Tickets.FindOneBy({ ChannelId: interaction.channel.id });
+        await client.Storage.Tickets.Edit(OldTicket.Entity, {
             ClosedBy: interaction.user.id,
             ClosedAt: new Date(),
             ChannelId: interaction.channel.id,
-            GuildId: interaction.guild.id,
-            Reason: OldTicket.Reason
-        }
-        const ticket: Ticket = client.storage[`ticket_${interaction.channel.id}`];
-        const Category = await interaction.guild.channels.fetch(client.storage[`${interaction.guild.id}_tickets`]);
+            GuildId: interaction.guild.id
+        });
+
+        const ticket = await client.Storage.Tickets.FindOneBy({ ChannelId: interaction.channel.id });
+
+        const Category = await interaction.guild.channels.fetch(
+            Configuration.Tickets?.Category
+        );
+
         if (Category.type != ChannelType.GuildCategory) {
             await interaction.reply("Something didn't go right, contact the server owner about this.");
             return;
@@ -68,7 +70,7 @@ export default class CloseTicket extends Button {
             embeds: [
                 new Embed(interaction.guild)
                     .setColor(Colors.Blurple)
-                    .setTitle(`${Emojis.Reason} Add a Reason`)
+                    .setTitle(`${Icons.Flag} Add a Reason`)
                     .setDescription("Would you like to add a reason to this?")
             ],
             components: [Buttons],
@@ -149,7 +151,7 @@ export default class CloseTicket extends Button {
         Interaction.channel.delete(`Ticket closed by: ${Interaction.user.tag}`)
         await Interaction.reply({
             ephemeral: true,
-            content: `Closed ticket successfully.`
+            content: `${Icons.TrashDefault} Closed ticket successfully.`
         });
     }
 }

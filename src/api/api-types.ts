@@ -15,7 +15,9 @@ export enum Routes {
     //Public Routes
     Profile = "/v1/profile/:id",
     Ranking = "/v1/rank/:id",
-    Leaderboard = "/v1/leaderboard/:id"
+    Leaderboard = "/v1/leaderboard/:id",
+    //Tickets
+    Transcripts = "/v1/transcripts/:id"
 }
 
 export interface OAuthUser {
