@@ -23,7 +23,8 @@ export default class TicketService extends Event {
             User: {
                 Avatar: Message.author.displayAvatarURL({ extension: ImageFormat.PNG, forceStatic: true, size: 4096 }),
                 Tag: Message.author.tag,
-                Username: Message.author.username
+                Username: Message.author.username,
+                Bot: Message.author.bot
             }
         });
 

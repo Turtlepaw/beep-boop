@@ -38,7 +38,7 @@ export const Version = "v2.0 beta";
 export const Website = "https://beep.trtle.xyz"
 export const WebsiteLink = (path: string) => Website + path;
 export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
-    return `${Website}/dashboard/${GuildId}/transcription/${ChannelId}`
+    return `${Website}/transcript/${ChannelId}`
 }
 export const Status: ActivityOptions = {
     type: ActivityType.Listening,

@@ -6,6 +6,7 @@ export interface DatabaseUser {
     Avatar: string;
     Username: string;
     Tag: string;
+    Bot: boolean;
 }
 
 export interface TicketMessage {
