@@ -1,23 +1,37 @@
 import { Client, User } from "discord.js";
-import { Gift } from "src/models/Gift";
-import { generateId, generatePassword } from "./Id";
+import { Gift } from "../models/Gift";
+import { Subscriptions } from "../models/Profile";
+import { generatePassword } from "./Id";
 
-export function GenerateGiftCode() {
-    return `${generatePassword(4)}-${generatePassword(4)}-${generatePassword(4)}`
+/**
+ * Generates a unique gift code by looping until it generates a gift code that doesn't exist in the provided codes.
+ * 
+ * 1. Generates a code
+ * 2. Checks if it exists within the provided codes
+ * 3. Returns the code if it doesn't exist or then continues
+ */
+export function GenerateGiftCode(codes: string[]) {
+    for (; ;) {
+        const code = `${generatePassword(4)}-${generatePassword(4)}-${generatePassword(4)}`;
+        if (codes.includes(code)) continue;
+        else return code;
+    }
 }
 
-export async function CreateGift(from: User) {
+export async function CreateGift(from: User, sub: Subscriptions, expires?: Date) {
     const { client } = from;
-    const GiftCode = GenerateGiftCode();
-    const Expires = new Date();
-    Expires.setMonth(Expires.getMonth() + 2);
+    const codes = await client.Storage.Gifts.GetAll();
+    const GiftCode = GenerateGiftCode(codes.map(e => e.GiftCode));
+    const Expires = expires ?? new Date();
+    if (expires == null) Expires.setMonth(Expires.getMonth() + 2);
     await client.Storage.Gifts.Create({
         From: from.id,
         Redeemed: false,
         GiftCode,
         Expired: false,
         RedeemedAt: null,
-        Expires: Expires.toDateString()
+        Expires: Expires.toDateString(),
+        Type: sub
     });
 
     return {
@@ -51,6 +65,7 @@ export interface ResolvedGift {
     Expired: boolean;
     Expires: Date;
     RedeemedAt: Date;
+    Type: Subscriptions;
 }
 
 export async function ResolveGift(code: string, client: Client): Promise<ResolvedGift> {
@@ -63,6 +78,7 @@ export async function ResolveGift(code: string, client: Client): Promise<Resolve
         RedeemedAt: new Date(Gift?.RedeemedAt),
         Expires: new Date(Gift?.Expires),
         Expired: Gift?.Expired ?? (new Date(Gift?.Expires) < new Date()),
-        gift: Gift
+        gift: Gift,
+        Type: Gift?.Type || Subscriptions.Pro
     }
 }

@@ -1,11 +1,14 @@
-
-import '../styles/globals.css'
-import '../styles/index.css'
-import type { AppProps } from 'next/app'
-import Head from 'next/head'
-import { ChakraProvider, extendTheme } from '@chakra-ui/react'
-import React from 'react'
-import { Footer } from '../components/Footer'
+import '../styles/globals.css';
+import '../styles/index.css';
+import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import React from 'react';
+import { Footer } from '../components/Footer';
+import { NextResponse } from 'next/server';
+import { Configuration as config } from '../utils/configuration';
+import { Analytics } from '@vercel/analytics/react';
+import { SSRProvider } from 'react-aria';
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;
@@ -22,20 +25,14 @@ export interface WebsiteConfiguration {
    * The website url for the embed.
    */
   WebsiteURL: URL;
+  Color: string;
+  TagLine: String;
 }
 
 // Configuration*
 // ^ This is required
 // This is what'll appear on your website
-export const Configuration: WebsiteConfiguration = {
-  WebsiteURL: "https://dash.trtle.xyz/",
-  Title: "Beep Boop",
-  Icon: {
-    SVG: "/Robot.svg",
-    PNG: "/Robot.png"
-  },
-  Description: "Beep Boop is a multipurpose Discord bot built with large community servers in mind."
-}
+export const Configuration = config;
 
 
 const colours = {
@@ -51,6 +48,16 @@ const colours = {
 };
 
 const { blurple, } = colours;
+
+export enum ButtonStyle {
+  Primary = "primary",
+  Secondary = "secondary",
+  Success = "success",
+  Danger = "danger",
+  BrandColor = "brand",
+  Outline = "outline",
+  OutlineDark = "outline_dark"
+}
 
 const theme = extendTheme({
   colors: colours,
@@ -90,19 +97,22 @@ const theme = extendTheme({
         color: 'white',
       },
       variants: {
-        primary: {
+        [ButtonStyle.Primary]: {
           bg: blurple
         },
-        secondary: {
+        [ButtonStyle.BrandColor]: {
+          bg: Configuration.Color
+        },
+        [ButtonStyle.Secondary]: {
           bg: 'grey.light'
         },
-        success: {
+        [ButtonStyle.Success]: {
           bg: 'green'
         },
-        danger: {
+        [ButtonStyle.Danger]: {
           bg: 'red'
         },
-        outline: {
+        [ButtonStyle.Outline]: {
           _hover: {
             bg: 'grey.light'
           }
@@ -113,7 +123,7 @@ const theme = extendTheme({
           },
           bg: "transparent"
         },
-        outlineDark: {
+        [ButtonStyle.OutlineDark]: {
           border: "1px solid #222",
           bgColor: "transparent",
           _hover: {
@@ -128,34 +138,13 @@ const theme = extendTheme({
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div className="Background Text">
-      <ChakraProvider theme={theme}>
-        <a href='/'>
-
-        </a>
-        <Head>
-          <title>{Configuration.Title}</title>
-          <link rel="icon" href={Configuration.Icon.SVG} />
-          {/* Primary Meta Tags */}
-          <meta name="title" content={Configuration.Title} />
-          <meta name="description" content={Configuration.Description} />
-
-          {/* Open Graph / Facebook */}
-          <meta property="og:type" content="website" />
-          <meta property="og:url" content={Configuration.WebsiteURL} />
-          <meta property="og:title" content={Configuration.Title} />
-          <meta property="og:description" content={Configuration.Description} />
-          <meta property="og:image" content={Configuration.Icon.PNG} />
-
-          {/* Twitter */}
-          <meta property="twitter:card" content="summary_large_image" />
-          <meta property="twitter:url" content={Configuration.WebsiteURL} />
-          <meta property="twitter:title" content={Configuration.Title} />
-          <meta property="twitter:description" content={Configuration.Description} />
-          <meta property="twitter:image" content={Configuration.Icon.PNG} />
-        </Head>
-        <Component {...pageProps} />
-        <Footer />
-      </ChakraProvider>
+      <SSRProvider>
+        <ChakraProvider theme={theme}>
+          <Analytics />
+          <Component {...pageProps} />
+          <Footer />
+        </ChakraProvider>
+      </SSRProvider>
     </div >
   )
 }

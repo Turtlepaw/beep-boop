@@ -1,39 +1,188 @@
-import { Client, Guild } from "discord.js";
-import { KeyFileStorage } from "key-file-storage/dist/src/key-file-storage";
+import { Client } from "discord.js";
 import "reflect-metadata"
-import { CleanupType, GuildConfiguration } from "../models/Configuration";
-import { DataSource, DeepPartial, EntityTarget, FindOptionsWhere, ObjectID, ObjectLiteral, Repository } from "typeorm"
+import { CleanupType, CounterChannel, GuildConfiguration, JoinActions, JoinTriggers, ReputationBasedModerationType, VerificationLevel, VerificationPanel } from "../models/Configuration";
+import { DataSource, DeepPartial, FindOptionsWhere, ObjectID, Repository } from "typeorm"
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { CustomBot } from "../models/CustomBot";
+import { JSONArray } from "./jsonArray";
+// Import Models
 import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
 import { Reminder } from "../models/Reminders";
 import { MemberRanking } from "../models/MemberRanking";
 import { Message } from "../models/Message";
-import { CustomBot } from "../models/CustomBot";
-import { JSONArray } from "./jsonArray";
 import { Gift } from "../models/Gift";
+import { OAuth } from "../models/OAuth";
+import { Action } from "../models/Action";
+import { Error as CustomError } from "../models/Error";
+import { APIUser } from "../models/APIUser";
+import { Ticket } from "../models/Ticket";
+import { ConfigurationEvents } from "../@types/Logging";
 
-export class ResolvedGuildConfiguration extends GuildConfiguration {
-    constructor(options?: any) {
+export interface CleanupChannel {
+    Type: CleanupType;
+    ChannelId: string;
+}
+
+class ResolvableConfiguration {
+    // Guild Information
+    public CustomId: number;
+    public Id: string;
+    public Name: string;
+
+    // Autonomous Cleanup
+    public CleanupChannels: CleanupChannel[];
+    public CleanupTimer: number;
+    public CleanupType: CleanupType[];
+
+    // Counter Channels
+    public CounterChannels: Map<string, CounterChannel>;
+
+    // Premium (basic and pro)
+    public Color: string;
+    public Premium: boolean;
+
+    // [deprecated] Reputation Based Moderation
+    public MaxReputation: number;
+    public ModerationChannel: string;
+    public ModerationType: JSONArray<ReputationBasedModerationType>;
+    public ReputationMod: boolean;
+
+    // Verification
+    public Verification: {
+        Status: boolean;
+        Level: VerificationLevel;
+        Panels: VerificationPanel[];
+        Roles: string[];
+    }
+
+    // Appeals
+    public Appeals: {
+        Status: boolean;
+        Channel: string;
+        Blocked: Set<string>;
+    };
+
+    // Invite Blocker
+    public InviteBlocker: {
+        Status: boolean;
+        Exceptions: string[];
+    };
+
+    // Starboard
+    public Starboard: {
+        Channel: string;
+        Status: boolean;
+        Reaction: string;
+    };
+
+    // Tickets
+    public Tickets: {
+        Status: boolean;
+        Category: string;
+    };
+
+    // Join Actions
+    public ActionsDetails: {
+        MaxReputation: number;
+        NicknamePrefix: string;
+    };
+
+    public Actions: {
+        Action: JoinActions;
+        Trigger: JoinTriggers;
+    }[];
+
+    // Logging
+    public Logging: {
+        Status: boolean;
+        Categories: Set<ConfigurationEvents>;
+    }
+    // Raw configuration
+    public raw: GuildConfiguration;
+}
+
+export class ResolvedGuildConfiguration extends ResolvableConfiguration {
+    constructor(options?: ResolvableConfiguration) {
         super();
         Object.entries(options).map(([k, v]) => this[k] = v);
+    }
+
+    isPremium() {
+        return this?.Premium ?? false;
+    }
+
+    isVerification() {
+        return this?.Verification ?? false;
     }
 
     isReputationModeration() {
         return this?.ReputationMod ?? false;
     }
 
+    hasAppeals() {
+        return this.Appeals.Status;
+    }
+
+    isUserAppealBlocked(userId: string) {
+        return this.Appeals.Blocked.has(userId);
+    }
+
     isCleanup(type: CleanupType) {
-        if (!JSONArray.isArray(this.CleanupType)) return;
+        if (!Array.isArray(this.CleanupType)) return false;
         return this.CleanupType.includes(type);
+    }
+
+    getCleanupChannels(type: CleanupType) {
+        if (this?.CleanupChannels == null) return [];
+        return this.CleanupChannels.filter(e => e.Type != type);
     }
 
     isSystemCleanup() {
         return this.isCleanup(CleanupType.System);
     }
+
+    hasCounterChannels() {
+        return this?.CounterChannels != null && this.CounterChannels.size >= 1;
+    }
+
+    hasTickets() {
+        return this?.Tickets?.Status ?? false;
+    }
+
+    hasTicketsSetup() {
+        return this?.Tickets?.Category != null;
+    }
+
+    isMessageCleanup() {
+        return this.isCleanup(CleanupType.Message);
+    }
+
+    isTimedCleanup() {
+        return this.isCleanup(CleanupType.Timed);
+    }
+
+    isInviteBlocker() {
+        return this?.InviteBlocker?.Status ?? false;
+    }
 }
 
-const entities = [GuildConfiguration, CustomWebhook, Profile, MemberRanking, Reminder, Message, CustomBot, Gift];
+const entities = [
+    GuildConfiguration,
+    CustomWebhook,
+    Profile,
+    MemberRanking,
+    Reminder,
+    Message,
+    CustomBot,
+    Gift,
+    OAuth,
+    Action,
+    APIUser,
+    Ticket,
+    CustomError
+];
+
 export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "database.sqlite",
@@ -53,11 +202,16 @@ export async function InitializeProvider(client: Client) {
         CustomWebhooks: new StorageManager(client.storage, CustomWebhook.name),
         Messages: new StorageManager(client.storage, Message.name),
         CustomBots: new StorageManager(client.storage, CustomBot.name),
-        Gifts: new StorageManager(client.storage, Gift.name)
+        Gifts: new StorageManager(client.storage, Gift.name),
+        OAuth: new StorageManager(client.storage, OAuth.name),
+        Actions: new StorageManager(client.storage, Action.name),
+        Errors: new StorageManager(client.storage, CustomError.name),
+        ApiUsers: new StorageManager(client.storage, APIUser.name),
+        Tickets: new StorageManager(client.storage, Ticket.name),
     }
 }
 
-export class StorageManager<repo = any> {
+export class StorageManager<repo = unknown> {
     public Storage: DataSource;
     public Repository: Repository<repo>;
     constructor(storage: DataSource, repository: string) {
@@ -69,6 +223,7 @@ export class StorageManager<repo = any> {
         try {
             return this.Repository.find();
         } catch (e) {
+            console.log("error".red, e, e?.stack)
             return Promise.resolve<repo[]>([]);
         }
     }
@@ -85,13 +240,13 @@ export class StorageManager<repo = any> {
         return this.Repository.findOneBy(findBy);
     }
 
-    ResolveArray<arrayType = any>(array: arrayType[]): arrayType[] {
+    ResolveArray<arrayType = unknown>(array: arrayType[]): arrayType[] {
         if (array == null || array.length <= 0) return [];
         return array;
     }
 
     Create(value: DeepPartial<repo> | DeepPartial<repo>[]) {
-        //@ts-expect-error
+        //@ts-expect-error we're giving the correct data
         return this.Repository.save(value);
     }
 
@@ -100,15 +255,15 @@ export class StorageManager<repo = any> {
     }
 
     async HasInArray(findBy: FindOptionsWhere<repo>, key: string) {
-        const found = await this.Repository.findOneBy(findBy) as any[];
-        const Resolved = this.ResolveArray<any>(found);
+        const found = await this.Repository.findOneBy(findBy) as unknown[];
+        const Resolved = this.ResolveArray<unknown>(found);
         return Resolved.includes(key);
     }
 
     async EditOrCreate(findBy: FindOptionsWhere<repo>, newValue: DeepPartial<repo>) {
         const entity = await this.Get(findBy);
         if (entity == null) return this.Create(newValue);
-        //@ts-expect-error
+        //@ts-expect-error newValue should be working
         await this.Repository.update(findBy, newValue);
     }
 
@@ -118,7 +273,7 @@ export class StorageManager<repo = any> {
 
     async EditArray(findBy: FindOptionsWhere<repo>, ItemKey: string, AddedItems: repo[]) {
         const value = await this.Repository.findOneBy(findBy) as repo[];
-        //@ts-expect-error
+        //@ts-expect-error this is correct
         return await this.Repository.update(findBy, [
             ...value,
             ...AddedItems
@@ -140,48 +295,131 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
         return this.EditOrCreate({
             Id
         }, {
-            CleanupChannels: json.toJSON()
+            CleanupChannels: []
         });
     }
 
-    async CreateConfiguration(guild: Guild) {
-        if (this.CreatedGuilds.includes(guild.id)) return;
-        const EmptyArray = JSON.stringify({
-            array: []
-        });
-        this.CreatedGuilds.push(guild.id);
-        this.Create({
-            CleanupChannels: EmptyArray,
-            CleanupTimer: null,
-            CleanupType: EmptyArray,
-            Color: null,
+    CreateConfiguration(guild: { id: string; name: string; }) {
+        return this.Repository.save({
+            // Server Information
             Id: guild.id,
+            Name: guild.name,
+            // Autonomous Cleaning
+            CleanupChannels: [],
+            CleanupTimer: null,
+            CleanupType: [],
+            // Premium
+            Color: null,
+            // Invite Blocker
+            InviteBlockerStatus: false,
+            InviteBlockerExceptions: [],
+            // appeals
+            Appeals: false,
+            AppealChannel: null,
+            AppealBlocks: new Set<string>(),
+            //counter channels
+            CounterChannels: new Map(),
+            // premium
+            Premium: false,
+            // verification
+            Verification: false,
+            VerificationLevel: VerificationLevel.Medium,
+            VerificationRoles: [],
+            VerificationPanels: [],
+            // [deprecated] Reputation Based Moderation
+            ReputationMod: false,
             MaxReputation: 5,
+            ModerationType: "",
+            // Logs
             ModerationChannel: null,
-            ModerationType: EmptyArray,
-            ReputationMod: false
-        })
+            ModerationChannels: [],
+            // Highlights (known as Starboard)
+            StarboardReaction: "⭐",
+            StarboardChannel: null,
+            StarboardStatus: false,
+            // Join Actions
+            ActionsMaxReputation: 2,
+            ActionsNicknamePrefix: null,
+            Actions: [],
+            // Tickets
+            TicketsCategory: null,
+            TicketsStatus: false
+        });
     }
 
-    async forGuild(guild: Guild): Promise<ResolvedGuildConfiguration> {
+    async forGuild(guild: { id: string; name: string; }): Promise<ResolvedGuildConfiguration> {
         const config = await this.Get({
             Id: guild.id
         });
 
         const EmptyResolvableArray = () => new JSONArray();
 
-        if (config == null) this.CreateConfiguration(guild);
+        //if (config == null) return null; //this.CreateConfiguration(guild);
+
 
         return new ResolvedGuildConfiguration({
-            CleanupChannels: config?.CleanupChannels == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupChannels),
-            CleanupTimer: config?.CleanupTimer || null,
-            CleanupType: config?.CleanupType == null ? EmptyResolvableArray() : JSONArray.from(config?.CleanupType),
-            Color: config?.Color || null,
+            // Guild Information
+            CustomId: config?.CustomId,
             Id: config?.Id ?? guild.id,
+            Name: config?.Name ?? guild.name,
+            // Autonomous Cleanup
+            CleanupChannels: config?.CleanupChannels == null ? [] : config.CleanupChannels,
+            CleanupTimer: config?.CleanupTimer || null,
+            CleanupType: config?.CleanupType == null ? [] : config.CleanupType,
+            // Premium (basic and pro)
+            Color: config?.Color ?? null,
+            Premium: config?.Premium ?? false,
+            // Counter channels
+            CounterChannels: config?.CounterChannels ?? new Map(),
+            // Verification
+            Verification: {
+                Status: config?.Verification ?? false,
+                Level: config?.VerificationLevel ?? VerificationLevel.Low,
+                Panels: config?.VerificationPanels ?? [],
+                Roles: config?.VerificationRoles ?? []
+            },
+            // [deprecated] Reputation Based Moderation
             MaxReputation: config?.MaxReputation || 5,
             ModerationChannel: config?.ModerationChannel || null,
             ModerationType: config?.ModerationType == null ? EmptyResolvableArray() : JSONArray.from(config?.ModerationType),
-            ReputationMod: config?.ReputationMod || false
+            ReputationMod: config?.ReputationMod ?? false,
+            // Invite Blocker
+            InviteBlocker: {
+                Status: config?.InviteBlockerStatus ?? false,
+                Exceptions: config?.InviteBlockerExceptions == null ? [] : config?.InviteBlockerExceptions
+            },
+            // Starboard
+            Starboard: {
+                Channel: config?.StarboardChannel || null,
+                Status: config?.StarboardStatus ?? false,
+                Reaction: config?.StarboardReaction ?? "⭐"
+            },
+            // Appeals
+            Appeals: {
+                Status: config?.Appeals ?? false,
+                Channel: config?.AppealChannel,
+                Blocked: config?.AppealBlocks ?? new Set()
+            },
+            // Tickets
+            Tickets: {
+                Category: config?.TicketsCategory,
+                Status: config?.TicketsStatus
+            },
+            // Join Actions
+            ActionsDetails: {
+                MaxReputation: config?.ActionsMaxReputation,
+                NicknamePrefix: config?.ActionsNicknamePrefix
+            },
+            Actions: config?.Actions == null ? [] : config.Actions.map(e => ({
+                Action: e[1],
+                Trigger: e[0]
+            })),
+            Logging: {
+                Status: config?.LoggingStatus ?? false,
+                Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>()
+            },
+            // Raw configuration
+            raw: config
         });
     }
 }

@@ -47,6 +47,7 @@ export async function parseUser(ctx: GetServerSidePropsContext, getGuilds: boole
     const token = parse(ctx.req.headers.cookie)[config.cookieName];
 
     if (!token) {
+        console.log("No token")
         return null;
     }
 
@@ -102,4 +103,5 @@ export async function parseUser(ctx: GetServerSidePropsContext, getGuilds: boole
 
 export interface DefaultProps {
     user: DiscordUser | null;
+    mobile: boolean;
 }

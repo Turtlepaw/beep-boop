@@ -1,9 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
+import { Client, Events, Message as GuildMessage } from "discord.js";
 import { Emojis } from "../configuration";
-import { SendAppealMessage } from "../utils/appeals";
 import Event from "../lib/Event";
-import { Verifiers } from "../utils/verify";
-import { ServerSettings } from "src/buttons/ServerSettings";
+export interface ServerSettings {
+    Levels?: boolean;
+    WelcomeDelete?: boolean;
+}
 
 export default class LevelService extends Event {
     constructor() {

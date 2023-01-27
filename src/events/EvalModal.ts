@@ -1,5 +1,5 @@
-import { NewsChannel as GuildNewsChannel, ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Interaction, ModalSubmitInteraction } from "discord.js";
-import { ClientAdministators, Embed, guildId, NewsChannel } from "../configuration";
+import { Client, Events, ModalSubmitInteraction } from "discord.js";
+import { ClientAdministrators, Embed, Icons } from "../configuration";
 import Event from "../lib/Event";
 
 export default class EvalModal extends Event {
@@ -12,26 +12,28 @@ export default class EvalModal extends Event {
     async ExecuteEvent(client: Client, interaction: ModalSubmitInteraction) {
         //await interaction.deferReply();
         if (!interaction.isModalSubmit()) return;
-        if (!ClientAdministators.includes(interaction.user.id)) return;
+        if (!ClientAdministrators.includes(interaction.user.id)) return;
         if (interaction.customId != "EVAL_MODAL") return;
         const Code = interaction.fields.getTextInputValue("code");
         try {
             const EvalResponse = await eval(Code);
             await interaction.reply({
                 ephemeral: true,
-                content: "\📦 Evaluating code...",
+                content: `${Icons.Info} Evaluating code...`,
                 embeds: [
-                    new Embed()
+                    await new Embed(interaction.guild)
                         .setDescription(`\`\`\`\n${EvalResponse}\`\`\``)
+                        .Resolve()
                 ]
             });
         } catch (e) {
             await interaction.reply({
                 ephemeral: true,
-                content: "\📦 Something didn't go right...",
+                content: `${Icons.Flag} Something went wrong evaluating that...`,
                 embeds: [
-                    new Embed()
+                    await new Embed(interaction.guild)
                         .setDescription(`\`\`\`\n${e}\`\`\``)
+                        .Resolve()
                 ]
             });
         }

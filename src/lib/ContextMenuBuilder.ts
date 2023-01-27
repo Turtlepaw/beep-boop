@@ -1,24 +1,9 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, Client, CommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType, PermissionsString } from "discord.js";
-import { BuilderOptions, CommandBuilderType } from "./Builder";
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Client, ContextMenuCommandBuilder, ContextMenuCommandInteraction, ContextMenuCommandType } from "discord.js";
+import { Builder, BuilderOptions, CommandBuilderType } from "./Builder";
 
-export interface ContextMenuBuilderOptions {
-    /**
-     * Required permissions to execute this command.
-     */
-    RequiredPermissions: PermissionsString[];
-    /**
-     * The member executing this command must have one or more of these permissions.
-     */
-    SomePermissions: PermissionsString[];
-    /**
-     * If the command can only be executed within a server.
-     */
-    GuildOnly: boolean;
-    /**
-     * If this command can only be executed on the development server.
-     */
-    CanaryCommand: boolean;
+export interface ContextMenuBuilderOptions extends BuilderOptions {
     /**
      * The name of this command. (e.g. User Information)
      */
@@ -28,25 +13,18 @@ export interface ContextMenuBuilderOptions {
      */
     Type: ContextMenuCommandType;
 }
-export default class ContextMenu {
+
+export default class ContextMenu extends Builder {
     public Name: string;
     public Type: ContextMenuCommandType;
-    public RequiredPermissions!: PermissionsString[];
-    public SomePermissions!: PermissionsString[];
     public Builder: ContextMenuCommandBuilder = new ContextMenuCommandBuilder();
-    public CanaryCommand: boolean = false;
-    public GuildOnly: boolean = true;
     public BuilderType: CommandBuilderType;
 
     constructor(options: ContextMenuBuilderOptions) {
-        //Setting Permissions
-        this.SomePermissions = options.SomePermissions;
-        this.RequiredPermissions = options.RequiredPermissions;
+        super(options);
         //Setting Main Data (name, guild only, etc...)
         this.Name = options.Name;
         this.Type = options.Type;
-        this.CanaryCommand = options.CanaryCommand;
-        this.GuildOnly = options.GuildOnly;
         this.BuilderType = CommandBuilderType.ContextMenu;
         //Set stuff on the builder
         this.Builder
@@ -58,5 +36,6 @@ export default class ContextMenu {
     public async ExecuteContextMenu(
         interaction: ContextMenuCommandInteraction,
         client: Client
-    ): Promise<void> { }
+        // @ts-expect-error this is a builder
+    ): Promise<unknown | void> { }
 }

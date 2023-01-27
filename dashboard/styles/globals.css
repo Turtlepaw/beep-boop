@@ -4,6 +4,11 @@
 
 :root {
   --thumb: #43454f;
+  --color: #ff5c5e;
+}
+
+.hover\:bg-brand:hover {
+  background-color: var(--color);
 }
 
 html,

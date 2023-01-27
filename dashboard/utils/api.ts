@@ -1,32 +1,10 @@
 import fetch from "node-fetch";
 import { config } from "./config";
 import { APIGuild } from "./types";
+import { Routes } from "./api-types";
 const URL = process.env.API_URI || "http://localhost:4000";
-const token = process.env.API_TOKEN || "Bearer api_token_1490ujdsifh9124yf";
+const token = `Bearer ${process.env.API_TOKEN}` || "Bearer api_token_1490ujdsifh9124yf";
 //const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
-
-export enum Routes {
-    AppealSettings = "/settings/appeals",
-    Index = "/",
-    OAuth = "/oauth",
-    GuildsWith = "/guilds",
-    Channels = "/channels",
-    CreateMessage = "/message/create"
-}
-
-enum Status {
-    Initialized = 1,
-    Error = 2,
-    Success = 3,
-    NotFound = 4
-}
-
-enum Messages {
-    Initialized = 'SERVER_INITIALIZED_AND_READY',
-    Error = 'SERVER_ERROR',
-    Success = 'SERVER_SUCCESS',
-    NotFound = 'NOT_FOUND_ON_SERVER'
-}
 
 export function CreateRoute(route: Routes) {
     return URL + route;
@@ -42,6 +20,57 @@ export enum Methods {
     Get = "GET",
     Post = "POST",
     Delete = "DELETE"
+}
+
+export enum ActionParam {
+    Boolean = "boolean",
+    String = "string",
+    StringWithVaribles = "string_with_vars"
+}
+
+export interface Action {
+    Id: string;
+    Name: string;
+    Description: string;
+    Author: {
+        Avatar: string;
+        Username: string;
+        Tag: string;
+    };
+    InternalCode: string;
+    ConfigurationParams: {
+        [key: string]: {
+            Name: string;
+            Type: ActionParam;
+            DefaultValue?: any;
+        };
+    };
+}
+
+export async function GetActions(): Promise<Action[]> {
+    return CallAPI(CreateRoute(Routes.Modules.replace(":id", "all") as Routes));
+    return [{
+        Name: "Nickname Manager",
+        Author: {
+            Avatar: "https://cdn.discordapp.com/avatars/820465204411236362/aa4ece5f0f241fad5e3e554e5ef63887.webp",
+            Tag: "Turtlepaw#0001",
+            Username: "Turtlepaw"
+        },
+        Description: "Manages member's nicknames.",
+        ConfigurationParams: {
+            OnJoin: {
+                Type: ActionParam.Boolean,
+                Name: "On Member Join",
+                DefaultValue: true
+            },
+            NicknameBase: {
+                Type: ActionParam.String,
+                Name: "Nickname"
+            }
+        },
+        Id: "any_id",
+        InternalCode: "new NickManger().execute();"
+    }];
 }
 
 export async function GetUser(Id: string): Promise<OAuthUser> {
@@ -82,12 +111,12 @@ export async function CreateUser(Id: string, Options: OAuthUser): Promise<any> {
             Authorization: token
         }
     });
-
+    console.log(Result)
     return Result.json();
 }
 
-export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
-    const Result = await fetch(CreateRoute(Routes.GuildsWith) + `?id=${Id}`, {
+export async function CallAPI<T>(url: string): Promise<T> {
+    const Result = await fetch(url, {
         method: Methods.Get,
         headers: {
             Authorization: token
@@ -95,6 +124,10 @@ export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
     });
 
     return Result.json();
+}
+
+export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
+    return CallAPI(CreateRoute(Routes.GuildsWith) + `?id=${Id}`);
 }
 
 export async function GetChannels(Id: string): Promise<APIGuild[]> {
@@ -103,32 +136,6 @@ export async function GetChannels(Id: string): Promise<APIGuild[]> {
         headers: {
             Authorization: token
         }
-    });
-
-    return Result.json();
-}
-
-export async function GetAppeals(Id: string): Promise<string> {
-    const Result = await fetch(CreateRoute(Routes.AppealSettings) + `?id=${Id}`, {
-        method: Methods.Get,
-        headers: {
-            Authorization: token
-        }
-    });
-
-    return Result.json();
-}
-
-export async function SetAppeals(Id: string, ChannelId: string): Promise<any> {
-    const Result = await fetch(CreateRoute(Routes.AppealSettings), {
-        method: Methods.Post,
-        body: JSON.stringify({
-            id: Id,
-            channel: ChannelId,
-            headers: {
-                Authorization: token
-            }
-        })
     });
 
     return Result.json();

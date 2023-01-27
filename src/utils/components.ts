@@ -1,7 +1,7 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders"
-import { Channel, ChannelType, Collection, SelectMenuOptionBuilder, DataManager, GuildBasedChannel, GuildChannelResolvable, SelectMenuBuilder, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, TextBasedChannel, TextChannel, ChannelSelectMenuBuilder } from "discord.js"
-import { Emojis } from "../configuration";
+import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
+import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType, RoleSelectMenuInteraction, AnySelectMenuInteraction, StringSelectMenuInteraction, ChannelSelectMenuInteraction } from "discord.js";
 import { Verifiers } from "./verify";
+import { Filter } from "./filter";
 
 export enum EmbedModalFields {
     Title = "BUILDER_TITLE_FIELD",
@@ -9,7 +9,8 @@ export enum EmbedModalFields {
     FooterText = "BUILDER_FOOTER_TEXT_FIELD",
     Color = "BUILDER_COLOR_FIELD"
 }
-export function EmbedModal(CustomId: string = "CONFIGURE_EMBED", Message: GuildMessage) {
+
+export function EmbedModal(CustomId = "CONFIGURE_EMBED", Message: GuildMessage) {
     const Fields = {
         Title: new TextInputBuilder()
             .setCustomId(EmbedModalFields.Title)
@@ -85,8 +86,7 @@ export function EmbedFrom(Modal: ModalSubmitInteraction) {
     if (Verifiers.String(Fields.Description)) Embed.setDescription(Fields.Description);
     if (Verifiers.String(Fields.Title)) Embed.setTitle(Fields.Title);
     if (Verifiers.String(Fields.Footer)) Embed.setFooter({ text: Fields.Footer });
-    //@ts-expect-error
-    if (Verifiers.String(Fields.Color)) Embed.setColor(Fields.Color);
+    if (Verifiers.String(Fields.Color) && Verifiers.isHexColor(Fields.Color)) Embed.setColor(Fields.Color);
 
     return Embed;
 }
@@ -95,28 +95,181 @@ export function GetTextInput(Id: string, interaction: ModalSubmitInteraction) {
     return interaction.fields.fields.get(Id)?.value;
 }
 
-export function ChannelSelectMenu(CustomId: string = "CHANNEL_SELECT", Channels: Collection<string, GuildBasedChannel>) {
-    const channels = Array.from(Channels.filter(e => e.type == ChannelType.GuildText).values()) as TextChannel[];
-    channels.length = 25
+export type Channels = Collection<string, GuildBasedChannel>;
+
+export type AnySelectMenuBuilder = StringSelectMenuBuilder |
+    RoleSelectMenuBuilder |
+    ChannelSelectMenuBuilder |
+    UserSelectMenuBuilder |
+    MentionableSelectMenuBuilder;
+export type SelectComponentType = ComponentType.RoleSelect |
+    ComponentType.UserSelect |
+    ComponentType.StringSelect |
+    ComponentType.ChannelSelect |
+    ComponentType.MentionableSelect;
+
+export type SelectorConfiguration<T extends AnySelectMenuBuilder> = (SelectMenu: T) => AnySelectMenuBuilder;
+
+export class Selector<T extends AnySelectMenuBuilder, I = AnySelectMenuInteraction> {
+    public Configuration: SelectorConfiguration<T>;
+    public CustomId: string;
+    public componentType: SelectComponentType;
+    private placeholder: string = null;
+    constructor(componentType: SelectComponentType) {
+        this.componentType = componentType;
+    }
+
+    public SetCustomId(customId: string) {
+        this.CustomId = customId;
+        return this;
+    }
+
+    public Placeholder(placeholder: string) {
+        this.placeholder = placeholder;
+        return this;
+    }
+
+    public Configure(Configuration: SelectorConfiguration<T>) {
+        this.Configuration = Configuration;
+        return this;
+    }
+
+    //@ts-expect-error this is a builder
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    protected toInternalBuilder(): T { }
+
+    public toBuilder(): T {
+        const Builder = this.toInternalBuilder() as T;
+        if (this.placeholder != null) Builder.setPlaceholder(this.placeholder)
+        return Builder;
+    }
+
+    public toActionRow(): ActionRowBuilder<T> {
+        return new ActionRowBuilder<T>()
+            .addComponents(
+                this.toBuilder()
+            );
+    }
+
+    public toComponents(): ActionRowBuilder<T>[] {
+        return [this.toActionRow()];
+    }
+
+    public async CollectComponents(message: Message, interaction?: Interaction): Promise<Awaited<I>> {
+        const CustomIds = [];
+        if (interaction != null) message.components.forEach(e => e.components.forEach(e => CustomIds.push(e.customId)));
+        const Message = await message.awaitMessageComponent({
+            time: 0,
+            filter: interaction == null ? null : Filter({
+                customIds: CustomIds,
+                member: interaction.member
+            }),
+            componentType: this.componentType
+        });
+        return Message as Awaited<I>;
+    }
+}
+
+export class StringSelectBuilder extends StringSelectMenuOptionBuilder { }
+
+export class StringSelector extends Selector<StringSelectMenuBuilder, StringSelectMenuInteraction> {
+    public options: StringSelectBuilder[] = [];
+    private max: number = null;
+    private min: number = null;
+
+    constructor() {
+        super(ComponentType.StringSelect)
+    }
+
+    public AddOptions(...Options: StringSelectBuilder[]) {
+        this.options.push(...Options);
+        return this;
+    }
+
+    public Min(min: number) {
+        this.min = min;
+        return this;
+    }
+
+    public Max(max: number) {
+        this.max = max;
+        return this;
+    }
+
+    protected toInternalBuilder(): StringSelectMenuBuilder {
+        if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
+        const Builder = new StringSelectMenuBuilder()
+            .setCustomId(this.CustomId)
+            .setOptions(this.options)
+        if (this.min != null) Builder.setMaxValues(this.min)
+        if (this.max != null) Builder.setMaxValues(this.max);
+        if (this?.Configuration != null) this.Configuration(Builder);
+        return Builder;
+    }
+}
+
+export class ChannelSelector extends Selector<ChannelSelectMenuBuilder, ChannelSelectMenuInteraction> {
+    public ChannelTypes: ChannelType[] = [ChannelType.GuildText];
+    constructor() {
+        super(ComponentType.ChannelSelect)
+    }
+
+    public SetChannelTypes(...Types: ChannelType[]) {
+        this.ChannelTypes = Types;
+        return this;
+    }
+
+    protected toInternalBuilder(): ChannelSelectMenuBuilder {
+        if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
+        const Builder = new ChannelSelectMenuBuilder()
+            .setCustomId(this.CustomId)
+            .setChannelTypes(this.ChannelTypes);
+        if (this?.Configuration != null) this.Configuration(Builder);
+        return Builder;
+    }
+}
+
+export class RoleSelector extends Selector<RoleSelectMenuBuilder, RoleSelectMenuInteraction> {
+    constructor() {
+        super(ComponentType.RoleSelect)
+    }
+
+    protected toInternalBuilder(): RoleSelectMenuBuilder {
+        if (this?.CustomId == null || typeof this.CustomId != "string") throw new Error("CustomId must be a string and cannot be left null");
+        const Builder = new RoleSelectMenuBuilder()
+            .setCustomId(this.CustomId);
+        if (this?.Configuration != null) this.Configuration(Builder);
+        return Builder;
+    }
+}
+
+/**
+ * @deprecated use ChannelSelector class instead
+ */
+export function ChannelSelectMenu(CustomId = "CHANNEL_SELECT", Type?: Channels | ChannelType, Configuration?: (selectMenu: ChannelSelectMenuBuilder) => unknown) {
+    if (typeof Type != "number") Type = ChannelType.GuildText
+    const Component = new ChannelSelectMenuBuilder()
+        .setCustomId(CustomId)
+        /*.addOptions(
+            channels.map(e =>
+                new SelectMenuOptionBuilder()
+                    .setLabel(e.name)
+                    .setValue(e.id)
+                    .setEmoji(Emojis.TextChannel)
+            )
+        )*/
+        .setChannelTypes(
+            Type
+        )
+
+    if (Configuration != null) Configuration(Component);
     return new ActionRowBuilder<ChannelSelectMenuBuilder>()
         .addComponents(
-            new ChannelSelectMenuBuilder()
-                .setCustomId(CustomId)
-                /*.addOptions(
-                    channels.map(e =>
-                        new SelectMenuOptionBuilder()
-                            .setLabel(e.name)
-                            .setValue(e.id)
-                            .setEmoji(Emojis.TextChannel)
-                    )
-                )*/
-                .setChannelTypes(
-                    ChannelType.GuildText
-                )
+            Component
         )
 }
 
-export function MessageBuilderModal(CustomId: string = "MESSAGE_BUILDER_MODAL", FieldId: string = "MESSAGE_CONTENT_FIELD", Message: GuildMessage) {
+export function MessageBuilderModal(CustomId = "MESSAGE_BUILDER_MODAL", FieldId = "MESSAGE_CONTENT_FIELD", Message: GuildMessage) {
     const ContentField = new TextInputBuilder()
         .setCustomId(FieldId)
         .setLabel("Message Content")
@@ -143,7 +296,7 @@ export interface ButtonFields {
     Link?: string;
 }
 
-export function ButtonBuilderModal(CustomId: string = "BUTTON_BUILDER_MODAL", Fields: ButtonFields, ButtonType: ButtonStyle = ButtonStyle.Primary) {
+export function ButtonBuilderModal(CustomId = "BUTTON_BUILDER_MODAL", Fields: ButtonFields, ButtonType: ButtonStyle = ButtonStyle.Primary) {
     const Components = [
         new ActionRowBuilder<TextInputBuilder>()
             .addComponents(

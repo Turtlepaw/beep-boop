@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
-export async function CreatePaste(content: string, language: string, expiration: number = 0) {
+export async function CreatePaste(content: string, language: string, expiration = 0) {
+    expiration;
     const res = await fetch("https://vaultb.in/api/pastes", {
         method: "post",
         body: JSON.stringify({

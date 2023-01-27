@@ -1,4 +1,5 @@
 import { Center } from "@chakra-ui/react";
+import { CSSProperties } from "react";
 
 const numbers = [
     "1",
@@ -86,13 +87,14 @@ export function generatePassword(width: number = 10) {
     return password;
 }
 
-export function AutoCenter({ children, className }: {
+export function AutoCenter({ children, className, style }: {
     children: React.ReactNode;
     className?: string;
+    style?: CSSProperties;
 }) {
     if (Array.isArray(children)) {
         return (
-            <div className={`${className} py-5`}>
+            <div className={`${className} py-5`} style={style}>
                 {children.map(child => {
                     return (
                         <Center key={generateId()}>
@@ -104,7 +106,7 @@ export function AutoCenter({ children, className }: {
         );
     } else {
         return (
-            <Center className={`${className} py-5`}>
+            <Center className={`${className} py-5`} style={style}>
                 {children}
             </Center>
         );

@@ -1,22 +1,30 @@
-import { ColorResolvable, HexColorString } from 'discord.js';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Message {
-    @PrimaryColumn()
-    MessageId: string;
+    @PrimaryColumn({ type: "integer", generated: true })
+    Entity: number;
 
     @Column()
-    ChannelId: string;
+    Message: string;
+
+    @Column()
+    Channel: string;
 
     @Column()
     Type: MessageType;
 
     @Column()
-    CustomId: string;
+    CustomName: string;
 
     @Column()
-    AuthorId: string;
+    Author: string;
+
+    @Column()
+    CreatedAt: number;
+
+    @Column()
+    Guild: string;
 }
 
 export enum MessageType {

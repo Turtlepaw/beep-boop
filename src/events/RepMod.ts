@@ -1,8 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, TextBasedChannel, time, TimestampStyles } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, GuildMember, TextBasedChannel, time, TimestampStyles } from "discord.js";
 import Event from "../lib/Event";
 import { ResolveUser } from "../utils/Profile";
-import { RepMod } from "../buttons/RepMod";
 import { Colors, Embed } from "../configuration";
 import { ReputationBasedModerationType } from "../models/Configuration";
 import { JSONArray } from "../utils/jsonArray";
@@ -24,7 +22,7 @@ export default class RepModJoin extends Event {
 
             WarnChannel.send({
                 embeds: [
-                    new Embed()
+                    new Embed(member.guild)
                         .setTitle("Suspicious Member Detected")
                         .setDescription(`We've detected a suspicious member that has joined ${time(member.joinedAt, TimestampStyles.RelativeTime)}.`)
                         .addFields([{

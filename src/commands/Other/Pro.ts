@@ -1,0 +1,84 @@
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, time, TimestampStyles } from "discord.js";
+import Command, { Categories } from "../../lib/CommandBuilder";
+import { Embed, Icons, SupportServerInvite } from "../../configuration";
+import { ResolveUser } from "../../utils/Profile";
+import { Subscriptions } from "../../models/Profile";
+import { GetSubscriptionName } from "../../buttons/Developer/CreateGift";
+
+export default class Send extends Command {
+    constructor() {
+        super({
+            CanaryCommand: false,
+            Description: "Manage your pro subscription.",
+            GuildOnly: false,
+            Name: "subscription",
+            RequiredPermissions: [],
+            SomePermissions: [],
+            Category: Categories.Images,
+        });
+    }
+
+    async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
+        const Profile = await ResolveUser(interaction.user.id, client);
+
+        if (Profile.subscription == Subscriptions.Pro) {
+            const ExpiresIn = Profile.expires;
+            await interaction.reply({
+                embeds: [
+                    new Embed(interaction.guild)
+                        .addFields([{
+                            name: `${Icons.Clock} Expires`,
+                            value: time(ExpiresIn, TimestampStyles.RelativeTime)
+                        }, {
+                            name: `${Icons.Discover} Subscription Tier`,
+                            value: `${GetSubscriptionName(Profile.subscription)}`
+                        }, {
+                            name: `${Icons.Info} Pro is in early access`,
+                            value: `Pro is currently in early access, provide feedback in our [support server](${SupportServerInvite}).`
+                        }])
+                        .setTitle("Your Subscription")
+                ],
+                ephemeral: true,
+                components: [
+                    new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setLabel("Custom Branding")
+                                .setCustomId("CUSTOM_BRANDING")
+                                .setStyle(ButtonStyle.Success),
+                            new ButtonBuilder()
+                                .setLabel("Manage Servers")
+                                .setCustomId("SUBSCRIPTION_GUILDS")
+                                .setStyle(ButtonStyle.Secondary),
+                            new ButtonBuilder()
+                                .setLabel("Redeem Code")
+                                .setStyle(ButtonStyle.Primary)
+                                .setCustomId("REDEEM_CODE"),
+                            new ButtonBuilder()
+                                .setLabel("Learn More")
+                                .setStyle(ButtonStyle.Link)
+                                .setURL("https://bop.trtle.xyz/pro"),
+                            new ButtonBuilder()
+                                .setLabel("Manage Subscription")
+                                .setStyle(ButtonStyle.Link)
+                                .setURL("https://bop.trtle.xyz/manage")
+                        )
+                ]
+            });
+        } else {
+            await interaction.reply({
+                ephemeral: true,
+                content: "You don't have a pro subscription.",
+                components: [
+                    new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setLabel("Redeem Code")
+                                .setStyle(ButtonStyle.Primary)
+                                .setCustomId("REDEEM_CODE")
+                        )
+                ]
+            })
+        }
+    }
+}

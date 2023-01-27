@@ -1,8 +1,5 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { Locale, ActionRowBuilder, time, ApplicationCommandType, ButtonBuilder, ButtonStyle, Client, ComponentType, ContextMenuCommandType, ImageFormat, MessageContextMenuCommandInteraction, PermissionFlagsBits, UserContextMenuCommandInteraction, TimestampStyles, codeBlock, blockQuote, inlineCode } from "discord.js";
-import { Filter } from "../utils/filter";
-import { CreateLinkButton } from "../utils/buttons";
-import { Colors, Embed, Emojis, Icons } from "../configuration";
+import { ApplicationCommandType, UserContextMenuCommandInteraction } from "discord.js";
 import { MemberInformation } from "../utils/info";
 
 export default class DeleteThis extends ContextMenu {
@@ -17,7 +14,7 @@ export default class DeleteThis extends ContextMenu {
         })
     }
 
-    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction, client: Client) {
+    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction) {
         await MemberInformation(
             interaction,
             interaction.targetUser,

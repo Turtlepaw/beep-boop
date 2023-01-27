@@ -1,7 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message, MessageType } from "discord.js";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, Message, MessageType } from "discord.js";
 import Event from "../lib/Event";
-import { ServerSettings } from "../buttons/ServerSettings";
 import { MessageType as StoredMessageType } from "../models/Message";
 
 export default class LeaveAppealMessage extends Event {
@@ -17,11 +15,13 @@ export default class LeaveAppealMessage extends Event {
         if (Server == null || !Server.isSystemCleanup()) return;
         if (message.type != MessageType.UserJoin) return;
         client.Storage.Messages.Create({
-            MessageId: message.id,
-            ChannelId: message.channel.id,
-            CustomId: `${message.guild.id}_add_${message.author.id}`,
+            Message: message.id,
+            Channel: message.channel.id,
+            CustomName: `${message.guild.id}_add_${message.author.id}`,
             Type: StoredMessageType.SystemMessage,
-            AuthorId: message.author.id
+            Author: message.author.id,
+            CreatedAt: message.createdTimestamp,
+            Guild: message.guild.id
         });
     }
 }

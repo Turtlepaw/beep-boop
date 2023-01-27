@@ -1,6 +1,5 @@
 import {
     Guild as DiscordGuild,
-    GuildMember,
     ImageFormat,
     RepliableInteraction,
     TimestampStyles,
@@ -10,9 +9,7 @@ import {
     ActionRowBuilder,
     ButtonStyle,
     inlineCode,
-    ChannelType,
-    Locale,
-    PresenceUpdateStatus
+    ChannelType
 } from "discord.js";
 import { Colors, Embed, Emojis, Icons } from "../configuration";
 
@@ -82,12 +79,13 @@ export const LocaleNames = {
     "vi": "Vietnamese"
 }
 
-export function Language(locale: string, emoji: boolean = false) {
+export function Language(locale: string, emoji = false) {
     return `${emoji ? `:flag_${Locales[locale]}: ` : ""}${LocaleNames[locale]}`
 }
 
 const Or = " or ";
-export async function MemberInformation(interaction: RepliableInteraction, targetUser: User, hidden: boolean = false) {
+export type Flags = "Bot" | "ServerOwner";
+export async function MemberInformation(interaction: RepliableInteraction, targetUser: User, hidden = false) {
     const { guild } = interaction;
     if (guild == null) return interaction.reply({
         ephemeral: true,
@@ -115,10 +113,8 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
         ServerOwner: Icons.FlagServerOwner
     };
 
-    const flags = User.flags.toArray();
-    //@ts-expect-error
+    const flags = User.flags.toArray() as (Flags | string)[];
     if (User.bot) flags.push("Bot");
-    //@ts-expect-error
     if (interaction.guild.ownerId == User.id) flags.push("ServerOwner");
 
     const MemberRoles = Member.roles.cache.filter(e => e.name != "@everyone");
@@ -126,7 +122,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     // like without guild required
     await interaction.reply({
         embeds: [
-            new Embed()
+            new Embed(interaction.guild)
                 .setAuthor({
                     iconURL: AvatarURL,
                     name: `${Member.displayName} (${User.tag})`
@@ -143,18 +139,18 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                     inline: false
                 }, {
                     name: `${Icons.Color} Accent Color`,
-                    value: User.hexAccentColor != null ? inlineCode(User.hexAccentColor) : "No accent color."
+                    value: User.hexAccentColor != null ? inlineCode(User.hexAccentColor) : "No accent color"
                 }, {
                     name: `${Icons.Flag} Roles`,
-                    value: MemberRoles.size >= 1 ? MemberRoles.map(e => e.toString()).join(" ") : "No roles.",
+                    value: MemberRoles.size >= 1 ? MemberRoles.map(e => e.toString()).join(" ") : "No roles",
                     inline: false
                 }, {
                     name: `${Icons.Globe} Language`,
-                    value: (Member.id == interaction.user.id && interaction.locale != null) ? Language(interaction.locale) : "Unknown.",
+                    value: (Member.id == interaction.user.id && interaction.locale != null) ? Language(interaction.locale) : "Unknown",
                     inline: false
                 }, {
                     name: `${Icons.Badge} Badges`,
-                    value: flags.length >= 1 ? flags.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges.",
+                    value: flags.length >= 1 ? flags.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges",
                     inline: false
                 }])
                 .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)
@@ -180,7 +176,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     });
 }
 
-export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden: boolean = false) {
+export async function GuildInformation(interaction: RepliableInteraction, targetGuild: DiscordGuild, hidden = false, withComponents: ActionRowBuilder<ButtonBuilder>[] = []) {
     const { guild } = interaction;
     if (guild == null) return interaction.reply({
         ephemeral: true,
@@ -204,9 +200,9 @@ export async function GuildInformation(interaction: RepliableInteraction, target
         APPLICATION_COMMAND_PERMISSIONS_V2: `${Emojis.Tag} Application Command Permissions V2`
     };
 
-    await interaction.reply({
+    return await interaction.reply({
         embeds: [
-            new Embed()
+            new Embed(interaction.guild)
                 .setAuthor({
                     iconURL: AvatarURL,
                     name: Guild.name
@@ -228,33 +224,33 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                     name: `${Icons.Flag} Roles`,
                     value: Guild.roles.cache.size >= 1 ? `${(
                         Guild.roles.cache.filter(e => e.name != "@everyone").size.toString()
-                    )} roles` : "No roles.",
+                    )} roles` : "No roles",
                     inline: false
                 }, {
                     name: `${Icons.Globe} Language`,
-                    value: (interaction.guildLocale != null) ? Language(interaction.guildLocale) : "Unknown.",
+                    value: (interaction.guildLocale != null) ? Language(interaction.guildLocale) : "Unknown",
                     inline: false
                 }, {
                     name: `${Icons.Badge} Badges`,
-                    value: Guild.features.length >= 1 ? Guild.features.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges.",
+                    value: Guild.features.length >= 1 ? Guild.features.map(e => Flags[e] != null ? Flags[e] : inlineCode(e)).join(" ") : "No badges",
                     inline: false
                 }, {
                     name: `${Icons.Emoji} Emojis`,
-                    value: `${Icons.Emoji}(emojis) ${Guild.emojis.cache.size} | ${Icons.Image}(stickers) ${Guild.stickers.cache.size}`
+                    value: `${Icons.Emoji} (emojis) ${Guild.emojis.cache.size} | ${Icons.Image} (stickers) ${Guild.stickers.cache.size}`
                 }, {
                     name: `${Icons.Channel} Channels`,
-                    value: `${Icons.Folder}(categories) ${(
+                    value: `${Icons.Folder} (categories) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildCategory)
-                    ).size} | ${Icons.Channel}(channels) ${(
+                    ).size} | ${Icons.Channel} (channels) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildText || e.type == ChannelType.GuildAnnouncement)
                     ).size} | ${Icons.Voice} (voice) ${(
                         Guild.channels.cache.filter(e => e.type == ChannelType.GuildVoice || e.type == ChannelType.GuildStageVoice)
                     ).size
                         } `
                 }])
-                .setColor(Member.displayColor == 0 ? Colors.Transparent : Member.displayHexColor)
+                .setColor(Colors.Transparent)
                 .setFooter({
-                    text: `ID: ${Guild.id} `
+                    text: `ID: ${Guild.id}`
                 })
         ],
         components: [
@@ -269,7 +265,8 @@ export async function GuildInformation(interaction: RepliableInteraction, target
                         .setURL(hasBanner ? BannerURL : "https://bop.trtle.xyz/")
                         .setDisabled(!hasBanner)
                         .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"} `)
-                )
+                ),
+            ...withComponents
         ],
         ephemeral: hidden
     });

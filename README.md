@@ -1,33 +1,46 @@
 <div align="center">
 <img src="./media/robot.png" width="100rem"/>
+
+<a href="https://bop.trtle.xyz/">
+    <h3>
+    <a href="https://bop.trtle.xyz/">🔎 bop.trtle.xyz</a>
+    </h3>
+</a>
 <h1>Beep Boop</h1>
 Beep Boop is a Discord bot designed for use in large community servers.
 </div>
 
+### Notices
+- **🔒 Not open-source:** This repository is currently not open-source, and we have limited plans to open-source it.
+- **🧪 Dashboard is in a experimental state:** Many dashboard pages haven't been completed, and their extremely unstable.
+
+### Welcome
+Welcome to Beep Boop's Github repository, here you'll find all the source to Beep Boop.
+
+### What needs to be done
+1. Complete bot features
+    - New configuration menu
+    - Fix Bugs
+    - Add API routes
+2. Complete Dashboard
+
+### Requirements
+- Make sure to use our custom classes (e.g. `Selector`, `Filter`, etc...) found in [`src/utils`](https://github.com/Turtlepaw/beep-boop/blob/37dea1b4eec22005c7d67835f7fb91964729dc59/src/utils).
+- Don't change software or upgrade a package with a breaking change in a commit, open an issue or a PR with your changes first.
+
+### Website Requirements
+- Always show if the user has no JavaScript enabled.
+- The branding pages should use little or no JavaScript.
+
+### Software Requirements
+- Yarn (1.22.19 or latest)
+- Node.js (16.19.0 or latest)
+
 ### Upcoming Changes
-We're working hard on building the future of Beep Boop, here's what's happening.
-#### Dashboard
-- [ ] Update the dashboard to make it look beautiful, yet simple and clean.
-#### Bot
-- [ ] Activities (gaming and levels)
-    - [x] Server Gaming Activities
-    - [ ] Server Level Activity
-    - [ ] (later) Cooking Activity
-- [ ] Roles (button roles)
-- [x] Add filters to `Message#awaitMessageComponent`
-- [x] Fix ticket channel permissions - [🧵 (thread) Can't see created ticket](https://discord.com/channels/1028789308401918004/1039607094782988390)
-- [x] Disable ticket claim button after use
-- [ ] Transfer old message content to edit message modal
-- [x] `Quick Edit` message content support
-- [x] `Add Button` message content support
-- [x] Add webhook to `/send`
-- [ ] (later) Translated
-- [ ] (later) Quote message or embed message links?
+Here's the internal roadmap and the public roadmap.
 
-## Internal Planned Changes
-- [] Polish Reputation-Based Moderation
+- [Public Roadmap](https://www.craft.do/s/JJVExvuEq3ftaw)
+- [Internal Roadmap](https://www.craft.do/s/ervTJxSCzWR0cZ)
 
-### Support
-Click below to join our server for updates, support, and more.
-
+### Official Discord Server
 [![](http://invidget.switchblade.xyz/Rgxv5M6sq9)](https://discord.gg/Rgxv5M6sq9)

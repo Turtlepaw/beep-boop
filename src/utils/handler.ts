@@ -1,13 +1,14 @@
-import { ChannelType, Client, Events as ClientEvents, Guild, InteractionReplyOptions, TextChannel } from "discord.js";
+/* eslint-disable @typescript-eslint/no-var-requires */
+import { ChannelType, Client, Events as ClientEvents, Guild, GuildBasedChannel, InteractionReplyOptions, PermissionResolvable, RepliableInteraction, TextChannel, inlineCode } from "discord.js";
 import klawSync from "klaw-sync";
 import { DEVELOPER_BUILD } from "../index";
-import { Embed, Emojis, guildId, Icons, Logs } from "../configuration";
-import ButtonBuilder, { ButtonBuilderOptions } from "../lib/ButtonBuilder";
-import ContextMenu from "../lib/ContextMenuBuilder";
+import { BaseDirectory, Embed, guildId, Icons, Logs } from "../configuration";
+import ButtonBuilder from "../lib/ButtonBuilder";
 import EventBuilder from "../lib/Event";
 import { CreateLinkButton } from "./buttons";
-import { SendError } from "./error";
-import SelectOptionBuilder from "src/lib/SelectMenuBuilder";
+import { InteractionError, SendError } from "./error";
+import SelectOptionBuilder from "../lib/SelectMenuBuilder";
+import { Logger } from "../logger";
 
 const InputPermissionsMessage: InteractionReplyOptions = {
     content: `${Icons.Error} You don't have the required permissions to run this command.`,
@@ -39,11 +40,11 @@ async function CreateError(Summary: string, ExecutingGuild: Guild, client: Clien
         maxAge: 0,
         maxUses: 0,
         reason: "Something didn't go right, this might help developers locate the error."
-    }).catch(() => { }) || { url: "https://discord.com/no_invite" };
+    }).catch(e => Logger.warn(`Failed Creating Invite: ${e}`)) || { url: "https://discord.com/no_invite" };
 
     await (Channel as TextChannel).send({
         embeds: [
-            new Embed()
+            new Embed(ExecutingGuild)
                 .setTitle("Something didn't go right...")
                 .setDescription(`Here's what happened:\n\n\`\`\`bash\n${Summary}\`\`\``)
         ],
@@ -59,7 +60,7 @@ async function CreateError(Summary: string, ExecutingGuild: Guild, client: Clien
 async function StartEventService(client: Client) {
     try {
         //Find the event files
-        const Files = klawSync("./dist/events", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const Files = klawSync(`${BaseDirectory}/events`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
         const Events: EventBuilder[] = [];
         for (const File of Files) {
             const OriginalFile = require(File.path);
@@ -69,18 +70,46 @@ async function StartEventService(client: Client) {
 
         //Handle Event
         for (const Event of Events) {
-            //@ts-expect-error
-            client.on(Event.EventName, (...args) => Event.ExecuteEvent(client, ...args));
+
+            client.on(Event.EventName, (...args) => {
+                try {
+                    Event.ExecuteEvent(client, ...args)
+                } catch (e) {
+                    Logger.error(`Could not execute event: ${e}`)
+                }
+            });
         }
     } catch (e) {
         console.log("Error:".red, e);
+        Logger.error(`Event Error:`, e);
+    }
+}
+
+function isGuildBased(channel: unknown): channel is GuildBasedChannel {
+    return channel?.["guild"] != null;
+}
+
+async function HandleBotPermissions(interaction: RepliableInteraction, permisisons: PermissionResolvable[]) {
+    const Channel = interaction.channel;
+    if (!isGuildBased(Channel)) return true;
+    if (permisisons == null || permisisons.length == 0) return true;
+    if (interaction.channel.permissionsFor(interaction.guild.members.me).any(permisisons)) {
+        return true;
+    } else {
+        const Missing = interaction.channel.permissionsFor(interaction.guild.members.me).missing(permisisons);
+        await InteractionError({
+            createError: false,
+            interaction,
+            message: `The bot doesn't have the correct permissions to run this command. Missing: ${Missing.map(e => inlineCode(e)).join(" ")}`
+        });
+        return false;
     }
 }
 
 async function StartButtonService(client: Client) {
     try {
         //Find the button files
-        const Files = klawSync("./dist/buttons", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const Files = klawSync(`${BaseDirectory}/buttons`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
         const Buttons: ButtonBuilder[] = [];
         for (const File of Files) {
             const OriginalFile = require(File.path);
@@ -96,7 +125,7 @@ async function StartButtonService(client: Client) {
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isButton()) {
                 let Id = interaction.customId;
-                let CustomId: string = "";
+                let CustomId = "";
                 const Button = Buttons.find(e => {
                     if (e.RequireIdFetching) {
                         //Set Id to the custom id
@@ -106,14 +135,14 @@ async function StartButtonService(client: Client) {
                         if (interaction.customId.startsWith(FullId)) {
                             CustomId = interaction.customId;
                             return true;
-                        };
+                        }
                     } else {
                         if (e.CustomId == interaction.customId) {
                             CustomId = interaction.customId
                             return true;
                         } else return false;
                     }
-                })
+                });
 
                 if (Button == null) return;
                 if (interaction.guild == null && Button.GuildOnly) {
@@ -133,6 +162,7 @@ async function StartButtonService(client: Client) {
                 }
 
                 if (CustomId != interaction.customId) return;
+                if (await HandleBotPermissions(interaction, Button.ClientPermissions) == false) return;
 
                 try {
                     await Button.ExecuteInteraction(interaction, client, Id);
@@ -142,6 +172,9 @@ async function StartButtonService(client: Client) {
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.customId}:`, e);
 
                     // Send error message
                     SendError(
@@ -159,7 +192,7 @@ async function StartButtonService(client: Client) {
 async function StartSelectMenuService(client: Client) {
     try {
         //Find the button files
-        const Files = klawSync("./dist/select_menus", { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
+        const Files = klawSync(`${BaseDirectory}/select_menus`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
         const SelectOptions: SelectOptionBuilder[] = [];
         for (const File of Files) {
             const OriginalFile = require(File.path);
@@ -170,8 +203,7 @@ async function StartSelectMenuService(client: Client) {
         //Handle button interactions
         client.on(ClientEvents.InteractionCreate, async (interaction) => {
             if (interaction.isAnySelectMenu()) {
-                let Values = interaction.values;
-                let CustomId: string = "";
+                const Values = interaction.values;
                 const SelectOption = SelectOptions.find(e => Values.includes(e.Value));
 
                 if (SelectOption == null) return;
@@ -192,6 +224,7 @@ async function StartSelectMenuService(client: Client) {
                 }
 
                 if (!Values.includes(SelectOption.Value)) return;
+                if (await HandleBotPermissions(interaction, SelectOption.ClientPermissions) == false) return;
 
                 try {
                     await SelectOption.ExecuteInteraction(interaction, client, Values);
@@ -201,6 +234,9 @@ async function StartSelectMenuService(client: Client) {
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.values[0]}:`, e);
 
                     // Send error message
                     SendError(
@@ -240,6 +276,7 @@ async function StartContextMenuService(client: Client) {
                     }
                 }
 
+                if (await HandleBotPermissions(interaction, ContextMenu.ClientPermissions) == false) return;
                 try {
                     await ContextMenu.ExecuteContextMenu(interaction, client);
                 } catch (e) {
@@ -248,6 +285,9 @@ async function StartContextMenuService(client: Client) {
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.commandName}:`, e);
 
                     // Send error message
                     SendError(
@@ -273,6 +313,8 @@ export async function StartAutocompleteService(client: Client) {
                     await command?.ExecuteAutocompleteRequest(interaction, client);
                 } catch (e) {
                     console.log(`Error`.red, e);
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.commandName}'s autocomplete:`, e);
                 }
             }
         })
@@ -304,6 +346,8 @@ export async function StartService(client: Client) {
                     }
                 }
 
+                if (await HandleBotPermissions(interaction, command.ClientPermissions) == false) return;
+
                 try {
                     await command?.ExecuteCommand(interaction, client);
                 } catch (e) {
@@ -312,6 +356,9 @@ export async function StartService(client: Client) {
 
                     // Log error
                     console.log(`Error:`.red, e);
+
+                    // Log it in the logger
+                    Logger.error(`Error executing ${interaction.commandName}:`, e);
 
                     // Send error message
                     SendError(

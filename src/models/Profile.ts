@@ -1,8 +1,9 @@
-import { ColorResolvable, HexColorString } from 'discord.js';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
+import { SetTransformer } from '../utils/transformers';
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 export enum Subscriptions {
     Pro = "PRO",
+    Basic = "PRO_BASIC",
     None = "NONE"
 }
 
@@ -25,6 +26,9 @@ export class Profile {
 
     @Column()
     subscription: Subscriptions;
+
+    @Column({ type: "varchar", transformer: new SetTransformer<string>(), nullable: true })
+    guilds: Set<string>;
 
     @Column({ nullable: true })
     expires: string;

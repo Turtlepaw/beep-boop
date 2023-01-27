@@ -1,4 +1,5 @@
 import { Client } from "discord.js";
+import { Logger } from "../logger";
 import { Embed, Icons } from "../configuration";
 
 export type Id = `${number}${number}${number}${number}${number}`;
@@ -36,6 +37,7 @@ async function Handle(Reminder: Reminder, client: Client) {
 }
 
 export async function Refresh(client: Client) {
+    Logger.info(`Refreshing reminders...`);
     const Reminders = await client.Storage.Reminders.GetAll();
 
     for (const Reminder of Reminders) {

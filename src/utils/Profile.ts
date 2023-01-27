@@ -1,6 +1,7 @@
-import { Client, ColorResolvable, HexColorString, User } from "discord.js";
+import { Client, ColorResolvable, User } from "discord.js";
 import { Subscriptions } from "../models/Profile";
 import { Colors } from "../configuration";
+import { HexColorString } from "@airdot/verifiers";
 
 export interface Profile {
     bio?: string;
@@ -10,6 +11,7 @@ export interface Profile {
     accentColor?: ColorResolvable;
     subscription?: Subscriptions;
     expires?: Date;
+    guilds: Set<string>;
 }
 
 export function CreateUser(user: User, client: Client) {
@@ -33,14 +35,14 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
     }
 
     return {
-        //@ts-expect-error
-        accentColor: user?.accentColor || ResolvedUser.hexAccentColor || Colors.Transparent,
+        accentColor: (user?.accentColor as HexColorString) || ResolvedUser.hexAccentColor || Colors.Transparent,
         bio: user?.bio || "This user has no bio.",
         displayName: user?.displayName || ResolvedUser.username,
         reputation: user?.reputation || 0,
         userId: user?.userId || ResolvedUser.id,
         subscription: user?.subscription || Subscriptions.None,
-        expires: new Date(user?.expires) || null
+        expires: new Date(user?.expires) || null,
+        guilds: user?.guilds ?? new Set()
     }
 }
 
@@ -52,6 +54,26 @@ export function FetchUser(Id: string, client: Client) {
 export function SetBio(Id: string, bio: string, client: Client) {
     return client.Storage.Profiles.Edit(Id, {
         bio
+    });
+}
+
+export async function AddGuild(Id: string, guild: string, client: Client) {
+    const current = await ResolveUser(Id, client);
+    let guilds = current?.guilds;
+    if (current.guilds == null) guilds = new Set([guild])
+    else guilds.add(guild);
+
+    return client.Storage.Profiles.Edit(Id, {
+        guilds
+    });
+}
+
+export async function RemoveGuild(Id: string, guild: string, client: Client) {
+    const current = await ResolveUser(Id, client);
+    current.guilds.delete(guild);
+
+    return client.Storage.Profiles.Edit(Id, {
+        guilds: current.guilds
     });
 }
 
@@ -74,9 +96,9 @@ export function SetSubscription(Id: string, subscription: Subscriptions, expires
     });
 }
 
-export async function Endorse(Id: string, client: Client) {
+export async function Endorse(Id: string, client: Client, n = 1) {
     const rep = await FetchUser(Id, client);
     return client.Storage.Profiles.Edit(Id, {
-        reputation: (rep?.reputation || 0) + 1
+        reputation: (rep?.reputation || 0) + n
     });
 }

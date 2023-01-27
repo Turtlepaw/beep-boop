@@ -1,20 +1,22 @@
 //Import packages
-import { Client, IntentsBitField, Partials, Events, PresenceUpdateStatus, PresenceStatusData } from "discord.js";
+import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
 //dotenv stuff
 import * as dotenv from 'dotenv';
-dotenv.config()
 import "colors";
-import { API } from "./utils/api";
+import { API } from "./api/index";
 import { Levels } from "./utils/levels";
-import { InitializeProvider, StorageManager } from "./utils/storage";
+import { InitializeProvider } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
 import { Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
-import { StartCustomBots } from "./utils/customBot";
+import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
+import { Logger } from "./logger";
+import { ChannelCounterService } from "./utils/ChannelCounters";
+dotenv.config()
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -22,15 +24,19 @@ import { StartCustomBots } from "./utils/customBot";
 export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
+export const API_ENABLED = process.env.START_API;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
-export const DEFAULT_CLIENT_OPTIONS = {
+export const API_PORT = Number(process.env?.API_PORT);
+export const API_URL = process.env?.API_URL;
+export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
         IntentsBitField.Flags.Guilds,
         IntentsBitField.Flags.GuildMessages,
         IntentsBitField.Flags.MessageContent,
         IntentsBitField.Flags.DirectMessages,
         IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildPresences
+        IntentsBitField.Flags.GuildPresences,
+        IntentsBitField.Flags.GuildMessageReactions
     ],
     partials: [
         Partials.Channel,
@@ -49,26 +55,64 @@ export async function SetClientValues(client: Client) {
     client.Errors = new ErrorManager();
     client.Levels = new Levels(client.storage);
     client.LegacyStorage = KeyFileStorage("storage", false);
+    client.QuickStorage = KeyFileStorage("cache", false);
+    client.TriviaGames = new Collection();
 }
 
 // Create Discord.js client
 const client = new Client(DEFAULT_CLIENT_OPTIONS);
 
 // Get everything ready...
-client.on(Events.ClientReady, HandleBotStart);
+client.on(Events.ClientReady, async () => {
+    await HandleBotStart();
+    console.log(`Pages:
+    • Dashboard: http://localhost:3000/
+    • API: http://localhost:4000/`.gray)
+});
 
 export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true) {
     // Set client values
-    console.log("Setting client values...".grey);
+    if (!isCustom) console.log("Setting client values...".grey);
     await SetClientValues(ProvidedClient);
+
+    // CLEAR ALL CONFIGURATION FUNCTION (OLD):
+    // const oldall = await ProvidedClient.Storage.Configuration.GetAll();
+    // console.log(`${oldall.length} to delete`)
+    // console.log("deleting every guild configuration");
+    // (await ProvidedClient.guilds.fetch()).forEach(e => {
+    //     console.log("deleting config for", e.name)
+    //     ProvidedClient.Storage.Configuration.Delete({
+    //         Id: e.id
+    //     });
+    // });
+
+    // console.log("check if there's any left...")
+    // const all = await ProvidedClient.Storage.Configuration.GetAll();
+    // console.log(`there's ${all.length} left`)
 
     // Deploy slash commands
     if (!isCustom) console.log("Deploying commands...".grey);
-    Deploy(ProvidedClient, !isCustom).then(() => isCustom ? console.log("Registered all commands successfully.".green) : null);
+    Logger.info(`Deploying commands for ${ProvidedClient.user.username}...`);
+    Deploy(ProvidedClient, !isCustom, isCustom).then(() => {
+        if (!isCustom) console.log("Registered all commands successfully.".green)
+        Logger.info(`Registered all commands for ${ProvidedClient.user.username}.`);
+    });
 
     // Start command handler
-    console.log("Starting handler service...".grey);
+    if (!isCustom) console.log("Starting handler service...".grey);
+    Logger.info(`Starting ${ProvidedClient.user.username}'s command handler.`);
     StartService(ProvidedClient)
+
+    // Start auto delete service
+    StartAutoDeleteService(ProvidedClient);
+
+    // Channel Counter
+    ChannelCounterService(ProvidedClient);
+
+    // Refresh reminders
+    Refresh(ProvidedClient);
+
+    ProvidedClient.on(Events.Error, console.log)
 }
 
 export async function HandleBotStart() {
@@ -77,18 +121,21 @@ export async function HandleBotStart() {
 
     await HandleAnyBotStart(client, false);
 
-    // Start auto delete service
-    StartAutoDeleteService(client);
-
-    // Refresh reminders
-    Refresh(client);
-
     // Start Custom Bots
     StartCustomBots(client);
 
     // Start API
     console.log("Starting API...".grey);
-    API(client, API_TOKEN);
+    if (API_ENABLED == null || API_ENABLED == "true") (async () => {
+        try {
+            await API(client, API_TOKEN);
+        } catch (e) {
+            console.log("Couldn't start API:", e);
+        }
+    })();
+
+    // Create configuration for all servers
+    CreateConfiguration(client);
 
     // The client is ready
     console.log("Ready".green);

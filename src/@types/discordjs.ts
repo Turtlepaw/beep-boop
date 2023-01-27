@@ -5,13 +5,20 @@ import { Levels as LevelManager } from "../utils/levels";
 import { GuildConfigurationManager, StorageManager } from "../utils/storage";
 import { ErrorManager } from "../utils/error";
 import { DataSource } from "typeorm";
-import { GuildConfiguration } from "../models/Configuration";
+// Import Models...
 import { Profile } from "../models/Profile";
 import { CustomWebhook } from "../models/Webhook";
 import { Reminder } from "../models/Reminders";
 import { Message } from "../models/Message";
 import { CustomBot } from "../models/CustomBot";
 import { Gift } from "../models/Gift";
+import { OAuth } from "../models/OAuth";
+import { Action } from "../models/Action";
+import { Error as CustomError } from "../models/Error";
+import { Collection } from "discord.js";
+import { TriviaGame } from "discord-trivia";
+import { APIUser } from "../models/APIUser";
+import { Ticket } from "../models/Ticket";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -21,6 +28,11 @@ export interface StorageManagers {
     Messages: StorageManager<Message>;
     CustomBots: StorageManager<CustomBot>;
     Gifts: StorageManager<Gift>;
+    OAuth: StorageManager<OAuth>;
+    Actions: StorageManager<Action>;
+    Errors: StorageManager<CustomError>;
+    ApiUsers: StorageManager<APIUser>;
+    Tickets: StorageManager<Ticket>;
 }
 
 declare module 'discord.js' {
@@ -36,5 +48,9 @@ declare module 'discord.js' {
         Storage: StorageManagers;
         Errors: ErrorManager;
         LegacyStorage: KeyFileStorage;
+        QuickStorage: KeyFileStorage;
+        CustomIcons: boolean;
+        LogWebhook: WebhookClient;
+        TriviaGames: Collection<string, TriviaGame>;
     }
 }

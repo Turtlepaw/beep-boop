@@ -1,8 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, codeBlock } from "@discordjs/builders";
-import { ButtonStyle, ComponentType, Guild, Interaction, RequestManager } from "discord.js";
+import { ButtonStyle, ComponentType, Guild, Interaction, RepliableInteraction, inlineCode } from "discord.js";
 import { DEVELOPER_BUILD } from "../index";
-import { Emojis, Icons, SupportServerInvite } from "../configuration";
-import { generateId, generatePassword } from "./Id";
+import { Embed, Icons, SupportServerInvite } from "../configuration";
+import { InteractionReplyManager } from "./classes";
 
 export interface ErrorMessage {
     GuildId: string;
@@ -85,7 +85,7 @@ export async function SendError(interaction: Interaction, errorMessage: string) 
     }
 }
 
-export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string, ephemeral: boolean = true) {
+export async function FriendlyInteractionError(interaction: Interaction, errorMessage: string, ephemeral = true) {
     if (interaction.isRepliable()) {
         if (interaction.deferred || interaction.replied) {
             await interaction.editReply({
@@ -98,4 +98,54 @@ export async function FriendlyInteractionError(interaction: Interaction, errorMe
             });
         }
     }
+}
+
+
+export interface InteractionErrorOptions {
+    interaction: RepliableInteraction;
+    message?: string;
+    icon?: Icons;
+    ephemeral?: boolean;
+    error?: string;
+    createError?: boolean;
+}
+
+const DefaultInteractionErrorOptions: Partial<InteractionErrorOptions> = {
+    icon: Icons.Error,
+    message: "Something went wrong... Try again in a few minutes.",
+    ephemeral: true,
+    error: "Unknown Error: not provided",
+    createError: true
+}
+
+export async function InteractionError(options: InteractionErrorOptions) {
+    const { icon, interaction, message, ephemeral, error, createError } = Object.assign(DefaultInteractionErrorOptions, options);
+    const Interaction = new InteractionReplyManager(interaction);
+    const ErrorDB = createError ? (await interaction.client.Storage.Errors.Create({
+        CreatedBy: interaction.user.id,
+        CreatedAt: new Date(),
+        Stack: `${error}`,
+        Title: `${error.length >= 25 ? (error.slice(0, 25) + "...") : error}`
+    })) : null;
+
+    console.log(ErrorDB)
+    await Interaction.send({
+        content: `${icon} ${message}`,
+        embeds: createError ? [
+            await new Embed(interaction.guild)
+                //@ts-expect-error aaa
+                .setDescription(`Show this ID when reporting this bug: ${inlineCode(ErrorDB.Error)}`)
+                .Resolve()
+        ] : [],
+        ephemeral,
+        components: [
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setLabel("Support Server")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(SupportServerInvite)
+                )
+        ]
+    });
 }

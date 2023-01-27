@@ -1,6 +1,5 @@
-import { HexColorString } from 'discord.js';
-import { JSONArray } from '../utils/jsonArray';
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Subscriptions } from './Profile';
 
 @Entity()
 export class Gift {
@@ -21,4 +20,7 @@ export class Gift {
 
     @Column()
     Expired: boolean;
+
+    @Column({ nullable: true })
+    Type: Subscriptions;
 }

@@ -1,38 +1,27 @@
-import { SlashCommandBuilder, SlashCommandOptionsOnlyBuilder } from "@discordjs/builders";
-import { AutocompleteInteraction, ButtonInteraction, Client, CommandInteraction, PermissionsString } from "discord.js";
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { ButtonInteraction, Client } from "discord.js";
+import { Builder, BuilderOptions } from "./Builder";
 
-export type ButtonBuilderOptions = {
-    /**
-     * Required permissions to execute this command.
-     */
-    RequiredPermissions: PermissionsString[];
-    /**
-     * The member executing this command must have one or more of these permissions.
-     */
-    SomePermissions: PermissionsString[];
-    /**
-     * If the command can only be executed within a server.
-     */
-    GuildOnly: boolean;
+export interface ButtonBuilderOptions extends BuilderOptions {
     /**
      * The custom Id that was set for this button.
      */
     CustomId: string;
+    /**
+     * If the handler needs to get the `{any}` Id provided in the button Id. (e.g. `button-{any}`)
+     */
     RequireIdFetching?: boolean;
 }
-export default class Button {
+
+export default class Button extends Builder {
     public CustomId: string;
-    public RequiredPermissions!: PermissionsString[];
-    public SomePermissions!: PermissionsString[];
-    public GuildOnly: boolean = true;
-    public RequireIdFetching: boolean = false;
+    public RequireIdFetching = false;
 
     constructor(options: ButtonBuilderOptions) {
-        //Setting Permissions
-        this.SomePermissions = options.SomePermissions;
-        this.RequiredPermissions = options.RequiredPermissions;
+        super(options);
         //Setting Main Data (customId, guildOnly, etc...)
-        this.GuildOnly = options.GuildOnly;
         this.CustomId = options.CustomId;
         this.RequireIdFetching = options.RequireIdFetching;
     }
@@ -41,5 +30,6 @@ export default class Button {
         interaction: ButtonInteraction,
         client: Client,
         customId: string
-    ): Promise<void> { }
+        //@ts-expect-error
+    ): Promise<unknown> { }
 }

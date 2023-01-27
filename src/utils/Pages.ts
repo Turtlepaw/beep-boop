@@ -10,23 +10,14 @@ import {
     Message,
     ComponentType,
     ButtonStyle,
-    CommandInteraction,
-    AnyComponentBuilder,
-    APIActionRowComponent,
-    APIMessageActionRowComponent,
-    ChatInputCommandInteraction,
-    SelectMenuInteraction,
+    CommandInteraction, ChatInputCommandInteraction,
+    AnySelectMenuInteraction as SelectMenuInteraction,
     ButtonInteraction,
     ModalSubmitInteraction,
-    ContextMenuCommandInteraction,
-    SelectMenuBuilder,
-    MessageComponentBuilder,
-    MessageComponent,
-    MessageActionRowComponent,
-    MessageActionRowComponentBuilder
+    ContextMenuCommandInteraction
 } from "discord.js";
-const ufdError = Error;
 import { generateId } from "./Id";
+const ufdError = Error;
 
 export interface ButtonOptions {
     label?: string;
@@ -58,16 +49,17 @@ export interface SendOptions {
     disableCustomButtons?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface PageOptions {
 
 }
 
 export type AnyInteraction = CommandInteraction | ChatInputCommandInteraction | SelectMenuInteraction | ButtonInteraction | ModalSubmitInteraction | ContextMenuCommandInteraction;
 export type EventInteraction = ButtonInteraction | SelectMenuInteraction;
-export type EventListener = (interaction: EventInteraction) => (Promise<any | void> | (any | void));
+export type EventListener = (interaction: EventInteraction) => (Promise<unknown | void> | (unknown | void));
 
 export class Pages {
-    public event: EventListener = () => { };
+    public event: EventListener = () => null;
     public embeds: EmbedBuilder[] = [];
     /**
      * This will be on the next row.
@@ -145,9 +137,10 @@ export class Pages {
         return false;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private renderButtons(sortedButtons: ButtonOptions[], Ids: any, pageIndex: number) {
         const { buttons, embeds } = this;
-        return sortedButtons.map((e, i, a) => {
+        return sortedButtons.map((e, i) => {
             //get the key of the button
             const key = Object.keys(buttons.sorting).find(k => buttons.sorting[k] === i);
             const defaultButton = this.defaultButtons[key];
@@ -165,7 +158,7 @@ export class Pages {
         })
     }
 
-    private getComponents(disabled: boolean = false) {
+    private getComponents(disabled = false) {
         if (this.components == null || this.components.length == 0) return [];
         return this.components.map(e => {
             return new ActionRowBuilder<ResolvedComponent>()
@@ -175,6 +168,7 @@ export class Pages {
         })
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async send(interaction: AnyInteraction | Interaction | CommandInteraction | any, options?: SendOptions) {
         const { buttons, embeds } = this;
         let pageIndex = 0;

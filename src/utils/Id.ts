@@ -1,3 +1,5 @@
+import crypto from "crypto";
+
 const numbers = [
     "1",
     "2",
@@ -40,7 +42,7 @@ const letters = [
 const booleans = [
     true,
     false
-]
+];
 
 //Default length is 5 (e.g. 40814)
 
@@ -50,12 +52,18 @@ export function randomNumber() {
     return numbers[n];
 }
 
-export function generateId(length: number = 5) {
+export enum AsTypeof {
+    Number = "number",
+    String = "string"
+}
+
+export function generateId(length = 5) {
     let Id = "";
     for (let index = 0; index < length; index++) {
         Id += `${randomNumber()}`
     }
 
+    //if (typeof type == "number") return Number(Id);
     return Id;
 }
 
@@ -71,11 +79,11 @@ export function randomLetter() {
     return letters[n];
 }
 
-export function generatePassword(width: number = 10) {
+export function generatePassword(width = 10) {
     let password = "";
     for (let i = 0; i < width; i++) {
-        let shouldBeRandomNumber = randomBoolean();
-        let shouldBeUpperCase = randomBoolean();
+        const shouldBeRandomNumber = randomBoolean();
+        const shouldBeUpperCase = randomBoolean();
         if (shouldBeRandomNumber) {
             password += randomNumber();
         } else {
@@ -101,4 +109,8 @@ export function advancedId(existing: string[]) {
     }
 
     return finalId;
+}
+
+export function GenerateToken() {
+    return `ApiToken.${crypto.randomUUID()}`;
 }

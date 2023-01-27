@@ -2,6 +2,8 @@ import { Button, Menu as ChakraMenu, Center, MenuButton, MenuItem as ChakraMenuI
 import React from "react";
 import { DefaultProps } from "../utils/parse-user";
 import { DownIcon, UpIcon } from "./Icons";
+import { BrandColor } from "./Link";
+import { AutoCenter } from "./AutoCenter";
 
 export interface MenuProps extends DefaultProps {
     isDashboard?: boolean;
@@ -18,11 +20,15 @@ function MenuItem({ children, className }: {
     );
 }
 
-export function ExternalIcon() {
+export interface SvgProperties {
+    color?: string;
+}
+
+export function ExternalIcon({ color }: SvgProperties) {
     return (
         <svg className="icon outbound ml-0.5" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15">
-            <path fill={"currentColor"} d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path>
-            <polygon fill={"currentColor"} points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon>
+            <path fill={color ?? "currentColor"} d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path>
+            <polygon fill={color ?? "currentColor"} points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon>
         </svg>
     );
 }
@@ -39,11 +45,13 @@ export function Link({ children, href }: {
 }
 
 export function Menu(props: MenuProps) {
+    const mobile = props.mobile;
+    const Component = mobile ? AutoCenter : Center;
     return (
         <Center>
-            <div className="pr-5 pt-5 z-50">
-                <Center>
-                    <a className="!inline font-bold text-2xl pr-6 hover:opacity-80" href="/">
+            <div className={`${mobile ? "" : "pr-5 pt-5"} z-50`}>
+                <Component>
+                    <a style={BrandColor} className={`${mobile ? "pb-1" : "!inline"} font-bold text-2xl pr-6 hover:opacity-80`} href="/">
                         Beep Boop
                     </a>
                     <div className="pr-6">
@@ -53,8 +61,11 @@ export function Menu(props: MenuProps) {
                         <Link href="/dashboard">
                             Dashboard
                         </Link>
+                        <Link href="/pricing">
+                            Pricing
+                        </Link>
                     </div>
-                    <div className="!float-right !inline">
+                    <div className={`${mobile ? "pt-1" : ""} !float-right !inline`}>
                         {
                             props.user != null ? (
                                 <>
@@ -92,7 +103,7 @@ export function Menu(props: MenuProps) {
                             )
                         }
                     </div>
-                </Center>
+                </Component>
             </div >
         </Center>
     );

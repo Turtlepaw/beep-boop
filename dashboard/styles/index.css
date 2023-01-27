@@ -143,6 +143,10 @@
   color: #b9bbbe;
 }
 
+.text-light {
+  color: #d0d3d8;
+}
+
 .hover\:TextLight:hover {
   color: #b9bbbe;
 }
@@ -169,6 +173,10 @@
   justify-content: center;
 }
 
+.PriceFlexItem {
+  flex: 0 40% !important;
+}
+
 .FlexItem {
   flex: 0 26%;
 }
@@ -190,6 +198,12 @@
 .Guild {
   max-width: 13rem;
   min-width: 13rem;
+  max-height: 8rem;
+  min-height: 8rem;
+}
+
+.SingleLineGuild {
+  padding-top: 2rem;
 }
 
 .loader,
@@ -314,4 +328,72 @@
 .InputBuilder:active,
 .InputBuilder:focus {
   border-color: #61656e !important;
+}
+
+.fade-in {
+  animation: fadeIn ease 5s;
+  -webkit-animation: fadeIn ease 5s;
+  -moz-animation: fadeIn ease 5s;
+  -o-animation: fadeIn ease 5s;
+  -ms-animation: fadeIn ease 5s;
+}
+
+.hover\:fade-in:hover {
+  animation: fadeIn ease 5s;
+  -webkit-animation: fadeIn ease 5s;
+  -moz-animation: fadeIn ease 5s;
+  -o-animation: fadeIn ease 5s;
+  -ms-animation: fadeIn ease 5s;
+}
+
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-moz-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-o-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@-ms-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }

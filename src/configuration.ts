@@ -1,12 +1,26 @@
-import { ActivityOptions, ActivityType, EmbedBuilder } from "discord.js";
+import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, PermissionFlagsBits } from "discord.js";
 import { Logging } from "./@types/config";
+import { Embed as EmbedBuilder } from "./utils/EmbedBuilder";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
 export const SupportServerInvite = "https://discord.gg/G59JT7VbxZ";
+export const SupportServerInviteEmbedded = `<${SupportServerInvite}>`
+export const SupportServerComponent = new ButtonBuilder()
+    .setLabel("Support Server")
+    .setStyle(ButtonStyle.Link)
+    .setURL(SupportServerInvite);
 // The channel that you post updates about your bot
-export const NewsChannel = "1030689173784510504";
-export const ClientAdministators: string[] = [
+export const News = {
+    Channel: "1030689173784510504",
+    Guild: "1028789308401918004"
+};
+/**
+ * Array of user Ids that are have admin permissions for the bot.
+ * 
+ * **DANGER (READ THIS):** Someone with this permission has access to the entire bot (they could ping `@everyone` or even leave every guild), be careful with this permission.
+ */
+export const ClientAdministrators: string[] = [
     "820465204411236362",
     //...
 ];
@@ -14,14 +28,17 @@ export const Logs: Logging = {
     // This channel needs to be in
     // the `guildId` server (line 16)
     DM: "1040431450798956594",
-    Error: "1042231033627684904"
+    Error: "1042231033627684904",
+    Guild: "1028789308401918004"
+
 }
 export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
-export const Version = "v2.3";
+export const Version = "v2.0 beta";
 export const Website = "https://beep.trtle.xyz"
+export const WebsiteLink = (path: string) => Website + path;
 export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
-    return `${Website}/dashboard/${GuildId}/transcription/${ChannelId}`
+    return `${Website}/transcript/${ChannelId}`
 }
 export const Status: ActivityOptions = {
     type: ActivityType.Listening,
@@ -60,6 +77,19 @@ export enum Emojis {
 }
 
 export enum Icons {
+    Statistics = "<:Statistics:1067239843152793660>",
+    Quotes = "<:Quotes:1066185365523792042>",
+    Member = "<:Member:1065090193494904913>",
+    Plane = "<:Plane:1065079776546660512>",
+    Date = "<:Date:1061841890384814081>",
+    Refresh = "<:Refresh:1043579950197903430>",
+    Sync = "<:Sync:1061826576171421736>",
+    Star = "<:Star:1061826573222826014>",
+    Print = "<:Print:1061826569800253441>",
+    Advanced = "<:Advanced:1061826562514751508>",
+    Dark = "<:Dark:1061826566373527644>",
+    TrashDefault = "<:DefaultTrash:1049878137917419631>",
+    Dot = "<:ListItem:1043218649940508712>",
     Clock = "<:Clock:1043579937690497044>",
     MemberAdd = "<:MemberAdd:1043579947639386292>",
     Flag = "<:Flag:1043584066068422747>",
@@ -72,7 +102,7 @@ export enum Icons {
     FlagBot = "<:Bot:1040733154656403616>",
     FlagOffline = "<:StatusOffline:1044019373775540276>",
     FlagOnline = "<:StatusOnline:1044019293307801680>",
-    Tag = "<:Tag:1040733256028520579>",
+    Tag = "<:Tag:1053881213112295505>",
     Badge = "<:Badge:1043599252414275634>",
     Globe = "<:Globe:1043599254125563925>",
     Image = "<:Image:1043718873045811271>",
@@ -82,8 +112,8 @@ export enum Icons {
     Voice = "<:Voice:1043733614589902878>",
     Color = "<:Color:1043579942811750410>",
     Link = "<:Link:1043579945777119242>",
-    Error = "<:Close:1043579939267551282>",
-    Success = "<:Success:1043579936016965642>",
+    Error = "<:Error:1054103452579549326>",
+    Success = "<:Success:1054103410183524402>",
     Members = "<:Members:1044023938591756370>",
     Info = "<:Info:1044457273990324264>",
     Shield = "<:Shield:1044472705845563442>",
@@ -97,22 +127,94 @@ export enum Icons {
     Trash = "<:Trash:1043579951586213888>",
     Enabled = "<:Enabled:1049904633939763211>",
     Disabled = "<:Disabled:1049904650989600849>",
-    ProUser = "<:ProUser:1051214860119191634>"
+    ProUser = "<:ProUser:1051214860119191634>",
+    Blank = "<:blank:1049914365752651796>",
+    StemItem = "<:StemItem:1051630581340971108>",
+    StemEnd = "<:StemEnd:1051630676354551839>",
+    Remove = "<:Remove:1053887107921363034>",
+    Add = "<:Add:1053887100551966771>",
+    RoleRemove = "<:RoleRemove:1053887104842735677>",
+    RoleAdd = "<:RoleAdd:1053887102187741304>",
+    Search = "<:Search:1066924460495622196>"
 }
 
+export const Dot = {
+    System: "•",
+    Default: Icons.Dot
+}
+
+export enum DefaultIcons {
+    Clock = "⏱️",
+    MemberAdd = "➕",
+    Flag = "🚩",
+    FlagBrilliance = "💡 (brilliance) ",
+    FlagBravery = "🪨 (bravery) ",
+    FlagBalance = "⚖️ (balance) ",
+    FlagVerifiedBot = "✔️ (verified bot) ",
+    FlagActiveDeveloper = "💻 (active developer) ",
+    FlagServerOwner = "👑 (server owner) ",
+    FlagBot = "🤖 (bot) ",
+    FlagOffline = "🔴",
+    FlagOnline = "🟢",
+    Tag = "🏷️",
+    Badge = "🎖️",
+    Globe = "🌐",
+    Image = "🖼️",
+    Emoji = "😀",
+    Channel = "#️⃣",
+    Folder = "📂",
+    Voice = "🎙️",
+    Color = "🎨",
+    Link = "🔗",
+    Error = "❌",
+    Success = "✅",
+    Members = "👤",
+    Info = "ℹ️",
+    Shield = "🛡️",
+    Lock = "🔒",
+    Unlock = "🔓",
+    Configure = "⚙️",
+    Discover = "🧭",
+    AdvancedConfiguration = "⚙️",
+    Gift = "🎁",
+    Zap = "⚡",
+    Trash = "🗑️",
+    Enabled = "✔️",
+    Disabled = "❌",
+    ProUser = "⚡ (pro user) "
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const ResolvableIcons = (client: Client) => Icons;
+export const Messages = {
+    Saved: {
+        content: `${Icons.Discover} Saved your configuration.`,
+        ephemeral: true,
+        components: []
+    },
+    Success: (message: string) => ({
+        content: `${Icons.Success} ${message}`,
+        ephemeral: true,
+        components: []
+    })
+}
 export enum Colors {
     Transparent = "#2F3136",
     BrandColor = "#FF605E",
     SuccessButton = "#2d7d46"
 }
 
-export class Embed extends EmbedBuilder {
-    constructor() {
-        super();
-        this.setColor([255, 96, 96])
-    }
-
-    build() {
-        return [this]
-    }
+export const Embed = EmbedBuilder;
+export const Permissions = {
+    Manager: [
+        PermissionFlagsBits.Administrator,
+        PermissionFlagsBits.ManageGuild,
+        PermissionFlagsBits.ManageRoles,
+        PermissionFlagsBits.ManageWebhooks
+    ],
+    Moderator: [
+        PermissionFlagsBits.ModerateMembers,
+        PermissionFlagsBits.ManageMessages
+    ]
 }
+export const BaseDirectory = "./dist";

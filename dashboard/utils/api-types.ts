@@ -1,0 +1,66 @@
+export enum Routes {
+    GuildConfiguration = "/v1/settings/:guildId",
+    Index = "/v1/",
+    OAuth = "/v1/oauth",
+    GuildsWith = "/v1/guilds",
+    Channels = "/v1/channels",
+    CreateMessage = "/v1/message/create",
+    RoleConnections = "/v1/role-connections/verify",
+    Subscription = "/v1/subscription/:guildId",
+    //Module store
+    Modules = "/v1/modules/:id",
+    Module = "/v1/module",
+    //Public Routes
+    Profile = "/v1/profile/:id",
+    Ranking = "/v1/rank/:id",
+    Leaderboard = "/v1/leaderboard/:id"
+}
+
+enum Status {
+    Initialized = 1,
+    Error = 2,
+    Success = 3,
+    NotFound = 4
+}
+
+enum Messages {
+    Initialized = 'SERVER_INITIALIZED_AND_READY',
+    Error = 'SERVER_ERROR',
+    Success = 'SERVER_SUCCESS',
+    NotFound = 'NOT_FOUND_ON_SERVER'
+}
+
+export enum ActionParam {
+    Boolean = "boolean",
+    String = "string",
+    StringWithVaribles = "string_with_vars"
+}
+
+export interface ActionConfiguration {
+    [key: string]: {
+        Name: string;
+        Type: ActionParam;
+        DefaultValue?: any;
+    };
+};
+
+export interface ResolvableAuthor {
+    Avatar: string;
+    Username: string;
+    Tag: string;
+};
+
+export interface InternalCode {
+    Events: any[];
+    Commands: any[];
+    ContextMenus: any[];
+}
+
+export interface Action {
+    Id: string;
+    Name: string;
+    Description: string;
+    Author: ResolvableAuthor;
+    InternalCode: InternalCode;
+    ConfigurationParams: ActionConfiguration;
+}

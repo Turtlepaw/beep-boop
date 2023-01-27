@@ -1,9 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Client, Events, GuildMember, Message as GuildMessage } from "discord.js";
-import { Emojis } from "../configuration";
-import { SendAppealMessage } from "../utils/appeals";
+import { Client, Events, Message as GuildMessage, ImageFormat } from "discord.js";
 import Event from "../lib/Event";
-import { Verifiers } from "../utils/verify";
-import { Ticket } from "../buttons/CreateTicket";
 
 export default class TicketService extends Event {
     constructor() {
@@ -13,20 +9,27 @@ export default class TicketService extends Event {
     }
 
     async ExecuteEvent(client: Client, Message: GuildMessage) {
-        const Ticket: Ticket | null = client.storage[`ticket_${Message.channel.id}`];
-        if (Ticket != null) {
-            const storage = client.storage[`ticket_messages_${Message.channel.id}`];
-            client.storage[`ticket_messages_${Message.channel.id}`] = [{
-                Id: Message.id,
-                Content: Message.content,
-                SentAt: Message.createdTimestamp,
-                Author: {
-                    Name: Message.author.username,
-                    Avatar: Message.author.displayAvatarURL()
-                }
-            },
-            ...(storage != null ? storage : [])
-            ]
-        }
+        const Ticket = await client.Storage.Tickets.Get({
+            ChannelId: Message.channel.id
+        });
+
+        if (Ticket == null) return;
+
+        Ticket.Messages.set(Message.id, {
+            Content: Message.content,
+            Date: Message.createdAt.toString(),
+            Embeds: Message.embeds,
+            Id: Message.id,
+            User: {
+                Avatar: Message.author.displayAvatarURL({ extension: ImageFormat.PNG, forceStatic: true, size: 4096 }),
+                Tag: Message.author.tag,
+                Username: Message.author.username,
+                Bot: Message.author.bot
+            }
+        });
+
+        await client.Storage.Tickets.Edit(Ticket.Entity, {
+            Messages: Ticket.Messages
+        });
     }
 }
