@@ -14,7 +14,7 @@ export default class EvalModal extends Event {
         if (!interaction.isModalSubmit()) return;
         if (!ClientAdministrators.includes(interaction.user.id)) return;
         if (interaction.customId != "EVAL_MODAL") return;
-        const Code = interaction.fields.getTextInputValue("code");
+        const Code = `(async () => ${interaction.fields.getTextInputValue("code")})();`
         try {
             const EvalResponse = await eval(Code);
             await interaction.reply({
