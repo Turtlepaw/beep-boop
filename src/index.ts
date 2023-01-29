@@ -31,6 +31,7 @@ export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
 export const API_PORT = Number(process.env?.API_PORT);
 export const API_URL = process.env?.API_URL;
 export const LOGSNAG_TOKEN = process.env?.LOGSNAG;
+export const USE_LOGSNAG = process.env?.USE_LOGSNAG ?? false;
 export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
         IntentsBitField.Flags.Guilds,

@@ -1,8 +1,11 @@
 import { Client } from "discord.js";
 import { customClients } from "./customBot";
 import { Subscriptions } from "../models/Profile";
+import { USE_LOGSNAG } from "..";
 
 export async function Logsnag(client: Client) {
+    //Make a fake logsnag client to prevent crashes
+    if(USE_LOGSNAG == false) return;
     const logsnag = client.LogSnag;
 
     setInterval(async () => {
