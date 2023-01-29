@@ -19,6 +19,7 @@ import { Collection } from "discord.js";
 import { TriviaGame } from "discord-trivia";
 import { APIUser } from "../models/APIUser";
 import { Ticket } from "../models/Ticket";
+import LogSnag from "logsnag";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -52,5 +53,6 @@ declare module 'discord.js' {
         CustomIcons: boolean;
         LogWebhook: WebhookClient;
         TriviaGames: Collection<string, TriviaGame>;
+        LogSnag: LogSnag;
     }
 }

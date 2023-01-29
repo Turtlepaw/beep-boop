@@ -21,7 +21,7 @@ export default class Send extends Command {
     async ExecuteCommand(interaction: ChatInputCommandInteraction, client: Client) {
         const Profile = await ResolveUser(interaction.user.id, client);
 
-        if (Profile.subscription == Subscriptions.Pro) {
+        if (Profile.subscription != null && Profile.subscription != Subscriptions.None) {
             const ExpiresIn = Profile.expires;
             await interaction.reply({
                 embeds: [

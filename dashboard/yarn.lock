@@ -815,6 +815,24 @@
   resolved "https://registry.npmjs.org/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz"
   integrity sha512-ej5oVy6lykXsvieQtqZxCOaLT+xD4+QNarq78cIYISHmZXshCvROLudpQN3lfL8G0NL7plMSSK+zlyvCaIJ4Iw==
 
+"@derockdev/discord-components-core@^3.5.1", "@derockdev/discord-components-core@^3.5.2":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/@derockdev/discord-components-core/-/discord-components-core-3.5.2.tgz#7875d43322b3804b9d5268d58044bcd7fca51529"
+  integrity sha512-1Ps6m+4X14FbPDhKge5r9pPdgUEBAqCOz2FccdZahb/qRXxZ2zqjgK0ar0oykSWAmY/dz/W5YvRC8g27FSgqgw==
+  dependencies:
+    "@stencil/core" "^2.22.1"
+    clsx "^1.2.1"
+    hex-to-rgba "^2.0.1"
+    highlight.js "^11.6.0"
+
+"@derockdev/discord-components-react@^3.5.2":
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/@derockdev/discord-components-react/-/discord-components-react-3.5.2.tgz#5bca1a4fb1ecbe44918c903d582a2ace2c010076"
+  integrity sha512-PTtDtiiZ/rhw5dSf1X3LdcU885s3lUwvddeXnfvnyxwwNMkxb+LktcaFx132IJqwQtUiounYAbn2toyJPjU1nA==
+  dependencies:
+    "@derockdev/discord-components-core" "^3.5.1"
+    tslib "^2.4.0"
+
 "@emotion/babel-plugin@^11.10.5":
   version "11.10.5"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.10.5.tgz"
@@ -2192,6 +2210,28 @@
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
 
+"@skyra/discord-components-core@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@skyra/discord-components-core/-/discord-components-core-3.6.0.tgz#2a3cd12039b53f09b2ba8c180107bc1d9df84cbc"
+  integrity sha512-13aVNoleHyAMqd4lcfcfjEduV4QavlHn9P2TUlTUPQC8m8cd8n8wSUTDUxKhQbYpzJ0hn7AHnlmLixfiqQT4FQ==
+  dependencies:
+    "@stencil/core" "^2.22.1"
+    clsx "^1.2.1"
+    hex-to-rgba "^2.0.1"
+
+"@skyra/discord-components-react@^3.6.0":
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/@skyra/discord-components-react/-/discord-components-react-3.6.0.tgz#e3f73349a4bfd22484848134128ba047a2084cef"
+  integrity sha512-M3N22C5wktZwOAfkTaEKPQSxsjeeB9+Prtrg9zyW2/+UYDscsAM1sVxC9mzC/D0O5Ayx0c3OAqu+HF5xc6y0/g==
+  dependencies:
+    "@skyra/discord-components-core" "^3.6.0"
+    tslib "^2.4.1"
+
+"@stencil/core@^2.22.1":
+  version "2.22.2"
+  resolved "https://registry.yarnpkg.com/@stencil/core/-/core-2.22.2.tgz#f518b6bfae85352c72cd07fcaf2f2b61e0581fd9"
+  integrity sha512-r+vbxsGNcBaV1VDOYW25lv4QfXTlNoIb5GpUX7rZ+cr59yqYCZC5tlV+IzX6YgHKW62ulCc9M3RYtTfHtNbNNw==
+
 "@swc/helpers@0.4.11":
   version "0.4.11"
   resolved "https://registry.npmjs.org/@swc/helpers/-/helpers-0.4.11.tgz"
@@ -2672,7 +2712,7 @@ client-only@0.0.1:
   resolved "https://registry.npmjs.org/client-only/-/client-only-0.0.1.tgz"
   integrity sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==
 
-clsx@^1.1.1:
+clsx@^1.1.1, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.2.1.tgz#0ddc4a20a549b59c93a4116bb26f5294ca17dc12"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
@@ -3479,6 +3519,11 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+hex-to-rgba@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/hex-to-rgba/-/hex-to-rgba-2.0.1.tgz#4176977882a1cb32b83ce5ab1db6828ab84d5a13"
+  integrity sha512-5XqPJBpsEUMsseJUi2w2Hl7cHFFi3+OO10M2pzAvKB1zL6fc+koGMhmBqoDOCB4GemiRM/zvDMRIhVw6EkB8dQ==
+
 hey-listen@^1.0.8:
   version "1.0.8"
   resolved "https://registry.npmjs.org/hey-listen/-/hey-listen-1.0.8.tgz"
@@ -3488,6 +3533,11 @@ highlight.js@^10.5.0:
   version "10.7.3"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-10.7.3.tgz#697272e3991356e40c3cac566a74eef681756531"
   integrity sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==
+
+highlight.js@^11.6.0:
+  version "11.7.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.7.0.tgz#3ff0165bc843f8c9bce1fd89e2fda9143d24b11e"
+  integrity sha512-1rRqesRFhMO/PRF+G86evnyJkCgaZFOI+Z6kdj15TA18funfoqJXvgPCLSf0SWq3SRfg1j3HlDs8o4s3EGq1oQ==
 
 hoist-non-react-statics@^3.3.1:
   version "3.3.2"
@@ -4729,6 +4779,11 @@ tslib@^1.8.1:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.4.1:
+  version "2.5.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.5.0.tgz#42bfed86f5787aeb41d031866c8f402429e0fddf"
+  integrity sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==
 
 tsutils@^3.21.0:
   version "3.21.0"

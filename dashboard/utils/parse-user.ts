@@ -101,7 +101,13 @@ export async function parseUser(ctx: GetServerSidePropsContext, getGuilds: boole
     return User;
 }
 
+export enum Errors {
+    NotLoggedIn = "NOT_LOGGED_IN",
+    NotFound = "NOT_FOUND"
+}
+
 export interface DefaultProps {
     user: DiscordUser | null;
     mobile: boolean;
+    error?: Errors;
 }

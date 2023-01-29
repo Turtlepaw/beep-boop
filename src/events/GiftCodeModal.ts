@@ -5,6 +5,7 @@ import { RedeemGiftAndExpire, ResolveGift } from "../utils/Gift";
 import { FriendlyInteractionError } from "../utils/error";
 import { SetSubscription } from "../utils/Profile";
 import { GetSubscriptionName } from "../buttons/Developer/CreateGift";
+import { LogSnagChannels } from "../@types/logsnag";
 
 export default class AppealModal extends Event {
     constructor() {
@@ -45,6 +46,17 @@ export default class AppealModal extends Event {
         await ModalInteraction.reply({
             ephemeral: true,
             content: `🎉 ${GetSubscriptionName(Gift.Type)} subscription from <@${Gift.From}> activated!`
+        });
+
+        await client.LogSnag.publish({
+            channel: LogSnagChannels.Subscriptions,
+            event: "Subscription Activated",
+            description: `${ModalInteraction.user.tag} redeemed gift from ${Gift.From}`,
+            icon: "🚀",
+            tags: {
+                user: ModalInteraction.user.tag,
+                from: Gift.From
+            }
         });
     }
 }

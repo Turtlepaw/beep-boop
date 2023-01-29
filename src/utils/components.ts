@@ -156,7 +156,7 @@ export class Selector<T extends AnySelectMenuBuilder, I = AnySelectMenuInteracti
     }
 
     public async CollectComponents(message: Message, interaction?: Interaction): Promise<Awaited<I>> {
-        const CustomIds = [];
+        const CustomIds = [this.CustomId];
         if (interaction != null) message.components.forEach(e => e.components.forEach(e => CustomIds.push(e.customId)));
         const Message = await message.awaitMessageComponent({
             time: 0,

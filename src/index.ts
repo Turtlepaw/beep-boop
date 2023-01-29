@@ -10,12 +10,14 @@ import { API } from "./api/index";
 import { Levels } from "./utils/levels";
 import { InitializeProvider } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
-import { Status } from "./configuration";
+import { LogSnagProject, Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
 import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
 import { Logger } from "./logger";
 import { ChannelCounterService } from "./utils/ChannelCounters";
+import { Logsnag } from "./utils/logsnag";
+import { LogSnag as LogSnagClient } from "logsnag";
 dotenv.config()
 
 //Debug logs
@@ -28,6 +30,7 @@ export const API_ENABLED = process.env.START_API;
 export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
 export const API_PORT = Number(process.env?.API_PORT);
 export const API_URL = process.env?.API_URL;
+export const LOGSNAG_TOKEN = process.env?.LOGSNAG;
 export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -57,6 +60,10 @@ export async function SetClientValues(client: Client) {
     client.LegacyStorage = KeyFileStorage("storage", false);
     client.QuickStorage = KeyFileStorage("cache", false);
     client.TriviaGames = new Collection();
+    client.LogSnag = new LogSnagClient({
+        token: LOGSNAG_TOKEN,
+        project: LogSnagProject
+    });
 }
 
 // Create Discord.js client
@@ -123,6 +130,9 @@ export async function HandleBotStart() {
 
     // Start Custom Bots
     StartCustomBots(client);
+
+    // Logsnag
+    Logsnag(client);
 
     // Start API
     console.log("Starting API...".grey);

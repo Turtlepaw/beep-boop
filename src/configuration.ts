@@ -218,3 +218,4 @@ export const Permissions = {
     ]
 }
 export const BaseDirectory = "./dist";
+export const LogSnagProject = "beep-boop";

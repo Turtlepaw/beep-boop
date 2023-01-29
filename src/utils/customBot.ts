@@ -13,7 +13,7 @@ export interface CustomBotOptions {
     channel: TextBasedChannel;
 }
 
-export const customClients = {};
+export const customClients: Record<string, Client> = {};
 
 export function CreateConfiguration(client: Client) {
     setTimeout(async () => {

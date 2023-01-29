@@ -5,6 +5,10 @@ import fs from "fs";
 import Button from "../../lib/ButtonBuilder";
 import { DeveloperPortal } from "../../commands/Bot/Help";
 
+export enum ButtonIds {
+    Subscriptions = "FORCE_SUBSCRIPTIONS"
+}
+
 export default class DeveloperPortalButton extends Button {
     constructor() {
         super({
@@ -61,6 +65,11 @@ export default class DeveloperPortalButton extends Button {
                         .setLabel("Server Lookup")
                         .setEmoji(Icons.Search)
                         .setCustomId("GUILD_LOOKUP")
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel("Subscriptions")
+                        .setEmoji(Icons.ProUser)
+                        .setCustomId(ButtonIds.Subscriptions)
                         .setStyle(ButtonStyle.Secondary)
                 )
         ]

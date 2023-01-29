@@ -1,9 +1,10 @@
 import fetch from "node-fetch";
 import { config } from "./config";
 import { APIGuild } from "./types";
-import { Routes } from "./api-types";
+import { ApiError, Routes, TicketMessage } from "./api-types";
+import { resourceUsage } from "process";
 const URL = process.env.API_URI || "http://localhost:4000";
-const token = `Bearer ${process.env.API_TOKEN}` || "Bearer api_token_1490ujdsifh9124yf";
+const token = `${process.env.API_TOKEN}` || "Bearer api_token_1490ujdsifh9124yf";
 //const URL = "https://turtlepaw-beep-boop-p6qqgwgqr7v39wjj-4000.preview.app.github.dev";
 
 export function CreateRoute(route: Routes) {
@@ -73,6 +74,10 @@ export async function GetActions(): Promise<Action[]> {
     }];
 }
 
+export async function Transcript(id: string) {
+    return CallAPI<TicketMessage[]>(CreateRoute(Routes.Transcripts.replace(":id", id) as Routes));
+}
+
 export async function GetUser(Id: string): Promise<OAuthUser> {
     const Result = await fetch(CreateRoute(Routes.OAuth) + `?id=${Id}`, {
         method: Methods.Get,
@@ -99,31 +104,35 @@ export async function DeleteUser(Id: string): Promise<any> {
 }
 
 export async function CreateUser(Id: string, Options: OAuthUser): Promise<any> {
-    const Result = await fetch(CreateRoute(Routes.OAuth), {
-        method: Methods.Post,
-        body: JSON.stringify({
-            id: Id,
-            access_token: Options.access_token || "null",
-            jwt_token: Options.jwt_token || "null",
-            token_type: Options.token_type || "null"
-        }),
-        headers: {
-            Authorization: token
-        }
+    return CallAPI(CreateRoute(Routes.OAuth), Methods.Post, {
+        id: Id,
+        access_token: Options.access_token || "null",
+        jwt_token: Options.jwt_token || "null",
+        token_type: Options.token_type || "null"
     });
-    console.log(Result)
-    return Result.json();
 }
 
-export async function CallAPI<T>(url: string): Promise<T> {
+export interface ApiResult<T> {
+    isError: () => boolean;
+    fullResult: T;
+}
+
+export async function CallAPI<T>(url: string, method?: Methods, body?: object): Promise<T & ApiResult<T>> {
+    console.log(url)
     const Result = await fetch(url, {
-        method: Methods.Get,
+        method: method ?? Methods.Get,
+        body: body == null ? null : JSON.stringify(body),
         headers: {
             Authorization: token
         }
     });
 
-    return Result.json();
+    const result = await Result.json();
+    return {
+        isError: () => result.error == true,
+        fullResult: result,
+        ...result
+    }
 }
 
 export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
