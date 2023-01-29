@@ -34,7 +34,7 @@ export async function Logsnag(client: Client) {
         // Subscriptions
         const Profiles = await client.Storage.Profiles.GetAll();
         const PremiumUsers = await Profiles.filter(e => e.subscription != null && e.subscription != Subscriptions.None);
-console.log(PremiumUsers.map(e => `${e.displayName} ${e.subscription}`).join(" "))
+console.log(PremiumUsers.map(e => `${e.displayName} ${e.subscription}`).join(" "), PremiumUsers.length)
         await logsnag.insight({
             title: "Premium Users",
             value: PremiumUsers.length,
