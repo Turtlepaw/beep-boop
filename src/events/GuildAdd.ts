@@ -11,6 +11,18 @@ export default class DMService extends Event {
     }
 
     async ExecuteEvent(client: Client, Guild: Guild) {
+        await client.LogSnag.publish({
+            channel: "guilds",
+            event: "Joined Guild",
+            tags: {
+                guild: Guild.name,
+                id: Guild.id,
+                user: (await Guild.fetchOwner()).user.tag,
+                name: Guild.name
+            },
+            icon: "🪄"
+        });
+
         try {
             //const Channels = await Guild.channels.fetch();
             const UpdatesGuild = await client.guilds.fetch(News.Guild);
