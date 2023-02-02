@@ -281,7 +281,7 @@ export default class AddButton extends ContextMenu {
             const styMessage = await ReplyTo[Method]({
                 content: `${Icons.Tag} Select a button style`,
                 components: [ButtonStyles],
-                //@ts-ignore
+                //@ts-expect-error
                 ephemeral: true,
                 fetchReply: true
             });
