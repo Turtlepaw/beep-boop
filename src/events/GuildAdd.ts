@@ -3,7 +3,7 @@ import { Colors, News } from "../configuration";
 import Event from "../lib/Event";
 import { Logger } from "../logger";
 
-export default class DMService extends Event {
+export default class GuildAdd extends Event {
     constructor() {
         super({
             EventName: Events.GuildCreate

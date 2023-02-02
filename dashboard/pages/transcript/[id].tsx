@@ -16,7 +16,6 @@ import { Image } from '../../components/Image';
 import { NotLoggedIn } from '../../components/User';
 import { TicketMessage } from '../../utils/api-types';
 import { Menu } from '../../components/Menu';
-import { DiscordMessages, DiscordMessage, DiscordMention } from "@derockdev/discord-components-react";
 
 export interface Props extends DefaultProps {
     messages: TicketMessage[];
@@ -26,6 +25,14 @@ export function Title({ children }: { children: string; }) {
     return (
         <h2 className='font-semibold text-lg uppercase'>{children}</h2>
     );
+}
+
+function isToday(_date: any) {
+    const today = new Date();
+    const date = new Date(_date);
+    return date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear()
 }
 
 export default function Home(props: Props) {
@@ -57,14 +64,29 @@ export default function Home(props: Props) {
         <>
             <Menu user={props.user} isDashboard mobile={props.mobile} />
             <Meta>Ticket Transcript</Meta>
-            <div>
-                <DiscordMessages>
-                    {messages.map(e => (
-                        <DiscordMessage author={e.User.Username} avatar={e.User.Avatar} bot={e.User?.Bot ?? false}>
-                            {e.Content}
-                        </DiscordMessage>
-                    ))}
-                </DiscordMessages>
+            <div className='py-10'>
+                <h1>
+                    ticket
+                </h1>
+                {messages.filter(e => e.Content != "").map(message => {
+                    const date = new Date(message.Date);
+                    return (
+                        <div key={message.Id} className='hover:bg-white hover:bg-opacity-5 py-2 pb-5'>
+                            <div className='pl-10'>
+                                <Image className='rounded-full inline-block' src={message.User.Avatar} width={50} alt={`${message.User.Username}'s Avatar`} />
+                                <div className='inline-grid pl-5'>
+                                    <div>
+                                        <span className='inline-block font-semibold'>{message.User.Username}</span>
+                                        <span className='pl-2 text-light' suppressHydrationWarning>{isToday(message.Date) ? "Today at" : `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`} {date.toLocaleTimeString("us", { hour: '2-digit', minute: '2-digit' }).slice()}</span>
+                                    </div>
+                                    <div>
+                                        {message.Content}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
             </div>
         </>
     );
