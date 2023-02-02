@@ -17,7 +17,8 @@ export enum Routes {
     Ranking = "/v1/rank/:id",
     Leaderboard = "/v1/leaderboard/:id",
     //Tickets
-    Transcripts = "/v1/transcripts/:id"
+    Transcripts = "/v1/transcripts/:id",
+    TicketData = "/v1/ticket/:id"
 }
 
 export interface OAuthUser {

@@ -17,7 +17,8 @@ export enum Routes {
     Ranking = "/v1/rank/:id",
     Leaderboard = "/v1/leaderboard/:id",
     //Tickets
-    Transcripts = "/v1/transcripts/:id"
+    Transcripts = "/v1/transcripts/:id",
+    TicketData = "/v1/ticket/:id"
 }
 
 export enum ActionParam {
@@ -60,10 +61,24 @@ export interface DatabaseUser {
     Username: string;
     Tag: string;
     Bot: boolean;
+    Color?: string;
+    Id: string;
+}
+
+export interface ButtonComponent {
+    label: string;
+    style: number;
+}
+
+export interface EmbedField {
+    name: string;
+    value: string;
+    inline?: boolean;
 }
 
 export interface EmbedData {
     title?: string;
+    fields?: EmbedField[];
 }
 
 export interface TicketMessage {
@@ -75,10 +90,15 @@ export interface TicketMessage {
      */
     Date: string;
     Embeds: EmbedData[];
+    Components: ButtonComponent[];
 }
 
 export interface ApiError {
     eror: boolean;
     message: string;
     code: number;
+}
+
+export interface ApiTicket {
+    Creator: DatabaseUser;
 }

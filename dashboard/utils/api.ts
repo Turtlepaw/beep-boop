@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { config } from "./config";
 import { APIGuild } from "./types";
-import { ApiError, Routes, TicketMessage } from "./api-types";
+import { ApiError, ApiTicket, Routes, TicketMessage } from "./api-types";
 import { resourceUsage } from "process";
 const URL = process.env.API_URI || "http://localhost:4000";
 const token = `${process.env.API_TOKEN}` || "Bearer api_token_1490ujdsifh9124yf";
@@ -78,6 +78,10 @@ export async function Transcript(id: string) {
     return CallAPI<TicketMessage[]>(CreateRoute(Routes.Transcripts.replace(":id", id) as Routes));
 }
 
+export async function TicketData(id: string) {
+    return CallAPI<ApiTicket>(CreateRoute(Routes.TicketData.replace(":id", id) as Routes));
+}
+
 export async function GetUser(Id: string): Promise<OAuthUser> {
     const Result = await fetch(CreateRoute(Routes.OAuth) + `?id=${Id}`, {
         method: Methods.Get,
@@ -135,8 +139,8 @@ export async function CallAPI<T>(url: string, method?: Methods, body?: object): 
     }
 }
 
-export async function GetGuildsWith(Id: string): Promise<APIGuild[]> {
-    return CallAPI(CreateRoute(Routes.GuildsWith) + `?id=${Id}`);
+export async function GetGuildsWith(Id: string) {
+    return CallAPI<APIGuild[]>(CreateRoute(Routes.GuildsWith) + `?id=${Id}`);
 }
 
 export async function GetChannels(Id: string): Promise<APIGuild[]> {

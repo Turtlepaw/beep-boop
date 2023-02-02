@@ -1,4 +1,4 @@
-import { EmbedData } from 'discord.js';
+import { ButtonComponentData, EmbedData } from 'discord.js';
 import { Entity, Column, PrimaryColumn } from "typeorm";
 import { DateTransformer, MapTransformer } from "../utils/transformers";
 
@@ -7,6 +7,8 @@ export interface DatabaseUser {
     Username: string;
     Tag: string;
     Bot: boolean;
+    Id: string;
+    Color: string;
 }
 
 export interface TicketMessage {
@@ -18,6 +20,7 @@ export interface TicketMessage {
      */
     Date: string;
     Embeds: EmbedData[];
+    Components: ButtonComponentData[];
 }
 
 @Entity()

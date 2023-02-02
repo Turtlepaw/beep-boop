@@ -70,7 +70,7 @@ export async function parseUser(ctx: GetServerSidePropsContext, getGuilds: boole
 
     if (getGuilds) {
         const Guilds = await GetGuildsWith(User.id);
-        User.guilds = Guilds;
+        User.guilds = Guilds.fullResult;
         // const raw = await GetUser(token);
 
         // const guilds: RawDiscordGuild[] = await fetch("http://discord.com/api/users/@me/guilds", {

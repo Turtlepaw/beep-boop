@@ -1,7 +1,6 @@
 import { Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
-import Image from 'next/image'
 import { AutoCenter } from '../../components/AutoCenter';
 import { Experimental, GetKey } from '../../components/Beta';
 import { AddIcon } from '../../components/Icons';
@@ -13,6 +12,7 @@ import { Meta } from '../../components/Meta';
 import { SearchBar } from '../../components/Search';
 import { useState } from 'react';
 import { NotLoggedIn } from '../../components/User';
+import { Image } from '../../components/Image';
 
 export type PageProps = DefaultProps & { inviteURL: string; }
 export default function Home(props: PageProps) {
@@ -23,12 +23,19 @@ export default function Home(props: PageProps) {
             <AutoCenter className='text-center'>
                 <Meta>Dashboard</Meta>
                 <Menu user={props.user} isDashboard mobile={props.mobile} />
-                <div className='pt-5 pb-5'>
+                {/* <div className='pt-5 pb-5'>
                     <h1 className='font-bold text-4xl pb-1'>
                         Select a Server
                     </h1>
                     <p className='text-lg text-light'>Select a server below to start configuring it.</p>
-                </div>
+                </div> */}
+                <AutoCenter>
+                    <h1 className='text-2xl font-bold'>
+                        <Image className='inline mr-1' loading='eager' src='/Icons/Search.svg' width={40} alt='Search Icon' />
+                        Select a Server
+                    </h1>
+                    <p className='text-light'>Select a server to start configuring it.</p>
+                </AutoCenter>
 
                 <div className='FlexContainer2'>
                     {props.user?.guilds?.map(e => {

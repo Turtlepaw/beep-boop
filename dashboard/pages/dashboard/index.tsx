@@ -22,7 +22,7 @@ export default function Home(props: DefaultProps) {
 }
 
 export const getServerSideProps: GetServerSideProps<DefaultProps> = async function (ctx) {
-    const user = await parseUser(ctx, true);
+    const user = await parseUser(ctx);
     return {
         props: {
             user,

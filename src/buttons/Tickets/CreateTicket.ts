@@ -1,5 +1,5 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
-import { Embed, Icons } from "../../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ImageFormat, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
+import { Colors, Embed, Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
 import { Filter } from "../../utils/filter";
 
@@ -112,6 +112,30 @@ export default class CreateTicket extends Button {
             type: ChannelType.GuildText
         });
 
+        const EmbedData = new Embed(interaction.guild)
+            .setTitle(`Ticket`)
+            .setAuthor({
+                name: `Created By ${interaction.user.username}`,
+                iconURL: interaction.user.avatarURL()
+            })
+            .addFields([{
+                name: "Created At",
+                value: time(new Date(), TimestampStyles.RelativeTime),
+                inline: true
+            }, {
+                name: "Created By",
+                value: interaction.user.toString(),
+                inline: true
+            }, {
+                name: "Reason",
+                value: Reason,
+                inline: true
+            }, {
+                name: "Claimed By",
+                value: "No one has claimed this ticket yet",
+                inline: true
+            }]).data;
+
         TicketChannel.send({
             embeds: [
                 new Embed(interaction.guild)
@@ -178,9 +202,38 @@ export default class CreateTicket extends Button {
             GuildId: interaction.guild.id,
             Reason,
             //add default message
-            Messages: new Map(),
+            Messages: new Map([
+                ["STARTING_MESSAGE", {
+                    Components: [{
+                        label: "Close Ticket",
+                        style: ButtonStyle.Danger
+                    }, {
+                        label: "Claim Ticket",
+                        style: ButtonStyle.Success
+                    }],
+                    User: {
+                        Avatar: client.user.avatarURL({
+                            extension: ImageFormat.WebP,
+                            size: 4096,
+                            forceStatic: true
+                        }),
+                        Bot: true,
+                        Tag: client.user.tag,
+                        Username: client.user.username,
+                        Color: Colors.BrandColor,
+                        Id: client.user.id
+                    },
+                    Embeds: [EmbedData],
+                    Date: new Date().toString()
+                }]
+            ]),
             Creator: {
-                //add this in
+                Avatar: interaction.user.avatarURL({ forceStatic: true, size: 4096, extension: ImageFormat.WebP }),
+                Username: interaction.user.username,
+                Bot: interaction.user.bot,
+                Tag: interaction.user.tag,
+                Color: (await interaction.guild.members.fetch(interaction.user.id)).roles.highest.hexColor,
+                Id: interaction.user.id
             }
         });
     }
