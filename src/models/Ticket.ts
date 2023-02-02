@@ -39,6 +39,8 @@ export class Ticket {
     GuildId: string;
     @Column()
     Reason: string;
+    @Column({ nullable: true, type: "simple-json" })
+    Creator: DatabaseUser;
     @Column({ transformer: new MapTransformer<string, TicketMessage>(), type: "varchar" })
     Messages: Map<string, TicketMessage>;
 }
