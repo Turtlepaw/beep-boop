@@ -177,7 +177,11 @@ export default class CreateTicket extends Button {
             ChannelId: TicketChannel.id,
             GuildId: interaction.guild.id,
             Reason,
-            Messages: new Map()
+            //add default message
+            Messages: new Map(),
+            Creator: {
+                //add this in
+            }
         });
     }
 }
