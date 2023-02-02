@@ -278,12 +278,15 @@ export default class AddButton extends ContextMenu {
 
 
             const Method = ReplyTo.isButton() ? "update" : "reply";
-            await ReplyTo[Method]({
+            const styMessage = await ReplyTo[Method]({
                 content: `${Icons.Tag} Select a button style`,
-                components: [ButtonStyles]
+                components: [ButtonStyles],
+                //@ts-ignore
+                ephemeral: true,
+                fetchReply: true
             });
 
-            ReplyMessage = await Message.awaitMessageComponent({
+            ReplyMessage = await styMessage.awaitMessageComponent({
                 componentType: ComponentType.Button,
                 filter: Filter({
                     member: interaction.member,
