@@ -3,7 +3,7 @@ import * as puppeteer from "puppeteer";
 /**
  * Captures a screenshot of the website.
  */
-export async function getScreenshot(browser: puppeteer.Browser, page: string | puppeteer.Page): Promise<Buffer> {
+export async function getScreenshot(browser: puppeteer.Browser, page: string | puppeteer.Page, delay: number = 0): Promise<Buffer> {
     if (!browser) browser = await puppeteer.launch();
     if (page == typeof String && (!page.toString().startsWith("http"))) "http://" + page;
     if (typeof page == "string") {
