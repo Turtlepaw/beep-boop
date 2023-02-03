@@ -1,23 +1,14 @@
-import { Box, Button, Center, Select, Text, Tooltip } from '@chakra-ui/react'
+import { Box, Center, Text, Tooltip } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head'
-import React, { useEffect, useState } from 'react';
 import { AutoCenter } from '../../components/AutoCenter';
-import { SideMenu } from '../../components/SideMenu';
-import { GetChannels, TicketData, Transcript } from '../../utils/api';
+import { TicketData, Transcript } from '../../utils/api';
 import { DefaultProps, Errors, parseUser } from '../../utils/parse-user';
-import { APIChannel, APIGuild } from '../../utils/types';
-import { CreateHandler } from '../../utils/utils';
-import { Configuration } from '../_app';
-import { Mentions } from '../../components/Mention';
-import { Permissions } from '../../utils/permissions';
 import { Meta } from '../../components/Meta';
 import { Image } from '../../components/Image';
 import { NotLoggedIn } from '../../components/User';
 import { ApiTicket, TicketMessage } from '../../utils/api-types';
 import { Menu } from '../../components/Menu';
 import { Markdown } from '../../components/Discord/Markdown';
-import { IoCheckmark } from 'react-icons/io5';
 
 export interface Props extends DefaultProps {
     messages: TicketMessage[];
@@ -101,7 +92,7 @@ export default function Home(props: Props) {
                                                     } placement='top' shouldWrapChildren bg="#18191c" borderRadius={6}>
                                                         <svg width="18" height="18" viewBox="0 0 16 15.2"><path d="M7.4,11.17,4,8.62,5,7.26l2,1.53L10.64,4l1.36,1Z" fill="currentColor"></path></svg>
                                                     </Tooltip>}
-                                                    <Text fontWeight="semibold" fontSize={12}>BOT</Text>
+                                                    <Text fontWeight="semibold" fontSize={11}>BOT</Text>
                                                 </Center>
                                             </Box>}
                                             <span className='pl-2 text-light' suppressHydrationWarning>{isToday(message.Date) ? "Today at" : `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`} {date.toLocaleTimeString("us", { hour: '2-digit', minute: '2-digit' }).slice()}</span>

@@ -12,6 +12,7 @@
     "@chakra-ui/react": "^2.3.6",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@next/font": "^13.0.3",
     "@vercel/analytics": "^0.1.6",
     "@vercel/edge-config": "^0.1.0",
     "cookie": "^0.5.0",
