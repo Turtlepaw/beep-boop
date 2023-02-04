@@ -14,6 +14,8 @@ import {
 import APIRoute, { Method } from "../lib/APIRoute";
 import KlawSync from "klaw-sync";
 import { BaseDirectory } from "../configuration";
+import cookieParser from "cookie-parser";
+import crypto from "crypto";
 
 export const APIMessages = {
     NotFound: () => ({
@@ -78,6 +80,7 @@ export async function API(client: Client, token: string) {
 
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
+    app.use(cookieParser(crypto.randomUUID()));
 
     const APIRoutes: APIRoute[] = [];
     const APIRouteFiles = KlawSync(`${BaseDirectory}/api/routes`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });

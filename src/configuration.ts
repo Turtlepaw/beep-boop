@@ -1,6 +1,7 @@
 import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, PermissionFlagsBits } from "discord.js";
 import { Logging } from "./@types/config";
 import { Embed as EmbedBuilder } from "./utils/EmbedBuilder";
+import { DEVELOPER_BUILD } from "./index";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
@@ -35,7 +36,8 @@ export const Logs: Logging = {
 export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.0 beta";
-export const Website = "https://beep.trtle.xyz"
+export const Website = DEVELOPER_BUILD == true ? "http://localhost:3000" : "https://beep.trtle.xyz";
+export const Api = DEVELOPER_BUILD == true ? "http://localhost:4000" : "https://api.trtle.xyz";
 export const WebsiteLink = (path: string) => Website + path;
 export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
     return `${Website}/transcript/${ChannelId}`
