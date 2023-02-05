@@ -53,6 +53,7 @@ declare module 'discord.js' {
         CustomIcons: boolean;
         LogWebhook: WebhookClient;
         TriviaGames: Collection<string, TriviaGame>;
+        ColorCache: Collection<string, HexColorString>;
         LogSnag: LogSnag;
     }
 }

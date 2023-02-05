@@ -143,7 +143,7 @@ export default class CloseTicket extends Button {
             components: [
                 CreateLinkButton(
                     GenerateTranscriptionURL(interaction.guild.id, interaction.channel.id),
-                    "Transcription"
+                    "Share this conversation or review it"
                 )
             ]
         });

@@ -2,6 +2,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, Channe
 import { Colors, Embed, Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
 import { Filter } from "../../utils/filter";
+import { TicketButtons } from "../../utils/Tickets";
 
 export interface Ticket {
     CreatedBy: string;
@@ -112,7 +113,7 @@ export default class CreateTicket extends Button {
             type: ChannelType.GuildText
         });
 
-        const EmbedData = new Embed(interaction.guild)
+        const EmbedData = (await new Embed(interaction.guild)
             .setTitle(`Ticket`)
             .setAuthor({
                 name: `Created By ${interaction.user.username}`,
@@ -134,11 +135,11 @@ export default class CreateTicket extends Button {
                 name: "Claimed By",
                 value: "No one has claimed this ticket yet",
                 inline: true
-            }]).data;
+            }]).Resolve()).data;
 
         TicketChannel.send({
             embeds: [
-                new Embed(interaction.guild)
+                await new Embed(interaction.guild)
                     .setTitle(`Ticket`)
                     .setAuthor({
                         name: `Created By ${interaction.user.username}`,
@@ -161,22 +162,9 @@ export default class CreateTicket extends Button {
                         value: "No one has claimed this ticket yet",
                         inline: true
                     }])
+                    .Resolve()
             ],
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(
-                        new ButtonBuilder()
-                            .setLabel("Close")
-                            .setStyle(ButtonStyle.Danger)
-                            //.setEmoji(Icons.Lock)
-                            .setCustomId("CLOSE_TICKET"),
-                        new ButtonBuilder()
-                            .setLabel("Claim")
-                            .setStyle(ButtonStyle.Success)
-                            //.setEmoji(Icons.Sync)
-                            .setCustomId("CLAIM_TICKET")
-                    )
-            ]
+            components: TicketButtons(interaction.channel, false)
         });
 
         await Interaction.reply({

@@ -1,10 +1,21 @@
+//dotenv stuff
+import * as dotenv from 'dotenv';
+dotenv.config();
+export const TOKEN = process.env.TOKEN;
+export const API_TOKEN = process.env.API_TOKEN;
+export const CLIENT_ID = process.env.CLIENT_ID;
+export const API_ENABLED = process.env.START_API;
+export const DEVELOPER_BUILD = process.env?.DEV == null ? false : Boolean(process.env?.DEV);
+export const API_PORT = Number(process.env?.API_PORT);
+export const API_URL = process.env?.API_URL;
+export const LOGSNAG_TOKEN = process.env?.LOGSNAG;
+export const USE_LOGSNAG = process.env?.USE_LOGSNAG ?? false;
+
 //Import packages
 import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
-//dotenv stuff
-import * as dotenv from 'dotenv';
 import "colors";
 import { API } from "./api/index";
 import { Levels } from "./utils/levels";
@@ -18,20 +29,11 @@ import { Logger } from "./logger";
 import { ChannelCounterService } from "./utils/ChannelCounters";
 import { Logsnag } from "./utils/logsnag";
 import { LogSnag as LogSnagClient } from "logsnag";
-dotenv.config()
+import { Verifiers } from "@airdot/verifiers";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
 
-export const TOKEN = process.env.TOKEN;
-export const API_TOKEN = process.env.API_TOKEN;
-export const CLIENT_ID = process.env.CLIENT_ID;
-export const API_ENABLED = process.env.START_API;
-export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
-export const API_PORT = Number(process.env?.API_PORT);
-export const API_URL = process.env?.API_URL;
-export const LOGSNAG_TOKEN = process.env?.LOGSNAG;
-export const USE_LOGSNAG = process.env?.USE_LOGSNAG ?? false;
 export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -61,6 +63,7 @@ export async function SetClientValues(client: Client) {
     client.LegacyStorage = KeyFileStorage("storage", false);
     client.QuickStorage = KeyFileStorage("cache", false);
     client.TriviaGames = new Collection();
+    client.ColorCache = new Collection();
     client.LogSnag = new LogSnagClient({
         token: LOGSNAG_TOKEN,
         project: LogSnagProject
@@ -119,6 +122,16 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
 
     // Refresh reminders
     Refresh(ProvidedClient);
+
+    // Fetch current guild's colors
+    (async () => {
+        const Guilds = await client.Storage.Configuration.GetAll();
+        Guilds.map(e => {
+            if (e.Premium && Verifiers.HexColor(e.Color)) {
+                ProvidedClient.ColorCache.set(e.Id, e.Color);
+            }
+        })
+    })();
 
     ProvidedClient.on(Events.Error, console.log)
 }
