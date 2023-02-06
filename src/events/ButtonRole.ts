@@ -32,13 +32,13 @@ export default class ButtonRole extends Event {
             const Role = await interaction.guild.roles.fetch(RoleId);
 
             if (!interaction.member.roles.cache.has(RoleId)) {
-                interaction.member.roles.add(Role);
+                await interaction.member.roles.add(Role);
                 await interaction.reply({
                     ephemeral: true,
                     content: `${Variants[Variant].Add} Successfully assigned you ${Role}.`
                 })
             } else {
-                interaction.member.roles.remove(Role);
+                await interaction.member.roles.remove(Role);
                 await interaction.reply({
                     ephemeral: true,
                     content: `${Variants[Variant].Remove} Successfully removed ${Role}.`
