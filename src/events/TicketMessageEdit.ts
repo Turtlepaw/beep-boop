@@ -1,10 +1,10 @@
 import { Client, Events, Message as GuildMessage, ImageFormat } from "discord.js";
 import Event from "../lib/Event";
 
-export default class TicketService extends Event {
+export default class TicketMessageEdit extends Event {
     constructor() {
         super({
-            EventName: Events.MessageCreate
+            EventName: Events.MessageUpdate
         });
     }
 
@@ -15,6 +15,7 @@ export default class TicketService extends Event {
 
         if (Ticket == null) return;
 
+        Ticket.Messages.delete(Message.id);
         Ticket.Messages.set(Message.id, {
             Content: Message.content,
             Date: Message.createdAt.toString(),

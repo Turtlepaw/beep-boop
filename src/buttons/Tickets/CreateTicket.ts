@@ -212,7 +212,9 @@ export default class CreateTicket extends Button {
                         Id: client.user.id
                     },
                     Embeds: [EmbedData],
-                    Date: new Date().toString()
+                    Date: new Date().toString(),
+                    Deleted: false,
+                    Id: "STARTING_MESSAGE_"
                 }]
             ]),
             Creator: {

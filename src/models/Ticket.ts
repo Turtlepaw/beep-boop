@@ -21,6 +21,7 @@ export interface TicketMessage {
     Date: string;
     Embeds: EmbedData[];
     Components: ButtonComponentData[];
+    Deleted: boolean;
 }
 
 @Entity()
