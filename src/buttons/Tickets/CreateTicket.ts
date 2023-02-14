@@ -164,7 +164,7 @@ export default class CreateTicket extends Button {
                     }])
                     .Resolve()
             ],
-            components: TicketButtons(interaction.channel, false)
+            components: TicketButtons(TicketChannel, false)
         });
 
         await Interaction.reply({
