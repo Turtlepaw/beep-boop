@@ -36,8 +36,8 @@ export const Logs: Logging = {
 export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.0 beta";
-export const Api = DEVELOPER_BUILD ? "http://localhost:4000" : "https://api.trtle.xyz";
-export const Website = DEVELOPER_BUILD ? "http://localhost:3000" : "https://beep.trtle.xyz";
+export const Website = DEVELOPER_BUILD == true ? "http://localhost:3000" : "https://beep.trtle.xyz";
+export const Api = DEVELOPER_BUILD == true ? "http://localhost:4000" : "https://api.trtle.xyz";
 export const WebsiteLink = (path: string) => Website + path;
 export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
     return `${Website}/transcript/${ChannelId}`

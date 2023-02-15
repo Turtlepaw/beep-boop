@@ -20,6 +20,7 @@ import { TriviaGame } from "discord-trivia";
 import { APIUser } from "../models/APIUser";
 import { Ticket } from "../models/Ticket";
 import LogSnag from "logsnag";
+import { Application as LinkedRolesApp } from "@airdot/linked-roles";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -55,5 +56,6 @@ declare module 'discord.js' {
         TriviaGames: Collection<string, TriviaGame>;
         ColorCache: Collection<string, HexColorString>;
         LogSnag: LogSnag;
+        LinkedRoles: LinkedRolesApp;
     }
 }

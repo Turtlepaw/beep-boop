@@ -1,6 +1,7 @@
 //dotenv stuff
 import * as dotenv from 'dotenv';
 dotenv.config();
+
 export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
@@ -10,6 +11,7 @@ export const API_PORT = Number(process.env?.API_PORT);
 export const API_URL = process.env?.API_URL;
 export const LOGSNAG_TOKEN = process.env?.LOGSNAG;
 export const USE_LOGSNAG = process.env?.USE_LOGSNAG ?? false;
+export const CLIENT_SECRET = process.env?.CLIENT_SECRET;
 
 //Import packages
 import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
@@ -21,7 +23,7 @@ import { API } from "./api/index";
 import { Levels } from "./utils/levels";
 import { InitializeProvider } from "./utils/storage";
 import { ErrorManager } from "./utils/error";
-import { LogSnagProject, Status } from "./configuration";
+import { Api, LogSnagProject, Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
 import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
@@ -30,6 +32,9 @@ import { ChannelCounterService } from "./utils/ChannelCounters";
 import { Logsnag } from "./utils/logsnag";
 import { LogSnag as LogSnagClient } from "logsnag";
 import { Verifiers } from "@airdot/verifiers";
+import { Application, MapProvider } from "@airdot/linked-roles";
+import { Routes } from "./api/api-types";
+import { RefreshDiscordMetadata, RefreshMetadataService } from './utils/metadata';
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -67,6 +72,15 @@ export async function SetClientValues(client: Client) {
     client.LogSnag = new LogSnagClient({
         token: LOGSNAG_TOKEN,
         project: LogSnagProject
+    });
+
+    client.LinkedRoles = new Application({
+        clientSecret: CLIENT_SECRET,
+        id: CLIENT_ID,
+        redirectUri: `${Api}${Routes.LinkedRoles}`,
+        token: TOKEN,
+        //@ts-expect-error ...
+        databaseProvider: new MapProvider()
     });
 }
 
@@ -132,6 +146,10 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
             }
         })
     })();
+
+    // Metadata
+    RefreshDiscordMetadata(ProvidedClient);
+    RefreshMetadataService(ProvidedClient);
 
     ProvidedClient.on(Events.Error, console.log)
 }
