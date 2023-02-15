@@ -2,8 +2,8 @@ import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalF
 import Router from "next/router";
 import { ChangeEvent, Dispatch, MouseEvent, MouseEventHandler, SetStateAction, useState } from "react";
 import { AutoCenter } from "./AutoCenter";
-import { ButtonStyle } from "../pages/_app";
 import { Links } from "./Link";
+import { ButtonStyle } from "./Theming";
 
 export interface Key {
     Get: boolean;

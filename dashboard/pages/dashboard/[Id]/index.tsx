@@ -70,7 +70,7 @@ export default function Home(props: Props) {
 
     return (
         <>
-            <Menu user={props.user} isDashboard mobile={props.mobile} />
+            {/* <Menu user={props.user} isDashboard mobile={props.mobile} /> */}
             <Meta>Dashboard</Meta>
             <div className='!flex'>
                 <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
