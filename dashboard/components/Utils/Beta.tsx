@@ -1,7 +1,7 @@
 import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
 import Router from "next/router";
 import { ChangeEvent, Dispatch, MouseEvent, MouseEventHandler, SetStateAction, useState } from "react";
-import { AutoCenter } from "../Layout/Layout/AutoCenter";
+import { AutoCenter } from "../Layout/AutoCenter";
 import { Links } from "./Link";
 import { ButtonStyle } from "../Theming";
 
