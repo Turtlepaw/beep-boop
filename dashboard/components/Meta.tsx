@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Configuration } from "../pages/_app";
+import { Configuration } from "../utils/configuration";
 
 export interface MetaProperties {
     children: string;
@@ -18,9 +18,9 @@ export function Meta({ children: Title }: MetaProperties) {
             <meta name="description" content={Configuration.Description} />
             <meta name="theme-color" content={Configuration.Color} />
             <meta property="og:image" content={Thumbnail} />
-            <meta property="og:image:type" content="image/png" />
+            {/* <meta property="og:image:type" content="image/png" />
             <meta property="og:image:width" content="250" />
-            <meta property="og:image:height" content="250" />
+            <meta property="og:image:height" content="250" /> */}
 
             {/* Open Graph / Facebook */}
             <meta property="og:type" content="website" />

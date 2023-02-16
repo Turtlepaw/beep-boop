@@ -1,13 +1,13 @@
 import { Box, Center, Text, Tooltip } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import { AutoCenter } from '../../components/AutoCenter';
+import { AutoCenter } from '../../components/Layout/AutoCenter';
 import { TicketData, Transcript } from '../../utils/api';
 import { DefaultProps, Errors, parseUser } from '../../utils/parse-user';
 import { Meta } from '../../components/Meta';
 import { Image } from '../../components/Image';
 import { NotLoggedIn } from '../../components/User';
 import { ApiTicket, TicketMessage } from '../../utils/api-types';
-import { Menu } from '../../components/Menu';
+import { Menu } from '../../components/Layout/Menu';
 import { Markdown } from '../../components/Discord/Markdown';
 
 export interface Props extends DefaultProps {

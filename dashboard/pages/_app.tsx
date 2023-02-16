@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import React from 'react';
-import { Footer } from '../components/Footer';
+import { Footer } from '../components/Layout/Footer';
 import { NextResponse } from 'next/server';
 import { Configuration as config } from '../utils/configuration';
 import { Analytics } from '@vercel/analytics/react';
@@ -41,11 +41,9 @@ function MyApp({ Component, pageProps }: AppProps) {
     <div className="Background Text">
       <SSRProvider>
         <ChakraProvider theme={theme}>
-          <ThemeProvider>
-            <Analytics />
-            <Component {...pageProps} />
-            <Footer />
-          </ThemeProvider>
+          <Analytics />
+          <Component {...pageProps} />
+          <Footer />
         </ChakraProvider>
       </SSRProvider>
     </div >

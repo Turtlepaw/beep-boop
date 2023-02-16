@@ -1,17 +1,10 @@
-import { Badge, Box, Button, Center, Code, Tooltip } from '@chakra-ui/react'
+import { Box, Tooltip } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head'
-import { AutoCenter } from '../../components/AutoCenter';
-import { Feature, FeatureDescription, FeatureIcon, FeatureText, FeatureTitle } from '../../components/Feature';
-import { ExternalIcon, Menu } from '../../components/Menu';
+import { AutoCenter } from '../../components/Layout/AutoCenter';
+import { Menu } from '../../components/Layout/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
-import { ButtonStyle, Configuration } from '../_app';
-import { Meta } from '../../components/Meta';
-import { BrandColor } from '../../components/Link';
-import { CustomBadge, Presets } from '../../components/Common';
 import { Action, GetActions } from '../../utils/api';
 import { Image } from '../../components/Image';
-import Highlight from 'react-highlight';
 import { Codeblock } from '../../components/Codeblock';
 import { IoInformationCircle } from "react-icons/io5";
 import { IconContext } from "react-icons";

@@ -1,15 +1,14 @@
-import { Button, Center } from '@chakra-ui/react'
+import { Center } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head'
-import React, { useState } from 'react';
-import { AutoCenter } from '../components/AutoCenter';
-import { ExternalIcon, Menu } from '../components/Menu';
+import React from 'react';
+import { AutoCenter } from '../components/Layout/AutoCenter';
+import { Menu } from '../components/Layout/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
-import { Configuration } from './_app';
 import { Meta } from '../components/Meta';
-import { BrandBg, BrandBorder, BrandColor, Link, Links } from '../components/Link';
-import { FAQ, FaqItem } from '../components/FAQ';
+import { BrandBg, BrandBorder, BrandColor } from '../utils/styles';
+import { FAQ, FaqItem } from '../components/Layout/FAQ';
 import { Image } from '../components/Image';
+import { Links, Link } from '../components/Utils/Link';
 
 export function Feature({ included, children }: {
     included?: boolean;

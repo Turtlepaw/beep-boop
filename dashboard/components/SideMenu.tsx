@@ -5,10 +5,10 @@ import Select from 'react-select';
 import { Configuration } from '../pages/_app';
 import { APIGuild, DiscordUser } from '../utils/types';
 import { colourStyles } from './Select';
-import { AutoCenter } from './AutoCenter';
-import { BrandColor } from './Link';
+import { AutoCenter } from './Layout/AutoCenter';
+import { BrandColor } from './Utils/Link';
 import { RobotIcon } from './Robot';
-import { LightText, LighterText } from '../utils/configuration';
+import { LightText, LighterText } from '../utils/styles';
 import { Autocomplete } from "@primer/react";
 import Link from 'next/link';
 

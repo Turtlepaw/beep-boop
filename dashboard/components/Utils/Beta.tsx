@@ -1,8 +1,9 @@
 import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import Router from "next/router";
 import { ChangeEvent, Dispatch, MouseEvent, MouseEventHandler, SetStateAction, useState } from "react";
-import { AutoCenter } from "./Layout/AutoCenter";
-import { ButtonStyle } from "./Theming";
-import { Links, NextLink } from "./Utils/Link";
+import { AutoCenter } from "../Layout/Layout/AutoCenter";
+import { Links } from "./Link";
+import { ButtonStyle } from "../Theming";
 
 export interface Key {
     Get: boolean;
@@ -28,11 +29,11 @@ export function Experimental({ Get, Set }: Key) {
                 <img src="/Beta.svg" className="w-20 rotate-12" />
                 <h1 className="text-3xl font-bold pt-10">This feature's not out, yet.</h1>
                 <p className="text-lg font-medium pt-2 max-w-2xl text-center">This feature is still experimental and may not work correctly, check our {Links.Discord} for updates about upcoming features and recent changes.</p>
-                <NextLink href="/dashboard/beta">
+                <a href="/dashboard/beta">
                     <Button className="mt-5" variant={ButtonStyle.BrandColor} onClick={onOpen}>
                         Continue Anyway
                     </Button>
-                </NextLink>
+                </a>
             </AutoCenter>
         </div>
     );

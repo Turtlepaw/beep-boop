@@ -1,11 +1,11 @@
-import { Button, Center, Select } from '@chakra-ui/react'
+import { Box, Button, Center, Heading, Select, Switch, VStack } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import React, { useState } from 'react';
-import { AutoCenter } from '../../../components/AutoCenter';
+import { AutoCenter } from '../../../components/Layout/AutoCenter';
 import { Experimental } from '../../../components/Beta';
 import { AddIcon, DownIcon } from '../../../components/Icons';
-import { ExternalIcon, Menu } from '../../../components/Menu';
+import { ExternalIcon, Menu } from '../../../components/Layout/Menu';
 import { SideMenu } from '../../../components/SideMenu';
 import { GetChannels } from '../../../utils/api';
 import { DefaultProps, parseUser } from '../../../utils/parse-user';
@@ -48,7 +48,7 @@ export function Card(props: {
 
 export function Title({ children }: { children: string; }) {
     return (
-        <h2 className='font-semibold text-lg uppercase'>{children}</h2>
+        <Heading fontSize={17} textTransform="uppercase" fontWeight="semibold">{children}</Heading>
     );
 }
 
@@ -75,7 +75,7 @@ export default function Home(props: Props) {
             <div className='!flex'>
                 <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
                 <AutoCenter className='text-center'>
-                    <div className='pb-5 card px-10 py-5'>
+                    <Box backgroundColor="#202225" px={8} py={4} mb={4} mt={6} borderRadius="lg">
                         <Center>
                             <img src={guild.IconURL || ""} className="rounded-full w-16" />
                         </Center>
@@ -83,13 +83,16 @@ export default function Home(props: Props) {
                             {guild?.Name}
                         </h1>
                         <Center>
-                            <Mentions.Role className='w-[8.6rem] font-semibold'>{Permissions.Role(props.guild)}</Mentions.Role>
+                            {/* <Mentions.Role className='w-[8.6rem] font-semibold'></Mentions.Role> */}
+                            <Box backgroundColor={Permissions.TypeString(props.guild) == "Full Access" ? "#3BA55C" : "yellow.500"} p="4.8px" mr={2} borderRadius="full" />{Permissions.TypeString(props.guild)}
                         </Center>
-                    </div>
+                    </Box>
 
                     <div>
                         <Title>Server Management</Title>
-                        <h1>soon</h1>
+                        <VStack mt={3}>
+                            <Switch>Beta Features</Switch>
+                        </VStack>
                     </div>
                     <div className='pt-5'>
                         <Title>Plugins</Title>

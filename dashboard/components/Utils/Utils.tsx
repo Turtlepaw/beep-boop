@@ -1,10 +1,10 @@
 import { Button, Center } from "@chakra-ui/react";
-import { AutoCenter } from "./Layout/AutoCenter";
-import { Meta } from "./Meta";
-import { Image, Images } from "./Image";
-import { Link } from "./Utils/Link";
-import { DefaultProps } from "../utils/parse-user";
-import { Menu } from "./Layout/Menu";
+import { AutoCenter } from "../Layout/AutoCenter";
+import { Meta } from "../Meta";
+import { Image, Images } from "../Image";
+import { Link, NextLink } from "./Link";
+import { DefaultProps } from "../../utils/parse-user";
+import { Menu } from "../Layout/Menu";
 
 export function NotLoggedIn(props: DefaultProps) {
     return (
@@ -19,12 +19,12 @@ export function NotLoggedIn(props: DefaultProps) {
                     </Center>
                     <p className='font-medium max-w-sm text-center text-lg pt-1'>You need to log in with your <Link href="/api/oauth" isExternal onBrand={false}><b className="font-semibold"><Images.Discord className="inline" /> Discord</b> account</Link> to access this page.</p>
                     <Center className='pt-5'>
-                        <a className='inline px-1.5' href='/api/oauth'>
+                        <NextLink className='inline px-1.5' href='/api/oauth'>
                             <Button variant="primary" leftIcon={<Image width={25} src="/Icons/PersonLogin.svg" alt="Login Icon" />} className='inline'>Login</Button>
-                        </a>
-                        <a className='inline px-1.5' href='/'>
+                        </NextLink>
+                        <NextLink className='inline px-1.5' href='/'>
                             <Button variant="secondary" leftIcon={<Image width={25} src="/Icons/Return.svg" alt="Return back home" />} className='inline'>Back Home</Button>
-                        </a>
+                        </NextLink>
                     </Center>
                 </AutoCenter>
             </div>
