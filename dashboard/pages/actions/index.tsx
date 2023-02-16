@@ -9,7 +9,7 @@ import { DefaultProps, parseUser } from '../../utils/parse-user';
 import { Configuration } from '../../utils/configuration';
 import { ButtonStyle } from "../../components/Theming";
 import { Meta } from '../../components/Meta';
-import { BrandColor } from '../../components/Link';
+import { BrandColor } from '../../components/Utils/Link';
 import { CustomBadge, Presets } from '../../components/Common';
 import { Action, GetActions } from '../../utils/api';
 
