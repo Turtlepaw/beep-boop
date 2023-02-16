@@ -6,7 +6,7 @@ import { AutoCenter } from '../../components/Layout/AutoCenter';
 import { Feature, FeatureDescription, FeatureIcon, FeatureText, FeatureTitle } from '../../components/Feature';
 import { ExternalIcon, Menu } from '../../components/Layout/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
-import { Configuration } from '../utile/configuration';
+import { Configuration } from '../util/configuration';
 import { ButtonStyle } from "../components/Theming";
 import { Meta } from '../../components/Meta';
 import { BrandColor } from '../../components/Link';
