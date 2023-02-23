@@ -94,7 +94,7 @@ export interface TicketMessage {
 }
 
 export interface ApiError {
-    eror: boolean;
+    error: boolean;
     message: string;
     code: number;
 }

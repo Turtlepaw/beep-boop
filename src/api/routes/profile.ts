@@ -21,10 +21,11 @@ export default class Profile extends APIRoute {
             userId
         }) as any;
 
+        if (Profile == null) return APIMessages.NotFound(res);
         Profile.guilds = Array.from(Profile.guilds.values()) as any;
         Profile.expiresMilliseconds = new Date(Profile.expires).getTime();
         Profile.expiresTimestamp = new Date(Profile.expires).getTime() / 1000;
 
-        res.send(Profile ?? APIMessages.NotFound());
+        return res.send(Profile).status(200);
     }
 }

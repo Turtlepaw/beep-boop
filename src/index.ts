@@ -85,7 +85,7 @@ export async function SetClientValues(client: Client) {
 }
 
 // Create Discord.js client
-const client = new Client(DEFAULT_CLIENT_OPTIONS);
+export const client = new Client(DEFAULT_CLIENT_OPTIONS);
 
 // Get everything ready...
 client.on(Events.ClientReady, async () => {

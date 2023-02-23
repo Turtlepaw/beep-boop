@@ -30,7 +30,7 @@ export function Link({ children, href, onBrand = true, isExternal, isNewTab, cla
     }
 
     return (
-        <NextLink href={href} style={Style} className={`hover:underline ${className}`} target={isNewTab ? "_blank" : null}>
+        <NextLink href={href} style={Style} className={`hover:underline underline hover:opacity-90 ${className}`} target={isNewTab ? "_blank" : null}>
             {children}
             {isExternal && <ExternalIcon color={externalIconColor ?? "currentColor"} />}
         </NextLink>

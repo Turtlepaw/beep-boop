@@ -20,13 +20,15 @@ export default class Modules extends APIRoute {
                 Approved: true
             });
 
-            res.send(Modules ?? APIMessages.NotFound());
+            if (Modules == null) return APIMessages.NotFound(res);
+            return res.send(Modules).status(200);
         } else {
             const Module = await client.Storage.Actions.Get({
                 Id: ModuleId
             });
 
-            res.send(Module ?? APIMessages.NotFound());
+            if (Module == null) return APIMessages.NotFound(res);
+            res.send(Module).status(200);
         }
     }
 }

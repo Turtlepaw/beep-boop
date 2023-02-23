@@ -1,5 +1,5 @@
-import { Button, Center, HStack, Heading, Text, VStack } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import { Button, Center, HStack, Heading, Text, TextProps, VStack } from '@chakra-ui/react';
+import React, { PropsWithChildren, useState } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import Select from 'react-select';
 import { Configuration } from '../pages/_app';
@@ -11,6 +11,7 @@ import { RobotIcon } from './Robot';
 import { LightText, LighterText } from '../utils/styles';
 import { Autocomplete } from "@primer/react";
 import Link from 'next/link';
+import { Image } from './Image';
 
 function MenuItem({ children, href, icon }: {
     children: React.ReactNode;
@@ -24,11 +25,25 @@ function MenuItem({ children, href, icon }: {
                     {children}
                 </Center>
             </div> */}
-            <Button variant="MenuItem" width="15rem" height="3rem" className='my-1 py-2' leftIcon={<img src={icon} />}>
+            <Button
+                variant="MenuItem"
+                width="15rem"
+                height="3rem"
+                className='my-1 py-2'
+            //leftIcon={<Image src={icon} width={25} />}
+            >
                 {children}
             </Button>
         </a>
     )
+}
+
+export function Item(props: TextProps) {
+    return (
+        <>
+            <Text {...props} fontSize={17} fontWeight="medium" />
+        </>
+    );
 }
 
 export function SideMenu({ GuildId, user, GuildName, Guilds }: { GuildName: string, Guilds: APIGuild[], GuildId: string; user: DiscordUser | null; }) {
@@ -61,10 +76,24 @@ export function SideMenu({ GuildId, user, GuildName, Guilds }: { GuildName: stri
                 </Link>
             </Center>
             <AutoCenter className='pt-2'>
-                <MenuItem icon='/Icons/Settings.svg' href={`/dashboard/${GuildId}/`}>Dashboard</MenuItem>
-                <MenuItem icon='/Icons/Clipboard.svg' href={`/dashboard/${GuildId}/appeals`}>Appeal Settings</MenuItem>
-                <MenuItem icon='/Icons/Ticket.svg' href={`/dashboard/${GuildId}/tickets`}>Tickets</MenuItem>
-                <MenuItem icon='/Icons/Reward.svg' href={`/dashboard/${GuildId}/tickets`}>Levels</MenuItem>
+                <HStack>
+                    <VStack>
+                        <Image width={25} src='/Icons/Settings.svg' />
+                        <Image width={25} src='/Icons/Clipboard.svg' />
+                        <Image width={25} src='/Icons/Ticket.svg' />
+                        <Image width={25} src='/Icons/Reward.svg' />
+                    </VStack>
+                    <VStack>
+                        <Item>Dashboard</Item>
+                        <Item>Appeals</Item>
+                        <Item>Tickets</Item>
+                        <Item>Levels</Item>
+                        {/* <MenuItem icon='/Icons/Settings.svg' href={`/dashboard/${GuildId}/`}>Dashboard</MenuItem>
+                        <MenuItem icon='/Icons/Clipboard.svg' href={`/dashboard/${GuildId}/appeals`}>Appeal Settings</MenuItem>
+                        <MenuItem icon='/Icons/Ticket.svg' href={`/dashboard/${GuildId}/tickets`}>Tickets</MenuItem>
+                        <MenuItem icon='/Icons/Reward.svg' href={`/dashboard/${GuildId}/tickets`}>Levels</MenuItem> */}
+                    </VStack>
+                </HStack>
             </AutoCenter>
         </div>
     );

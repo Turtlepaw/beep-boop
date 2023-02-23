@@ -1,4 +1,4 @@
-import { Box, Button, Center, Heading, Select, Switch, VStack } from '@chakra-ui/react'
+import { Box, Button, Center, Grid, GridItem, HStack, Heading, Select, Switch, Text, VStack } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import React, { useState } from 'react';
@@ -17,6 +17,8 @@ import { Permissions } from '../../../utils/permissions';
 import { Meta } from '../../../components/Meta';
 import { Image } from '../../../components/Image';
 import { NotLoggedIn } from '../../../components/User';
+import { SaveAlert } from '../../../components/SaveAlert';
+import { ButtonStyle } from '../../../components/Theming';
 
 export interface Props extends DefaultProps {
     guild: APIGuild | null;
@@ -59,6 +61,8 @@ export default function Home(props: Props) {
     const [SavePanel, SetPanel] = useState(false);
     const [IsSaving, SetSaving] = useState(false);
     const [Channel, SetChannel] = useState("");
+    const [blockInvites, setBlockInvites] = useState(false);
+    const [oldBlockInvites, setOldBlockInvites] = useState(false);
     const HandleChannel = CreateHandler(Channel, SetChannel, () => SetPanel(true));
     const SaveSettings = async () => {
         //SetAppeals(guild.Id, Channel)
@@ -67,6 +71,19 @@ export default function Home(props: Props) {
         SetSaving(!IsSaving)
     }
     const TogglePanel = () => SetPanel(!SavePanel)
+    const handle = (older: boolean | string, setter: React.Dispatch<React.SetStateAction<boolean | string>>, type: "bool" | "string" = "bool", currentValue: string | boolean, newValue?: string) => {
+        // if (
+        //     (type == "string" && older == newValue) ||
+        //     (type == "bool" && older == currentValue)
+        // ) SetPanel(true);
+        // else SetPanel(false);
+
+        if (type == "string") {
+            setter(newValue);
+        } else if (type == "bool") {
+            setter(!currentValue as boolean);
+        }
+    }
 
     return (
         <>
@@ -88,11 +105,21 @@ export default function Home(props: Props) {
                         </Center>
                     </Box>
 
-                    <div>
-                        <Title>Server Management</Title>
-                        <VStack mt={3}>
-                            <Switch>Beta Features</Switch>
-                        </VStack>
+                    <div className='card'>
+                        <Box pt={8} px={8}>
+                            <Title>Server Management</Title>
+                            <HStack pt={2}>
+                                <VStack>
+                                    <Switch onChange={() => handle(oldBlockInvites, setBlockInvites, "bool", blockInvites)} />
+                                </VStack>
+                                <VStack>
+                                    <Text>Block Invite Links</Text>
+                                </VStack>
+                            </HStack>
+                        </Box>
+                        <Box pt={3} float="right" pr={4} pb={4}>
+                            <Button size="sm" variant={ButtonStyle.BrandColor} onClick={() => SetPanel(true)} isLoading={SavePanel} _hover={{}}>Save</Button>
+                        </Box>
                     </div>
                     <div className='pt-5'>
                         <Title>Plugins</Title>
@@ -100,7 +127,8 @@ export default function Home(props: Props) {
                             <h1>Appeal Settings</h1>
                         </Card>
                     </div>
-                </AutoCenter >
+                </AutoCenter>
+                {/* <SaveAlert Save={(next) => { next() }} isOpen={SavePanel} setOpen={SetPanel} /> */}
             </div >
         </>
     )

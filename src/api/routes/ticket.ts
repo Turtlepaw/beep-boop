@@ -14,14 +14,15 @@ export default class Ticket extends APIRoute {
 
     async Get(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const ChannelId = req.params.id;
-        if (ChannelId == null) return res.send(APIMessages.BadRequest("id"));
+        if (ChannelId == null) return APIMessages.BadRequest(res, "id");
 
         const Ticket = await client.Storage.Tickets.Get({
             ChannelId
         });
 
-        res.send(Ticket == null ? APIMessages.NotFound() : JSON.stringify({
-            Creator: Ticket.Creator,
-        }));
+        if (Ticket == null) return APIMessages.NotFound(res);
+        res.send(JSON.stringify({
+            Creator: Ticket.Creator
+        })).status(200);
     }
 }

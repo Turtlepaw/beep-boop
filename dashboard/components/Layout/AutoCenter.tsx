@@ -1,5 +1,5 @@
 import { Box, BoxProps, Center } from "@chakra-ui/react";
-import { CSSProperties } from "react";
+import { CSSProperties, useState } from "react";
 
 const numbers = [
     "1",
@@ -98,9 +98,10 @@ export function AutoCenter(props: {
     centerAllWithAutoCenter?: boolean;
 } & BoxProps) {
     const { children, className, style, centerAllWithAutoCenter } = props;
+    const [id] = useState(generateId());
     if (Array.isArray(children)) {
         return (
-            <Box className={`${className}`} style={style} {...props}>
+            <Box className={`${className}`} style={style} {...props} key={id}>
                 {children.map(child => {
                     const ParentComponent = centerAllWithAutoCenter ? AutoCenter : Center;
                     return (
@@ -113,7 +114,7 @@ export function AutoCenter(props: {
         );
     } else {
         return (
-            <Center className={`${className} py-5`} style={style} {...props}>
+            <Center className={`${className} py-5`} style={style} {...props} key={id}>
                 {children}
             </Center>
         );

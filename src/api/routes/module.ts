@@ -6,6 +6,7 @@ import APIRoute from "../../lib/APIRoute";
 import { Routes } from "../api-types";
 import { APIMessages } from "..";
 import { Client } from "discord.js";
+import { Logger } from "../../logger";
 
 export default class Module extends APIRoute {
     constructor() {
@@ -15,10 +16,18 @@ export default class Module extends APIRoute {
     async Post(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const data = req.body;
 
-        const Module = await client.Storage.Actions.Create({
-            ...data
-        });
+        let Module;
 
-        res.send(APIMessages.Created(null, { data: Module }) ?? APIMessages.InternalError());
+        try {
+            Module == await client.Storage.Actions.Create({
+                ...data
+            });
+        } catch (e) {
+            Logger.error(`API Error (creating module): ${e}`);
+        }
+
+        if (Module == null) return APIMessages.InternalError(res);
+
+        res.send(APIMessages.Created(null, undefined, { data: Module })).status(200);
     }
 }

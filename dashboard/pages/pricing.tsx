@@ -97,8 +97,8 @@ export default function Home(props: DefaultProps) {
             <AutoCenter>
                 <div className='text-center'>
                     <AutoCenter>
-                        <h2 className='font-bold text-2xl'>Introducing <span style={BrandColor} className={hasUnderline ? "underline" : ""}>Subscriptions</span>,</h2>
-                        <h1 className='font-black text-4xl pt-5 pb-1.5 max-w-[38rem]'>
+                        {/* <h2 className='font-bold text-2xl'>Introducing <span style={BrandColor} className={hasUnderline ? "underline" : ""}>Subscriptions</span>,</h2> */}
+                        <h1 className='font-black text-4xl pt-2 pb-1.5 max-w-[38rem]'>
                             <Image className='mr-2 !w-[3.6rem] !h-[3.6rem] inline' loading='eager' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Magic%20Wand.png" alt="Magic Wand" width={200} /> <span className={hasUnderline ? "underline" : ""} style={BrandColor}>Level up</span> and <Image className='mr-2 !w-[3.6rem] !h-[3.6rem] inline' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Artist%20Palette.png" alt="Artist Palette" width={200} /><span style={BrandColor} className={hasUnderline ? "underline" : ""}>customize</span> your server.
                         </h1>
                     </AutoCenter>
@@ -106,8 +106,8 @@ export default function Home(props: DefaultProps) {
                         <p className='max-w-sm text-lg font-medium text-light'>Get your own custom bot and more with an active pro subscription.</p>
                     </Center>
                 </div>
-                <h1 className="text-light text-center font-bold text-2xl pt-5 pb-1">Teirs</h1>
-                <div className='flexContainer'>
+                {/* <h1 className="text-light text-center font-bold text-2xl pt-5 pb-1">Teirs</h1> */}
+                <div className='flexContainer pt-5'>
                     <PricingTier
                         Title='Pro'
                         Description='The subscription with a little bit more of everything'

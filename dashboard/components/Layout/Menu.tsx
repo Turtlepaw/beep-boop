@@ -85,12 +85,12 @@ export function Menu(props: MenuProps) {
                                                     }
                                                 </MenuButton>
                                                 <MenuList bgColor="#1e1f22" >
-                                                    <a href="/dashboard">
+                                                    <NextLink href="/dashboard">
                                                         <MenuItem>My Servers</MenuItem>
-                                                    </a>
-                                                    <a href="/api/logout">
+                                                    </NextLink>
+                                                    <NextLink href="/api/logout">
                                                         <MenuItem className="!text-red-500">Logout</MenuItem>
-                                                    </a>
+                                                    </NextLink>
                                                 </MenuList>
                                             </>
                                         )}
