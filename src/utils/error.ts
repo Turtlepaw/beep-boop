@@ -39,6 +39,7 @@ export class ErrorManager {
 }
 
 export async function SendError(interaction: Interaction, errorMessage: string) {
+    console.warn("The SendError function is deprecated, use InteractionError instead")
     if (interaction.isRepliable()) {
         const CustomId = {
             LearnMore: "REDIRECT_SUPPORT_SERVER",
