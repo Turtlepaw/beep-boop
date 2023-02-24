@@ -45,7 +45,7 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc",
-    "run": "node ./dist/index.js",
+    "run": "node ./dist/index.js --preserve-symlinks",
     "lint": "eslint \"src/**\"",
     "dev": "yarn lint && yarn build && yarn run run",
     "dev_": "node ./dev.js",
@@ -67,6 +67,7 @@
     "typescript": "^4.9.4"
   },
   "resolutions": {
-    "discord-api-types": "0.37.20"
+    "discord-api-types": "0.37.20",
+    "skia-canvas": "portal:/home/ubuntu/skia-canvas"
   }
 }
