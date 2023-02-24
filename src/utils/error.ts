@@ -3,6 +3,7 @@ import { ButtonStyle, ComponentType, Guild, Interaction, RepliableInteraction, i
 import { DEVELOPER_BUILD } from "../index";
 import { Embed, Icons, SupportServerInvite } from "../configuration";
 import { InteractionReplyManager } from "./classes";
+import { Logger } from "../logger";
 
 export interface ErrorMessage {
     GuildId: string;
@@ -128,13 +129,15 @@ export async function InteractionError(options: InteractionErrorOptions) {
         Stack: `${error}`,
         Title: `${error.length >= 25 ? (error.slice(0, 25) + "...") : error}`
     })) : null;
+    //@ts-expect-error this exists
+    if (createError) Logger.error(`${options.error} (${ErrorDB.Error})`)
 
     console.log(ErrorDB)
     await Interaction.send({
         content: `${icon} ${message}`,
         embeds: createError ? [
             await new Embed(interaction.guild)
-                //@ts-expect-error aaa
+                //@ts-expect-error this exists
                 .setDescription(`Show this ID when reporting this bug: ${inlineCode(ErrorDB.Error)}`)
                 .Resolve()
         ] : [],
