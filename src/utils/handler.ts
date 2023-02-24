@@ -29,7 +29,7 @@ const InputGuildMessage: InteractionReplyOptions = {
 };
 
 async function CreateError(Summary: string, interaction: RepliableInteraction) {
-    InteractionError({
+    return await InteractionError({
         interaction,
         createError: true,
         ephemeral: true,
