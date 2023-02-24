@@ -25,11 +25,15 @@ async function updateMetadata(userId: string, application: Application) {
 }
 
 export async function RefreshDiscordMetadata({ LinkedRoles }: Client) {
-    LinkedRoles.registerMetaData([{
-        key: "reputation",
-        name: "Reputation",
-        description: "The user's reputation, this can be useful for trusting users.",
-        //@ts-expect-error something with the typings
-        type: MetaDataTypes.INTEGER_GREATER_THAN_OR_EQUAL
-    }]);
+    try {
+        await LinkedRoles.registerMetaData([{
+            key: "reputation",
+            name: "Reputation",
+            description: "The user's reputation, this can be useful for trusting users.",
+            //@ts-expect-error something with the typings
+            type: MetaDataTypes.INTEGER_GREATER_THAN_OR_EQUAL
+        }]);
+    } catch (e) {
+        Logger.error(`Couldn't refresh metadata: ${e}`);
+    }
 }
