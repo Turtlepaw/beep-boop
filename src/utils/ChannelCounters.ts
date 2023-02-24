@@ -51,6 +51,7 @@ export async function ChannelCounterService(client: Client) {
                     // }, Time);
                 }
             } catch (e) {
+                if (e.toString().includes("Unknown Guild")) return;
                 Logger.error(`Couldn't update channel counter (${Guild.Name}): ${e}`);
             }
         });
