@@ -26,13 +26,17 @@ export const ClientAdministrators: string[] = [
     //...
 ];
 export const Logs: Logging = {
+    // This is required for all the logs below,
+    // this is where the bot will fetch the channel from.
+    Guild: "1028789308401918004",
+    // 🚧 Old Documentation
     // This channel needs to be in
     // the `guildId` server (line 16)
     DM: "1040431450798956594",
     Error: "1042231033627684904",
-    Guild: "1028789308401918004"
-
+    Feedback: "1078836800795181056",
 }
+
 export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.0 beta";
