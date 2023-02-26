@@ -36,6 +36,9 @@ export const Logs: Logging = {
     Error: "1042231033627684904",
     Feedback: "1078836800795181056",
 }
+// This relies on Logs.Guild so make sure that role
+// is in the Logs.Guild guild.
+export const TeamRole = "1028814696855392297";
 
 export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
@@ -141,7 +144,8 @@ export enum Icons {
     Add = "<:Add:1053887100551966771>",
     RoleRemove = "<:RoleRemove:1053887104842735677>",
     RoleAdd = "<:RoleAdd:1053887102187741304>",
-    Search = "<:Search:1066924460495622196>"
+    Search = "<:Search:1066924460495622196>",
+    AirdotTeam = "<:AirdotTeam:1079540839065329734>"
 }
 
 export const Dot = {
@@ -205,7 +209,7 @@ export const Messages = {
     })
 }
 export enum Colors {
-    Transparent = "#2F3136",
+    Transparent = "#2b2d31", //"#2F3136",
     BrandColor = "#FF605E",
     SuccessButton = "#2d7d46"
 }

@@ -5,7 +5,7 @@ import { ResolveUser } from "../../utils/Profile";
 import { Subscriptions } from "../../models/Profile";
 import { GetSubscriptionName } from "../../buttons/Developer/CreateGift";
 
-export default class Send extends Command {
+export default class Subscription extends Command {
     constructor() {
         super({
             CanaryCommand: false,
@@ -33,8 +33,8 @@ export default class Send extends Command {
                             name: `${Icons.Discover} Subscription Tier`,
                             value: `${GetSubscriptionName(Profile.subscription)}`
                         }, {
-                            name: `${Icons.Info} Pro is in early access`,
-                            value: `Pro is currently in early access, provide feedback in our [support server](${SupportServerInvite}).`
+                            name: `${Icons.Info} Subscriptions are in early access`,
+                            value: `Pro and Basic subscriptions are currently in early access, provide feedback in our [support server](${SupportServerInvite}).`
                         }])
                         .setTitle("Your Subscription")
                 ],
@@ -51,7 +51,7 @@ export default class Send extends Command {
                                 .setCustomId("SUBSCRIPTION_GUILDS")
                                 .setStyle(ButtonStyle.Secondary),
                             new ButtonBuilder()
-                                .setLabel("Redeem Code")
+                                .setLabel("Redeem Gift")
                                 .setStyle(ButtonStyle.Primary)
                                 .setCustomId("REDEEM_CODE"),
                             new ButtonBuilder()
@@ -68,12 +68,12 @@ export default class Send extends Command {
         } else {
             await interaction.reply({
                 ephemeral: true,
-                content: "You don't have a pro subscription.",
+                content: `${Icons.Flag} You don't have a pro subscription, you can still redeem gifts though.`,
                 components: [
                     new ActionRowBuilder<ButtonBuilder>()
                         .addComponents(
                             new ButtonBuilder()
-                                .setLabel("Redeem Code")
+                                .setLabel("Redeem Gift")
                                 .setStyle(ButtonStyle.Primary)
                                 .setCustomId("REDEEM_CODE")
                         )

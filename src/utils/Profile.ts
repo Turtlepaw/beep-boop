@@ -35,7 +35,7 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
     }
 
     return {
-        accentColor: (user?.accentColor as HexColorString) || ResolvedUser.hexAccentColor || Colors.Transparent,
+        accentColor: (user?.accentColor as HexColorString) ?? Colors.Transparent,
         bio: user?.bio || "This user has no bio.",
         displayName: user?.displayName || ResolvedUser.username,
         reputation: user?.reputation || 0,

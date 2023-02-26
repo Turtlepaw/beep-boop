@@ -1,8 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, ComponentType, ModalBuilder, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, User, UserContextMenuCommandInteraction } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../../configuration";
+import { Colors, Embed, Emojis, Icons, Logs, TeamRole } from "@config";
 import { FriendlyInteractionError } from "../../utils/error";
-import { Endorse, ResolveUser, SetBio, SetDisplayName } from "../../utils/Profile";
+import { Endorse, ResolveUser, SetAccentColor, SetBio, SetDisplayName } from "../../utils/Profile";
 import { Subscriptions } from "../../models/Profile";
 
 export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral = true, user?: User) {
@@ -10,11 +10,17 @@ export async function ViewProfile(interaction: UserContextMenuCommandInteraction
     const { client } = interaction;
     const profile = await ResolveUser(user.id, client);
     const Badges = {
-        Pro: Icons.ProUser
+        Pro: Icons.ProUser,
+        Team: Icons.AirdotTeam
     }
+
+    const Guild = await client.guilds.fetch(Logs.Guild);
+    const Role = await Guild.roles.fetch(TeamRole);
+
     const OwnedBadges = [
-        ...(profile.subscription == Subscriptions.Pro ? [Badges.Pro] : [])
-    ]
+        ...(profile.subscription != Subscriptions.None ? [Badges.Pro] : []),
+        ...(Role.members.has(interaction.user.id) ? [Badges.Team] : [])
+    ];
 
     const Message = await interaction.reply({
         ephemeral,
@@ -22,7 +28,7 @@ export async function ViewProfile(interaction: UserContextMenuCommandInteraction
         embeds: [
             new Embed(interaction)
                 .setTitle(`${profile.displayName}'s Profile`)
-                .setColor(profile.accentColor)
+                .setColor(profile.accentColor ?? Colors.Transparent)
                 .setThumbnail(user.avatarURL())
                 .addFields([{
                     name: `About me`,
@@ -138,23 +144,31 @@ export default class Send extends Command {
             enum Id {
                 AboutMe = "EDIT_ABOUT_ME",
                 DisplayName = "SET_DISPLAY_NAME",
+                AccentColor = "SET_ACCENT_COLOR",
                 AboutMeModal = "ABOUT_ME_MODAL",
                 DisplayNameModal = "DISPLAY_NAME_MODAL",
+                AccentColorModal = "ACCENT_COLOR_MODAL",
                 Text = "MODAL_TEXT"
             }
+            const Profile = await ResolveUser(interaction.user.id, client);
+
             const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
                         .setLabel("Edit About Me")
                         .setCustomId(Id.AboutMe)
-                        .setStyle(ButtonStyle.Primary),
+                        .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
                         .setLabel("Edit Display Name")
                         .setCustomId(Id.DisplayName)
-                        .setStyle(ButtonStyle.Primary)
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel("Edit Accent Color")
+                        .setCustomId(Id.AccentColor)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(Profile.subscription == Subscriptions.None)
                 );
 
-            const Profile = await ResolveUser(interaction.user.id, client);
             const AboutMeText = new TextInputBuilder()
                 .setCustomId(Id.Text)
                 .setLabel("Text")
@@ -171,8 +185,17 @@ export default class Send extends Command {
                 .setPlaceholder("Awesome User")
                 .setRequired(true)
                 .setStyle(TextInputStyle.Paragraph);
+            const AccentColorText = new TextInputBuilder()
+                .setCustomId(Id.Text)
+                .setLabel("Accent Color")
+                .setMinLength(7)
+                .setMaxLength(9)
+                .setPlaceholder("#5865F2")
+                .setRequired(true)
+                .setStyle(TextInputStyle.Short);
             if (Profile?.bio != null) AboutMeText.setValue(Profile.bio);
             if (Profile?.displayName != null) DisplayNameText.setValue(Profile.displayName);
+            if (Profile?.accentColor != null) AccentColorText.setValue(Profile.accentColor.toString());
             const AboutMeModal = new ModalBuilder()
                 .addComponents(
                     new ActionRowBuilder<TextInputBuilder>()
@@ -191,6 +214,15 @@ export default class Send extends Command {
                 )
                 .setTitle("Display Name")
                 .setCustomId(Id.DisplayNameModal);
+            const AccentColorModal = new ModalBuilder()
+                .addComponents(
+                    new ActionRowBuilder<TextInputBuilder>()
+                        .addComponents(
+                            AccentColorText
+                        )
+                )
+                .setTitle("Accent Color")
+                .setCustomId(Id.AccentColorModal);
 
             const Message = await interaction.reply({
                 ephemeral,
@@ -214,6 +246,8 @@ export default class Send extends Command {
                     await button.showModal(AboutMeModal)
                 } else if (button.customId == Id.DisplayName) {
                     await button.showModal(DisplayNameModal);
+                } else if (button.customId == Id.AccentColor) {
+                    await button.showModal(AccentColorModal);
                 }
 
                 const Modal = await button.awaitModalSubmit({
@@ -228,6 +262,9 @@ export default class Send extends Command {
                 } else if (button.customId == Id.DisplayName) {
                     SetDisplayName(interaction.user.id, text, client);
                     type = "display name"
+                } else if (button.customId == Id.AccentColor) {
+                    SetAccentColor(interaction.user.id, text, client);
+                    type = "accent color"
                 }
 
                 await Modal.reply({
