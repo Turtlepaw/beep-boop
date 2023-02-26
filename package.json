@@ -57,7 +57,8 @@
     "migrate:run": "typeorm migration:run",
     "pm2": "pm2 start yarn --interpreter bash --watch --ignore-watch=\"dist storage database.sqlite log.json database.sqlite-journal\" -- run run",
     "relink": "yarn link ../skia-canvas && yarn",
-    "pull": "git restore package.json && git pull && yarn relink"
+    "linkfiles": "git restore package.json && git pull && yarn relink",
+    "pull": "yarn linkfiles && yarn build && pm2 restart BeepBoop"
   },
   "devDependencies": {
     "@types/cors": "^2",
