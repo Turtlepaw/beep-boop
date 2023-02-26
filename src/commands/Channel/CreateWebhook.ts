@@ -86,7 +86,7 @@ export default class Send extends Command {
 
         await interaction.editReply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setDescription(`${spoiler(inlineCode(Webhook.url))}`)
                     .setTitle(`${Icons.Configure} Webhook Created`)
                     .addFields([{

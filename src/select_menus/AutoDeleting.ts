@@ -104,7 +104,7 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
             const StringSystemChannels = EmbedChildren<CleanupChannel>(SystemChannels, (item) => channelMention(item.ChannelId), "No channels set")
             const StringMessageChannels = EmbedChildren<CleanupChannel>(MessageChannels, (item) => channelMention(item.ChannelId), "No channels set")
             const StringTimedChannels = EmbedChildren<CleanupChannel>(TimedChannels, (item) => channelMention(item.ChannelId), "No channels set")
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle("Managing Autonomous Cleanup")
                 .addFields([{
                     name: "About Autonomous Cleanup Module",

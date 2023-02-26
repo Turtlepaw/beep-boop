@@ -76,7 +76,7 @@ async function CaptchaVerification(interaction: ButtonInteraction, isCustom = fa
         ephemeral: true,
         fetchReply: true,
         embeds: [
-            await new Embed(interaction.guild)
+            await new Embed(interaction)
                 .setTitle("Verification")
                 .setDescription(Description)
                 .setImage("attachment://captcha.png")

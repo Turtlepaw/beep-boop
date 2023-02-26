@@ -175,7 +175,7 @@ export class ConfigurationBuilder {
             if (e.Children != null) text += e.Children.map(e => Render(e)).join("\n");
             return text;
         }).map((e, i) => this.isEnd(Fields, i) ? `${Icons.StemEnd} ${e}` : `${Icons.StemItem} ${e}`).join("\n");
-        return new Embed(interaction.guild)
+        return new Embed(interaction)
             .setTitle(`Managing ${Information.Label}`)
             .addFields([{
                 name: "About this module",

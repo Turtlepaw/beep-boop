@@ -105,7 +105,7 @@ export default class DeleteThis extends ContextMenu {
             const date = new Date(URL.expires);
             await ButtonInteraction.editReply({
                 embeds: [
-                    new Embed(interaction.guild)
+                    new Embed(interaction)
                         .setDescription(`${URL.url}`)
                         .setTitle(`${Icons.Configure} Generated URL`)
                         .addFields([{

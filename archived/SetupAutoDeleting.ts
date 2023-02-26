@@ -137,7 +137,7 @@ export default class SetupAppeals extends Button {
 
         await int.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`${Emojis.Tada} You're all set!`)
                     .setDescription(`Auto deleting has been set up! When members leave and they've sent a message in one or more of those channels, it will be deleted.`)
                     .addFields([{

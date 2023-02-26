@@ -1,10 +1,7 @@
-import { ActionRowBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, ComponentType, ImageFormat, SlashCommandAttachmentOption, SlashCommandUserOption } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, ImageFormat, SlashCommandAttachmentOption, SlashCommandUserOption } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
 import Canvas, { createCanvas } from "canvas";
-import { Filter } from "../../utils/filter";
-import { Icons, Logs } from "../../configuration";
-import { Logger } from "../../logger";
-import { Embed } from "../../utils/EmbedBuilder";
+import { FeedbackMessage } from "@utils/Feedback";
 
 export default class Send extends Command {
     constructor() {
@@ -56,69 +53,13 @@ export default class Send extends Command {
         const PNG = canvas.toBuffer();
 
         const attachment = new AttachmentBuilder(PNG, { name: 'profile.png' });
-
-        enum FeedbackMood {
-            Happy = "HAPPY",
-            Ok = "OK",
-            Sad = "SAD"
-        }
-
-        const FeedbackEmojis = {
-            [FeedbackMood.Happy]: "😀",
-            [FeedbackMood.Ok]: "🫤",
-            [FeedbackMood.Sad]: "🙁"
-        };
+        const Feedback = new FeedbackMessage(interaction);
 
         const Message = await interaction.editReply({
             files: [attachment],
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(
-                        Object.values(FeedbackMood).map(v =>
-                            new ButtonBuilder()
-                                .setEmoji(FeedbackEmojis[v])
-                                .setStyle(ButtonStyle.Secondary)
-                                .setCustomId(v)
-                        )
-                    )
-            ]
+            components: Feedback.components.toComponents()
         });
 
-        const Button = await Message.awaitMessageComponent({
-            componentType: ComponentType.Button,
-            time: 0,
-            filter: Filter({
-                customIds: FeedbackMood,
-                member: interaction.member
-            })
-        });
-
-        await Button.reply({
-            content: `${Icons.Success} Your feedback has been carefully recorded.`,
-            ephemeral: true
-        });
-
-        try {
-            const Guild = await Button.client.guilds.fetch(Logs.Guild);
-            const Channel = await Guild.channels.fetch(Logs.Feedback);
-            if (Channel.type != ChannelType.GuildText) return Logger.warn("The Logs.Feedback channel isn't a GuildText channel.");
-
-            await Channel.send({
-                embeds: [
-                    new Embed(interaction.guild)
-                        .setTitle("New Feedback Recorded")
-                        .addFields([{
-                            name: "Feedback",
-                            value: FeedbackEmojis[Button.customId]
-                        }, {
-                            name: "User",
-                            value: `${interaction.user.tag} (${interaction.user.id})`
-                        }])
-                ]
-            });
-        } catch (e) {
-            console.warn("There was an error sending feedback, this could be due to the feedback log channel missing.");
-            Logger.error(`Couldn't send feedback: ${e}`);
-        }
+        await Feedback.collectFrom(Message);
     }
 }

@@ -21,7 +21,7 @@ export default class EvalModal extends Event {
                 ephemeral: true,
                 content: `${Icons.Info} Evaluating code...`,
                 embeds: [
-                    await new Embed(interaction.guild)
+                    await new Embed(interaction)
                         .setDescription(`\`\`\`\n${EvalResponse}\`\`\``)
                         .Resolve()
                 ]
@@ -31,7 +31,7 @@ export default class EvalModal extends Event {
                 ephemeral: true,
                 content: `${Icons.Flag} Something went wrong evaluating that...`,
                 embeds: [
-                    await new Embed(interaction.guild)
+                    await new Embed(interaction)
                         .setDescription(`\`\`\`\n${e}\`\`\``)
                         .Resolve()
                 ]

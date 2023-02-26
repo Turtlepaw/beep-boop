@@ -10,9 +10,20 @@
         "sourceMap": true,
         "pretty": true,
         "outDir": "./dist/",
-        "baseUrl": "./src/",
+        "baseUrl": "./",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "paths": {
+            "@utils/*": [
+                "src/utils/*"
+            ],
+            "@logger": [
+                "src/logger"
+            ],
+            "@config": [
+                "src/configuration"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

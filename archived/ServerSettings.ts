@@ -49,7 +49,7 @@ export default class ModeratorGuildSettings extends Button {
 
         function RefreshEmbed() {
             const FreshSettings: ServerSettings = client.storage[SettingsKey];
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle("Moderator Settings")
                 .addFields([{
                     name: `${Emojis.Up} Levels`,

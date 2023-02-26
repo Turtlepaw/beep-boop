@@ -40,7 +40,7 @@ export default class AppealModal extends Event {
             components: [Buttons],
             //content: `${Icons.Plane} Here's what you'll be sending`,
             embeds: [
-                new Embed(ModalInteraction.guild)
+                new Embed(ModalInteraction)
                     .setAuthor({
                         name: ModalInteraction.user.username,
                         iconURL: ModalInteraction.user.displayAvatarURL()

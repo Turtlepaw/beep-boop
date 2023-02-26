@@ -16,7 +16,7 @@ export default class SeeCommands extends Button {
         interaction.reply({
             content: `Showing ${client.DetailedCommands.length} commands...`,
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .addFields(
                         client.DetailedCommands.map(e => ({
                             name: `\`/${e.Name}\``,

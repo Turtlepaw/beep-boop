@@ -28,7 +28,7 @@ export default class ModeratorGuildSettings extends Button {
         }
 
         const PageEmbeds: EmbedBuilder[] = [];
-        const BaseEmbed = new Embed(interaction.guild)
+        const BaseEmbed = new Embed(interaction)
             .setTitle(`${Emojis.Toolbox} Error Logs`);
 
         const Max = 5;

@@ -136,7 +136,7 @@ export async function InteractionError(options: InteractionErrorOptions) {
     await Interaction.send({
         content: `${icon} ${message}`,
         embeds: createError ? [
-            await new Embed(interaction.guild)
+            await new Embed(interaction)
                 //@ts-expect-error this exists
                 .setDescription(`Show this ID when reporting this bug: ${inlineCode(ErrorDB.Error)}`)
                 .Resolve()

@@ -68,7 +68,7 @@ export default class CreateTicket extends Button {
 
         const Message = await interaction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`${Icons.Flag} Add a Reason`)
                     .setDescription("If you add a reason, you're more likely to get help faster.")
             ],
@@ -113,7 +113,7 @@ export default class CreateTicket extends Button {
             type: ChannelType.GuildText
         });
 
-        const EmbedData = (await new Embed(interaction.guild)
+        const EmbedData = (await new Embed(interaction)
             .setTitle(`Ticket`)
             .setAuthor({
                 name: `Created By ${interaction.user.username}`,
@@ -139,7 +139,7 @@ export default class CreateTicket extends Button {
 
         TicketChannel.send({
             embeds: [
-                await new Embed(interaction.guild)
+                await new Embed(interaction)
                     .setTitle(`Ticket`)
                     .setAuthor({
                         name: `Created By ${interaction.user.username}`,

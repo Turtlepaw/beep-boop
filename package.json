@@ -44,8 +44,8 @@
     "uuid": "^9.0.0"
   },
   "scripts": {
-    "build": "rm -rf ./dist && tsc",
-    "run": "node ./dist/index.js --preserve-symlinks",
+    "build": "rm -rf ./dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "run": "node ./dist/index.js --preserve-symlinks --require tsconfig-paths/register",
     "lint": "eslint \"src/**\"",
     "dev": "yarn lint && yarn build && yarn run run",
     "dev_": "node ./dev.js",
@@ -55,7 +55,9 @@
     "fix-canvas": "yarn remove canvas && yarn add canvas",
     "migrate:create": "typeorm migration:create",
     "migrate:run": "typeorm migration:run",
-    "pm2": "pm2 start yarn --interpreter bash --watch --ignore-watch=\"dist storage database.sqlite log.json database.sqlite-journal\" -- dev"
+    "pm2": "pm2 start yarn --interpreter bash --watch --ignore-watch=\"dist storage database.sqlite log.json database.sqlite-journal\" -- run run",
+    "relink": "yarn link ../skia-canvas && yarn",
+    "pull": "git restore package.json && git pull && yarn relink"
   },
   "devDependencies": {
     "@types/cors": "^2",
@@ -63,11 +65,12 @@
     "@typescript-eslint/parser": "^5.48.2",
     "colors": "^1.4.0",
     "eslint": "^8.32.0",
+    "tsc-alias": "^1.8.2",
+    "tsconfig-paths": "^3.14.2",
     "typeorm": "^0.3.11",
     "typescript": "^4.9.4"
   },
   "resolutions": {
-    "discord-api-types": "0.37.20",
-    "skia-canvas": "portal:/home/ubuntu/skia-canvas"
+    "discord-api-types": "0.37.20"
   }
 }

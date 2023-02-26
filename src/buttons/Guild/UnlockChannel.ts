@@ -17,7 +17,7 @@ export default class UnlockChannel extends Button {
         await Unlock(interaction.guild, interaction.channel as TextChannel);
         await interaction.update({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`${Icons.Unlock} This channel has been unlocked.`)
                     .setAuthor({
                         name: `Unlocked by ${interaction.user.username}`,

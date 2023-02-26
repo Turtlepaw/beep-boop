@@ -99,7 +99,7 @@ export async function ServerConfiguration(interaction: RepliableInteraction) {
 
     const payload = async () => ({
         embeds: [
-            await new Embed(interaction.guild)
+            await new Embed(interaction)
                 .setTitle(`Managing ${interaction.guild.name}`)
                 .setDescription(`Since you're managing ${interaction.guild.name}, you're able to configure ${interaction.guild.name}'s modules. Select a module to get started!`)
                 .Resolve()

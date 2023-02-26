@@ -23,7 +23,7 @@ export function Filter({ customIds, member, debug, messageId, errorMessages }: F
     else if (Array.isArray(customIds)) ResolvedIds = customIds;
 
     return (Interaction: MessageComponentInteraction) => {
-        console.log(Interaction.user.username, member.user.username, messageId, Interaction.message.id, ResolvedIds, Interaction.customId)
+        //console.log(Interaction.user.username, member.user.username, messageId, Interaction.message.id, ResolvedIds, Interaction.customId)
         const result = (() => {
             if (messageId != null && (messageId != Interaction.message.id)) return false;
             if (debug == true) console.log(`Filter Interaction Received:`.green, JSON.stringify({
@@ -46,6 +46,7 @@ export function Filter({ customIds, member, debug, messageId, errorMessages }: F
                 content: "This component is locked to the member who executed the command."
             });
         }
+
         return result;
     }
 }

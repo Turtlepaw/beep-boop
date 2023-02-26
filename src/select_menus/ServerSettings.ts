@@ -53,7 +53,7 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
         ];
 
         const GenerateEmbed = () => {
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle(`Managing ${interaction.guild}`)
                 .addFields([{
                     name: "About Server Settings",

@@ -68,7 +68,7 @@ export default class SubscriptionConfig extends Button {
 
         const Message = await modal.reply({
             embeds: [
-                await new Embed(interaction.guild)
+                await new Embed(interaction)
                     .setTitle(User.displayName)
                     .setDescription(
                         enumKey(Subscriptions, User.subscription)
