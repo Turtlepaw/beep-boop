@@ -84,7 +84,7 @@ export default class AppealButtons extends Button {
             await ModalInteraction.reply({
                 embeds: [
                     new Embed(interaction)
-                        .setTitle(`${Icons.TrashDefault} Appeal Denied`)
+                        .setTitle(`${Icons.DefaultTrash} Appeal Denied`)
                         .setDescription(`Reason (sent to appeal user):\n\n\`\`\`${Reason}\`\`\``)
                         .addFields([{
                             name: `${Icons.Member} Denied By`,

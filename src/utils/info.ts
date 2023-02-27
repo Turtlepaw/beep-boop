@@ -104,13 +104,13 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
     const hasBanner = BannerURL != null;
 
     const Flags = {
-        HypeSquadOnlineHouse1: Icons.FlagBravery,
-        HypeSquadOnlineHouse2: Icons.FlagBrilliance,
-        HypeSquadOnlineHouse3: Icons.FlagBalance,
-        VerifiedBot: Icons.FlagVerifiedBot,
-        Bot: Icons.FlagBot,
-        ActiveDeveloper: Icons.FlagActiveDeveloper,
-        ServerOwner: Icons.FlagServerOwner
+        HypeSquadOnlineHouse1: Icons.Bravery,
+        HypeSquadOnlineHouse2: Icons.Brilliance,
+        HypeSquadOnlineHouse3: Icons.Balance,
+        VerifiedBot: Icons.VerifiedBotCheck + Icons.VerifiedBotText,
+        Bot: Icons.Bot,
+        ActiveDeveloper: Icons.ActiveDeveloper,
+        ServerOwner: Icons.ServerOwner
     };
 
     const flags = User.flags.toArray() as (Flags | string)[];

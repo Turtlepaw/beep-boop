@@ -34,7 +34,7 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
     [Modules.AutonomousCleanup]: {
         Label: "Autonomous Cleanup",
         Description: "Autonomous cleanup cleans up old messages that members sent. (e.g. system welcome messages)",
-        Icon: Icons.TrashDefault
+        Icon: Icons.DefaultTrash
     },
     [Modules.JoinActions]: {
         Label: "Join Actions",

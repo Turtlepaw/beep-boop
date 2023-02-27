@@ -47,7 +47,7 @@
     "build": "rm -rf ./dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
     "run": "node ./dist/index.js --preserve-symlinks --require tsconfig-paths/register",
     "lint": "eslint \"src/**\"",
-    "dev": "yarn lint && yarn build && yarn run run",
+    "dev": "yarn lint && yarn icons && yarn build && yarn run run",
     "dev_": "node ./dev.js",
     "dash": "cd dashboard/ && yarn dev",
     "start": "yarn dev & yarn dash",
@@ -58,7 +58,8 @@
     "pm2": "pm2 start yarn --interpreter bash --watch --ignore-watch=\"dist storage database.sqlite log.json database.sqlite-journal\" -- run run",
     "relink": "yarn link ../skia-canvas && yarn",
     "linkfiles": "git restore package.json && git restore yarn.lock && git pull && yarn relink",
-    "pull": "yarn linkfiles && yarn build && pm2 restart BeepBoop"
+    "pull": "yarn linkfiles && yarn icons && yarn build && pm2 restart BeepBoop",
+    "icons": "node generateIcons.js"
   },
   "devDependencies": {
     "@types/cors": "^2",

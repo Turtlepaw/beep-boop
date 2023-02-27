@@ -151,7 +151,7 @@ export default class CloseTicket extends Button {
         Interaction.channel.delete(`Ticket closed by: ${Interaction.user.tag}`)
         await Interaction.reply({
             ephemeral: true,
-            content: `${Icons.TrashDefault} Closed ticket successfully.`
+            content: `${Icons.DefaultTrash} Closed ticket successfully.`
         });
     }
 }

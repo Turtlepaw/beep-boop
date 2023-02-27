@@ -2,6 +2,7 @@ import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, Perm
 import { Logging } from "./@types/config";
 import { Embed as EmbedBuilder } from "./utils/EmbedBuilder";
 import { DEVELOPER_BUILD } from "./index";
+import { Icons } from "./icons";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
@@ -85,7 +86,8 @@ export enum Emojis {
     Help = "<:HelpCircle:1044458637579518026>"
 }
 
-export enum Icons {
+export { Icons } from "./icons";
+export enum OldIcons {
     Statistics = "<:Statistics:1067239843152793660>",
     Quotes = "<:Quotes:1066185365523792042>",
     Member = "<:Member:1065090193494904913>",
