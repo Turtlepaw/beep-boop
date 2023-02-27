@@ -1,22 +1,23 @@
-import { ChatInputCommandInteraction, SlashCommandUserOption } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandRoleOption } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
-import { MemberInformation } from "../../utils/info";
+import { RoleInformation } from "../../utils/info";
 import { CommandOptions } from "@utils/defaults";
 
-export default class Send extends Command {
+export default class Role extends Command {
     constructor() {
         super({
             CanaryCommand: false,
-            Description: "Get information on a user or yourself.",
+            Description: "Get information on a specific role.",
             GuildOnly: false,
-            Name: "user-info",
+            Name: "role-info",
             RequiredPermissions: [],
             SomePermissions: [],
             Category: Categories.Information,
             Options: [
-                new SlashCommandUserOption()
-                    .setName("member")
-                    .setDescription("The member to get information on."),
+                new SlashCommandRoleOption()
+                    .setName("role")
+                    .setDescription("The role to get information on.")
+                    .setRequired(true),
                 CommandOptions.Hidden()
             ]
             /*Subcomamnds: [
@@ -36,10 +37,10 @@ export default class Send extends Command {
     }
 
     async ExecuteCommand(interaction: ChatInputCommandInteraction) {
-        await MemberInformation(
+        await RoleInformation(
             interaction,
-            interaction.options.getUser("member") || interaction.user,
-            interaction.options.getBoolean("hidden") || false
-        );
+            interaction.options.getRole("role"),
+            CommandOptions.GetHiden(interaction)
+        )
     }
 }

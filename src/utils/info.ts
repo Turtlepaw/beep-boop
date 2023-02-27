@@ -9,7 +9,10 @@ import {
     ActionRowBuilder,
     ButtonStyle,
     inlineCode,
-    ChannelType
+    ChannelType,
+    Role as GuildRole,
+    APIRole,
+    PermissionFlagsBits
 } from "discord.js";
 import { Colors, Embed, Emojis, Icons, Logs, TeamRole } from "../configuration";
 
@@ -162,6 +165,7 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                 .setFooter({
                     text: `ID: ${Member.id}`
                 })
+                .setImage(BannerURL)
         ],
         components: [
             new ActionRowBuilder<ButtonBuilder>()
@@ -175,6 +179,77 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                         .setURL(hasBanner ? BannerURL : "https://bop.trtle.xyz/")
                         .setDisabled(!hasBanner)
                         .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"}`)
+                )
+        ],
+        ephemeral: hidden
+    });
+}
+
+export enum RoleFlags {
+    Hoisted = 1,
+    Mentionable = 2
+}
+
+export const RoleFlagIcons = {
+    [RoleFlags.Hoisted]: Icons.Star,
+    [RoleFlags.Mentionable]: Icons.Quotes
+}
+
+export async function RoleInformation(interaction: RepliableInteraction, targetRole: GuildRole | APIRole, hidden = false) {
+    const { guild } = interaction;
+    if (guild == null) return interaction.reply({
+        ephemeral: true,
+        content: `There's not enough information, try executing this within a server.`
+    });
+    const Role = await guild.roles.fetch(targetRole.id);
+    const Members = Role.members;
+    const Flags: RoleFlags[] = [];
+    if (Role.hoist) Flags.push(RoleFlags.Hoisted);
+    if (Role.mentionable) Flags.push(RoleFlags.Mentionable);
+
+    const hasIcon = Role.icon != null;
+    const IconURL = hasIcon ? Role.iconURL({ extension: ImageFormat.PNG }) : null;
+
+    await interaction.reply({
+        embeds: [
+            new Embed(interaction)
+                .setTitle(`Role Information`)
+                .setThumbnail(IconURL)
+                .addFields([{
+                    name: `${Icons.Clock} Created`,
+                    value: `${time(Role.createdAt, TimestampStyles.LongDateTime)}${Or}${time(Role.createdAt, TimestampStyles.RelativeTime)}`,
+                    inline: false
+                }, {
+                    name: `${Icons.Members} Members with this role`,
+                    value: Members.size >= 1 ? Members.map(e => e.toString()).join(", ") : "No members with this role",
+                    inline: false
+                }, {
+                    name: `${Icons.Color} Color`,
+                    value: Role.hexColor != null ? inlineCode(Role.hexColor) : "No color",
+                    inline: false
+                }, {
+                    name: `${Icons.Configure} Permissions`,
+                    value: Role.permissions.has(PermissionFlagsBits.Administrator) ? inlineCode("Administrator") : (
+                        Role.permissions.toArray().length >= 1 ? Role.permissions.toArray().map(e => inlineCode(e.toString())).join(", ") : "No permissions"
+                    ),
+                    inline: false
+                }, {
+                    name: `${Icons.Flag} Flags`,
+                    value: Flags.length >= 1 ? Object.entries(RoleFlags).filter(e => Flags.includes(e[1] as RoleFlags)).map(([k, v]) => `${RoleFlagIcons[v]} (${k.toLowerCase()})`).join(", ") : "No flags",
+                    inline: false
+                }])
+                .setColor(Role.color == 0 ? Colors.Transparent : Role.hexColor)
+                .setFooter({
+                    text: `ID: ${Role.id}`
+                })
+        ],
+        components: [
+            new ActionRowBuilder<ButtonBuilder>()
+                .setComponents(
+                    new ButtonBuilder()
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(IconURL ?? "https://bop.trtle.xyz")
+                        .setLabel("Icon URL")
                 )
         ],
         ephemeral: hidden

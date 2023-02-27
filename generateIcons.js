@@ -18,7 +18,8 @@ const guilds = [
 
 const defaultIcons = [{
     name: "Bot",
-    toString: () => "<:Bot:1040733154656403616>"
+    toString: () => "<:Bot:1040733154656403616>",
+    url: "https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless"
 }]
 
 /**
@@ -46,7 +47,10 @@ client.on("ready", async () => {
     const Text = `// 🤖 This is an automated function that generates emojis from servers
 // 📝 Any edits made in this file will be overwritten
 export enum Icons {
-${emojis.map(e => `    ${reformat(e.name.toString())} = "${e.toString()}"`).join(",\n")}
+${emojis.map(e => `    /**
+        ![${e.name}](${`${e.url}?size=1024`})
+    */
+    ${reformat(e.name.toString())} = "${e.toString()}"`).join(",\n")}
 }`;
 
     fs.writeFileSync("src/icons.ts", Text);

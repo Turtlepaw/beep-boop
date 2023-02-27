@@ -4,7 +4,7 @@ import klawSync from "klaw-sync";
 import { BaseDirectory, Icons } from "../configuration";
 import ButtonBuilder from "../lib/ButtonBuilder";
 import EventBuilder from "../lib/Event";
-import { InteractionError, SendError } from "./error";
+import { InteractionError } from "./error";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { Logger } from "../logger";
 
@@ -180,12 +180,6 @@ async function StartButtonService(client: Client) {
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.customId}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         });
@@ -242,12 +236,6 @@ async function StartSelectMenuService(client: Client) {
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.values[0]}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         });
@@ -293,12 +281,6 @@ async function StartContextMenuService(client: Client) {
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.commandName}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         });
@@ -364,12 +346,6 @@ export async function StartService(client: Client) {
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.commandName}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         })
