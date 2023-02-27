@@ -178,7 +178,11 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
                         .setStyle(ButtonStyle.Link)
                         .setURL(hasBanner ? BannerURL : "https://bop.trtle.xyz/")
                         .setDisabled(!hasBanner)
-                        .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"}`)
+                        .setLabel(`Banner URL${hasBanner ? "" : " (disabled)"}`),
+                    new ButtonBuilder()
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(`discord://${interaction.client.user.id}/users/${User.id}`)
+                        .setLabel("View User")
                 )
         ],
         ephemeral: hidden
