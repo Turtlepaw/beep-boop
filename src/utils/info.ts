@@ -11,7 +11,7 @@ import {
     inlineCode,
     ChannelType
 } from "discord.js";
-import { Colors, Embed, Emojis, Icons } from "../configuration";
+import { Colors, Embed, Emojis, Icons, Logs, TeamRole } from "../configuration";
 
 export const Locales = {
     "en-US": "us",
@@ -84,7 +84,7 @@ export function Language(locale: string, emoji = false) {
 }
 
 const Or = " or ";
-export type Flags = "Bot" | "ServerOwner";
+export type CustomFlags = "Bot" | "ServerOwner" | "AirdotTeam";
 export async function MemberInformation(interaction: RepliableInteraction, targetUser: User, hidden = false) {
     const { guild } = interaction;
     if (guild == null) return interaction.reply({
@@ -110,12 +110,17 @@ export async function MemberInformation(interaction: RepliableInteraction, targe
         VerifiedBot: Icons.VerifiedBotCheck + Icons.VerifiedBotText,
         Bot: Icons.Bot,
         ActiveDeveloper: Icons.ActiveDeveloper,
-        ServerOwner: Icons.ServerOwner
+        ServerOwner: Icons.ServerOwner,
+        AirdotTeam: Icons.AirdotTeam
     };
 
-    const flags = User.flags.toArray() as (Flags | string)[];
+    const Guild = await interaction.client.guilds.fetch(Logs.Guild);
+    const Role = await Guild.roles.fetch(TeamRole);
+
+    const flags = User.flags.toArray() as (CustomFlags | string)[];
     if (User.bot) flags.push("Bot");
     if (interaction.guild.ownerId == User.id) flags.push("ServerOwner");
+    if (Role.members.has(User.id)) flags.push("AirdotTeam");
 
     const MemberRoles = Member.roles.cache.filter(e => e.name != "@everyone");
     // to do - add support for dms
