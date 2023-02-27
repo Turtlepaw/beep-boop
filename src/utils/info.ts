@@ -230,12 +230,12 @@ export async function RoleInformation(interaction: RepliableInteraction, targetR
                 }, {
                     name: `${Icons.Configure} Permissions`,
                     value: Role.permissions.has(PermissionFlagsBits.Administrator) ? inlineCode("Administrator") : (
-                        Role.permissions.toArray().length >= 1 ? Role.permissions.toArray().map(e => inlineCode(e.toString())).join(" ") : "No permissions"
+                        Role.permissions.toArray().length >= 1 ? Role.permissions.toArray().map(e => inlineCode(e.toString())).join("  ") : "No permissions"
                     ),
                     inline: false
                 }, {
                     name: `${Icons.Flag} Flags`,
-                    value: Flags.length >= 1 ? Object.entries(RoleFlags).filter(e => Flags.includes(e[1] as RoleFlags)).map(([k, v]) => `${RoleFlagIcons[v]} (${k.toLowerCase()})`).join(" ") : "No flags",
+                    value: Flags.length >= 1 ? Object.entries(RoleFlags).filter(e => Flags.includes(e[1] as RoleFlags)).map(([k, v]) => `${RoleFlagIcons[v]} (${k.toLowerCase()})`).join("  ") : "No flags",
                     inline: false
                 }])
                 .setColor(Role.color == 0 ? Colors.Transparent : Role.hexColor)
