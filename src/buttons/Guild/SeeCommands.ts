@@ -19,8 +19,8 @@ export default class SeeCommands extends Button {
                 new Embed(interaction)
                     .addFields(
                         client.DetailedCommands.map(e => ({
-                            name: `\`/${e.Name}\``,
-                            value: `\`</${e.Name}:${e.Id}>\` = </${e.Name}:${e.Id}>`
+                            name: `\`/${e.name}\``,
+                            value: `\`</${e.name}:${e.id}>\` = </${e.name}:${e.id}>`
                         }))
                     )
             ],

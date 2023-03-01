@@ -1,6 +1,6 @@
 import { MemberRanking } from "../models/MemberRanking";
 import { DataSource, Repository } from "typeorm";
-import { StorageManager } from "./storage";
+import { StorageManager } from "./Storage";
 
 export interface Member {
     Level?: number;

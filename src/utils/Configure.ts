@@ -3,7 +3,7 @@ import { ModuleInformation, Modules } from "../commands/Guild/Server";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { ActionRowBuilder, AnyComponentBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, ComponentType, Interaction, Message, ModalBuilder, TextInputBuilder } from "discord.js";
 import { ButtonCollector, Filter } from "./filter";
-import { ResolvedGuildConfiguration, StorageManager } from "./storage";
+import { ResolvedGuildConfiguration, StorageManager } from "./Storage";
 import { generateId } from "./Id";
 import { GuildConfiguration } from "../models/Configuration";
 import { GetTextInput } from "./components";

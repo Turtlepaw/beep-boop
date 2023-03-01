@@ -22,6 +22,15 @@
             ],
             "@config": [
                 "src/configuration"
+            ],
+            "@selects/*": [
+                "src/select_menus/*"
+            ],
+            "@commands/*": [
+                "src/commands/*"
+            ],
+            "@constants": [
+                "src/constants"
             ]
         }
     },

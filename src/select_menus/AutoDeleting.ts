@@ -7,7 +7,7 @@ import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { CleanupType } from "../models/Configuration";
 import { Modules } from "../commands/Guild/Server";
 import { ChannelSelector as ChannelSelectBuilder } from "../utils/components";
-import { CleanupChannel } from "../utils/storage";
+import { CleanupChannel } from "../utils/Storage";
 
 export function ResolveEnumValue(selectedEnum: object, selectedValue: string) {
     for (const [k, v] of Object.entries(selectedEnum)) {

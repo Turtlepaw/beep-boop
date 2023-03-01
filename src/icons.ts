@@ -130,10 +130,6 @@ export enum Icons {
     */
     DefaultTrash = "<:DefaultTrash:1049878137917419631>",
     /**
-        ![ProUser](https://cdn.discordapp.com/emojis/1051214860119191634.png?size=1024)
-    */
-    ProUser = "<:ProUser:1051214860119191634>",
-    /**
         ![Tag](https://cdn.discordapp.com/emojis/1053881213112295505.png?size=1024)
     */
     Tag = "<:Tag:1053881213112295505>",
@@ -202,9 +198,13 @@ export enum Icons {
     */
     Search = "<:Search:1066924460495622196>",
     /**
-        ![AirdotTeam](https://cdn.discordapp.com/emojis/1079540839065329734.png?size=1024)
+        ![AirdotTeam](https://cdn.discordapp.com/emojis/1079942878937239732.png?size=1024)
     */
-    AirdotTeam = "<:AirdotTeam:1079540839065329734>",
+    AirdotTeam = "<:AirdotTeam:1079942878937239732>",
+    /**
+        ![ProUser](https://cdn.discordapp.com/emojis/1079942882519175208.png?size=1024)
+    */
+    ProUser = "<:ProUser:1079942882519175208>",
     /**
         ![Dot](https://cdn.discordapp.com/emojis/1043218649940508712.png?size=1024)
     */
@@ -312,5 +312,9 @@ export enum Icons {
     /**
         ![Statistics](https://cdn.discordapp.com/emojis/1067239843152793660.png?size=1024)
     */
-    Statistics = "<:Statistics:1067239843152793660>"
+    Statistics = "<:Statistics:1067239843152793660>",
+    /**
+        ![Clipboard](https://cdn.discordapp.com/emojis/1080303994343280701.png?size=1024)
+    */
+    Clipboard = "<:Clipboard:1080303994343280701>"
 }

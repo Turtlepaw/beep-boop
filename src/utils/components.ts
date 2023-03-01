@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
-import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType, RoleSelectMenuInteraction, AnySelectMenuInteraction, StringSelectMenuInteraction, ChannelSelectMenuInteraction } from "discord.js";
+import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType, RoleSelectMenuInteraction, AnySelectMenuInteraction, StringSelectMenuInteraction, ChannelSelectMenuInteraction, RestOrArray, MessageActionRowComponentBuilder } from "discord.js";
 import { Verifiers } from "./verify";
 import { Filter } from "./filter";
 
@@ -341,4 +341,20 @@ export function ButtonBuilderModal(CustomId = "BUTTON_BUILDER_MODAL", Fields: Bu
                     )
             ] : [])
         );
+}
+
+export class ActionRowHandler {
+    private components: RestOrArray<MessageActionRowComponentBuilder>;
+    constructor(...components: RestOrArray<MessageActionRowComponentBuilder>) {
+        this.components = components;
+    }
+
+    public toActionRow() {
+        return new ActionRowBuilder<MessageActionRowComponentBuilder>()
+            .addComponents(...this.components);
+    }
+
+    public toComponents() {
+        return [this.toActionRow()];
+    }
 }

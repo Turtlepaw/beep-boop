@@ -4,7 +4,12 @@ import { Verifiers } from "@airdot/verifiers";
 
 export class Embed extends EmbedBuilder {
     private isGuild(guild: unknown): guild is Guild {
-        return guild["maximumMembers"] != null;
+        try {
+            return guild["maximumMembers"] != null;
+        } catch (e) {
+            // it's not a guild
+            return false;
+        }
     }
 
     public interaction: Interaction;
@@ -19,6 +24,9 @@ export class Embed extends EmbedBuilder {
     }
 
     private getColorCache(guild: Guild) {
+        if (guild == null) return;
+        if (guild?.client == null) return;
+
         if (guild.client.ColorCache.has(guild.id)) {
             this.setColor(guild.client.ColorCache.get(guild.id));
         }
@@ -28,6 +36,7 @@ export class Embed extends EmbedBuilder {
         if (this.interaction == null && this.guild == null) return;
         //@ts-expect-error legacy
         const { client, guild } = this.interaction ?? this.guild;
+        if (guild == null) return;
         const config = await client.Storage.Configuration.forGuild(guild);
         if (config?.Color == null) return;
         if (!Verifiers.HexColor(config.Color)) return; //throw new Error("config.color must be a hex color");

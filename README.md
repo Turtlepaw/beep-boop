@@ -29,6 +29,22 @@ Welcome to Beep Boop's Github repository, here you'll find all the source to Bee
 - Yarn (3.4.1 or latest)
 - Node.js (18.13.0 or latest)
 
+## Styling Code and Files
+### Comments
+Add a space after the `//` so that your comments look nice!
+
+```ts
+// Here's a comment
+```
+
+## Files
+We're trying to keep file naming consistent, although some files aren't consistent. When creating a new file start off with an uppercase, like this:
+
+```
+-> MyDirectory
+    -> DirectoryUtils.ts
+```
+
 ### Upcoming Changes
 Here's the internal roadmap and the public roadmap.
 

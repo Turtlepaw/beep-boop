@@ -21,7 +21,7 @@ import KeyFileStorage from "key-file-storage";
 import "colors";
 import { API } from "./api/index";
 import { Levels } from "./utils/levels";
-import { InitializeProvider } from "./utils/storage";
+import { InitializeProvider } from "./utils/Storage";
 import { ErrorManager } from "./utils/error";
 import { Api, LogSnagProject, Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
@@ -35,6 +35,7 @@ import { Verifiers } from "@airdot/verifiers";
 import { Application, MapProvider } from "@airdot/linked-roles";
 import { Routes } from "./api/api-types";
 import { RefreshDiscordMetadata, RefreshMetadataService } from './utils/metadata';
+import { CommandDataManager } from '@utils/Commands';
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -82,6 +83,8 @@ export async function SetClientValues(client: Client) {
         //@ts-expect-error ...
         databaseProvider: new MapProvider()
     });
+
+    client.CommandManager = new CommandDataManager(client.DetailedCommands);
 }
 
 // Create Discord.js client

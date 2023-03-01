@@ -34,13 +34,13 @@ export default class Help extends SlashCommandBuilder {
 
         let FilteredCommands = Commands.filter(e => {
             return (
-                e.Name.toLowerCase().startsWith(Value.toLowerCase()) ||
-                e.Name.toLowerCase().endsWith(Value) ||
-                e.Name.toLowerCase().includes(Value)
+                e.name.toLowerCase().startsWith(Value.toLowerCase()) ||
+                e.name.toLowerCase().endsWith(Value) ||
+                e.name.toLowerCase().includes(Value)
             )
         }).map(e => ({
-            name: FormatCommandName(e.Name),
-            value: e.Id
+            name: FormatCommandName(e.name),
+            value: e.id
         }));
 
         FilteredCommands.length = 25;
@@ -125,14 +125,14 @@ export default class Help extends SlashCommandBuilder {
         const MessageEmbed = new EmbedBuilder(DefaultEmbed.data);
         if (CommandId == null) {
             const AllCommands = client.DetailedCommands.map(APICommand => {
-                const SlashCommand = client.commands.get(APICommand.Name);
+                const SlashCommand = client.commands.get(APICommand.name);
                 return {
-                    Id: APICommand.Id,
-                    FormattedName: FormatCommandName(APICommand.Name),
-                    Name: APICommand.Name,
+                    id: APICommand.id,
+                    FormattedName: FormatCommandName(APICommand.name),
+                    name: APICommand.name,
                     Description: SlashCommand?.Description || "This command has no description.",
                     Category: SlashCommand?.Category || Categories.Other,
-                    toString: () => `</${APICommand.Name}:${APICommand.Id}>`
+                    toString: () => `</${APICommand.name}:${APICommand.id}>`
                 }
             });
 
@@ -198,9 +198,9 @@ export default class Help extends SlashCommandBuilder {
                 });
             });
         } else {
-            const APICommand = client.DetailedCommands.find(e => e.Id == CommandId)
-            const SlashCommand = client.commands.get(APICommand.Name);
-            const ContextMenu = client.ContextMenus.get(APICommand.Name)
+            const APICommand = client.DetailedCommands.find(e => e.id == CommandId)
+            const SlashCommand = client.commands.get(APICommand.name);
+            const ContextMenu = client.ContextMenus.get(APICommand.name)
             const Command: (SlashCommandBuilder | ContextMenuBuilder) = (SlashCommand || ContextMenu);
 
             interaction.reply({
@@ -211,14 +211,14 @@ export default class Help extends SlashCommandBuilder {
                             name: "Beep Boop",
                             iconURL: client.user?.avatarURL() || ""
                         })
-                        .setTitle(FormatCommandName(APICommand.Name))
+                        .setTitle(FormatCommandName(APICommand.name))
                         .setDescription((Command as SlashCommandBuilder)?.Description || "This command has no description.")
                         .addFields([{
                             name: "Command Information",
                             value: `${Dot.System} ${Command.GuildOnly ? `This command can only be used within a server.` : `This command can be used in DMs.`}\n${Dot.System} ${Command.CanaryCommand ? `This command is still in development.` : `This command is public.`}`
                         }, {
                             name: "Try it out",
-                            value: `</${APICommand.Name}:${APICommand.Id}>`
+                            value: `</${APICommand.name}:${APICommand.id}>`
                         }])
                 ],
                 ephemeral

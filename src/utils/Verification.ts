@@ -1,4 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChatInputCommandInteraction, GuildMember } from "discord.js";
+import { ResolveUser } from "./Profile";
+import { UNTRUSTED_REPUTATION } from "@constants";
+import { Icons } from "@config";
 
 export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> =
     Pick<T, Exclude<keyof T, Keys>>
@@ -12,6 +15,11 @@ export interface VerificationOptions {
 }
 
 export async function Verification({ interaction, member }: RequireAtLeastOne<VerificationOptions, "interaction" | "member">) {
+    const Reputation = await ResolveUser(interaction.user.id, interaction.client);
+    if (Reputation.reputation == UNTRUSTED_REPUTATION) return interaction.reply({
+        content: `${Icons.Shield} You must have a reputation atleast 0 to verify.`,
+        ephemeral: true
+    });
     const payload = {
         content: "Start your adventure in this server by verifying that you're human.",
         components: [

@@ -12,7 +12,8 @@ export enum Modules {
     JoinActions = "MEMBER_JOIN_ACTIONS",
     ServerConfiguration = "MAIN_SERVER_CONFIG",
     Verification = "SERVER_VERIFICATION",
-    StatisticsChannels = "STAT_CHANNELS"
+    StatisticsChannels = "STAT_CHANNELS",
+    LeaveFeedback = "LEAVE_FEEDBACK"
 }
 
 export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; }> = {
@@ -55,6 +56,11 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
         Label: "Statistic Channels",
         Description: "Show useful statistics in voice channels, text channels, or categories.",
         Icon: Icons.Statistics
+    },
+    [Modules.LeaveFeedback]: {
+        Label: "Leave Feedback",
+        Description: "Gather useful feedback about members leaving.",
+        Icon: Icons.Clipboard
     }
 }
 

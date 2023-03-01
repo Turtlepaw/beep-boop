@@ -98,6 +98,13 @@ class ResolvableConfiguration {
         Status: boolean;
         Categories: Set<ConfigurationEvents>;
     }
+
+    // Leave Feedback
+    public LeaveFeedback: {
+        Status: boolean;
+        Channel: string;
+    }
+
     // Raw configuration
     public raw: GuildConfiguration;
 }
@@ -417,6 +424,10 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             Logging: {
                 Status: config?.LoggingStatus ?? false,
                 Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>()
+            },
+            LeaveFeedback: {
+                Channel: config?.LeaveFeedbackChannel,
+                Status: config?.LeaveFeedbackStatus ?? false
             },
             // Raw configuration
             raw: config

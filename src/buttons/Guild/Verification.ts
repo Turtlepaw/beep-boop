@@ -7,6 +7,7 @@ import { Captcha } from "captcha-canvas";
 import { isSuspicious as isMemberSuspicious } from "../../utils/verifyMember";
 import { randomBytes } from "crypto";
 import { Endorse } from "../../utils/Profile";
+import { VERIFIED_HUMAN_REPUTATION } from "@constants";
 
 export function randomText(characters: number): string {
     return randomBytes(characters).toString('hex').toUpperCase().substr(0, characters);
@@ -93,7 +94,7 @@ async function CaptchaVerification(interaction: ButtonInteraction, isCustom = fa
     });
 
     const isCorrect = () => Button.customId == captcha.SelectedId;
-    if (isCorrect() && GiveEndorsements) Endorse(interaction.member.user.id, interaction.client);
+    if (isCorrect() && GiveEndorsements) Endorse(interaction.member.user.id, interaction.client, VERIFIED_HUMAN_REPUTATION);
     return {
         isCorrect,
         Button

@@ -4,6 +4,7 @@ import { Colors, Embed, Emojis, Icons, Logs, TeamRole } from "@config";
 import { FriendlyInteractionError } from "../../utils/error";
 import { Endorse, ResolveUser, SetAccentColor, SetBio, SetDisplayName } from "../../utils/Profile";
 import { Subscriptions } from "../../models/Profile";
+import { MAX_REPUTATION_UPVOTE, STAFF_REPUTATION } from "@constants";
 
 export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral = true, user?: User) {
     if (user == null && interaction.isContextMenuCommand()) user = interaction.targetUser;
@@ -19,7 +20,7 @@ export async function ViewProfile(interaction: UserContextMenuCommandInteraction
 
     const OwnedBadges = [
         ...(profile.subscription != Subscriptions.None ? [Badges.Pro] : []),
-        ...(Role.members.has(interaction.user.id) ? [Badges.Team] : [])
+        ...(Role.members.has(user.id) ? [Badges.Team] : [])
     ];
 
     const Message = await interaction.reply({
@@ -38,7 +39,7 @@ export async function ViewProfile(interaction: UserContextMenuCommandInteraction
                     value: profile.reputation.toString()
                 }, {
                     name: "Badges",
-                    value: `${OwnedBadges.length <= 0 ? "None." : OwnedBadges.join(" ")}`
+                    value: `${OwnedBadges.length <= 0 ? "None" : OwnedBadges.join(" ")}`
                 }])
         ],
         components: [
@@ -65,6 +66,36 @@ export async function ViewProfile(interaction: UserContextMenuCommandInteraction
                 content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, in some communities, you're required to have a certain amount of endorsements to join. When you help people you might get endorsed, and you can also endorse other users that you know.`
             });
         }
+    });
+}
+
+export async function EndorseUser(user: User, ephemeral = true, interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction) {
+    const { client } = interaction;
+    const current = await ResolveUser(interaction.user.id, client);
+    if (current.reputation < MAX_REPUTATION_UPVOTE) return interaction.reply({
+        content: `${Icons.Shield} You must have a reputation of ${MAX_REPUTATION_UPVOTE.toString()} or more to endorse someone.`,
+        ephemeral: true
+    });
+    if (user.id == interaction.user.id) return FriendlyInteractionError(interaction, "You can't endorse yourself.")
+    Endorse(user.id, client);
+
+    try {
+        const payload = {
+            content: `${Icons.MemberAdd} ${interaction.user} endorsed you.`
+        }
+
+        const DM = await user.createDM(true);
+        DM.send(payload);
+    } catch {
+        const payload = {
+            content: `${Icons.MemberAdd} ${user}, ${interaction.user} endorsed you.`
+        }
+        interaction.channel.send(payload)
+    }
+
+    await interaction.reply({
+        ephemeral,
+        content: `${Icons.Success} You endorsed ${user}!`
     });
 }
 
@@ -120,26 +151,9 @@ export default class Send extends Command {
         const ephemeral = interaction.options.getBoolean("hidden", false) || true;
 
         if (Subcommand == Subcommands.View) {
-            ViewProfile(interaction, ephemeral, user);
+            return ViewProfile(interaction, ephemeral, user);
         } else if (Subcommand == Subcommands.Endorse) {
-            if (user.id == interaction.user.id) return FriendlyInteractionError(interaction, "You can't endorse yourself.")
-            Endorse(user.id, client);
-
-            const payload = {
-                content: `${Icons.MemberAdd} ${interaction.user} endorsed you.`
-            }
-
-            try {
-                const DM = await user.createDM(true);
-                DM.send(payload);
-            } catch {
-                interaction.channel.send(payload)
-            }
-
-            await interaction.reply({
-                ephemeral,
-                content: `${Icons.Success} You endorsed ${user}!`
-            })
+            return EndorseUser(user, ephemeral, interaction);
         } else if (Subcommand == Subcommands.Customimize) {
             enum Id {
                 AboutMe = "EDIT_ABOUT_ME",
@@ -234,6 +248,16 @@ export default class Send extends Command {
                         .setDescription("Select an option below to start customizing your profile!")
                 ]
             });
+
+            const Guild = await client.guilds.fetch(Logs.Guild);
+            const Role = await Guild.roles.fetch(TeamRole);
+            if (Role.members.has(interaction.user.id) && Profile.reputation < 490) {
+                await Endorse(interaction.user.id, client, STAFF_REPUTATION);
+                interaction.followUp({
+                    ephemeral: true,
+                    content: `${Icons.Shield} Since your part of the Airdot Team, you've automatically gained ${STAFF_REPUTATION} reputation.`
+                })
+            }
 
             const Collector = Message.createMessageComponentCollector({
                 time: 0,

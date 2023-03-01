@@ -175,4 +175,12 @@ export class GuildConfiguration {
     LoggingStatus: boolean;
     @Column({ nullable: true, transformer: new SetTransformer<ConfigurationEvents>(), type: "varchar" })
     LoggingCategories: Set<ConfigurationEvents>;
+
+    // Leave Feedback
+    // -> Gather feedback on members leaving
+    @Column({ nullable: true, default: false })
+    LeaveFeedbackStatus: boolean;
+
+    @Column({ nullable: true })
+    LeaveFeedbackChannel: string;
 }
