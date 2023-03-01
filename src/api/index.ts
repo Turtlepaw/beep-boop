@@ -107,11 +107,11 @@ export async function API(client: Client, token: string) {
         }
 
         if (route.Get != null) app.get(route.route, async (req, res) => {
-            if (!await handleAuth(req, res, Method.Get)) return;
+            if (!(await handleAuth(req, res, Method.Get))) return;
             await route.Get(req, res, client);
         });
         if (route.Post != null) app.post(route.route, async (req, res) => {
-            if (!await handleAuth(req, res, Method.Post)) return;
+            if (!(await handleAuth(req, res, Method.Post))) return;
             await route.Post(req, res, client);
         });
 
