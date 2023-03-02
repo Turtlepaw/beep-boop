@@ -18,6 +18,7 @@ import { Error as CustomError } from "../models/Error";
 import { APIUser } from "../models/APIUser";
 import { Ticket } from "../models/Ticket";
 import { ConfigurationEvents } from "../@types/Logging";
+import { Cache } from "../models/Cache";
 
 export interface CleanupChannel {
     Type: CleanupType;
@@ -187,7 +188,8 @@ const entities = [
     Action,
     APIUser,
     Ticket,
-    CustomError
+    CustomError,
+    Cache
 ];
 
 export const AppDataSource = new DataSource({
@@ -215,6 +217,7 @@ export async function InitializeProvider(client: Client) {
         Errors: new StorageManager(client.storage, CustomError.name),
         ApiUsers: new StorageManager(client.storage, APIUser.name),
         Tickets: new StorageManager(client.storage, Ticket.name),
+        ImageCache: new StorageManager(client.storage, Cache.name)
     }
 }
 

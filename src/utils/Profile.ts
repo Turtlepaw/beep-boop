@@ -2,6 +2,7 @@ import { Client, ColorResolvable, User } from "discord.js";
 import { Subscriptions } from "../models/Profile";
 import { Colors } from "../configuration";
 import { HexColorString } from "@airdot/verifiers";
+import { VERIFIED_REPUTATION } from "@constants";
 
 export interface Profile {
     bio?: string;
@@ -93,6 +94,7 @@ export function SetAccentColor(Id: string, accentColor: string, client: Client) 
 }
 
 export function SetVerified(Id: string, verified: boolean, client: Client) {
+    Endorse(Id, client, VERIFIED_REPUTATION, true);
     return client.Storage.Profiles.Edit(Id, {
         verified
     });

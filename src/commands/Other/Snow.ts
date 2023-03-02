@@ -31,7 +31,25 @@ export default class Send extends Command {
         const text = image != null ? "an image" : (user.id == interaction.user.id ? "your avatar" : `${user}'s avatar`)
         await interaction.reply({
             content: `✨ Snowifying ${text}...`
-        })
+        });
+
+        const CurrentCache = image == null ? await interaction.client.Storage.ImageCache.FindOneBy({
+            key: user.id
+        }) : null;
+
+        if (CurrentCache != null) {
+            const PNG = Buffer.from(CurrentCache.value, "base64");
+            const attachment = new AttachmentBuilder(PNG, { name: 'cached.png' });
+            const Feedback = new FeedbackMessage(interaction);
+
+            const Message = await interaction.editReply({
+                files: [attachment],
+                components: Feedback.components.toComponents()
+            });
+
+            await Feedback.collectFrom(Message);
+            return;
+        }
 
         const canvas = createCanvas(200, 200)
         const ctx = canvas.getContext('2d');
@@ -52,7 +70,12 @@ export default class Send extends Command {
         // Get image as PNG
         const PNG = canvas.toBuffer();
 
-        const attachment = new AttachmentBuilder(PNG, { name: 'profile.png' });
+        if (image == null) await interaction.client.Storage.ImageCache.Create({
+            key: user.id,
+            value: PNG.toString("base64")
+        });
+
+        const attachment = new AttachmentBuilder(PNG, { name: 'snowy.png' });
         const Feedback = new FeedbackMessage(interaction);
 
         const Message = await interaction.editReply({

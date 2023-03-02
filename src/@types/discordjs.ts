@@ -23,6 +23,7 @@ import LogSnag from "logsnag";
 import { Application as LinkedRolesApp } from "@airdot/linked-roles";
 import { CommandDataManager } from "@utils/Commands";
 import { ApiCommandData } from "@utils/deploy";
+import { Cache } from "../models/Cache";
 
 export interface StorageManagers {
     Configuration: GuildConfigurationManager;
@@ -37,6 +38,7 @@ export interface StorageManagers {
     Errors: StorageManager<CustomError>;
     ApiUsers: StorageManager<APIUser>;
     Tickets: StorageManager<Ticket>;
+    ImageCache: StorageManager<Cache<string>>;
 }
 
 declare module 'discord.js' {
@@ -57,5 +59,6 @@ declare module 'discord.js' {
         LogSnag: LogSnag;
         LinkedRoles: LinkedRolesApp;
         CommandManager: CommandDataManager;
+        ImageCache: Map<string, Buffer>;
     }
 }
