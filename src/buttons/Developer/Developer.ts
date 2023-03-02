@@ -6,7 +6,8 @@ import Button from "../../lib/ButtonBuilder";
 import { DeveloperPortal } from "../../commands/Bot/Help";
 
 export enum ButtonIds {
-    Subscriptions = "FORCE_SUBSCRIPTIONS"
+    Subscriptions = "FORCE_SUBSCRIPTIONS",
+    Profiles = "SET_PROFILES"
 }
 
 export default class DeveloperPortalButton extends Button {
@@ -68,8 +69,16 @@ export default class DeveloperPortalButton extends Button {
                         .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
                         .setLabel("Subscriptions")
-                        .setEmoji(Icons.ProUser)
+                        .setEmoji(Icons.Zap)
                         .setCustomId(ButtonIds.Subscriptions)
+                        .setStyle(ButtonStyle.Secondary)
+                ),
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setLabel("Profile")
+                        .setEmoji(Icons.Member)
+                        .setCustomId(ButtonIds.Profiles)
                         .setStyle(ButtonStyle.Secondary)
                 )
         ]

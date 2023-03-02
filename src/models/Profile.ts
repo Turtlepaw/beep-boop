@@ -32,4 +32,7 @@ export class Profile {
 
     @Column({ nullable: true })
     expires: string;
+
+    @Column({ nullable: true, default: false })
+    verified: boolean;
 }

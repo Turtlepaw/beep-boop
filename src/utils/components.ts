@@ -357,4 +357,19 @@ export class ActionRowHandler {
     public toComponents() {
         return [this.toActionRow()];
     }
+
+    public async collect(message: Message, type: ComponentType.Button | ComponentType.StringSelect | ComponentType.UserSelect | ComponentType.RoleSelect | ComponentType.MentionableSelect | ComponentType.ChannelSelect, interaction?: Interaction, ids?: string[]) {
+        const CustomIds = ids ?? [];
+        if (interaction != null) message.components.forEach(e => e.components.forEach(e => CustomIds.push(e.customId)));
+        const Message = await message.awaitMessageComponent({
+            time: 0,
+            filter: interaction == null ? null : Filter({
+                customIds: CustomIds,
+                member: interaction.member
+            }),
+            componentType: type
+        });
+
+        return Message;
+    }
 }

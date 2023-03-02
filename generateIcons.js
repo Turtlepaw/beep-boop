@@ -52,8 +52,13 @@ ${emojis.map(e => `${DevMode == true ? `    /**
         ![${e.name}](${`${e.url}?size=1024`})
     */\n` : ""}    ${reformat(e.name.toString())} = "${e.toString()}"`).join(",\n")}
 }`;
+    const URLText = `\n\nexport enum IconURLs {
+${emojis.map(e => `${DevMode == true ? `    /**
+        ![${e.name}](${`${e.url}?size=1024`})
+    */\n` : ""}    ${reformat(e.name.toString())} = "${e.url}"`).join(",\n")}
+}`
 
-    fs.writeFileSync("src/icons.ts", Text);
+    fs.writeFileSync("src/icons.ts", Text + URLText);
 
     setTimeout(() => {
         console.log("✓ ".green + `${emojis.length} emojis generated successfully from ${guilds.length} guilds`.gray);

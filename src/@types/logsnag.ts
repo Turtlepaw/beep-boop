@@ -1,4 +1,5 @@
 export enum LogSnagChannels {
     Gifts = "gifts",
-    Subscriptions = "subscriptions"
+    Subscriptions = "subscriptions",
+    Verification = "verification"
 }

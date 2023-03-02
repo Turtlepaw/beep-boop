@@ -31,6 +31,9 @@
             ],
             "@constants": [
                 "src/constants"
+            ],
+            "@icons": [
+                "src/icons"
             ]
         }
     },
