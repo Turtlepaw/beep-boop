@@ -273,7 +273,7 @@ export default class Send extends Command {
             const Guild = await client.guilds.fetch(Logs.Guild);
             const Role = await Guild.roles.fetch(TeamRole);
             if (Role.members.has(interaction.user.id) && Profile.reputation < STAFF_REPUTATION) {
-                await Endorse(interaction.user.id, client, STAFF_REPUTATION);
+                await Endorse(interaction.user.id, client, STAFF_REPUTATION, true);
                 interaction.followUp({
                     ephemeral: true,
                     content: `${Icons.Shield} Since your part of the Airdot Team, you've automatically gained ${STAFF_REPUTATION} reputation.`
