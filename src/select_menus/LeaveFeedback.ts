@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, GuildMember, Interaction, RepliableInteraction, TextBasedChannel, TextInputStyle, channelMention } from "discord.js";
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, GuildMember, Interaction, MessageComponentInteraction, RepliableInteraction, TextBasedChannel, TextInputStyle, channelMention } from "discord.js";
 import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, TextBoolean } from "../utils/config";
@@ -41,6 +41,11 @@ export class FeedbackManager {
 
     public member: GuildMember;
     public ButtonId = FeedbackCollectButtonId;
+    private button = new ButtonBuilder()
+        .setLabel("Feedback")
+        .setStyle(ButtonStyle.Secondary)
+        .setEmoji(Icons.Clipboard)
+        .setCustomId(this.ButtonId);
 
     constructor(member: GuildMember) {
         this.member = member;
@@ -64,11 +69,7 @@ export class FeedbackManager {
         });
 
         const Row = new ActionRowHandler(
-            new ButtonBuilder()
-                .setLabel("Feedback")
-                .setStyle(ButtonStyle.Secondary)
-                .setEmoji(Icons.Clipboard)
-                .setCustomId(this.ButtonId)
+            this.button
         );
 
         console.log(this.member.client.user.tag)
@@ -108,6 +109,14 @@ export class FeedbackManager {
             content: `${Icons.Brush} Thanks for your feedback, we'll use this to make your experience better!`,
             ephemeral: true
         });
+
+        modal.message.edit({
+            components: [
+                new ActionRowHandler(
+                    this.button.setDisabled(true)
+                ).toActionRow()
+            ]
+        })
 
         const embed = new Embed(origin)
             .setTitle(`Leave Feedback${isTest ? " (test)" : ""}`)
@@ -151,7 +160,7 @@ export default class LeaveFeedbackConfiguration extends SelectOptionBuilder {
         let Channel = Configuration.LeaveFeedback?.Channel;
 
         enum Id {
-            Appeals = "LEAVE_FEEDBACK_TOGGLE",
+            LeaveFeedback = "LEAVE_FEEDBACK_TOGGLE",
             ChannelSelector = "CHANNEL_SELECTOR",
             TryItOut = "TRY_OUT_FEEDBACK"
         }
@@ -161,7 +170,7 @@ export default class LeaveFeedbackConfiguration extends SelectOptionBuilder {
                 .addComponents(
                     BackComponent,
                     new ButtonBuilder()
-                        .setCustomId(Id.Appeals)
+                        .setCustomId(Id.LeaveFeedback)
                         .setLabel("Leave Feedback")
                         .setStyle(
                             ButtonBoolean(Status)
@@ -219,12 +228,12 @@ ${Icons.StemEnd} Feedback Channel: ${Channel == null ? "None" : channelMention(C
             time: 0,
             filter: Filter({
                 member: interaction.member,
-                customIds: [...GenerateIds(Id), ButtonCollector.BackButton, FeedbackManager.TryFeedback]
+                customIds: [...GenerateIds(Id), ButtonCollector.BackButton]
             })
         });
 
         function HandleToggle(id: string) {
-            if (id == Id.Appeals) {
+            if (id == Id.LeaveFeedback) {
                 Status = !Status
             }
         }
@@ -233,31 +242,53 @@ ${Icons.StemEnd} Feedback Channel: ${Channel == null ? "None" : channelMention(C
             .SetCustomId(Id.ChannelSelector)
             .SetChannelTypes(ChannelType.GuildText);
 
+        async function selectChannel(button: MessageComponentInteraction) {
+            const Message = await button.reply({
+                content: `${Icons.Channel} Select a channel`,
+                components: ChannelSelector.toComponents(),
+                fetchReply: true,
+                ephemeral: true
+            });
+
+            const ChannelInteraction = await ChannelSelector.CollectComponents(Message, interaction);
+            const SelectedChannel = ChannelInteraction.channels.first();
+            return {
+                SelectedChannel,
+                ChannelInteraction
+            };
+        }
+
         Collector.on("collect", async button => {
             if (button.customId == ButtonCollector.BackButton) return;
             if (button.customId == Id.ChannelSelector) {
-                const Message = await button.reply({
-                    content: `${Icons.Channel} Select a channel`,
-                    components: ChannelSelector.toComponents(),
-                    fetchReply: true,
-                    ephemeral: true
-                });
-
-                const ChannelInteraction = await ChannelSelector.CollectComponents(Message, interaction);
-                const SelectedChannel = ChannelInteraction.channels.first();
+                const { ChannelInteraction, SelectedChannel } = await selectChannel(button);
 
                 Channel = SelectedChannel.id;
                 await Save();
                 await ChannelInteraction.update(Messages.Saved);
-            } else {
+            } else if (button.customId == Id.LeaveFeedback) {
+                let inter = button;
+                let isChannelNull = Channel == null;
+                if (Channel == null) {
+                    const { ChannelInteraction, SelectedChannel } = await selectChannel(inter);
+                    Channel = SelectedChannel.id;
+                    inter = ChannelInteraction;
+                    await Save();
+                }
+
                 HandleToggle(button.customId);
-                await Save(false);
-                await button.update({
-                    embeds: [
-                        GenerateEmbed()
-                    ],
-                    components: Components()
-                });
+                await Save(isChannelNull);
+
+                if (isChannelNull) {
+                    await inter.update(Messages.Saved);
+                } else {
+                    await inter.update({
+                        embeds: [
+                            GenerateEmbed()
+                        ],
+                        components: Components()
+                    })
+                }
             }
         });
 

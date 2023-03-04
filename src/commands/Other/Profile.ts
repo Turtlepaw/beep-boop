@@ -277,7 +277,7 @@ export default class Send extends Command {
                 interaction.followUp({
                     ephemeral: true,
                     content: `${Icons.Shield} Since your part of the Airdot Team, you've automatically gained ${STAFF_REPUTATION} reputation.`
-                })
+                });
             }
 
             const Collector = Message.createMessageComponentCollector({
