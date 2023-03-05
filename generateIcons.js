@@ -58,6 +58,12 @@ ${emojis.map(e => `${DevMode == true ? `    /**
     */\n` : ""}    ${reformat(e.name.toString())} = "${e.url}"`).join(",\n")}
 }`
 
+    const readText = fs.readFileSync("src/icons.ts", "utf-8");
+    if ((Text + URLText) == readText) {
+        console.log("X ".red + `No emojis need to be generated`.gray);
+        return process.exit(0);
+    }
+
     fs.writeFileSync("src/icons.ts", Text + URLText);
 
     setTimeout(() => {

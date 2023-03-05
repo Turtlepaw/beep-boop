@@ -116,7 +116,7 @@ export class FeedbackManager {
                     this.button.setDisabled(true)
                 ).toActionRow()
             ]
-        })
+        });
 
         const embed = new Embed(origin)
             .setTitle(`Leave Feedback${isTest ? " (test)" : ""}`)

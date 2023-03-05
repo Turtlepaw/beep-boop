@@ -36,6 +36,7 @@ import { Application, MapProvider } from "@airdot/linked-roles";
 import { Routes } from "./api/api-types";
 import { RefreshDiscordMetadata, RefreshMetadataService } from './utils/metadata';
 import { CommandDataManager } from '@utils/Commands';
+import { LoggingService } from '@utils/logging';
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -153,6 +154,9 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
     // Metadata
     RefreshDiscordMetadata(ProvidedClient);
     RefreshMetadataService(ProvidedClient);
+
+    // Logging
+    LoggingService(ProvidedClient);
 
     ProvidedClient.on(Events.Error, console.log)
 }

@@ -98,6 +98,7 @@ class ResolvableConfiguration {
     public Logging: {
         Status: boolean;
         Categories: Set<ConfigurationEvents>;
+        Channel: string;
     }
 
     // Leave Feedback
@@ -426,7 +427,8 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             })),
             Logging: {
                 Status: config?.LoggingStatus ?? false,
-                Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>()
+                Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>(),
+                Channel: config?.LoggingChannel
             },
             LeaveFeedback: {
                 Channel: config?.LeaveFeedbackChannel,
