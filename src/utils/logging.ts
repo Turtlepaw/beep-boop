@@ -1,6 +1,7 @@
-import { Channel, Client, Collection, GuildBasedChannel, GuildScheduledEvent, GuildTextBasedChannel, Message, Snowflake, TimestampStyles, User, codeBlock, time } from "discord.js";
+import { Channel, Client, Collection, Events, GuildBasedChannel, GuildScheduledEvent, GuildTextBasedChannel, Invite, Message, Snowflake, TimestampStyles, User, codeBlock, time } from "discord.js";
 import { ConfigurationEvents, GuildEvents } from "../@types/Logging";
 import { Embed } from "./EmbedBuilder";
+import { Logger } from "@logger";
 
 export type LogEvents = {
     [key in ConfigurationEvents]: {
@@ -58,13 +59,13 @@ const Handlers = {
         // guildUpdate: "Server Updated",
     },
     [ConfigurationEvents.invite]: {
-        // inviteCreate: "Invite Created",
-        // inviteDelete: "Invite Deleted",
+        inviteCreate: (invite: Invite) => `${d.mention(invite.inviter)} created in invite in ${d.channel(invite.channel)} that expires ${invite.expiresTimestamp == null ? "never" : time(invite.expiresAt, TimestampStyles.RelativeTime)}`,
+        inviteDelete: (invite: Invite) => `An invite was deleted in ${d.channel(invite.channel)}`,
     },
     [ConfigurationEvents.messageUpdate]: {
         messageDelete: (message: Message) => `${d.mention(message.author)} deleted a message in ${d.channel(message.channel)}\n${codeBlock(message.content)}`,
-        messageDeleteBulk: (messages: Collection<Snowflake, Message>, channel: GuildBasedChannel) => `${d.mention(messages.)}`,
-        // messageUpdate: "Message Edited",
+        messageDeleteBulk: (messages: Collection<Snowflake, Message>, channel: GuildBasedChannel) => `${messages.size} messages were mass deleted in ${d.channel(channel)}`,
+        messageUpdate: (oldMessage: Message, newMessage: Message) => `${d.mention(newMessage.author)} updated their message in ${d.channel(newMessage.channel)}\n${codeBlock("diff", `- ${oldMessage.content}\n+ ${newMessage.content}`)}`,
     },
     [ConfigurationEvents.messageReaction]: {
         // messageReactionRemoveAll: "All Message Reactions Removed",
@@ -108,28 +109,32 @@ const Handlers = {
 } satisfies LogEvents;
 
 export async function LoggingService(client: Client) {
-    setTimeout(async () => {
-        const guilds = await client.guilds.fetch();
-        guilds.forEach(async oauthGuild => {
-            const guild = await client.guilds.fetch(oauthGuild.id);
-            const config = await client.Storage.Configuration.forGuild(guild);
-            if (config.Logging.Status == false || config.Logging.Categories.size == 0) return;
-            const Channel = await guild.channels.fetch(config.Logging.Channel) as GuildTextBasedChannel;
-            Object.entries(ConfigurationEvents).filter(v => config.Logging.Categories.has(v[1])).forEach(v => {
-                const events = GuildEvents[v[1]];
-                Object.entries(events).forEach(([eventName, title]) => {
-                    client.on(eventName, (args) => {
-                        const handler = Handlers[v[1]][eventName];
-                        Channel.send({
+    console.log(`✓ `.green + `Logs ready`.gray)
+    const guilds = await client.guilds.fetch();
+    guilds.forEach(async oauthGuild => {
+        const guild = await client.guilds.fetch(oauthGuild.id);
+        const config = await client.Storage.Configuration.forGuild(guild);
+        if (config.Logging.Status == false || config.Logging.Categories.size == 0) return;
+        const Channel = await guild.channels.fetch(config.Logging.Channel) as GuildTextBasedChannel;
+        Object.entries(ConfigurationEvents).filter(v => config.Logging.Categories.has(v[1])).forEach(v => {
+            const events = GuildEvents[v[1]];
+            Object.entries(events).forEach(([eventName, title]) => {
+                client.on(eventName, async (...args) => {
+                    if (eventName == Events.MessageUpdate && args[0]?.author?.id == client.user.id) return;
+                    const handler = Handlers[v[1]][eventName];
+                    try {
+                        await Channel.send({
                             embeds: [
                                 new Embed(guild)
                                     .setTitle(title)
-                                    .setDescription(handler(args))
+                                    .setDescription(handler(...args))
                             ]
-                        })
-                    });
+                        });
+                    } catch (e) {
+                        Logger.error(`Couldn't log event (${eventName}): ${e}`)
+                    }
                 });
             });
         });
-    }, 6000)
+    });
 }

@@ -43,13 +43,7 @@ import { LoggingService } from '@utils/logging';
 
 export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
-        IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent,
-        IntentsBitField.Flags.DirectMessages,
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildPresences,
-        IntentsBitField.Flags.GuildMessageReactions
+        ...Object.values(IntentsBitField.Flags).map(e => e as number)
     ],
     partials: [
         Partials.Channel,

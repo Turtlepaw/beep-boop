@@ -52,6 +52,10 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
                         .setCustomId(Id.SetEvents)
                         .setLabel("Logging Events")
                         .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setCustomId(Id.SelectChannel)
+                        .setLabel("Log Channel")
+                        .setStyle(ButtonStyle.Secondary)
                 )
         ];
 
