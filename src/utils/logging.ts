@@ -25,6 +25,11 @@ enum Presets {
     Move = "move"
 }
 
+enum ChangeModes {
+    Edit = "edit",
+    Create = "create"
+}
+
 class ChangeManager<T> {
     private changes: Map<keyof T, {
         value: string;
@@ -32,19 +37,22 @@ class ChangeManager<T> {
     }> = new Map();
     private newObject: T;
     private oldObject: T;
-    constructor(newObj: T, oldObj: T) {
+    private mode: ChangeModes;
+
+    constructor(newObj: T, oldObj: T, mode: ChangeModes = ChangeModes.Edit) {
         this.newObject = newObj;
         this.oldObject = oldObj;
+        this.mode = mode;
     }
 
     private titleCase(str: string): string {
-        return str.replace(/\w\S*/g, (word) => {
-            return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
-        });
+        const words = str.split(/(?=[A-Z])/);
+        const formatted = words.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        return formatted;
     }
 
     add(key: keyof T, value: string | Presets, override?: string) {
-        if (value == "move") value = `${this.oldObject[key]} ${d.move} ${this.newObject[key]}`;
+        if (value == "move") value = (this.mode == ChangeModes.Edit ? `${this.oldObject[key]} ${d.move} ${this.newObject[key]}` : `${this.newObject[key]}`);
         this.changes.set(key, {
             value,
             override
@@ -60,8 +68,10 @@ class ChangeManager<T> {
     toString() {
         let text = "";
         for (const [k, v] of this.changes.entries()) {
-            if (this.newObject[k] == this.oldObject[k]) continue;
-            else text += `${d.ot} ${(v.override ?? this.titleCase(k as string)) + ":"} ` + v.value;
+            if ((this.newObject[k] == this.oldObject[k]) && this.mode == ChangeModes.Edit) continue;
+            else if (this.newObject[k] == null) continue;
+            //else if (k.toString().includes("hex") && this.newObject[k] == "#000000") continue;
+            else text += `${d.ot} ${(v.override ?? this.titleCase(k as string)) + ":"} ` + v.value + "\n";
         }
 
         return text;
@@ -125,8 +135,15 @@ const Handlers = {
         // messageReactionRemove: "Message Reaction Removed",
     },
     [ConfigurationEvents.role]: {
-        roleCreate: (role: Role) => `A new role named ${bold(role.name)} was created`,
-        // roleDelete: "Role Removed",
+        roleCreate: (role: Role) => new ChangeManager(role, role, ChangeModes.Create)
+            .addMultiple([
+                "name",
+                "hexColor",
+                "hoist",
+                "mentionable",
+                "unicodeEmoji"
+            ], Presets.Move),
+        roleDelete: (role: Role) => `${bold(role.name)} has been deleted ${time(new Date(), TimestampStyles.RelativeTime)}`,
         roleUpdate: (oldRole: Role, newRole: Role) => new ChangeManager(newRole, oldRole)
             .addMultiple([
                 "hexColor",
@@ -135,8 +152,6 @@ const Handlers = {
                 "name",
                 "unicodeEmoji"
             ], Presets.Move)
-        //(oldRole: Role, newRole: Role) => `${d.ot} Name: ${oldRole.name} ${d.move} ${newRole.name}
-        //${d.ot} Hoisted`,
     },
     [ConfigurationEvents.thread]: {
         // threadCreate: "Thread Created",
