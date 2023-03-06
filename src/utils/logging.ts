@@ -1,12 +1,15 @@
-import { Channel, Client, Collection, Events, GuildBasedChannel, GuildScheduledEvent, GuildTextBasedChannel, Invite, Message, Snowflake, TimestampStyles, User, codeBlock, time } from "discord.js";
+import { Channel, Client, Collection, Events, GuildBasedChannel, GuildScheduledEvent, GuildTextBasedChannel, Invite, Message, Role, Snowflake, TimestampStyles, User, bold, codeBlock, time } from "discord.js";
 import { ConfigurationEvents, GuildEvents } from "../@types/Logging";
 import { Embed } from "./EmbedBuilder";
 import { Logger } from "@logger";
+import { Icons } from "@icons";
 
 export type LogEvents = {
     [key in ConfigurationEvents]: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [key: string]: (...args: any) => string;
+        [key: string]: (...args: any) => {
+            toString: () => string;
+        };
     };
 };
 
@@ -14,7 +17,55 @@ const d = {
     mention: (user: User) => `${user.toString()} (${user.id})`,
     //@ts-expect-error aaa
     channel: (channel: Channel) => `${channel.toString()}${typeof channel?.name == "string" ? ` (${channel.name})` : ""}`,
+    ot: Icons.Dot,
+    move: "➜"
+}
 
+enum Presets {
+    Move = "move"
+}
+
+class ChangeManager<T> {
+    private changes: Map<keyof T, {
+        value: string;
+        override?: string;
+    }> = new Map();
+    private newObject: T;
+    private oldObject: T;
+    constructor(newObj: T, oldObj: T) {
+        this.newObject = newObj;
+        this.oldObject = oldObj;
+    }
+
+    private titleCase(str: string): string {
+        return str.replace(/\w\S*/g, (word) => {
+            return word.charAt(0).toUpperCase() + word.substring(1).toLowerCase();
+        });
+    }
+
+    add(key: keyof T, value: string | Presets, override?: string) {
+        if (value == "move") value = `${this.oldObject[key]} ${d.move} ${this.newObject[key]}`;
+        this.changes.set(key, {
+            value,
+            override
+        });
+        return this;
+    }
+
+    addMultiple(keys: (keyof T)[], preset: Presets, override?: string) {
+        keys.forEach(key => this.add(key, preset, override))
+        return this;
+    }
+
+    toString() {
+        let text = "";
+        for (const [k, v] of this.changes.entries()) {
+            if (this.newObject[k] == this.oldObject[k]) continue;
+            else text += `${d.ot} ${(v.override ?? this.titleCase(k as string)) + ":"} ` + v.value;
+        }
+
+        return text;
+    }
 }
 
 const Handlers = {
@@ -74,9 +125,18 @@ const Handlers = {
         // messageReactionRemove: "Message Reaction Removed",
     },
     [ConfigurationEvents.role]: {
-        // roleCreate: "Role Created",
+        roleCreate: (role: Role) => `A new role named ${bold(role.name)} was created`,
         // roleDelete: "Role Removed",
-        // roleUpdate: "Role Updated",
+        roleUpdate: (oldRole: Role, newRole: Role) => new ChangeManager(newRole, oldRole)
+            .addMultiple([
+                "hexColor",
+                "hoist",
+                "mentionable",
+                "name",
+                "unicodeEmoji"
+            ], Presets.Move)
+        //(oldRole: Role, newRole: Role) => `${d.ot} Name: ${oldRole.name} ${d.move} ${newRole.name}
+        //${d.ot} Hoisted`,
     },
     [ConfigurationEvents.thread]: {
         // threadCreate: "Thread Created",
@@ -127,7 +187,7 @@ export async function LoggingService(client: Client) {
                             embeds: [
                                 new Embed(guild)
                                     .setTitle(title)
-                                    .setDescription(handler(...args))
+                                    .setDescription(handler(...args).toString())
                             ]
                         });
                     } catch (e) {
