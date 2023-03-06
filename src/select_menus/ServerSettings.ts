@@ -176,7 +176,7 @@ ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Ev
                 LoggingStatus = !LoggingStatus;
                 await Save(isNull);
 
-                if (isNull) {
+                if (!isNull) {
                     await inter.update({
                         embeds: [
                             await GenerateEmbed()
