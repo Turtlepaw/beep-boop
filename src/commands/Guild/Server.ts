@@ -13,7 +13,8 @@ export enum Modules {
     ServerConfiguration = "MAIN_SERVER_CONFIG",
     Verification = "SERVER_VERIFICATION",
     StatisticsChannels = "STAT_CHANNELS",
-    LeaveFeedback = "LEAVE_FEEDBACK"
+    LeaveFeedback = "LEAVE_FEEDBACK",
+    Starboard = "STARBOARD"
 }
 
 export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; }> = {
@@ -61,6 +62,11 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
         Label: "Leave Feedback",
         Description: "Gather useful feedback about members leaving.",
         Icon: Icons.Clipboard
+    },
+    [Modules.Starboard]: {
+        Label: "Highlights",
+        Description: "Keep the most liked messages in a highlighted place",
+        Icon: Icons.Star
     }
 }
 
