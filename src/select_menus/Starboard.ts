@@ -15,7 +15,7 @@ export default class LeaveFeedbackConfiguration extends SelectOptionBuilder {
             GuildOnly: false,
             RequiredPermissions: [],
             SomePermissions: Permissions.Manager,
-            Value: Modules.LeaveFeedback
+            Value: Modules.Starboard
         });
     }
 
