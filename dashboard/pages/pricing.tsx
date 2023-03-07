@@ -130,6 +130,7 @@ export default function Home(props: DefaultProps) {
                             <Feature included>1 Custom Bot</Feature>
                             <Feature included>Pro Badge</Feature>
                             <Feature included>Vote for future updates</Feature>
+                            <Feature included>Instant <Link href='/verification' isExternal>Verification</Link></Feature>
                         </>}
                     />
                 </div>
