@@ -1,14 +1,16 @@
-import { Channel, Client, Collection, Events, GuildBasedChannel, GuildScheduledEvent, GuildTextBasedChannel, Invite, Message, Role, Snowflake, TimestampStyles, User, bold, codeBlock, time } from "discord.js";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { Channel, Client, Collection, ComponentType, Events, GuildBasedChannel, GuildScheduledEvent, GuildTextBasedChannel, Invite, Message, MessageActionRowComponent, Role, Snowflake, TimestampStyles, User, bold, codeBlock, time } from "discord.js";
 import { ConfigurationEvents, GuildEvents } from "../@types/Logging";
 import { Embed } from "./EmbedBuilder";
 import { Logger } from "@logger";
 import { Icons } from "@icons";
+import e from "express";
 
 export type LogEvents = {
     [key in ConfigurationEvents]: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        [key: string]: (...args: any) => {
-            toString: () => string;
+        [key: string]: (embed: Embed, ...args: any) => string | Embed | {
+            toString: () => Embed;
         };
     };
 };
@@ -38,11 +40,13 @@ class ChangeManager<T> {
     private newObject: T;
     private oldObject: T;
     private mode: ChangeModes;
+    private embed: Embed;
 
-    constructor(newObj: T, oldObj: T, mode: ChangeModes = ChangeModes.Edit) {
+    constructor(embed: Embed, newObj: T, oldObj: T, mode: ChangeModes = ChangeModes.Edit) {
         this.newObject = newObj;
         this.oldObject = oldObj;
         this.mode = mode;
+        this.embed = embed;
     }
 
     private titleCase(str: string): string {
@@ -74,8 +78,12 @@ class ChangeManager<T> {
             else text += `${d.ot} ${(v.override ?? this.titleCase(k as string)) + ":"} ` + v.value + "\n";
         }
 
-        return text;
+        return this.embed.setDescription(text);
     }
+}
+
+function stringToDiff(str: string, type: "-" | "+") {
+    return str.split("\n").map(e => type + ` ${e}`).join("\n")
 }
 
 const Handlers = {
@@ -120,13 +128,40 @@ const Handlers = {
         // guildUpdate: "Server Updated",
     },
     [ConfigurationEvents.invite]: {
-        inviteCreate: (invite: Invite) => `${d.mention(invite.inviter)} created in invite in ${d.channel(invite.channel)} that expires ${invite.expiresTimestamp == null ? "never" : time(invite.expiresAt, TimestampStyles.RelativeTime)}`,
-        inviteDelete: (invite: Invite) => `An invite was deleted in ${d.channel(invite.channel)}`,
+        inviteCreate: (ebd, invite: Invite) => `${d.mention(invite.inviter)} created in invite in ${d.channel(invite.channel)} that expires ${invite.expiresTimestamp == null ? "never" : time(invite.expiresAt, TimestampStyles.RelativeTime)}`,
+        inviteDelete: (ebd, invite: Invite) => `An invite was deleted in ${d.channel(invite.channel)}`,
     },
     [ConfigurationEvents.messageUpdate]: {
-        messageDelete: (message: Message) => `${d.mention(message.author)} deleted a message in ${d.channel(message.channel)}\n${codeBlock(message.content)}`,
-        messageDeleteBulk: (messages: Collection<Snowflake, Message>, channel: GuildBasedChannel) => `${messages.size} messages were mass deleted in ${d.channel(channel)}`,
-        messageUpdate: (oldMessage: Message, newMessage: Message) => `${d.mention(newMessage.author)} updated their message in ${d.channel(newMessage.channel)}\n${codeBlock("diff", `- ${oldMessage.content}\n+ ${newMessage.content}`)}`,
+        messageDelete: (ebd, message: Message) => `A message was deleted in ${d.channel(message.channel)}, this message was authored by ${d.mention(message.author)}\n${codeBlock(message.content)}`,
+        messageDeleteBulk: (ebd, messages: Collection<Snowflake, Message>, channel: GuildBasedChannel) => `${messages.size} messages were mass deleted in ${d.channel(channel)}`,
+        messageUpdate: (ebd, oldMessage: Message, newMessage: Message) => {
+            ebd.setDescription(
+                `${d.mention(newMessage.author)} updated their message in ${d.channel(newMessage.channel)}`
+            );
+
+            if (newMessage.components != oldMessage.components) {
+                const Added = [];
+                const Removed = [];
+                const StillThere = [];
+                const AllComponents = [] as MessageActionRowComponent[];
+                const OldAllComponents = [] as MessageActionRowComponent[];
+                newMessage.components.map(e => AllComponents.push(...e.components));
+                oldMessage.components.map(e => OldAllComponents.push(...e.components));
+                ebd.addFields([{
+                    name: "Components",
+                    value: codeBlock("diff", `old component\n+ new component`)
+                }]);
+            }
+
+            if (newMessage.content != oldMessage.content) {
+                ebd.addFields([{
+                    name: "Message Content",
+                    value: codeBlock("diff", `${stringToDiff(oldMessage.content, "-")}\n\n${stringToDiff(newMessage.content, "+")}`)
+                }]);
+            }
+
+            return ebd;
+        },
     },
     [ConfigurationEvents.messageReaction]: {
         // messageReactionRemoveAll: "All Message Reactions Removed",
@@ -135,7 +170,7 @@ const Handlers = {
         // messageReactionRemove: "Message Reaction Removed",
     },
     [ConfigurationEvents.role]: {
-        roleCreate: (role: Role) => new ChangeManager(role, role, ChangeModes.Create)
+        roleCreate: (ebd, role: Role) => new ChangeManager(ebd, role, role, ChangeModes.Create)
             .addMultiple([
                 "name",
                 "hexColor",
@@ -143,8 +178,8 @@ const Handlers = {
                 "mentionable",
                 "unicodeEmoji"
             ], Presets.Move),
-        roleDelete: (role: Role) => `${bold(role.name)} has been deleted ${time(new Date(), TimestampStyles.RelativeTime)}`,
-        roleUpdate: (oldRole: Role, newRole: Role) => new ChangeManager(newRole, oldRole)
+        roleDelete: (ebd, role: Role) => `${bold(role.name)} has been deleted ${time(new Date(), TimestampStyles.RelativeTime)}`,
+        roleUpdate: (ebd, oldRole: Role, newRole: Role) => new ChangeManager(ebd, newRole, oldRole)
             .addMultiple([
                 "hexColor",
                 "hoist",
@@ -175,7 +210,7 @@ const Handlers = {
         // stickerUpdate: "Sticker Updated",
     },
     [ConfigurationEvents.guildScheduledEvent]: {
-        guildScheduledEventCreate: (event: GuildScheduledEvent) => `${event.creator} (${event.creatorId}) created an event starting ${time(event.scheduledStartAt, TimestampStyles.RelativeTime)} until ${time(event.scheduledEndAt, TimestampStyles.LongDate)} titled ${event.name}`,
+        guildScheduledEventCreate: (embed, event: GuildScheduledEvent) => `${event.creator} (${event.creatorId}) created an event starting ${time(event.scheduledStartAt, TimestampStyles.RelativeTime)} until ${time(event.scheduledEndAt, TimestampStyles.LongDate)} titled ${event.name}`,
         // guildScheduledEventUpdate: "Event Updated",
         // guildScheduledEventDelete: "Event Deleted",
         // guildScheduledEventUserAdd: "Event User Added",
@@ -196,13 +231,18 @@ export async function LoggingService(client: Client) {
             Object.entries(events).forEach(([eventName, title]) => {
                 client.on(eventName, async (...args) => {
                     if (eventName == Events.MessageUpdate && args[0]?.author?.id == client.user.id) return;
+                    if (args.find(e => e?.guild?.id != guild.id) != null) return;
                     const handler = Handlers[v[1]][eventName];
                     try {
+                        let embed = new Embed(guild)
+                            .setTitle(title);
+                        const result = await handler(embed, ...args);
+                        if (typeof result == "string") embed.setDescription(result);
+                        if (handler?.toString != null) result.toString();
+                        if (typeof result == "object") embed = result;
                         await Channel.send({
                             embeds: [
-                                new Embed(guild)
-                                    .setTitle(title)
-                                    .setDescription(handler(...args).toString())
+                                embed
                             ]
                         });
                     } catch (e) {
