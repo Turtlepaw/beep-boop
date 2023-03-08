@@ -6,6 +6,7 @@ import { ButtonBuilderModal, GetTextInput, RoleSelector } from "../utils/compone
 import { FriendlyInteractionError } from "../utils/error";
 import { FindWebhook } from "../utils/Webhook";
 import { ArrayUtils } from "../utils/classes";
+import { generateId } from "@utils/Id";
 
 function isApiLinkButton(component: APIButtonComponent): component is APIButtonComponentWithURL {
     //@ts-expect-error were checking if thats not null
@@ -123,7 +124,7 @@ export default class AddButton extends ContextMenu {
         const isTicketButton = ButtonType.values[0] == ButtonTypes.TicketButton;
         const isVerificationButton = ButtonType.values[0] == ButtonTypes.VerificationButton;
         let StyleReplyMessage: MessageComponentInteraction = ButtonType;
-        let ButtonCustomId: string = isTicketButton ? `OPEN_TICKET` : `VERIFY_USER`;
+        let ButtonCustomId: string = isTicketButton ? `OPEN_TICKET_${generateId(5)}` : `VERIFY_USER`;
         let SelectedRole: Role | APIRole;
 
         if (isRoleButton) {
