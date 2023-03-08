@@ -17,7 +17,7 @@ export interface Ticket {
 export default class CreateTicket extends Button {
     constructor() {
         super({
-            CustomId: "OPEN_TICKET_{any}",
+            CustomId: "OPEN_TICKET{any}",
             GuildOnly: true,
             RequiredPermissions: [],
             SomePermissions: [],
