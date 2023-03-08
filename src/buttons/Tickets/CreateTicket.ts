@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ImageFormat, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ImageFormat, MessageActionRowComponent, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
 import { Colors, Embed, Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
 import { Filter } from "../../utils/filter";
@@ -113,6 +113,9 @@ export default class CreateTicket extends Button {
             type: ChannelType.GuildText
         });
 
+        const buttons: MessageActionRowComponent[] = [];
+        interaction.message.components.map(e => buttons.push(...e.components));
+        const Clicked = (buttons.filter(e => e.type == ComponentType.Button) as ButtonComponent[]).filter(e => e.style != ButtonStyle.Link).find(e => e.customId == interaction.customId);
         const EmbedData = (await new Embed(interaction)
             .setTitle(`Ticket`)
             .setAuthor({
@@ -120,6 +123,9 @@ export default class CreateTicket extends Button {
                 iconURL: interaction.user.avatarURL()
             })
             .addFields([{
+                name: "Button Clicked",
+                value: Clicked?.label ?? "Unknown"
+            }, {
                 name: "Created At",
                 value: time(new Date(), TimestampStyles.RelativeTime),
                 inline: true
