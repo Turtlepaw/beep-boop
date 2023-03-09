@@ -5,6 +5,7 @@ import { ParsedQs } from "qs";
 import APIRoute, { Method } from "../../lib/APIRoute";
 import { Routes } from "../api-types";
 import { Client } from "discord.js";
+import { Website } from "@config";
 //import { APIMessages } from "../index";
 
 export default class LinkedRolesRedirect extends APIRoute {
@@ -35,7 +36,8 @@ export default class LinkedRolesRedirect extends APIRoute {
                 //@ts-expect-error typings...
                 verified: true
             });
-            res.send("Successfully linked your account!")
+
+            res.redirect(`${Website}/link/success`);
         } catch (e) {
             console.log(e);
             res.sendStatus(500);
