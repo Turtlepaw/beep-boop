@@ -40,7 +40,7 @@ export default class Send extends Command {
         if (CurrentCache != null) {
             const PNG = Buffer.from(CurrentCache.value, "base64");
             const attachment = new AttachmentBuilder(PNG, { name: 'cached.png' });
-            const Feedback = new FeedbackMessage(interaction);
+            const Feedback = new FeedbackMessage(interaction, "Cached Snowify");
 
             const Message = await interaction.editReply({
                 files: [attachment],
@@ -76,7 +76,7 @@ export default class Send extends Command {
         });
 
         const attachment = new AttachmentBuilder(PNG, { name: 'snowy.png' });
-        const Feedback = new FeedbackMessage(interaction);
+        const Feedback = new FeedbackMessage(interaction, "Snowify");
 
         const Message = await interaction.editReply({
             files: [attachment],

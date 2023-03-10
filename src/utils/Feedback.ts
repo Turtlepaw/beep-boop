@@ -18,9 +18,11 @@ export const FeedbackEmojis = {
 export class FeedbackMessage {
     private interaction: RepliableInteraction;
     private RecordedMessage: Message;
+    private source = "unknown";
 
-    constructor(interaction: RepliableInteraction) {
+    constructor(interaction: RepliableInteraction, source: string) {
         this.interaction = interaction;
+        this.source = source;
     }
 
     get components() {
@@ -70,6 +72,9 @@ export class FeedbackMessage {
                             new Embed(this.interaction)
                                 .setTitle("New Feedback Recorded")
                                 .addFields([{
+                                    name: `Source`,
+                                    value: this.source
+                                }, {
                                     name: "Feedback",
                                     value: FeedbackEmojis[Button.customId]
                                 }, {

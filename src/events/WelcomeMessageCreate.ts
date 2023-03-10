@@ -11,7 +11,7 @@ export default class LeaveAppealMessage extends Event {
 
     async ExecuteEvent(client: Client, message: Message) {
         if (message.guild?.id == null) return; //dm
-        const Server = await client.Storage.Configuration.forGuild(message.guild);
+        //const Server = await client.Storage.Configuration.forGuild(message.guild);
         //if (Server == null || !Server.isSystemCleanup()) return;
         if (message.type != MessageType.UserJoin) return;
         client.Storage.Messages.Create({
