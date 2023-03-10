@@ -55,11 +55,12 @@ export class FeedbackManager {
         const { guild, client } = this.member;
         const Configuration = await client.Storage.Configuration.forGuild(guild);
         function createError() {
-            if (interaction == null) return;
-            return interaction.reply({
+            if (interaction == null) return null;
+            interaction.reply({
                 content: `${Icons.Configure} You haven't configured Leave Feedback yet, configure it with ${client.CommandManager.getCommand(client.CommandManager.knownCommands.Configuration)}`,
                 ephemeral: true
-            })
+            });
+            return null;
         }
 
         if (Configuration?.LeaveFeedback?.Status == false) return createError();
