@@ -30,7 +30,6 @@ export async function RefreshDiscordMetadata({ LinkedRoles }: Client) {
             key: "reputation",
             name: "Reputation",
             description: "The user's reputation, this can be useful for trusting users.",
-            //@ts-expect-error something with the typings
             type: MetaDataTypes.INTEGER_GREATER_THAN_OR_EQUAL
         }]);
     } catch (e) {

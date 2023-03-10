@@ -28,6 +28,7 @@ export default class LeaveAppealMessage extends Event {
             const Message = await Channel.messages.fetch(JoinMessage.Message);
 
             if (Message.deletable) Message.delete();
+            else client.Errors.AddError("Couldn't delete welcome message", "Welcome Messages (auto cleanup)", member.guild);
         } catch (e) {
             Logger.error(`Error Deleting Welcome Message: ${e}`);
         }

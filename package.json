@@ -3,7 +3,7 @@
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@airdot/activities": "^4.1.5",
-    "@airdot/linked-roles": "^0.2.3",
+    "@airdot/linked-roles": "^0.2.6",
     "@airdot/verifiers": "^1.1.1",
     "@trpc/server": "^10.12.0",
     "@types/cookie-parser": "^1.4.3",

@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
 import { Embed, Icons } from "../../configuration";
 import { Logger } from "../../logger";
@@ -17,7 +17,7 @@ export enum Modules {
     Starboard = "STARBOARD"
 }
 
-export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; }> = {
+export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; isDisabled?: (client: Client) => boolean }> = {
     [Modules.Appeals]: {
         Label: "Appeals",
         Description: "Appeals let users ask moderators to review their case/punishment.",
@@ -64,7 +64,7 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
         Icon: Icons.Clipboard
     },
     [Modules.Starboard]: {
-        Label: "Highlights",
+        Label: "Highlights (BETA)",
         Description: "Keep the most liked messages in a highlighted place",
         Icon: Icons.Star
     }

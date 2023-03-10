@@ -33,7 +33,6 @@ export default class LinkedRolesRedirect extends APIRoute {
 
             // Set Application MetaData
             application.setUserMetaData(user.id, user.username, {
-                //@ts-expect-error typings...
                 verified: true
             });
 
