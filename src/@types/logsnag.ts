@@ -1,5 +1,6 @@
 export enum LogSnagChannels {
     Gifts = "gifts",
     Subscriptions = "subscriptions",
-    Verification = "verification"
+    Verification = "verification",
+    WelcomeMessages = "welcome-messages"
 }

@@ -2,7 +2,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, ImageFormat, SlashComma
 import Command, { Categories } from "../../lib/CommandBuilder";
 import Canvas, { createCanvas, registerFont } from "canvas";
 import { FeedbackMessage } from "@utils/Feedback";
-import { applyText } from "@utils/canvas";
+import { applyText, loadGoogleFont } from "@utils/canvas";
 
 export default class Send extends Command {
     constructor() {
@@ -36,7 +36,11 @@ export default class Send extends Command {
         };
 
         //const font = new Canvas.Font("Poppins-Medium", "./fonts/Poppins-Medium.ttf");
-        registerFont("./fonts/Poppins-Medium.ttf", { family: "Poppins-Medium" });
+        //registerFont("./fonts/Poppins-Medium.ttf", { family: "Poppins-Medium" });
+        const fontName = "Poppins";
+        const font = await loadGoogleFont(fontName);
+        await font.load();
+        registerFont(font, { family: fontName });
         const canvas = createCanvas(width, height)
         const ctx = canvas.getContext('2d');
 

@@ -2,6 +2,7 @@ import { Client, Events, GuildMember, TextChannel } from "discord.js";
 import Event from "../lib/Event";
 import { CleanupType } from "../models/Configuration";
 import { Logger } from "../logger";
+import { LogSnagChannels } from "src/@types/logsnag";
 
 export interface MemberMessage {
     MessageId: string;
@@ -23,6 +24,15 @@ export default class LeaveAppealMessage extends Event {
             CustomName: `${member.guild.id}_add_${member.id}`
         });
         const Channel = await member.guild.channels.fetch(JoinMessage.Channel) as TextChannel;
+
+        client.LogSnag.publish({
+            channel: LogSnagChannels.WelcomeMessages,
+            event: "Welcome Message Deleted",
+            icon: "🗑️",
+            tags: {
+                user: member.user.tag
+            }
+        });
 
         try {
             const Message = await Channel.messages.fetch(JoinMessage.Message);
