@@ -55,6 +55,7 @@ export class FeedbackManager {
         const { guild, client } = this.member;
         const Configuration = await client.Storage.Configuration.forGuild(guild);
         function createError() {
+            console.log(interaction, interaction?.reply != null)
             if (interaction == null) return null;
             if (interaction?.reply != null) interaction.reply({
                 content: `${Icons.Configure} You haven't configured Leave Feedback yet, configure it with ${client.CommandManager.getCommand(client.CommandManager.knownCommands.Configuration)}`,
