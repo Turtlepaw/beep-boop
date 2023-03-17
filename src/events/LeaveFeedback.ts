@@ -10,7 +10,7 @@ export default class LeaveFeedback extends Event {
     }
 
     async ExecuteEvent(client: Client, member: GuildMember) {
-        return
+        return;
         const Feedback = new FeedbackManager(member);
         const Message = await Feedback.send();
 
