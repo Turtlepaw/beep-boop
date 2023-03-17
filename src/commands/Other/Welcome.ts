@@ -36,11 +36,8 @@ export default class Send extends Command {
         };
 
         //const font = new Canvas.Font("Poppins-Medium", "./fonts/Poppins-Medium.ttf");
-        //registerFont("./fonts/Poppins-Medium.ttf", { family: "Poppins-Medium" });
-        const fontName = "Poppins";
-        const font = await loadGoogleFont(fontName);
-        await font.load();
-        registerFont(font, { family: fontName });
+        registerFont("./fonts/Poppins-Medium.ttf", { family: "Poppins-Medium" });
+
         const canvas = createCanvas(width, height)
         const ctx = canvas.getContext('2d');
 
