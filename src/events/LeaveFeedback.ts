@@ -10,8 +10,11 @@ export default class LeaveFeedback extends Event {
     }
 
     async ExecuteEvent(client: Client, member: GuildMember) {
+        return;
         const Feedback = new FeedbackManager(member);
         const Message = await Feedback.send();
+
+
         if (Message == null) return;
 
         client.QuickStorage[`f${Message.id}`] = member.guild.id;

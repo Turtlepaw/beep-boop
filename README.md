@@ -37,7 +37,7 @@ Add a space after the `//` so that your comments look nice!
 // Here's a comment
 ```
 
-## Files
+## Files & Directories
 We're trying to keep file naming consistent, although some files aren't consistent. When creating a new file start off with an uppercase, like this:
 
 ```

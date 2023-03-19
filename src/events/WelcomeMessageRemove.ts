@@ -2,7 +2,7 @@ import { Client, Events, GuildMember, TextChannel } from "discord.js";
 import Event from "../lib/Event";
 import { CleanupType } from "../models/Configuration";
 import { Logger } from "../logger";
-import { LogSnagChannels } from "src/@types/logsnag";
+import { LogSnagChannels } from "../@types/logsnag";
 
 export interface MemberMessage {
     MessageId: string;
