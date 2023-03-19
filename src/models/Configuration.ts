@@ -167,6 +167,8 @@ export class GuildConfiguration {
     StarboardChannel: string;
     @Column({ nullable: true, default: "⭐" })
     StarboardReaction: string;
+    @Column({ nullable: true, default: 5 })
+    StarboardReactionCount: number;
 
     // Logging
     // -> Log your server's most important events

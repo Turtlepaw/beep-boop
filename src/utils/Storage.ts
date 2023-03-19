@@ -75,6 +75,7 @@ class ResolvableConfiguration {
         Channel: string;
         Status: boolean;
         Reaction: string;
+        ReactionCount: number;
     };
 
     // Tickets
@@ -173,6 +174,10 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
 
     isInviteBlocker() {
         return this?.InviteBlocker?.Status ?? false;
+    }
+
+    hasStarboard() {
+        return this?.Starboard?.Status == true && this?.Starboard?.Channel != null;
     }
 }
 
@@ -403,7 +408,8 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             Starboard: {
                 Channel: config?.StarboardChannel || null,
                 Status: config?.StarboardStatus ?? false,
-                Reaction: config?.StarboardReaction ?? "⭐"
+                Reaction: config?.StarboardReaction ?? "⭐",
+                ReactionCount: config?.StarboardReactionCount ?? 5
             },
             // Appeals
             Appeals: {

@@ -2,7 +2,7 @@ import { AttachmentBuilder, ChatInputCommandInteraction, ImageFormat, SlashComma
 import Command, { Categories } from "../../lib/CommandBuilder";
 import Canvas, { createCanvas, registerFont } from "canvas";
 import { FeedbackMessage } from "@utils/Feedback";
-import { applyText, loadGoogleFont } from "@utils/canvas";
+import { applyText } from "@utils/canvas";
 
 export default class Send extends Command {
     constructor() {
