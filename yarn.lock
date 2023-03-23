@@ -5,17 +5,17 @@ __metadata:
   version: 6
   cacheKey: 8
 
-"@airdot/activities@npm:^4.1.5":
-  version: 4.1.5
-  resolution: "@airdot/activities@npm:4.1.5"
+"@airdot/activities@npm:^4.1.6":
+  version: 4.1.6
+  resolution: "@airdot/activities@npm:4.1.6"
   dependencies:
     "@types/cheerio": ^0.22.31
     "@types/node-fetch": ^2.6.2
     cheerio: ^1.0.0-rc.12
-    discord.js: ^14.7.0
+    discord.js: ^14.8.0
     node-fetch: ^2.6.6
     typescript: ^4.8.4
-  checksum: b37fb6263be17818132851628ac22d2f95eb3a30a6f975110971daed75a076257da3fd909a388f883994b0c367be0dc4c9bec157cc8ce9ab47a7f33e49768ed9
+  checksum: bfcc0212404406a4d1456e7eabf71e8edf1fd3589d2e6e54aba20885795f876c3f54d7db2a325134f4a0e52bc8a1050534cc59fd6542b87529ef414942a523ea
   languageName: node
   linkType: hard
 
@@ -35,14 +35,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@airdot/verifiers@npm:^1.1.1":
-  version: 1.2.1
-  resolution: "@airdot/verifiers@npm:1.2.1"
+"@airdot/verifiers@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "@airdot/verifiers@npm:2.1.0"
   dependencies:
     axios: ^1.2.0
-    discord.js: ^14.7.0
+    discord.js: ^14.8.0
     typescript: ^4.9.3
-  checksum: b227e674b6eca796671290c22301c627f2d11062e386f2bf76dc8345526679524a47f19d0b190c6cb6c601e34dad926578acd52359e63a3ddb566d486ac32a6e
+  checksum: 4a7e3fd695d499295cc90677e781cd4aaa07eb6259e3139351525a85ff1cf7a4fb544375b4a6a0dc401fd2510bc2af07266482b3ea5d257d06c7fc776e85a480
   languageName: node
   linkType: hard
 
@@ -2530,9 +2530,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "beep-boop@workspace:."
   dependencies:
-    "@airdot/activities": ^4.1.5
+    "@airdot/activities": ^4.1.6
     "@airdot/linked-roles": ^0.2.8
-    "@airdot/verifiers": ^1.1.1
+    "@airdot/verifiers": ^2.1.0
     "@trpc/server": ^10.12.0
     "@types/cookie-parser": ^1.4.3
     "@types/cors": ^2
@@ -2549,12 +2549,13 @@ __metadata:
     canvas: ^2.11.0
     captcha-canvas: ^3.2.1
     cheerio: ^1.0.0-rc.12
+    chromium-bidi: ^0.4.5
     colors: ^1.4.0
     cookie-parser: ^1.4.6
     cors: ^2.8.5
     decancer: ^1.4.1
     discord-linked-roles: ^0.2.1
-    discord-trivia: ^1.2.3
+    discord-trivia: ^2.0.0
     discord.js: ^14.8.0
     dotenv: ^16.0.3
     eslint: ^8.32.0
@@ -2563,6 +2564,7 @@ __metadata:
     key-file-storage: ^2.2.10
     klaw-sync: ^6.0.0
     logsnag: ^0.1.6
+    mitt: ^3.0.0
     ms: ^2.1.3
     node-fetch: ^2.6.7
     pino: ^7.0.0-rc.9
@@ -2981,6 +2983,17 @@ __metadata:
     devtools-protocol: "*"
     mitt: "*"
   checksum: 280c3b5c2315847cf25b5e356a43f915dea1205f27a8fb10443fad6832d8e08c1878e3b62104c50a27bf4fd6d07868882187b5226195a5bacb9f572f9940f7fb
+  languageName: node
+  linkType: hard
+
+"chromium-bidi@npm:^0.4.5":
+  version: 0.4.5
+  resolution: "chromium-bidi@npm:0.4.5"
+  dependencies:
+    mitt: 3.0.0
+  peerDependencies:
+    devtools-protocol: "*"
+  checksum: 82935d25faad4c4718ba699df884e2719911bfbf99b5eaf42eceb92b1b91f5c251d087641ebb5a93f4bc82a679a6aaaa310d2f8b201443df81ed160cb9e1bee7
   languageName: node
   linkType: hard
 
@@ -3409,14 +3422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.26.1":
-  version: 0.26.1
-  resolution: "discord-api-types@npm:0.26.1"
-  checksum: e53bfa7589b24108e6b403dbe213da34c4592f72e2b8fde6800dcb6c703065887ecbd644e1cdf694e4c7796954bc51462ced868f26ec45dc1e0dc4fa8d3c723c
-  languageName: node
-  linkType: hard
-
-"discord-api-types@npm:^0.37.20, discord-api-types@npm:^0.37.23, discord-api-types@npm:^0.37.24, discord-api-types@npm:^0.37.35":
+"discord-api-types@npm:^0.37.20, discord-api-types@npm:^0.37.23, discord-api-types@npm:^0.37.24, discord-api-types@npm:^0.37.35, discord-api-types@npm:^0.37.36":
   version: 0.37.36
   resolution: "discord-api-types@npm:0.37.36"
   checksum: ba3de3640270738c6fcef515a5d3a22069c89973e7d95984a7ddf1633a6e01fef2b99d4524f4535771694f87e4d779aa7511f21e06abd1c25707b4791c29d386
@@ -3438,18 +3444,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-trivia@npm:^1.2.3":
-  version: 1.2.3
-  resolution: "discord-trivia@npm:1.2.3"
+"discord-trivia@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "discord-trivia@npm:2.0.0"
   dependencies:
-    discord-api-types: ^0.26.1
-    discord.js: ^14.1.2
-    open-trivia-db: ^1.0.1
-  checksum: 150a512192202809c063ddcb3191a18c5bcd9cdd06cad89aae7e14a6f53fe2a3fde3b92e402dc5f9027c62c2562a88035adf4c99aa88a37f76cf011fbe947ff9
+    discord-api-types: ^0.37.36
+    discord.js: ^14.8.0
+    open-trivia-db: ^2.1.5
+  checksum: c9adf76b60f2562dba7e0deaee2b3c754e00f4dc71c78a9f8b068393fe8c41e31cc4098d981fa17ff3ef55e94f90c9d0cf8b3d7660d9d05fa4446a5505148d72
   languageName: node
   linkType: hard
 
-"discord.js@npm:^14.0.0-dev.1655640259-358c3f4, discord.js@npm:^14.1.2, discord.js@npm:^14.7.0":
+"discord.js@npm:^14.0.0-dev.1655640259-358c3f4":
   version: 14.7.1
   resolution: "discord.js@npm:14.7.1"
   dependencies:
@@ -5340,6 +5346,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mitt@npm:3.0.0, mitt@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "mitt@npm:3.0.0"
+  checksum: f7be5049d27d18b1dbe9408452d66376fa60ae4a79fe9319869d1b90ae8cbaedadc7e9dab30b32d781411256d468be5538996bb7368941c09009ef6bbfa6bfc7
+  languageName: node
+  linkType: hard
+
 "mkdirp-classic@npm:^0.5.2":
   version: 0.5.3
   resolution: "mkdirp-classic@npm:0.5.3"
@@ -5707,10 +5720,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"open-trivia-db@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "open-trivia-db@npm:1.0.2"
-  checksum: bf398244fddc7f05fdb335caea5ac96f13a5c5d122fcfff71f7d2d4c24f36110971b5df720082fbc80a6c528b3c208fffe925904f22466f619eb6c45e653c84a
+"open-trivia-db@npm:^2.1.5":
+  version: 2.1.5
+  resolution: "open-trivia-db@npm:2.1.5"
+  peerDependencies:
+    node-fetch: ^2.6.9
+  checksum: 0571e9c26df57420570afad60a19b81eeacece7801e6df6917396e4ab15514b47bd902dfd8b184e24462cf1259e9290d422029c6c165b5afc323c4d82272afe7
   languageName: node
   linkType: hard
 

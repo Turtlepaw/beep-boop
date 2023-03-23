@@ -1,6 +1,5 @@
-import { Canvas, createCanvas, registerFont } from "canvas";
+import { Canvas } from "canvas";
 import axios from "axios";
-import fs from "fs";
 
 export function applyText(canvas: Canvas, text: string, font = "sans-serif", fontSize = 70) {
     const context = canvas.getContext('2d');

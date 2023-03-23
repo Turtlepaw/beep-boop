@@ -1,15 +1,10 @@
 import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import { ChatInputCommandInteraction } from "discord.js";
 import {
-    CategoryNameResolvable, QuestionDifficulty,
-    QuestionType
-} from "open-trivia-db";
-import {
-    QuestionData,
     TriviaGame,
-    TriviaGameOptions
+    GameOptions
+
 } from "discord-trivia";
-import ms from "ms";
 
 export default class TriviaSubcommandBuilder {
     private build: SlashCommandSubcommandBuilder;
@@ -158,16 +153,16 @@ export default class TriviaSubcommandBuilder {
             ?.value as number;
         const minimumPoints = int.options.get("minimum_points", false)
             ?.value as number;
-        const questionAmount = int.options.get("question_amount", false)
-            ?.value as number;
-        const questionDifficulty = int.options.get("question_difficulty", false)
-            ?.value as QuestionDifficulty;
-        const questionType = int.options.get("question_type", false)
-            ?.value as QuestionType;
-        const queueTime = ms(int.options.getString("queue_time", false)) as number;
-        const timePerQuestion = ms(int.options.getString("time_per_question", false)) as number;
-        const triviaCategory = int.options.get("category", false)
-            ?.value as CategoryNameResolvable;
+        // const questionAmount = int.options.get("question_amount", false)
+        //     ?.value as number;
+        // const questionDifficulty = int.options.get("question_difficulty", false)
+        //     ?.value as QuestionDifficulties;
+        // const questionType = int.options.get("question_type", false)
+        //     ?.value as QuestionTypes;
+        // const queueTime = ms(int.options.getString("queue_time", false)) as number;
+        // const timePerQuestion = ms(int.options.getString("time_per_question", false)) as number;
+        // const triviaCategory = int.options.get("category", false)
+        // ?.value as CategoryNames;
         const timeBetweenRounds = int.options.get("time_between_rounds", false)
             ?.value as number;
         const pointsPerStreakAmount = int.options.get("points_per_streak", false)
@@ -177,43 +172,24 @@ export default class TriviaSubcommandBuilder {
         const streakDefinitionLevel = int.options.get("streak_level", false)
             ?.value as number;
 
-        const options = {} as TriviaGameOptions;
-        options.maximumPlayerCount =
-            maximumPlayerCount || TriviaGame.defaults.maximumPlayerCount;
-        options.maximumPoints = maximumPoints || TriviaGame.defaults.maximumPoints;
-        options.minimumPlayerCount =
-            minimumPlayerCount || TriviaGame.defaults.minimumPlayerCount;
-        options.minimumPlayerCount =
-            minimumPlayerCount || TriviaGame.defaults.minimumPlayerCount;
-        options.minimumPoints = minimumPoints || TriviaGame.defaults.minimumPoints;
-
-        if (!Array.isArray(options.questionData)) {
-            options.questionData = {} as QuestionData;
-            options.questionData.amount =
-                questionAmount ||
-                (TriviaGame.defaults.questionData as QuestionData).amount;
-            options.questionData.difficulty = (questionDifficulty ||
-                (TriviaGame.defaults.questionData as QuestionData)
-                    .difficulty) as QuestionDifficulty;
-            options.questionData.type = (questionType ||
-                (TriviaGame.defaults.questionData as QuestionData)
-                    .type) as QuestionType;
-            options.queueTime = queueTime || TriviaGame.defaults.queueTime;
-            options.timePerQuestion =
-                timePerQuestion || TriviaGame.defaults.timePerQuestion;
-            options.questionData.category =
-                triviaCategory ||
-                (TriviaGame.defaults.questionData as QuestionData).category;
-        }
+        const options = {} as GameOptions;
+        options.maxPlayerCount =
+            maximumPlayerCount || TriviaGame.gameOptionDefaults.maxPlayerCount;
+        options.maxPoints = maximumPoints || TriviaGame.gameOptionDefaults.maxPoints;
+        options.minPlayerCount =
+            minimumPlayerCount || TriviaGame.gameOptionDefaults.minPlayerCount;
+        options.minPlayerCount =
+            minimumPlayerCount || TriviaGame.gameOptionDefaults.minPlayerCount;
+        options.minPoints = minimumPoints || TriviaGame.gameOptionDefaults.minPoints;
 
         options.timeBetweenRounds =
-            timeBetweenRounds || TriviaGame.defaults.timeBetweenRounds;
-        options.pointsPerStreakAmount =
-            pointsPerStreakAmount || TriviaGame.defaults.pointsPerStreakAmount;
+            timeBetweenRounds || TriviaGame.gameOptionDefaults.timeBetweenRounds;
+        options.pointsPerSteakAmount =
+            pointsPerStreakAmount || TriviaGame.gameOptionDefaults.pointsPerSteakAmount;
         options.maximumStreakBonus =
-            maximumStreakBonus || TriviaGame.defaults.maximumStreakBonus;
+            maximumStreakBonus || TriviaGame.gameOptionDefaults.maximumStreakBonus;
         options.streakDefinitionLevel =
-            streakDefinitionLevel || TriviaGame.defaults.streakDefinitionLevel;
+            streakDefinitionLevel || TriviaGame.gameOptionDefaults.streakDefinitionLevel;
 
         //if (additionalOptions) Object.assign(options, additionalOptions);
 
