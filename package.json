@@ -32,7 +32,7 @@
     "puppeteer": "^19.3.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
-    "sqlite3": "^5.0.2",
+    "sqlite3": "^5.1.5",
     "storage-async": "^1.0.1",
     "svg-captcha": "^1.4.0",
     "svg2img": "^1.0.0-beta.2",
