@@ -3,7 +3,7 @@ import { ModuleInformation, Modules } from "../commands/Guild/Server";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { ActionRowBuilder, AnyComponentBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonInteraction, ButtonStyle, Client, ComponentType, Interaction, Message, ModalBuilder, TextInputBuilder } from "discord.js";
 import { ButtonCollector, Filter } from "./filter";
-import { ResolvedGuildConfiguration, StorageManager } from "./storage";
+import { ResolvedGuildConfiguration, StorageManager } from "./Storage";
 import { generateId } from "./Id";
 import { GuildConfiguration } from "../models/Configuration";
 import { GetTextInput } from "./components";
@@ -175,7 +175,7 @@ export class ConfigurationBuilder {
             if (e.Children != null) text += e.Children.map(e => Render(e)).join("\n");
             return text;
         }).map((e, i) => this.isEnd(Fields, i) ? `${Icons.StemEnd} ${e}` : `${Icons.StemItem} ${e}`).join("\n");
-        return new Embed(interaction.guild)
+        return new Embed(interaction)
             .setTitle(`Managing ${Information.Label}`)
             .addFields([{
                 name: "About this module",

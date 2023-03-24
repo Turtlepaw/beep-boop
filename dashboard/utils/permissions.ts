@@ -120,6 +120,13 @@ export class Permissions {
         return PermissionsBits;
     }*/
 
+    static TypeString(guild: APIGuild) {
+        const role = this.Role(guild);
+        if ([Roles.GuildAdministrator, Roles.GuildManager, Roles.GuildOwner]) {
+            return "Full Access";
+        } else return "Limited Access";
+    }
+
     static Role(guild: APIGuild) {
         const PermissionArray = new Permissions(guild.Permissions as PermissionString[]);
 

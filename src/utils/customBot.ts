@@ -13,7 +13,7 @@ export interface CustomBotOptions {
     channel: TextBasedChannel;
 }
 
-export const customClients = {};
+export const customClients: Record<string, Client> = {};
 
 export function CreateConfiguration(client: Client) {
     setTimeout(async () => {
@@ -99,7 +99,7 @@ export function StartCustomBot(botToken: string, client: Client, options?: Custo
                                 value: `<@${Bot.BotId}>`
                             }, {
                                 name: `${Icons.Configure} Bot Configuration`,
-                                value: `• Status: ${Bot.CustomStatus != null ? inlineCode(`${Status(ActivityType[Bot.CustomStatusType])} ${Bot.CustomStatus}`) : "None."}
+                                value: `• Status: ${Bot.CustomStatus != null ? inlineCode(`${Status(ActivityType[Bot.CustomStatusType])} ${Bot.CustomStatus}`) : "None"}
 • Logging Channel: <#${Bot.LoggingChannel}>
 • Owner: <@${Bot.Owner}>`
                             }])

@@ -103,7 +103,7 @@ export default class VerificationConfiguration extends SelectOptionBuilder {
         ];
 
         const Emoji = GetEmoji(client, Modules.Verification);
-        const GenerateEmbed = () => new Embed(interaction.guild)
+        const GenerateEmbed = () => new Embed(interaction)
             .setTitle("Managing Verification")
             .setThumbnail(Emoji.Resolved.url ?? null)
             .addFields([{

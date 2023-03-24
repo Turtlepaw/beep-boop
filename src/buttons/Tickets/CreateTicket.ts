@@ -1,7 +1,8 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
-import { Embed, Icons } from "../../configuration";
+import { ActionRowBuilder, ButtonBuilder, ButtonComponent, ButtonInteraction, ButtonStyle, ChannelType, Client, ComponentType, ImageFormat, MessageActionRowComponent, ModalBuilder, ModalSubmitInteraction, PermissionsBitField, TextInputBuilder, TextInputStyle, time, TimestampStyles } from "discord.js";
+import { Colors, Embed, Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
 import { Filter } from "../../utils/filter";
+import { TicketButtons } from "../../utils/Tickets";
 
 export interface Ticket {
     CreatedBy: string;
@@ -16,10 +17,11 @@ export interface Ticket {
 export default class CreateTicket extends Button {
     constructor() {
         super({
-            CustomId: "OPEN_TICKET",
+            CustomId: "OPEN_TICKET{any}",
             GuildOnly: true,
             RequiredPermissions: [],
-            SomePermissions: []
+            SomePermissions: [],
+            RequireIdFetching: true
         })
     }
 
@@ -67,7 +69,7 @@ export default class CreateTicket extends Button {
 
         const Message = await interaction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`${Icons.Flag} Add a Reason`)
                     .setDescription("If you add a reason, you're more likely to get help faster.")
             ],
@@ -112,9 +114,39 @@ export default class CreateTicket extends Button {
             type: ChannelType.GuildText
         });
 
+        const buttons: MessageActionRowComponent[] = [];
+        interaction.message.components.map(e => buttons.push(...e.components));
+        const Clicked = (buttons.filter(e => e.type == ComponentType.Button) as ButtonComponent[]).filter(e => e.style != ButtonStyle.Link).find(e => e.customId == interaction.customId);
+        const EmbedData = (await new Embed(interaction)
+            .setTitle(`Ticket`)
+            .setAuthor({
+                name: `Created By ${interaction.user.username}`,
+                iconURL: interaction.user.avatarURL()
+            })
+            .addFields([{
+                name: "Button Clicked",
+                value: Clicked?.label ?? "Unknown"
+            }, {
+                name: "Created At",
+                value: time(new Date(), TimestampStyles.RelativeTime),
+                inline: true
+            }, {
+                name: "Created By",
+                value: interaction.user.toString(),
+                inline: true
+            }, {
+                name: "Reason",
+                value: Reason,
+                inline: true
+            }, {
+                name: "Claimed By",
+                value: "No one has claimed this ticket yet",
+                inline: true
+            }]).Resolve()).data;
+
         TicketChannel.send({
             embeds: [
-                new Embed(interaction.guild)
+                await new Embed(interaction)
                     .setTitle(`Ticket`)
                     .setAuthor({
                         name: `Created By ${interaction.user.username}`,
@@ -137,22 +169,9 @@ export default class CreateTicket extends Button {
                         value: "No one has claimed this ticket yet",
                         inline: true
                     }])
+                    .Resolve()
             ],
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(
-                        new ButtonBuilder()
-                            .setLabel("Close")
-                            .setStyle(ButtonStyle.Danger)
-                            //.setEmoji(Icons.Lock)
-                            .setCustomId("CLOSE_TICKET"),
-                        new ButtonBuilder()
-                            .setLabel("Claim")
-                            .setStyle(ButtonStyle.Success)
-                            //.setEmoji(Icons.Sync)
-                            .setCustomId("CLAIM_TICKET")
-                    )
-            ]
+            components: TicketButtons(TicketChannel, false)
         });
 
         await Interaction.reply({
@@ -177,7 +196,42 @@ export default class CreateTicket extends Button {
             ChannelId: TicketChannel.id,
             GuildId: interaction.guild.id,
             Reason,
-            Messages: new Map()
+            //add default message
+            Messages: new Map([
+                ["STARTING_MESSAGE", {
+                    Components: [{
+                        label: "Close Ticket",
+                        style: ButtonStyle.Danger
+                    }, {
+                        label: "Claim Ticket",
+                        style: ButtonStyle.Success
+                    }],
+                    User: {
+                        Avatar: client.user.avatarURL({
+                            extension: ImageFormat.WebP,
+                            size: 4096,
+                            forceStatic: true
+                        }),
+                        Bot: true,
+                        Tag: client.user.tag,
+                        Username: client.user.username,
+                        Color: Colors.BrandColor,
+                        Id: client.user.id
+                    },
+                    Embeds: [EmbedData],
+                    Date: new Date().toString(),
+                    Deleted: false,
+                    Id: "STARTING_MESSAGE_"
+                }]
+            ]),
+            Creator: {
+                Avatar: interaction.user.avatarURL({ forceStatic: true, size: 4096, extension: ImageFormat.WebP }),
+                Username: interaction.user.username,
+                Bot: interaction.user.bot,
+                Tag: interaction.user.tag,
+                Color: (await interaction.guild.members.fetch(interaction.user.id)).roles.highest.hexColor,
+                Id: interaction.user.id
+            }
         });
     }
 }

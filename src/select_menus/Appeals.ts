@@ -59,7 +59,7 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
                 if (CacheUser == null) return userMention(item);
                 else return CacheUser.tag;
             })
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle("Managing Appeals")
                 .addFields([{
                     name: "About Appeals",

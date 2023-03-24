@@ -27,7 +27,7 @@ async function Handle(Reminder: Reminder, client: Client) {
         await DM.send({
             content: `${Icons.Clock} Times up!`,
             embeds: [
-                new Embed()
+                new Embed(null)
                     .setDescription(`${Reminder.Title}`)
             ]
         });

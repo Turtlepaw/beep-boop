@@ -14,35 +14,48 @@ import {
 import APIRoute, { Method } from "../lib/APIRoute";
 import KlawSync from "klaw-sync";
 import { BaseDirectory } from "../configuration";
+import cookieParser from "cookie-parser";
+import crypto from "crypto";
+import cors from "cors";
 
 export const APIMessages = {
-    NotFound: () => ({
-        error: true,
-        message: "Item not found",
-        code: 404
-    }),
-    InternalError: () => ({
-        error: true,
-        message: "Internal Server Error",
-        code: 500
-    }),
-    BadRequest: (param?: string) => ({
-        error: true,
-        message: `Bad Request${param != null ? ` (${param})` : ""}`,
-        code: 400
-    }),
-    Success: (message?: string, more?: object) => ({
-        ...more,
-        error: false,
-        message: message ?? "Success",
-        code: 200
-    }),
-    Created: (message?: string, more?: object) => ({
-        ...more,
-        error: false,
-        message: message ?? "Created",
-        code: 201
-    })
+    NotFound: (res: Response) => {
+        return res.send({
+            error: true,
+            message: "Item not found",
+            code: 404
+        }).status(404);
+    },
+    InternalError: (res: Response) => {
+        return res.send({
+            error: true,
+            message: "Internal Server Error",
+            code: 500
+        }).status(500);
+    },
+    BadRequest: (res: Response, param?: string) => {
+        return res.send({
+            error: true,
+            message: `Bad Request${param != null ? ` (${param})` : ""}`,
+            code: 400
+        }).status(400);
+    },
+    Success: (res: Response, message?: string, more?: object) => {
+        return res.send({
+            ...more,
+            error: false,
+            message: message ?? "Success",
+            code: 200
+        }).status(200);
+    },
+    Created: (res: Response, message?: string, more?: object) => {
+        return res.send({
+            ...more,
+            error: false,
+            message: message ?? "Created",
+            code: 201
+        }).status(201);
+    }
 }
 
 function VerifyBase(str: unknown) {
@@ -70,14 +83,11 @@ export async function API(client: Client, token: string) {
 
     const app = express();
 
-    app.use((req, res, next) => {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        next();
-    });
+    app.use(cors());
 
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
+    app.use(cookieParser(crypto.randomUUID()));
 
     const APIRoutes: APIRoute[] = [];
     const APIRouteFiles = KlawSync(`${BaseDirectory}/api/routes`, { nodir: true, traverseAll: true, filter: f => f.path.endsWith('.js') });
@@ -97,11 +107,11 @@ export async function API(client: Client, token: string) {
         }
 
         if (route.Get != null) app.get(route.route, async (req, res) => {
-            if (!await handleAuth(req, res, Method.Get)) return;
+            if (!(await handleAuth(req, res, Method.Get))) return;
             await route.Get(req, res, client);
         });
         if (route.Post != null) app.post(route.route, async (req, res) => {
-            if (!await handleAuth(req, res, Method.Post)) return;
+            if (!(await handleAuth(req, res, Method.Post))) return;
             await route.Post(req, res, client);
         });
 
@@ -119,19 +129,15 @@ export async function API(client: Client, token: string) {
         }
     });
 
-    console.log(`${`Loaded`.gray} ${`${APIRoutes.length}`.green.bold} ${`API Routes`.gray}`)
+    console.log(`${`Loaded`.gray} ${`${APIRoutes.length}`.green.bold} ${`API Routes`.gray} `)
 
     app.get(Routes.Index, async (req, res) => {
-        res.send(
-            APIMessages.Success("Server online, waiting for requests...")
-        );
+        APIMessages.Success(res, "Server online, waiting for requests...")
     });
 
     app.get(Routes.OAuth, async (req, res) => {
         const UserId = req.query?.id as string;
-        if (!Verifiers.String(UserId)) return res.send(
-            APIMessages.BadRequest("id")
-        );
+        if (!Verifiers.String(UserId)) return APIMessages.BadRequest(res, "id");
 
         const User = client.Storage.OAuth.FindBy({ User: UserId });
         res.send(User[0]);
@@ -143,17 +149,13 @@ export async function API(client: Client, token: string) {
         const token_type = req.body?.token_type;
         const jwt_token = req.body?.jwt_token;
 
-        if (VerifyNumber(UserId, 18)) return res.send(
-            APIMessages.BadRequest("id")
-        );
+        if (VerifyNumber(UserId, 18)) return APIMessages.BadRequest(res, "id");
 
         if (
             !Verifiers.String(access_token) ||
             !Verifiers.String(token_type) ||
             !Verifiers.String(jwt_token)
-        ) return res.send(
-            APIMessages.BadRequest("missing 1 or more params")
-        );
+        ) return APIMessages.BadRequest(res, "missing 1 or more params")
 
         client.Storage.OAuth.Create({
             User: UserId,
@@ -162,30 +164,22 @@ export async function API(client: Client, token: string) {
             access_token
         });
 
-        res.send(
-            APIMessages.Created()
-        );
+        return APIMessages.Created(res);
     });
 
     app.delete(Routes.OAuth, async (req, res) => {
         const UserId = req.body?.id;
 
-        if (VerifyNumber(UserId, 18)) return res.send(
-            APIMessages.BadRequest("id")
-        );
+        if (VerifyNumber(UserId, 18)) return APIMessages.BadRequest(res, "id")
 
-        delete client.storage[`oauth_${UserId}`];
-        res.send(
-            APIMessages.Created()
-        );
+        delete client.storage[`oauth_${UserId} `];
+        return APIMessages.Created(res);
     });
 
     app.get(Routes.GuildsWith, async (req, res) => {
         const UserId = req.query?.id;
 
-        if (typeof UserId != "string" || VerifyStringNumber(UserId, 18)) return res.send(
-            APIMessages.BadRequest("id")
-        );
+        if (typeof UserId != "string" || VerifyStringNumber(UserId, 18)) return APIMessages.BadRequest(res, "id");
 
         const Guilds: APIGuild[] = client.guilds.cache.filter(async e => {
             try {
@@ -206,28 +200,24 @@ export async function API(client: Client, token: string) {
             Permissions: e.members.cache.get(UserId).permissions.toArray()
         }));
 
-        res.send(Guilds);
+        return res.send(Guilds).status(200);
     });
 
     app.get(Routes.Channels, async (req, res) => {
         const GuildId = req.query?.id;
-        if (VerifyStringNumber(GuildId, 19)) return res.send(
-            APIMessages.BadRequest("id")
-        );
+        if (VerifyStringNumber(GuildId, 19)) return APIMessages.BadRequest(res, "id");
 
         //@ts-expect-error its an id
         const Guild = await client.guilds.fetch(GuildId);
 
-        if (Guild == null) return res.send(
-            APIMessages.NotFound()
-        );
+        if (Guild == null) return APIMessages.NotFound(res);
 
         const Channels: APIChannel[] = Guild.channels.cache.filter(e => e.type == ChannelType.GuildText).map(e => ({
             Id: e.id,
             Name: e.name
         }));
 
-        res.send(Channels);
+        return res.send(Channels).status(200);
     });
 
     app.post(Routes.CreateMessage, async (req, res) => {
@@ -235,17 +225,11 @@ export async function API(client: Client, token: string) {
         const ChannelId = req.body?.channel;
         const MessageContent = req.body?.content;
 
-        if (VerifyStringNumber(GuildId, 19)) return res.send(
-            APIMessages.BadRequest("id")
-        );
+        if (VerifyStringNumber(GuildId, 19)) return APIMessages.BadRequest(res, "id")
 
-        if (VerifyStringNumber(ChannelId, 19)) return res.send(
-            APIMessages.BadRequest("channel")
-        );
+        if (VerifyStringNumber(ChannelId, 19)) return APIMessages.BadRequest(res, "channel")
 
-        if (!Verifiers.String(MessageContent)) return res.send(
-            APIMessages.BadRequest("content")
-        );
+        if (!Verifiers.String(MessageContent)) return APIMessages.BadRequest(res, "content")
 
         const Guild = await client.guilds.fetch(GuildId);
         const Channel = await Guild.channels.fetch(ChannelId);
@@ -254,24 +238,20 @@ export async function API(client: Client, token: string) {
             content: MessageContent
         });
 
-        res.send(
-            APIMessages.Created()
-        );
+        return APIMessages.Created(res);
     });
 
     app.get(Routes.Subscription, async (req, res) => {
         const GuildId = req.params.guildId;
 
-        if (VerifyStringNumber(GuildId, 19)) return res.send(
-            APIMessages.BadRequest("guildId")
-        );
+        if (VerifyStringNumber(GuildId, 19)) return APIMessages.BadRequest(res, "guildId");
 
         const Guild = await client.Storage.Configuration.forGuild({
             id: GuildId,
             name: "Unknown Guild"
         });
 
-        res.send(Guild?.Premium ?? false);
+        res.send(Guild?.Premium ?? false).status(200);
     });
 
     //app.listen(4000, () => console.log("API Ready".green, "http://localhost:4000/".gray))
@@ -280,7 +260,7 @@ export async function API(client: Client, token: string) {
     const uri = API_URL;
     if (isNaN(port)) throw new Error("API_PORT must be a valid number");
     if (uri == null || typeof uri != "string") throw new Error("API_URL must be a valid string");
-    const onListen = () => console.log("API Running: ".green + `${uri}`.gray);
+    const onListen = () => console.log("API Running: ".green + `${uri} `.gray);
     if (DEVELOPER_BUILD) {
         app.listen(port, onListen);
     } else {

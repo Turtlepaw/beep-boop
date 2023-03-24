@@ -1,12 +1,12 @@
-import { ChatInputCommandInteraction, Client, GuildMember, PermissionFlagsBits, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
+import { ButtonStyle, ChatInputCommandInteraction, Client, GuildMember, PermissionFlagsBits, SlashCommandSubcommandBuilder, SlashCommandSubcommandGroupBuilder } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
 import { MultiplayerRockPaperScissors, RockPaperScissors } from "@airdot/activities";
 import { InteractionError, SendError } from "../../utils/error";
 import { TriviaManager } from 'discord-trivia';
 import TriviaSubcommandBuilder from "../../lib/TriviaCommandBuilder";
+import { Colors } from "@config";
 
 const CommandData = new TriviaSubcommandBuilder("start", "❓ Play some trivia.");
-
 const trivia = new TriviaManager();
 
 export default class Activities extends Command {
@@ -62,16 +62,19 @@ export default class Activities extends Command {
             }
         } else if (SubcomamndName == Subcommands.Trivia) {
             const Options = CommandData.getOptions(interaction);
-            const game = trivia.createGame(interaction, {
-                ...Options
-            });
+            const game = trivia.createGame(interaction);
 
-            game.start();
+            game.decorate({
+                embedColor: Colors.BrandColor,
+                buttonStyle: ButtonStyle.Secondary
+            })
+                .setGameOptions(Options)
+                .setup();
 
             client.TriviaGames.set(interaction.channel.id, game);
         } else if (SubcomamndName == Subcommands.EndTriviaGame) {
             const Game = client.TriviaGames.get(interaction.channel.id);
-            if (Game.hostMember.id != interaction.user.id && interaction.memberPermissions.any([
+            if (Game.host.id != interaction.user.id && interaction.memberPermissions.any([
                 PermissionFlagsBits.ManageMessages,
                 PermissionFlagsBits.ModerateMembers
             ])) return InteractionError({

@@ -47,7 +47,7 @@ export default class TicketConfiguration extends SelectOptionBuilder {
                 .setStyle(ButtonStyle.Secondary)
         ];
 
-        const GenerateEmbed = () => new Embed(interaction.guild)
+        const GenerateEmbed = () => new Embed(interaction)
             .setTitle("Managing Tickets")
             .addFields([{
                 name: "About Tickets",

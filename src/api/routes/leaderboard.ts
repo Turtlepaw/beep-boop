@@ -21,6 +21,7 @@ export default class Leaderboard extends APIRoute {
             GuildId: guildId
         });
 
-        res.send(Leaderboard ?? APIMessages.NotFound());
+        if (Leaderboard == null) return APIMessages.NotFound(res);
+        res.send(Leaderboard);
     }
 }

@@ -10,9 +10,32 @@
         "sourceMap": true,
         "pretty": true,
         "outDir": "./dist/",
-        "baseUrl": "./src/",
+        "baseUrl": "./",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "paths": {
+            "@utils/*": [
+                "src/utils/*"
+            ],
+            "@logger": [
+                "src/logger"
+            ],
+            "@config": [
+                "src/configuration"
+            ],
+            "@selects/*": [
+                "src/select_menus/*"
+            ],
+            "@commands/*": [
+                "src/commands/*"
+            ],
+            "@constants": [
+                "src/constants"
+            ],
+            "@icons": [
+                "src/icons"
+            ]
+        }
     },
     "exclude": [
         "node_modules",

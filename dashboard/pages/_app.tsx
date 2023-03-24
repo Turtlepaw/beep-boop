@@ -4,11 +4,13 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import React from 'react';
-import { Footer } from '../components/Footer';
+import { Footer } from '../components/Layout/Footer';
 import { NextResponse } from 'next/server';
 import { Configuration as config } from '../utils/configuration';
 import { Analytics } from '@vercel/analytics/react';
 import { SSRProvider } from 'react-aria';
+import { theme } from '../components/Theming';
+import { ThemeProvider } from "@primer/react";
 
 // </> Typings </>
 export type URL = `${"http" | "https"}://${string}.${string}` | `/${string}` | `mailto:${string}`;
@@ -33,107 +35,6 @@ export interface WebsiteConfiguration {
 // ^ This is required
 // This is what'll appear on your website
 export const Configuration = config;
-
-
-const colours = {
-  'blurple': '#5865F2',
-  'blurple.500': '#5865F2',
-  'green': '#3BA55C',
-  'red': '#ED4245',
-  'grey.extralight': '#ebedef',
-  'grey.light': '#4F545C',
-  'grey.dark': '#292b2f',
-  'grey.extradark': '#1f2022',
-  'bg': '#202020',
-};
-
-const { blurple, } = colours;
-
-export enum ButtonStyle {
-  Primary = "primary",
-  Secondary = "secondary",
-  Success = "success",
-  Danger = "danger",
-  BrandColor = "brand",
-  Outline = "outline",
-  OutlineDark = "outline_dark"
-}
-
-const theme = extendTheme({
-  colors: colours,
-  styles: {
-    global: (props: any) => ({
-      hr: {
-        borderColor: "#33353b"
-      },
-      button: {
-        _hover: {
-          opacity: "85%"
-        }
-      },
-      body: {
-        bg: "#18191c"
-      },
-      input: {
-        //bg: mode('grey.extradark', 'grey.extralight')(props),
-        bg: 'transparent',
-        height: '36px',
-        width: '100%',
-        padding: '0px 9px',
-        border: `2px solid #484b52`,
-        transition: '0.2s',
-        outline: 'none',
-        borderRadius: 3,
-        _focus: { border: `2px solid #61656e` }
-      },
-    })
-  },
-  components: {
-    Input: {
-      defaultProps: { variant: 'normal' }
-    },
-    Button: {
-      baseStyle: {
-        color: 'white',
-      },
-      variants: {
-        [ButtonStyle.Primary]: {
-          bg: blurple
-        },
-        [ButtonStyle.BrandColor]: {
-          bg: Configuration.Color
-        },
-        [ButtonStyle.Secondary]: {
-          bg: 'grey.light'
-        },
-        [ButtonStyle.Success]: {
-          bg: 'green'
-        },
-        [ButtonStyle.Danger]: {
-          bg: 'red'
-        },
-        [ButtonStyle.Outline]: {
-          _hover: {
-            bg: 'grey.light'
-          }
-        },
-        MenuItem: {
-          _hover: {
-            bg: "#3c3f45"
-          },
-          bg: "transparent"
-        },
-        [ButtonStyle.OutlineDark]: {
-          border: "1px solid #222",
-          bgColor: "transparent",
-          _hover: {
-            bg: 'rgb(50, 50, 50)'
-          }
-        }
-      },
-    }
-  }
-});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

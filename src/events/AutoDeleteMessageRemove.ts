@@ -21,7 +21,8 @@ export default class LeaveAppealMessage extends Event {
         if (Channels == null) return;
         const AutoDeleteMessages = await client.Storage.Messages.FindBy({
             Author: member.id,
-            Type: MessageType.CleanupMessage
+            Type: MessageType.CleanupMessage,
+            Guild: member.guild.id
         });
 
         for (const AutoMessage of AutoDeleteMessages) {
@@ -30,7 +31,9 @@ export default class LeaveAppealMessage extends Event {
             try {
                 const Message = await Channel.messages.fetch(AutoMessage.Message);
 
-                if (Message.deletable) Message.delete();
+                if (Message.deletable) Message.delete().then(() =>
+                    client.Storage.Messages.Delete(AutoMessage.Entity)
+                );
             } catch (e) {
                 Logger.error(`Could not remove welcome message: ${e}`);
             }

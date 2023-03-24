@@ -1,6 +1,8 @@
 import { ActivityOptions, ActivityType, ButtonBuilder, ButtonStyle, Client, PermissionFlagsBits } from "discord.js";
 import { Logging } from "./@types/config";
 import { Embed as EmbedBuilder } from "./utils/EmbedBuilder";
+import { DEVELOPER_BUILD } from "./index";
+import { Icons } from "./icons";
 
 //export const token = process.env.TOKEN;
 //export const clientId = process.env.CLIENT_ID;
@@ -25,17 +27,25 @@ export const ClientAdministrators: string[] = [
     //...
 ];
 export const Logs: Logging = {
+    // This is required for all the logs below,
+    // this is where the bot will fetch the channel from.
+    Guild: "1028789308401918004",
+    // 🚧 Old Documentation
     // This channel needs to be in
     // the `guildId` server (line 16)
     DM: "1040431450798956594",
     Error: "1042231033627684904",
-    Guild: "1028789308401918004"
-
+    Feedback: "1078836800795181056",
 }
+// This relies on Logs.Guild so make sure that role
+// is in the Logs.Guild guild.
+export const TeamRole = "1028814696855392297";
+
 export const guildId = "1049143063978709063"; //"1028789308401918004";
 export const color = "#FF6060";
 export const Version = "v2.0 beta";
-export const Website = "https://beep.trtle.xyz"
+export const Website = DEVELOPER_BUILD == true ? "http://localhost:3000" : "https://beep.trtle.xyz";
+export const Api = DEVELOPER_BUILD == true ? "http://localhost:4000" : "https://api.trtle.xyz";
 export const WebsiteLink = (path: string) => Website + path;
 export function GenerateTranscriptionURL(GuildId: string, ChannelId: string) {
     return `${Website}/transcript/${ChannelId}`
@@ -76,7 +86,8 @@ export enum Emojis {
     Help = "<:HelpCircle:1044458637579518026>"
 }
 
-export enum Icons {
+export { Icons } from "./icons";
+export enum OldIcons {
     Statistics = "<:Statistics:1067239843152793660>",
     Quotes = "<:Quotes:1066185365523792042>",
     Member = "<:Member:1065090193494904913>",
@@ -135,7 +146,8 @@ export enum Icons {
     Add = "<:Add:1053887100551966771>",
     RoleRemove = "<:RoleRemove:1053887104842735677>",
     RoleAdd = "<:RoleAdd:1053887102187741304>",
-    Search = "<:Search:1066924460495622196>"
+    Search = "<:Search:1066924460495622196>",
+    AirdotTeam = "<:AirdotTeam:1079540839065329734>"
 }
 
 export const Dot = {
@@ -199,7 +211,7 @@ export const Messages = {
     })
 }
 export enum Colors {
-    Transparent = "#2F3136",
+    Transparent = "#2b2d31", //"#2F3136",
     BrandColor = "#FF605E",
     SuccessButton = "#2d7d46"
 }
@@ -218,3 +230,4 @@ export const Permissions = {
     ]
 }
 export const BaseDirectory = "./dist";
+export const LogSnagProject = "beep-boop";

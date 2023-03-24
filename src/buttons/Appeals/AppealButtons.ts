@@ -34,7 +34,7 @@ export default class AppealButtons extends Button {
 
             await interaction.reply({
                 embeds: [
-                    await new Embed(interaction.guild)
+                    await new Embed(interaction)
                         .setTitle(`${Icons.Flag} Member successfully unbanned.`)
                         .setAuthor({
                             iconURL: interaction.user.displayAvatarURL(),
@@ -83,8 +83,8 @@ export default class AppealButtons extends Button {
             const Reason = ModalInteraction.fields.getTextInputValue(Fields.Reason);
             await ModalInteraction.reply({
                 embeds: [
-                    new Embed(interaction.guild)
-                        .setTitle(`${Icons.TrashDefault} Appeal Denied`)
+                    new Embed(interaction)
+                        .setTitle(`${Icons.DefaultTrash} Appeal Denied`)
                         .setDescription(`Reason (sent to appeal user):\n\n\`\`\`${Reason}\`\`\``)
                         .addFields([{
                             name: `${Icons.Member} Denied By`,

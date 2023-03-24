@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, RepliableInteraction, SelectMenuOptionBuilder, StringSelectMenuBuilder } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
 import { Embed, Icons } from "../../configuration";
 import { Logger } from "../../logger";
@@ -12,10 +12,12 @@ export enum Modules {
     JoinActions = "MEMBER_JOIN_ACTIONS",
     ServerConfiguration = "MAIN_SERVER_CONFIG",
     Verification = "SERVER_VERIFICATION",
-    StatisticsChannels = "STAT_CHANNELS"
+    StatisticsChannels = "STAT_CHANNELS",
+    LeaveFeedback = "LEAVE_FEEDBACK",
+    Starboard = "STARBOARD"
 }
 
-export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; }> = {
+export const ModuleInformation: Record<Modules, { Label: string; Description: string; Icon: Icons; isDisabled?: (client: Client) => boolean }> = {
     [Modules.Appeals]: {
         Label: "Appeals",
         Description: "Appeals let users ask moderators to review their case/punishment.",
@@ -34,7 +36,7 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
     [Modules.AutonomousCleanup]: {
         Label: "Autonomous Cleanup",
         Description: "Autonomous cleanup cleans up old messages that members sent. (e.g. system welcome messages)",
-        Icon: Icons.TrashDefault
+        Icon: Icons.DefaultTrash
     },
     [Modules.JoinActions]: {
         Label: "Join Actions",
@@ -55,6 +57,16 @@ export const ModuleInformation: Record<Modules, { Label: string; Description: st
         Label: "Statistic Channels",
         Description: "Show useful statistics in voice channels, text channels, or categories.",
         Icon: Icons.Statistics
+    },
+    [Modules.LeaveFeedback]: {
+        Label: "Leave Feedback",
+        Description: "Gather useful feedback about members leaving.",
+        Icon: Icons.Clipboard
+    },
+    [Modules.Starboard]: {
+        Label: "Highlights (BETA)",
+        Description: "Keep the most liked messages in a highlighted place",
+        Icon: Icons.Star
     }
 }
 
@@ -99,7 +111,7 @@ export async function ServerConfiguration(interaction: RepliableInteraction) {
 
     const payload = async () => ({
         embeds: [
-            await new Embed(interaction.guild)
+            await new Embed(interaction)
                 .setTitle(`Managing ${interaction.guild.name}`)
                 .setDescription(`Since you're managing ${interaction.guild.name}, you're able to configure ${interaction.guild.name}'s modules. Select a module to get started!`)
                 .Resolve()

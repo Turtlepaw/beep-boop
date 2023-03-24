@@ -1,42 +1,49 @@
-//Import packages
-import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
-import { Deploy } from "./utils/deploy";
-import { StartService } from "./utils/handler";
-import KeyFileStorage from "key-file-storage";
 //dotenv stuff
 import * as dotenv from 'dotenv';
-import "colors";
-import { API } from "./api/index";
-import { Levels } from "./utils/levels";
-import { InitializeProvider } from "./utils/storage";
-import { ErrorManager } from "./utils/error";
-import { Status } from "./configuration";
-import { StartAutoDeleteService } from "./utils/AutoDelete";
-import { Refresh } from "./utils/reminders";
-import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
-import { Logger } from "./logger";
-import { ChannelCounterService } from "./utils/ChannelCounters";
-dotenv.config()
-
-//Debug logs
-//console.log("DEBUG LOG:".red, process.env)
+dotenv.config();
 
 export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
 export const CLIENT_ID = process.env.CLIENT_ID;
 export const API_ENABLED = process.env.START_API;
-export const DEVELOPER_BUILD = process.env?.DEV == "true" ?? false;
+export const DEVELOPER_BUILD = process.env?.DEV == null ? false : Boolean(process.env?.DEV);
 export const API_PORT = Number(process.env?.API_PORT);
 export const API_URL = process.env?.API_URL;
+export const LOGSNAG_TOKEN = process.env?.LOGSNAG;
+export const USE_LOGSNAG = process.env?.USE_LOGSNAG ?? false;
+export const CLIENT_SECRET = process.env?.CLIENT_SECRET;
+
+//Import packages
+import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
+import { Deploy } from "./utils/deploy";
+import { StartService } from "./utils/handler";
+import KeyFileStorage from "key-file-storage";
+import "colors";
+import { API } from "./api/index";
+import { Levels } from "./utils/levels";
+import { InitializeProvider } from "./utils/Storage";
+import { ErrorManager } from "./utils/error";
+import { Api, LogSnagProject, Status } from "./configuration";
+import { StartAutoDeleteService } from "./utils/AutoDelete";
+import { Refresh } from "./utils/reminders";
+import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
+import { Logger } from "./logger";
+import { ChannelCounterService } from "./utils/ChannelCounters";
+import { Logsnag } from "./utils/logsnag";
+import { LogSnag as LogSnagClient } from "logsnag";
+import { Verifiers } from "@airdot/verifiers";
+import { Application, MapProvider } from "@airdot/linked-roles";
+import { Routes } from "./api/api-types";
+import { RefreshDiscordMetadata, RefreshMetadataService } from './utils/metadata';
+import { CommandDataManager } from '@utils/Commands';
+import { LoggingService } from '@utils/logging';
+
+//Debug logs
+//console.log("DEBUG LOG:".red, process.env)
+
 export const DEFAULT_CLIENT_OPTIONS: ClientOptions = {
     intents: [
-        IntentsBitField.Flags.Guilds,
-        IntentsBitField.Flags.GuildMessages,
-        IntentsBitField.Flags.MessageContent,
-        IntentsBitField.Flags.DirectMessages,
-        IntentsBitField.Flags.GuildMembers,
-        IntentsBitField.Flags.GuildPresences,
-        IntentsBitField.Flags.GuildMessageReactions
+        ...Object.values(IntentsBitField.Flags).map(e => e as number)
     ],
     partials: [
         Partials.Channel,
@@ -57,10 +64,26 @@ export async function SetClientValues(client: Client) {
     client.LegacyStorage = KeyFileStorage("storage", false);
     client.QuickStorage = KeyFileStorage("cache", false);
     client.TriviaGames = new Collection();
+    client.ColorCache = new Collection();
+    client.LogSnag = new LogSnagClient({
+        token: LOGSNAG_TOKEN,
+        project: LogSnagProject
+    });
+
+    client.LinkedRoles = new Application({
+        clientSecret: CLIENT_SECRET,
+        id: CLIENT_ID,
+        redirectUri: `${Api}${Routes.LinkedRoles}`,
+        token: TOKEN,
+        //@ts-expect-error ...
+        databaseProvider: new MapProvider()
+    });
+
+    client.CommandManager = new CommandDataManager(client.DetailedCommands);
 }
 
 // Create Discord.js client
-const client = new Client(DEFAULT_CLIENT_OPTIONS);
+export const client = new Client(DEFAULT_CLIENT_OPTIONS);
 
 // Get everything ready...
 client.on(Events.ClientReady, async () => {
@@ -112,6 +135,23 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
     // Refresh reminders
     Refresh(ProvidedClient);
 
+    // Fetch current guild's colors
+    (async () => {
+        const Guilds = await client.Storage.Configuration.GetAll();
+        Guilds.map(e => {
+            if (e.Premium && Verifiers.HexColor(e.Color)) {
+                ProvidedClient.ColorCache.set(e.Id, e.Color);
+            }
+        })
+    })();
+
+    // Metadata
+    RefreshDiscordMetadata(ProvidedClient);
+    RefreshMetadataService(ProvidedClient);
+
+    // Logging
+    LoggingService(ProvidedClient);
+
     ProvidedClient.on(Events.Error, console.log)
 }
 
@@ -123,6 +163,9 @@ export async function HandleBotStart() {
 
     // Start Custom Bots
     StartCustomBots(client);
+
+    // Logsnag
+    Logsnag(client);
 
     // Start API
     console.log("Starting API...".grey);

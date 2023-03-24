@@ -52,7 +52,7 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
 
         const GenerateEmbed = () => {
             const FormattedChannels = EmbedChildren<CounterChannel>(Array.from(Channels.values()), (item) => `${channelMention(item.Id)} (${inlineCode(item.Name)})`, "No channels set")
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle("Managing Statistic Channels")
                 .addFields([{
                     name: "About Statistic Channels",

@@ -7,7 +7,7 @@ import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { CleanupType } from "../models/Configuration";
 import { Modules } from "../commands/Guild/Server";
 import { ChannelSelector as ChannelSelectBuilder } from "../utils/components";
-import { CleanupChannel } from "../utils/storage";
+import { CleanupChannel } from "../utils/Storage";
 
 export function ResolveEnumValue(selectedEnum: object, selectedValue: string) {
     for (const [k, v] of Object.entries(selectedEnum)) {
@@ -104,7 +104,7 @@ export default class AutonomousCleaningConfiguration extends SelectOptionBuilder
             const StringSystemChannels = EmbedChildren<CleanupChannel>(SystemChannels, (item) => channelMention(item.ChannelId), "No channels set")
             const StringMessageChannels = EmbedChildren<CleanupChannel>(MessageChannels, (item) => channelMention(item.ChannelId), "No channels set")
             const StringTimedChannels = EmbedChildren<CleanupChannel>(TimedChannels, (item) => channelMention(item.ChannelId), "No channels set")
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle("Managing Autonomous Cleanup")
                 .addFields([{
                     name: "About Autonomous Cleanup Module",

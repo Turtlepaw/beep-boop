@@ -24,8 +24,12 @@ export default class TicketService extends Event {
                 Avatar: Message.author.displayAvatarURL({ extension: ImageFormat.PNG, forceStatic: true, size: 4096 }),
                 Tag: Message.author.tag,
                 Username: Message.author.username,
-                Bot: Message.author.bot
-            }
+                Bot: Message.author.bot,
+                Id: Message.author.id,
+                Color: Message.member.roles.highest.hexColor
+            },
+            Components: [],
+            Deleted: false
         });
 
         await client.Storage.Tickets.Edit(Ticket.Entity, {

@@ -1,4 +1,5 @@
-import { Button, Center } from "@chakra-ui/react";
+import { Button, Center, Spinner } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 export type Next = () => void;
@@ -32,7 +33,7 @@ export function SaveAlert({ Save, setOpen: SetPanel, isOpen: SavePanel }: SavePr
     }
 
     return (
-        <div className={`${!SavePanel && "hidden"} ease-in-out ${SavePanel == false ? "popdown" : "popup"} z-50 fixed bottom-10 right-0 w-full flex flex-row flex-nowrap justify-center items-center`}>
+        <motion.div initial={{ display: "none" }} className={`${!SavePanel && "hidden"} z-50 fixed bottom-10 right-0 w-full flex flex-row flex-nowrap justify-center items-center`}>
             <div className='bg-[#131313] p-5 rounded-[8px]'>
                 You have unsaved changes
                 {/*ADD ANIMATIONS*/}
@@ -41,7 +42,7 @@ export function SaveAlert({ Save, setOpen: SetPanel, isOpen: SavePanel }: SavePr
                         {
                             IsSaving ? (
                                 <Center>
-                                    <span className="loader mb-[1.6rem]"></span>
+                                    <Spinner size="sm" />
                                 </Center>
                             ) : "Save"
                         }
@@ -49,6 +50,6 @@ export function SaveAlert({ Save, setOpen: SetPanel, isOpen: SavePanel }: SavePr
                     <Button variant="secondary" onClick={TogglePanel}>Close</Button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

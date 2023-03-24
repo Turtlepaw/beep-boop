@@ -168,7 +168,7 @@ export default class SetupTickets extends Button {
 
         const Message = await (Button == null ? interaction : Button).reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setAuthor({
                         name: "Step 1",
                         iconURL: "https://cdn.discordapp.com/emojis/1035661457922195488.png"
@@ -224,7 +224,7 @@ export default class SetupTickets extends Button {
 
         const MenuMessage = await ModalInteraction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setAuthor({
                         name: "Step 2",
                         iconURL: "https://cdn.discordapp.com/emojis/1035661457922195488.png"
@@ -246,7 +246,7 @@ export default class SetupTickets extends Button {
 
         const ModeratorMessage = await MenuInteraction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setAuthor({
                         name: "Step 3",
                         iconURL: "https://cdn.discordapp.com/emojis/1035661457922195488.png"
@@ -295,7 +295,7 @@ export default class SetupTickets extends Button {
 
         const SetButtonMessage = await ModeratorInteraction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setAuthor({
                         name: "Step 4",
                         iconURL: "https://cdn.discordapp.com/emojis/1035661457922195488.png"
@@ -350,7 +350,7 @@ export default class SetupTickets extends Button {
 
         const ButtonStyleMessage = await ButtonModalInteraction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setAuthor({
                         name: "Step 4",
                         iconURL: "https://cdn.discordapp.com/emojis/1035661457922195488.png"
@@ -388,7 +388,7 @@ export default class SetupTickets extends Button {
 
         await Interaction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`${Emojis.Tada} You're all done!`)
                     .setDescription("Tickets are set up on this server, users that want to contact you can now privately contact you through tickets.")
                     .addFields([{

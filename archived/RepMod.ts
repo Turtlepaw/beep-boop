@@ -159,7 +159,7 @@ export default class SetupAppeals extends Button {
 
         await int.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`${Icons.Shield} You're all set!`)
                     .setDescription(`Reputation Based Moderation has been set up.`)
                 /*.addFields([{

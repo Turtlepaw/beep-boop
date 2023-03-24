@@ -1,8 +1,8 @@
 import { Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
-import { AutoCenter } from '../components/AutoCenter';
-import { ExternalIcon, Menu } from '../components/Menu';
+import { AutoCenter } from '../components/Layout/AutoCenter';
+import { ExternalIcon, Menu } from '../components/Layout/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
 import { Configuration } from './_app';
 import { CSSProperties } from 'react';

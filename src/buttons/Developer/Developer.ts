@@ -5,6 +5,11 @@ import fs from "fs";
 import Button from "../../lib/ButtonBuilder";
 import { DeveloperPortal } from "../../commands/Bot/Help";
 
+export enum ButtonIds {
+    Subscriptions = "FORCE_SUBSCRIPTIONS",
+    Profiles = "SET_PROFILES"
+}
+
 export default class DeveloperPortalButton extends Button {
     constructor() {
         super({
@@ -61,6 +66,19 @@ export default class DeveloperPortalButton extends Button {
                         .setLabel("Server Lookup")
                         .setEmoji(Icons.Search)
                         .setCustomId("GUILD_LOOKUP")
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel("Subscriptions")
+                        .setEmoji(Icons.Zap)
+                        .setCustomId(ButtonIds.Subscriptions)
+                        .setStyle(ButtonStyle.Secondary)
+                ),
+            new ActionRowBuilder<ButtonBuilder>()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setLabel("Profile")
+                        .setEmoji(Icons.Member)
+                        .setCustomId(ButtonIds.Profiles)
                         .setStyle(ButtonStyle.Secondary)
                 )
         ]

@@ -167,6 +167,8 @@ export class GuildConfiguration {
     StarboardChannel: string;
     @Column({ nullable: true, default: "⭐" })
     StarboardReaction: string;
+    @Column({ nullable: true, default: 5 })
+    StarboardReactionCount: number;
 
     // Logging
     // -> Log your server's most important events
@@ -175,4 +177,14 @@ export class GuildConfiguration {
     LoggingStatus: boolean;
     @Column({ nullable: true, transformer: new SetTransformer<ConfigurationEvents>(), type: "varchar" })
     LoggingCategories: Set<ConfigurationEvents>;
+    @Column({ nullable: true })
+    LoggingChannel: string;
+
+    // Leave Feedback
+    // -> Gather feedback on members leaving
+    @Column({ nullable: true, default: false })
+    LeaveFeedbackStatus: boolean;
+
+    @Column({ nullable: true })
+    LeaveFeedbackChannel: string;
 }

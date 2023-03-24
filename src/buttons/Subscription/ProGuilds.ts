@@ -68,7 +68,7 @@ export default class SubscriptionManageGuilds extends Button {
             .setMinValues(1);
 
         const GetEmbed = async () => {
-            const CreatedEmbed = new Embed()
+            const CreatedEmbed = new Embed(interaction)
                 .setTitle("Manage Premium Servers")
                 .setDescription("Select servers to activate premium on.")
             if (ProfileGuilds != null && ProfileGuilds.size >= 1) CreatedEmbed.addFields(

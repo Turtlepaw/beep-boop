@@ -22,7 +22,7 @@ export default class RepModJoin extends Event {
 
             WarnChannel.send({
                 embeds: [
-                    new Embed(member.guild)
+                    new Embed(null)
                         .setTitle("Suspicious Member Detected")
                         .setDescription(`We've detected a suspicious member that has joined ${time(member.joinedAt, TimestampStyles.RelativeTime)}.`)
                         .addFields([{

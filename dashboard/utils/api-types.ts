@@ -7,27 +7,18 @@ export enum Routes {
     CreateMessage = "/v1/message/create",
     RoleConnections = "/v1/role-connections/verify",
     Subscription = "/v1/subscription/:guildId",
+    //API Users
+    ApiUser = "/v1/api-users/:id",
     //Module store
     Modules = "/v1/modules/:id",
     Module = "/v1/module",
     //Public Routes
     Profile = "/v1/profile/:id",
     Ranking = "/v1/rank/:id",
-    Leaderboard = "/v1/leaderboard/:id"
-}
-
-enum Status {
-    Initialized = 1,
-    Error = 2,
-    Success = 3,
-    NotFound = 4
-}
-
-enum Messages {
-    Initialized = 'SERVER_INITIALIZED_AND_READY',
-    Error = 'SERVER_ERROR',
-    Success = 'SERVER_SUCCESS',
-    NotFound = 'NOT_FOUND_ON_SERVER'
+    Leaderboard = "/v1/leaderboard/:id",
+    //Tickets
+    Transcripts = "/v1/transcripts/:id",
+    TicketData = "/v1/ticket/:id"
 }
 
 export enum ActionParam {
@@ -63,4 +54,51 @@ export interface Action {
     Author: ResolvableAuthor;
     InternalCode: InternalCode;
     ConfigurationParams: ActionConfiguration;
+}
+
+export interface DatabaseUser {
+    Avatar: string;
+    Username: string;
+    Tag: string;
+    Bot: boolean;
+    Color?: string;
+    Id: string;
+}
+
+export interface ButtonComponent {
+    label: string;
+    style: number;
+}
+
+export interface EmbedField {
+    name: string;
+    value: string;
+    inline?: boolean;
+}
+
+export interface EmbedData {
+    title?: string;
+    fields?: EmbedField[];
+}
+
+export interface TicketMessage {
+    Id: string;
+    Content: string;
+    User: DatabaseUser;
+    /**
+     * use a `Date()` but stringify it.
+     */
+    Date: string;
+    Embeds: EmbedData[];
+    Components: ButtonComponent[];
+}
+
+export interface ApiError {
+    error: boolean;
+    message: string;
+    code: number;
+}
+
+export interface ApiTicket {
+    Creator: DatabaseUser;
 }

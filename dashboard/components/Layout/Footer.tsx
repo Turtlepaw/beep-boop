@@ -1,7 +1,9 @@
 import React from "react";
-import { BrandColor, Configuration } from "../utils/configuration";
-import { Image } from "./Image";
+import { Configuration } from "../../utils/configuration";
+import { Image } from "../Image";
 import { Center } from "@chakra-ui/react";
+import { BrandColor } from "../../utils/styles";
+import { NextLink } from "../Utils/Link";
 
 function Title({ children }: { children: string; }) {
     return (
@@ -12,7 +14,7 @@ function Title({ children }: { children: string; }) {
 function Link({ children, href }: { children: string; href: string; }) {
     return (
         <>
-            <a className="hover:opacity-80" href={href}>{children}</a>
+            <NextLink className="hover:opacity-80" href={href}>{children}</NextLink>
             <br />
         </>
     )

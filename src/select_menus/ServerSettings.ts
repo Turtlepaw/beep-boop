@@ -1,10 +1,10 @@
-import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, Client, inlineCode, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle, channelMention, ChannelType, Client, inlineCode, MessageComponentInteraction, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Embed, Icons, Messages, Permissions } from "../configuration";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { BackComponent, ButtonBoolean, EmojiBoolean, StringBoolean } from "../utils/config";
 import { ButtonCollector, Filter, GenerateIds } from "../utils/filter";
 import { Modules } from "../commands/Guild/Server";
-import { StringSelectBuilder, StringSelector } from "../utils/components";
+import { StringSelectBuilder, StringSelector, ChannelSelector as ChannelSelectBuilder } from "../utils/components";
 import { ConfigurationEvents } from "../@types/Logging";
 
 export default class BasicServerConfiguration extends SelectOptionBuilder {
@@ -20,8 +20,9 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
     async ExecuteInteraction(interaction: AnySelectMenuInteraction, client: Client) {
         const Configuration = await client.Storage.Configuration.forGuild(interaction.guild);
         let Color = Configuration?.Color;
-        let Events = Configuration?.Logging.Categories;
-        let LoggingStatus = Configuration?.Logging.Status;
+        let Events = Configuration?.Logging?.Categories;
+        let LoggingStatus = Configuration?.Logging?.Status;
+        let LoggingChannel = Configuration?.Logging?.Channel;
 
         enum Id {
             SetColorButton = "SET_COLOR",
@@ -29,7 +30,9 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
             ColorField = "COLOR_MODAL_FIELD",
             EnableLogging = "ENABLE_LOGGING",
             SetEvents = "SET_LOGGING_EVENTS",
-            SetEventsSelector = "SET_LOGGING_EVENTS_SELECTOR"
+            SetEventsSelector = "SET_LOGGING_EVENTS_SELECTOR",
+            ChannelSelector = "CHANNEL_SELECTOR",
+            SelectChannel = "SELECT_LOG_CHANNEL"
         }
 
         const Components = () => [
@@ -49,11 +52,15 @@ export default class BasicServerConfiguration extends SelectOptionBuilder {
                         .setCustomId(Id.SetEvents)
                         .setLabel("Logging Events")
                         .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setCustomId(Id.SelectChannel)
+                        .setLabel("Log Channel")
+                        .setStyle(ButtonStyle.Secondary)
                 )
         ];
 
         const GenerateEmbed = () => {
-            return new Embed(interaction.guild)
+            return new Embed(interaction)
                 .setTitle(`Managing ${interaction.guild}`)
                 .addFields([{
                     name: "About Server Settings",
@@ -65,6 +72,7 @@ ${Icons.Dot} Color
 ${Icons.StemEnd} ${Color == null ? "None" : inlineCode(Color)}
 ${Icons.Dot} Logging
 ${Icons.StemItem} Status: ${StringBoolean(LoggingStatus, true)} ${EmojiBoolean(LoggingStatus)}
+${Icons.StemItem} Channel: ${LoggingChannel == null ? "None" : channelMention(LoggingChannel)}
 ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Events.size > 1 ? "s" : ""}`}`
                 }]).Resolve();
         }
@@ -73,7 +81,8 @@ ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Ev
             await client.Storage.Configuration.Edit(Configuration.CustomId, {
                 Color,
                 LoggingStatus,
-                LoggingCategories: Events
+                LoggingCategories: Events,
+                LoggingChannel
             });
 
             if (editMessage) await Message.edit({
@@ -99,6 +108,26 @@ ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Ev
                 customIds: [...GenerateIds(Id), ButtonCollector.BackButton]
             })
         });
+
+        const ChannelSelector = new ChannelSelectBuilder()
+            .SetCustomId(Id.ChannelSelector)
+            .SetChannelTypes(ChannelType.GuildText);
+
+        async function selectChannel(button: MessageComponentInteraction) {
+            const Message = await button.reply({
+                content: `${Icons.Channel} Select a channel`,
+                components: ChannelSelector.toComponents(),
+                fetchReply: true,
+                ephemeral: true
+            });
+
+            const ChannelInteraction = await ChannelSelector.CollectComponents(Message, interaction);
+            const SelectedChannel = ChannelInteraction.channels.first();
+            return {
+                SelectedChannel,
+                ChannelInteraction
+            };
+        }
 
         Collector.on("collect", async button => {
             if (button.customId == ButtonCollector.BackButton) return;
@@ -136,14 +165,27 @@ ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Ev
                 //     components: Components()
                 // });
             } else if (button.customId == Id.EnableLogging) {
+                let inter = button;
+                const isNull = LoggingChannel == null;
+                if (LoggingChannel == null) {
+                    const { ChannelInteraction, SelectedChannel } = await selectChannel(button);
+                    inter = ChannelInteraction;
+                    LoggingChannel = SelectedChannel.id;
+                }
+
                 LoggingStatus = !LoggingStatus;
-                await Save(false);
-                await button.update({
-                    embeds: [
-                        await GenerateEmbed()
-                    ],
-                    components: Components()
-                });
+                await Save(isNull);
+
+                if (!isNull) {
+                    await inter.update({
+                        embeds: [
+                            await GenerateEmbed()
+                        ],
+                        components: Components()
+                    });
+                } else {
+                    await inter.update(Messages.Saved);
+                }
             } else if (button.customId == Id.SetEvents) {
                 const Selector = new StringSelector()
                     .SetCustomId(Id.SetEventsSelector)
@@ -170,6 +212,11 @@ ${Icons.StemEnd} Events: ${Events.size == 0 ? "None" : `${Events.size} event${Ev
                 Events = new Set(component.values.map(e => ConfigurationEvents[e]));
                 await Save();
                 await component.update(Messages.Saved);
+            } else if (button.customId == Id.SelectChannel) {
+                const { ChannelInteraction, SelectedChannel } = await selectChannel(button);
+                LoggingChannel = SelectedChannel.id;
+                await Save();
+                await ChannelInteraction.update(Messages.Saved);
             }
         });
 

@@ -1,9 +1,11 @@
-import { Button, Menu as ChakraMenu, Center, MenuButton, MenuItem as ChakraMenuItem, MenuList, MenuDivider } from "@chakra-ui/react";
+import { Menu as ChakraMenu, Center, MenuButton, MenuItem as ChakraMenuItem, MenuList } from "@chakra-ui/react";
 import React from "react";
-import { DefaultProps } from "../utils/parse-user";
-import { DownIcon, UpIcon } from "./Icons";
-import { BrandColor } from "./Link";
-import { AutoCenter } from "./AutoCenter";
+import { DefaultProps } from "../../utils/parse-user";
+import { DownIcon, UpIcon } from "../Icons";
+import { BrandColor } from "../../utils/styles";
+import { AutoCenter } from "../Layout/AutoCenter";
+import NextLink from "next/link";
+import { Configuration } from "../../utils/configuration";
 
 export interface MenuProps extends DefaultProps {
     isDashboard?: boolean;
@@ -38,9 +40,9 @@ export function Link({ children, href }: {
     href: string;
 }) {
     return (
-        <a href={href} className="px-1 hover:opacity-80">
+        <NextLink href={href} className="px-1 hover:opacity-80">
             {children}
-        </a>
+        </NextLink>
     )
 }
 
@@ -51,9 +53,9 @@ export function Menu(props: MenuProps) {
         <Center>
             <div className={`${mobile ? "" : "pr-5 pt-5"} z-50`}>
                 <Component>
-                    <a style={BrandColor} className={`${mobile ? "pb-1" : "!inline"} font-bold text-2xl pr-6 hover:opacity-80`} href="/">
-                        Beep Boop
-                    </a>
+                    <NextLink style={BrandColor} className={`${mobile ? "pb-1" : "!inline"} font-bold text-2xl pr-6 hover:opacity-80`} href="/">
+                        {Configuration.Title}
+                    </NextLink>
                     <div className="pr-6">
                         <Link href="/">
                             Home
@@ -83,12 +85,12 @@ export function Menu(props: MenuProps) {
                                                     }
                                                 </MenuButton>
                                                 <MenuList bgColor="#1e1f22" >
-                                                    <a href="/dashboard">
+                                                    <NextLink href="/dashboard">
                                                         <MenuItem>My Servers</MenuItem>
-                                                    </a>
-                                                    <a href="/api/logout">
+                                                    </NextLink>
+                                                    <NextLink href="/api/logout">
                                                         <MenuItem className="!text-red-500">Logout</MenuItem>
-                                                    </a>
+                                                    </NextLink>
                                                 </MenuList>
                                             </>
                                         )}

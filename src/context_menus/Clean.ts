@@ -30,7 +30,7 @@ export default class DeleteThis extends ContextMenu {
             content: `${Icons.Flag} Cleaned up their username.`,
             ephemeral: true,
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setDescription(`${inlineCode(interaction.targetMember.user.username)} -> ${inlineCode(cleaned)}`)
             ]
         });

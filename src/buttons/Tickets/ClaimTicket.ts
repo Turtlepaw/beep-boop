@@ -1,6 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, EmbedBuilder } from "discord.js";
+import { ButtonInteraction, EmbedBuilder } from "discord.js";
 import { Icons } from "../../configuration";
 import Button from "../../lib/ButtonBuilder";
+import { TicketButtons } from "../../utils/Tickets";
 
 export default class ClaimTicket extends Button {
     constructor() {
@@ -14,22 +15,7 @@ export default class ClaimTicket extends Button {
 
     async ExecuteInteraction(interaction: ButtonInteraction) {
         await interaction.update({
-            components: [
-                new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(
-                        new ButtonBuilder()
-                            .setLabel("Close")
-                            .setStyle(ButtonStyle.Danger)
-                            //.setEmoji("🔒")
-                            .setCustomId("CLOSE_TICKET"),
-                        new ButtonBuilder()
-                            .setLabel("Claim")
-                            .setStyle(ButtonStyle.Success)
-                            //.setEmoji("🔍")
-                            .setCustomId("CLAIM_TICKET")
-                            .setDisabled(true)
-                    )
-            ],
+            components: TicketButtons(interaction.channel, true),
             embeds: [
                 new EmbedBuilder(interaction.message.embeds[0].data)
                     .setFields([

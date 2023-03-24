@@ -51,7 +51,7 @@ export default class ErrorLookup extends Button {
         await modal.reply({
             content: `${Icons.Search} Created ${time(error.CreatedAt, TimestampStyles.RelativeTime)} by ${userMention(error.CreatedBy)}`,
             embeds: [
-                await new Embed(interaction.guild)
+                await new Embed(interaction)
                     .setDescription(`${quote(codeBlock(error.Title))}`)
                     .addFields([{
                         name: "\u200b",

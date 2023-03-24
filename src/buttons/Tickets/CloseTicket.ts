@@ -68,7 +68,7 @@ export default class CloseTicket extends Button {
 
         const Message = await interaction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setColor(Colors.Blurple)
                     .setTitle(`${Icons.Flag} Add a Reason`)
                     .setDescription("Would you like to add a reason to this?")
@@ -108,7 +108,7 @@ export default class CloseTicket extends Button {
 
         LogChannel.send({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle(`Ticket Closed`)
                     .setAuthor({
                         iconURL: interaction.user.displayAvatarURL(),
@@ -143,7 +143,7 @@ export default class CloseTicket extends Button {
             components: [
                 CreateLinkButton(
                     GenerateTranscriptionURL(interaction.guild.id, interaction.channel.id),
-                    "Transcription"
+                    "Share this conversation or review it"
                 )
             ]
         });
@@ -151,7 +151,7 @@ export default class CloseTicket extends Button {
         Interaction.channel.delete(`Ticket closed by: ${Interaction.user.tag}`)
         await Interaction.reply({
             ephemeral: true,
-            content: `${Icons.TrashDefault} Closed ticket successfully.`
+            content: `${Icons.DefaultTrash} Closed ticket successfully.`
         });
     }
 }

@@ -51,6 +51,9 @@ export async function ChannelCounterService(client: Client) {
                     // }, Time);
                 }
             } catch (e) {
+                // This error is happening because of custom bots
+                // Beep Boop should not be sending these API requests
+                if (e.toString().includes("Unknown Guild")) return;
                 Logger.error(`Couldn't update channel counter (${Guild.Name}): ${e}`);
             }
         });

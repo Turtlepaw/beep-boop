@@ -1,7 +1,11 @@
 import { CSSProperties } from "react";
-import { Configuration } from "../pages/_app";
-import { ExternalIcon } from "./Menu";
-import { BrandBg, BrandBorder, BrandColor } from "../utils/configuration";
+import { Configuration } from "../../utils/configuration";
+import { ExternalIcon } from "../Layout/Menu";
+import { BrandBg, BrandBorder, BrandColor } from "../../utils/styles";
+import NextLinkAlias from "next/link";
+
+// Alias to next/link
+export const NextLink = NextLinkAlias;
 
 export interface LinkProperties {
     href: string;
@@ -26,10 +30,10 @@ export function Link({ children, href, onBrand = true, isExternal, isNewTab, cla
     }
 
     return (
-        <a href={href} style={Style} className={`hover:underline ${className}`} target={isNewTab ? "_blank" : null}>
+        <NextLink href={href} style={Style} className={`hover:underline underline hover:opacity-90 ${className}`} target={isNewTab ? "_blank" : null}>
             {children}
             {isExternal && <ExternalIcon color={externalIconColor ?? "currentColor"} />}
-        </a>
+        </NextLink>
     )
 }
 

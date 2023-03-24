@@ -12,3 +12,7 @@ export function FormatUsername(text: string) {
         return e.substring(0, 1).toUpperCase() + e.substring(1, e.length)
     }).join(" ");
 }
+
+export function formatString(str: string) {
+    return str.substring(0, 1).toUpperCase() + str.substring(1, str.length)
+}
