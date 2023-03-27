@@ -2,6 +2,8 @@ import { Application, MetaDataTypes, OAuthTokens } from "@airdot/linked-roles";
 import { Client } from "discord.js";
 import { Logger } from "../logger";
 
+// add an API route to refresh their metadata when they link their account
+// or even add it in the redirect route!
 export async function RefreshMetadataService({ LinkedRoles }: Client) {
     const users = await LinkedRoles.tokenStorage.getAllUsers() as unknown as {
         tokens: OAuthTokens;
@@ -20,7 +22,8 @@ export async function RefreshMetadataService({ LinkedRoles }: Client) {
 async function updateMetadata(userId: string, application: Application) {
     const user = await application.fetchUser(userId);
     application.setUserMetaData(user.id, user.username, {
-        verified: "true"
+        // add their real rep
+        reputation: 15
     });
 }
 
