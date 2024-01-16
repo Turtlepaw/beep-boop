@@ -15,7 +15,7 @@
     "colors": "^1.4.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "decancer": "^1.4.1",
+    "decancer": "^1.6.5",
     "discord-linked-roles": "^0.2.1",
     "discord-trivia": "^2.0.0",
     "discord.js": "^14.8.0",
