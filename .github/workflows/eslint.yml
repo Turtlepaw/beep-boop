@@ -8,7 +8,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install node.js v16
+      - name: Install node.js v18
         uses: actions/setup-node@v2
         with:
           node-version: 18
