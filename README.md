@@ -12,8 +12,8 @@ Beep Boop is a Discord bot designed for use in large community servers.
 
 ### Notices
 - **🔎 We need help!** We're looking for beta testers willing to test the bot for bugs, [sign up here](https://bop.trtle.xyz/beta).
-- **🧪 Dashboard is in a experimental state:** Many dashboard pages haven't been completed, and their extremely unstable.
-- **🚧 Unstable and limited API:** The API hasn't been tested yet, and there are limited routes available.
+- **🧪 Dashboard is in a experimental state:** Many dashboard pages haven't been completed, and they are extremely unstable.
+- **🚧 Unstable and limited API:** The API hasn't been tested yet, and there are limited public and internal routes available.
 
 ### Welcome
 Welcome to Beep Boop's Github repository, here you'll find all the source to Beep Boop.

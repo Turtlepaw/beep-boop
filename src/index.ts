@@ -14,7 +14,7 @@ export const USE_LOGSNAG = process.env?.USE_LOGSNAG ?? false;
 export const CLIENT_SECRET = process.env?.CLIENT_SECRET;
 
 //Import packages
-import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection } from "discord.js";
+import { Client, IntentsBitField, Partials, Events, ClientOptions, Collection, PermissionFlagsBits } from "discord.js";
 import { Deploy } from "./utils/deploy";
 import { StartService } from "./utils/handler";
 import KeyFileStorage from "key-file-storage";
@@ -23,7 +23,7 @@ import { API } from "./api/index";
 import { Levels } from "./utils/levels";
 import { InitializeProvider } from "./utils/Storage";
 import { ErrorManager } from "./utils/error";
-import { Api, LogSnagProject, Status } from "./configuration";
+import { Api, Colors, LogSnagProject, Status } from "./configuration";
 import { StartAutoDeleteService } from "./utils/AutoDelete";
 import { Refresh } from "./utils/reminders";
 import { CreateConfiguration, StartCustomBots } from "./utils/customBot";
@@ -109,10 +109,6 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
     //     });
     // });
 
-    // console.log("check if there's any left...")
-    // const all = await ProvidedClient.Storage.Configuration.GetAll();
-    // console.log(`there's ${all.length} left`)
-
     // Deploy slash commands
     if (!isCustom) console.log("Deploying commands...".grey);
     Logger.info(`Deploying commands for ${ProvidedClient.user.username}...`);
@@ -143,6 +139,30 @@ export async function HandleAnyBotStart(ProvidedClient: Client, isCustom = true)
                 ProvidedClient.ColorCache.set(e.Id, e.Color);
             }
         })
+    })();
+
+    // Fetch Beep Boop's role in guilds
+    (async () => {
+        try {
+            const Guilds = await client.guilds.fetch({ limit: 0 });
+            Guilds.forEach(async guild => {
+                if (guild.permissions.has(PermissionFlagsBits.ManageRoles)) {
+                    try {
+                        const fetched = await guild.fetch();
+                        const find = fetched.roles.cache.find(e => e.name == "Beep Boop" && e.managed);
+                        if (find == null) return;
+                        const fetchedRole = await fetched.roles.fetch(find.id);
+                        if (fetchedRole.editable) fetchedRole.edit({
+                            color: Colors.BrandColor
+                        });
+                    } catch {
+                        //
+                    }
+                }
+            })
+        } catch {
+            //
+        }
     })();
 
     // Metadata

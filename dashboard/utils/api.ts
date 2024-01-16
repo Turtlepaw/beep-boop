@@ -49,7 +49,7 @@ export interface Action {
 }
 
 export async function GetActions(): Promise<Action[]> {
-    return CallAPI(CreateRoute(Routes.Modules.replace(":id", "all") as Routes));
+    //return CallAPI(CreateRoute(Routes.Modules.replace(":id", "all") as Routes));
     return [{
         Name: "Nickname Manager",
         Author: {
