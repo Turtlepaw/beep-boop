@@ -2300,86 +2300,86 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-android-arm-eabi@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-android-arm-eabi@npm:1.5.3"
+"@vierofernando/decancer-android-arm-eabi@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-android-arm-eabi@npm:1.6.5"
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-android-arm64@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-android-arm64@npm:1.5.3"
+"@vierofernando/decancer-android-arm64@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-android-arm64@npm:1.6.5"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-darwin-arm64@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-darwin-arm64@npm:1.5.3"
+"@vierofernando/decancer-darwin-arm64@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-darwin-arm64@npm:1.6.5"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-darwin-x64@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-darwin-x64@npm:1.5.3"
+"@vierofernando/decancer-darwin-x64@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-darwin-x64@npm:1.6.5"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-linux-arm-gnueabihf@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-linux-arm-gnueabihf@npm:1.5.3"
+"@vierofernando/decancer-linux-arm-gnueabihf@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-linux-arm-gnueabihf@npm:1.6.5"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-linux-arm64-gnu@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-linux-arm64-gnu@npm:1.5.3"
+"@vierofernando/decancer-linux-arm64-gnu@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-linux-arm64-gnu@npm:1.6.5"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-linux-arm64-musl@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-linux-arm64-musl@npm:1.5.3"
+"@vierofernando/decancer-linux-arm64-musl@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-linux-arm64-musl@npm:1.6.5"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-linux-x64-gnu@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-linux-x64-gnu@npm:1.5.3"
+"@vierofernando/decancer-linux-x64-gnu@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-linux-x64-gnu@npm:1.6.5"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-linux-x64-musl@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-linux-x64-musl@npm:1.5.3"
+"@vierofernando/decancer-linux-x64-musl@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-linux-x64-musl@npm:1.6.5"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-win32-arm64-msvc@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-win32-arm64-msvc@npm:1.5.3"
+"@vierofernando/decancer-win32-arm64-msvc@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-win32-arm64-msvc@npm:1.6.5"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-win32-ia32-msvc@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-win32-ia32-msvc@npm:1.5.3"
+"@vierofernando/decancer-win32-ia32-msvc@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-win32-ia32-msvc@npm:1.6.5"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@vierofernando/decancer-win32-x64-msvc@npm:1.5.3":
-  version: 1.5.3
-  resolution: "@vierofernando/decancer-win32-x64-msvc@npm:1.5.3"
+"@vierofernando/decancer-win32-x64-msvc@npm:1.6.5":
+  version: 1.6.5
+  resolution: "@vierofernando/decancer-win32-x64-msvc@npm:1.6.5"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2697,7 +2697,7 @@ __metadata:
     colors: ^1.4.0
     cookie-parser: ^1.4.6
     cors: ^2.8.5
-    decancer: ^1.4.1
+    decancer: ^1.6.5
     discord-linked-roles: ^0.2.1
     discord-trivia: ^2.0.0
     discord.js: ^14.14.1
@@ -3422,22 +3422,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"decancer@npm:^1.4.1":
-  version: 1.5.3
-  resolution: "decancer@npm:1.5.3"
+"decancer@npm:^1.6.5":
+  version: 1.6.5
+  resolution: "decancer@npm:1.6.5"
   dependencies:
-    "@vierofernando/decancer-android-arm-eabi": 1.5.3
-    "@vierofernando/decancer-android-arm64": 1.5.3
-    "@vierofernando/decancer-darwin-arm64": 1.5.3
-    "@vierofernando/decancer-darwin-x64": 1.5.3
-    "@vierofernando/decancer-linux-arm-gnueabihf": 1.5.3
-    "@vierofernando/decancer-linux-arm64-gnu": 1.5.3
-    "@vierofernando/decancer-linux-arm64-musl": 1.5.3
-    "@vierofernando/decancer-linux-x64-gnu": 1.5.3
-    "@vierofernando/decancer-linux-x64-musl": 1.5.3
-    "@vierofernando/decancer-win32-arm64-msvc": 1.5.3
-    "@vierofernando/decancer-win32-ia32-msvc": 1.5.3
-    "@vierofernando/decancer-win32-x64-msvc": 1.5.3
+    "@vierofernando/decancer-android-arm-eabi": 1.6.5
+    "@vierofernando/decancer-android-arm64": 1.6.5
+    "@vierofernando/decancer-darwin-arm64": 1.6.5
+    "@vierofernando/decancer-darwin-x64": 1.6.5
+    "@vierofernando/decancer-linux-arm-gnueabihf": 1.6.5
+    "@vierofernando/decancer-linux-arm64-gnu": 1.6.5
+    "@vierofernando/decancer-linux-arm64-musl": 1.6.5
+    "@vierofernando/decancer-linux-x64-gnu": 1.6.5
+    "@vierofernando/decancer-linux-x64-musl": 1.6.5
+    "@vierofernando/decancer-win32-arm64-msvc": 1.6.5
+    "@vierofernando/decancer-win32-ia32-msvc": 1.6.5
+    "@vierofernando/decancer-win32-x64-msvc": 1.6.5
   dependenciesMeta:
     "@vierofernando/decancer-android-arm-eabi":
       optional: true
@@ -3463,7 +3463,7 @@ __metadata:
       optional: true
     "@vierofernando/decancer-win32-x64-msvc":
       optional: true
-  checksum: d145ffaa87c2d77f9b77adb9361021142ee5986f829c037d14e14ff877a7c4700ceb7aa411deafb40de3357055041c4ae9450b23f669f6edbb15c409b4ce6a72
+  checksum: e9bd2f2a85a7a37605b1bbe3101a75c38b4da1cf62899fbdb37dd1f13383ad16d1e535664343432ac2d46fc901e22de30a1c12bb39130585f73af8cbadbbfc23
   languageName: node
   linkType: hard
 
