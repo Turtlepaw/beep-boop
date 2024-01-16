@@ -13,6 +13,7 @@
         "baseUrl": "./",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "skipDefaultLibCheck": true,
         "paths": {
             "@utils/*": [
                 "src/utils/*"
