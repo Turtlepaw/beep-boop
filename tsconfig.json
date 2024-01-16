@@ -1,13 +1,13 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "module": "CommonJS",
+        "module": "ESNext",
         "strict": false,
-        "moduleResolution": "node",
+        "moduleResolution": "Node",
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "skipLibCheck": false,
-        "skipDefaultLibCheck": false,
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
         "sourceMap": true,
         "pretty": true,
         "outDir": "./dist/",
@@ -50,6 +50,6 @@
         "archived"
     ],
     "include": [
-        "src"
+        "src",
     ]
 }

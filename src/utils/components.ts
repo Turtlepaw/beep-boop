@@ -1,5 +1,5 @@
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from "@discordjs/builders";
-import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType, RoleSelectMenuInteraction, AnySelectMenuInteraction, StringSelectMenuInteraction, ChannelSelectMenuInteraction, RestOrArray, MessageActionRowComponentBuilder } from "discord.js";
+import { StringSelectMenuOptionBuilder, ChannelType, Collection, GuildBasedChannel, TextInputStyle, ModalSubmitInteraction, EmbedBuilder, ButtonStyle, Message as GuildMessage, ChannelSelectMenuBuilder, MentionableSelectMenuBuilder, RoleSelectMenuBuilder, StringSelectMenuBuilder, UserSelectMenuBuilder, Message, Interaction, ComponentType, RoleSelectMenuInteraction, AnySelectMenuInteraction, StringSelectMenuInteraction, ChannelSelectMenuInteraction, RestOrArray, MessageActionRowComponentBuilder, ModalActionRowComponentBuilder, ComponentBuilder, APIActionRowComponent, APIMessageActionRowComponent, APIModalActionRowComponent, AnyComponentBuilder } from "discord.js";
 import { Verifiers } from "./verify";
 import { Filter } from "./filter";
 
@@ -350,6 +350,7 @@ export class ActionRowHandler {
     }
 
     public toActionRow() {
+        //@ts-expect-error
         return new ActionRowBuilder<MessageActionRowComponentBuilder>()
             .addComponents(...this.components);
     }

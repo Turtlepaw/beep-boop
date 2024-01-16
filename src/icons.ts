@@ -2,654 +2,670 @@
 // 📝 Any edits made in this file will be overwritten
 export enum Icons {
     /**
-        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless?size=1024)
+        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless)
     */
     Bot = "<:Bot:1040733154656403616>",
     /**
-        ![Book](https://cdn.discordapp.com/emojis/1043579932665708604.png?size=1024)
+        ![Book](https://cdn.discordapp.com/emojis/1043579932665708604.webp?size=1024)
     */
-    Book = "<:Book:1043579932665708604>",
+    Book = "<:_:1043579932665708604>",
     /**
-        ![Clock](https://cdn.discordapp.com/emojis/1043579937690497044.png?size=1024)
+        ![Clock](https://cdn.discordapp.com/emojis/1043579937690497044.webp?size=1024)
     */
-    Clock = "<:Clock:1043579937690497044>",
+    Clock = "<:_:1043579937690497044>",
     /**
-        ![Code](https://cdn.discordapp.com/emojis/1043579940903342201.png?size=1024)
+        ![Code](https://cdn.discordapp.com/emojis/1043579940903342201.webp?size=1024)
     */
-    Code = "<:Code:1043579940903342201>",
+    Code = "<:_:1043579940903342201>",
     /**
-        ![Color](https://cdn.discordapp.com/emojis/1043579942811750410.png?size=1024)
+        ![Color](https://cdn.discordapp.com/emojis/1043579942811750410.webp?size=1024)
     */
-    Color = "<:Color:1043579942811750410>",
+    Color = "<:_:1043579942811750410>",
     /**
-        ![External](https://cdn.discordapp.com/emojis/1043579944254578768.png?size=1024)
+        ![External](https://cdn.discordapp.com/emojis/1043579944254578768.webp?size=1024)
     */
-    External = "<:External:1043579944254578768>",
+    External = "<:_:1043579944254578768>",
     /**
-        ![Link](https://cdn.discordapp.com/emojis/1043579945777119242.png?size=1024)
+        ![Link](https://cdn.discordapp.com/emojis/1043579945777119242.webp?size=1024)
     */
-    Link = "<:Link:1043579945777119242>",
+    Link = "<:_:1043579945777119242>",
     /**
-        ![MemberAdd](https://cdn.discordapp.com/emojis/1043579947639386292.png?size=1024)
+        ![MemberAdd](https://cdn.discordapp.com/emojis/1043579947639386292.webp?size=1024)
     */
-    MemberAdd = "<:MemberAdd:1043579947639386292>",
+    MemberAdd = "<:_:1043579947639386292>",
     /**
-        ![Refresh](https://cdn.discordapp.com/emojis/1043579950197903430.png?size=1024)
+        ![Refresh](https://cdn.discordapp.com/emojis/1043579950197903430.webp?size=1024)
     */
-    Refresh = "<:Refresh:1043579950197903430>",
+    Refresh = "<:_:1043579950197903430>",
     /**
-        ![Trash](https://cdn.discordapp.com/emojis/1043579951586213888.png?size=1024)
+        ![Trash](https://cdn.discordapp.com/emojis/1043579951586213888.webp?size=1024)
     */
-    Trash = "<:Trash:1043579951586213888>",
+    Trash = "<:_:1043579951586213888>",
     /**
-        ![Brush](https://cdn.discordapp.com/emojis/1043584063358906558.png?size=1024)
+        ![Brush](https://cdn.discordapp.com/emojis/1043584063358906558.webp?size=1024)
     */
-    Brush = "<:Brush:1043584063358906558>",
+    Brush = "<:_:1043584063358906558>",
     /**
-        ![Channel](https://cdn.discordapp.com/emojis/1043584064751423608.png?size=1024)
+        ![Channel](https://cdn.discordapp.com/emojis/1043584064751423608.webp?size=1024)
     */
-    Channel = "<:Channel:1043584064751423608>",
+    Channel = "<:_:1043584064751423608>",
     /**
-        ![Flag](https://cdn.discordapp.com/emojis/1043584066068422747.png?size=1024)
+        ![Flag](https://cdn.discordapp.com/emojis/1043584066068422747.webp?size=1024)
     */
-    Flag = "<:Flag:1043584066068422747>",
+    Flag = "<:_:1043584066068422747>",
     /**
-        ![Mark](https://cdn.discordapp.com/emojis/1043584067418992670.png?size=1024)
+        ![Mark](https://cdn.discordapp.com/emojis/1043584067418992670.webp?size=1024)
     */
-    Mark = "<:Mark:1043584067418992670>",
+    Mark = "<:_:1043584067418992670>",
     /**
-        ![Badge](https://cdn.discordapp.com/emojis/1043599252414275634.png?size=1024)
+        ![Badge](https://cdn.discordapp.com/emojis/1043599252414275634.webp?size=1024)
     */
-    Badge = "<:Badge:1043599252414275634>",
+    Badge = "<:_:1043599252414275634>",
     /**
-        ![Globe](https://cdn.discordapp.com/emojis/1043599254125563925.png?size=1024)
+        ![Globe](https://cdn.discordapp.com/emojis/1043599254125563925.webp?size=1024)
     */
-    Globe = "<:Globe:1043599254125563925>",
+    Globe = "<:_:1043599254125563925>",
     /**
-        ![Emoji](https://cdn.discordapp.com/emojis/1043718870013325394.png?size=1024)
+        ![Emoji](https://cdn.discordapp.com/emojis/1043718870013325394.webp?size=1024)
     */
-    Emoji = "<:Emoji:1043718870013325394>",
+    Emoji = "<:_:1043718870013325394>",
     /**
-        ![Folder](https://cdn.discordapp.com/emojis/1043718871422615612.png?size=1024)
+        ![Folder](https://cdn.discordapp.com/emojis/1043718871422615612.webp?size=1024)
     */
-    Folder = "<:Folder:1043718871422615612>",
+    Folder = "<:_:1043718871422615612>",
     /**
-        ![Image](https://cdn.discordapp.com/emojis/1043718873045811271.png?size=1024)
+        ![Image](https://cdn.discordapp.com/emojis/1043718873045811271.webp?size=1024)
     */
-    Image = "<:Image:1043718873045811271>",
+    Image = "<:_:1043718873045811271>",
     /**
-        ![Voice](https://cdn.discordapp.com/emojis/1043733614589902878.png?size=1024)
+        ![Voice](https://cdn.discordapp.com/emojis/1043733614589902878.webp?size=1024)
     */
-    Voice = "<:Voice:1043733614589902878>",
+    Voice = "<:_:1043733614589902878>",
     /**
-        ![Members](https://cdn.discordapp.com/emojis/1044023938591756370.png?size=1024)
+        ![Members](https://cdn.discordapp.com/emojis/1044023938591756370.webp?size=1024)
     */
-    Members = "<:Members:1044023938591756370>",
+    Members = "<:_:1044023938591756370>",
     /**
-        ![Info](https://cdn.discordapp.com/emojis/1044457273990324264.png?size=1024)
+        ![Info](https://cdn.discordapp.com/emojis/1044457273990324264.webp?size=1024)
     */
-    Info = "<:Info:1044457273990324264>",
+    Info = "<:_:1044457273990324264>",
     /**
-        ![Shield](https://cdn.discordapp.com/emojis/1044472705845563442.png?size=1024)
+        ![Shield](https://cdn.discordapp.com/emojis/1044472705845563442.webp?size=1024)
     */
-    Shield = "<:Shield:1044472705845563442>",
+    Shield = "<:_:1044472705845563442>",
     /**
-        ![Lock](https://cdn.discordapp.com/emojis/1044474659749507082.png?size=1024)
+        ![Lock](https://cdn.discordapp.com/emojis/1044474659749507082.webp?size=1024)
     */
-    Lock = "<:Lock:1044474659749507082>",
+    Lock = "<:_:1044474659749507082>",
     /**
-        ![Unlock](https://cdn.discordapp.com/emojis/1044474661519495188.png?size=1024)
+        ![Unlock](https://cdn.discordapp.com/emojis/1044474661519495188.webp?size=1024)
     */
-    Unlock = "<:Unlock:1044474661519495188>",
+    Unlock = "<:_:1044474661519495188>",
     /**
-        ![Paint](https://cdn.discordapp.com/emojis/1046915159668572240.png?size=1024)
+        ![Paint](https://cdn.discordapp.com/emojis/1046915159668572240.webp?size=1024)
     */
-    Paint = "<:Paint:1046915159668572240>",
+    Paint = "<:_:1046915159668572240>",
     /**
-        ![Zap](https://cdn.discordapp.com/emojis/1046915192191197214.png?size=1024)
+        ![Zap](https://cdn.discordapp.com/emojis/1046915192191197214.webp?size=1024)
     */
-    Zap = "<:Zap:1046915192191197214>",
+    Zap = "<:_:1046915192191197214>",
     /**
-        ![Gift](https://cdn.discordapp.com/emojis/1046915229453406310.png?size=1024)
+        ![Gift](https://cdn.discordapp.com/emojis/1046915229453406310.webp?size=1024)
     */
-    Gift = "<:Gift:1046915229453406310>",
+    Gift = "<:_:1046915229453406310>",
     /**
-        ![ConfigureAdvanced](https://cdn.discordapp.com/emojis/1046915256225640600.png?size=1024)
+        ![ConfigureAdvanced](https://cdn.discordapp.com/emojis/1046915256225640600.webp?size=1024)
     */
-    ConfigureAdvanced = "<:ConfigureAdvanced:1046915256225640600>",
+    ConfigureAdvanced = "<:_:1046915256225640600>",
     /**
-        ![Configure](https://cdn.discordapp.com/emojis/1046915276043726890.png?size=1024)
+        ![Configure](https://cdn.discordapp.com/emojis/1046915276043726890.webp?size=1024)
     */
-    Configure = "<:Configure:1046915276043726890>",
+    Configure = "<:_:1046915276043726890>",
     /**
-        ![Discover](https://cdn.discordapp.com/emojis/1046915294624501821.png?size=1024)
+        ![Discover](https://cdn.discordapp.com/emojis/1046915294624501821.webp?size=1024)
     */
-    Discover = "<:Discover:1046915294624501821>",
+    Discover = "<:_:1046915294624501821>",
     /**
-        ![DefaultTrash](https://cdn.discordapp.com/emojis/1049878137917419631.png?size=1024)
+        ![DefaultTrash](https://cdn.discordapp.com/emojis/1049878137917419631.webp?size=1024)
     */
-    DefaultTrash = "<:DefaultTrash:1049878137917419631>",
+    DefaultTrash = "<:_:1049878137917419631>",
     /**
-        ![Tag](https://cdn.discordapp.com/emojis/1053881213112295505.png?size=1024)
+        ![Tag](https://cdn.discordapp.com/emojis/1053881213112295505.webp?size=1024)
     */
-    Tag = "<:Tag:1053881213112295505>",
+    Tag = "<:_:1053881213112295505>",
     /**
-        ![Add](https://cdn.discordapp.com/emojis/1053887100551966771.png?size=1024)
+        ![Add](https://cdn.discordapp.com/emojis/1053887100551966771.webp?size=1024)
     */
-    Add = "<:Add:1053887100551966771>",
+    Add = "<:_:1053887100551966771>",
     /**
-        ![RoleAdd](https://cdn.discordapp.com/emojis/1053887102187741304.png?size=1024)
+        ![RoleAdd](https://cdn.discordapp.com/emojis/1053887102187741304.webp?size=1024)
     */
-    RoleAdd = "<:RoleAdd:1053887102187741304>",
+    RoleAdd = "<:_:1053887102187741304>",
     /**
-        ![RoleRemove](https://cdn.discordapp.com/emojis/1053887104842735677.png?size=1024)
+        ![RoleRemove](https://cdn.discordapp.com/emojis/1053887104842735677.webp?size=1024)
     */
-    RoleRemove = "<:RoleRemove:1053887104842735677>",
+    RoleRemove = "<:_:1053887104842735677>",
     /**
-        ![Remove](https://cdn.discordapp.com/emojis/1053887107921363034.png?size=1024)
+        ![Remove](https://cdn.discordapp.com/emojis/1053887107921363034.webp?size=1024)
     */
-    Remove = "<:Remove:1053887107921363034>",
+    Remove = "<:_:1053887107921363034>",
     /**
-        ![Success](https://cdn.discordapp.com/emojis/1054103410183524402.png?size=1024)
+        ![Success](https://cdn.discordapp.com/emojis/1054103410183524402.webp?size=1024)
     */
-    Success = "<:Success:1054103410183524402>",
+    Success = "<:_:1054103410183524402>",
     /**
-        ![Error](https://cdn.discordapp.com/emojis/1054103452579549326.png?size=1024)
+        ![Error](https://cdn.discordapp.com/emojis/1054103452579549326.webp?size=1024)
     */
-    Error = "<:Error:1054103452579549326>",
+    Error = "<:_:1054103452579549326>",
     /**
-        ![Advanced](https://cdn.discordapp.com/emojis/1061826562514751508.png?size=1024)
+        ![Advanced](https://cdn.discordapp.com/emojis/1061826562514751508.webp?size=1024)
     */
-    Advanced = "<:Advanced:1061826562514751508>",
+    Advanced = "<:_:1061826562514751508>",
     /**
-        ![Dark](https://cdn.discordapp.com/emojis/1061826566373527644.png?size=1024)
+        ![Dark](https://cdn.discordapp.com/emojis/1061826566373527644.webp?size=1024)
     */
-    Dark = "<:Dark:1061826566373527644>",
+    Dark = "<:_:1061826566373527644>",
     /**
-        ![Print](https://cdn.discordapp.com/emojis/1061826569800253441.png?size=1024)
+        ![Print](https://cdn.discordapp.com/emojis/1061826569800253441.webp?size=1024)
     */
-    Print = "<:Print:1061826569800253441>",
+    Print = "<:_:1061826569800253441>",
     /**
-        ![Star](https://cdn.discordapp.com/emojis/1061826573222826014.png?size=1024)
+        ![Star](https://cdn.discordapp.com/emojis/1061826573222826014.webp?size=1024)
     */
-    Star = "<:Star:1061826573222826014>",
+    Star = "<:_:1061826573222826014>",
     /**
-        ![Sync](https://cdn.discordapp.com/emojis/1061826576171421736.png?size=1024)
+        ![Sync](https://cdn.discordapp.com/emojis/1061826576171421736.webp?size=1024)
     */
-    Sync = "<:Sync:1061826576171421736>",
+    Sync = "<:_:1061826576171421736>",
     /**
-        ![Date](https://cdn.discordapp.com/emojis/1061841890384814081.png?size=1024)
+        ![Date](https://cdn.discordapp.com/emojis/1061841890384814081.webp?size=1024)
     */
-    Date = "<:Date:1061841890384814081>",
+    Date = "<:_:1061841890384814081>",
     /**
-        ![Plane](https://cdn.discordapp.com/emojis/1065079776546660512.png?size=1024)
+        ![Plane](https://cdn.discordapp.com/emojis/1065079776546660512.webp?size=1024)
     */
-    Plane = "<:Plane:1065079776546660512>",
+    Plane = "<:_:1065079776546660512>",
     /**
-        ![Member](https://cdn.discordapp.com/emojis/1065090193494904913.png?size=1024)
+        ![Member](https://cdn.discordapp.com/emojis/1065090193494904913.webp?size=1024)
     */
-    Member = "<:Member:1065090193494904913>",
+    Member = "<:_:1065090193494904913>",
     /**
-        ![Quotes](https://cdn.discordapp.com/emojis/1066185365523792042.png?size=1024)
+        ![Quotes](https://cdn.discordapp.com/emojis/1066185365523792042.webp?size=1024)
     */
-    Quotes = "<:Quotes:1066185365523792042>",
+    Quotes = "<:_:1066185365523792042>",
     /**
-        ![Search](https://cdn.discordapp.com/emojis/1066924460495622196.png?size=1024)
+        ![Search](https://cdn.discordapp.com/emojis/1066924460495622196.webp?size=1024)
     */
-    Search = "<:Search:1066924460495622196>",
+    Search = "<:_:1066924460495622196>",
     /**
-        ![AirdotTeam](https://cdn.discordapp.com/emojis/1079942878937239732.png?size=1024)
+        ![AirdotTeam](https://cdn.discordapp.com/emojis/1079942878937239732.webp?size=1024)
     */
-    AirdotTeam = "<:AirdotTeam:1079942878937239732>",
+    AirdotTeam = "<:_:1079942878937239732>",
     /**
-        ![ProUser](https://cdn.discordapp.com/emojis/1079942882519175208.png?size=1024)
+        ![ProUser](https://cdn.discordapp.com/emojis/1079942882519175208.webp?size=1024)
     */
-    ProUser = "<:ProUser:1079942882519175208>",
+    ProUser = "<:_:1079942882519175208>",
     /**
-        ![Dot](https://cdn.discordapp.com/emojis/1043218649940508712.png?size=1024)
+        ![Dot](https://cdn.discordapp.com/emojis/1043218649940508712.webp?size=1024)
     */
-    Dot = "<:Dot:1043218649940508712>",
+    Dot = "<:_:1043218649940508712>",
     /**
-        ![Exit](https://cdn.discordapp.com/emojis/1043365197424885791.png?size=1024)
+        ![Exit](https://cdn.discordapp.com/emojis/1043365197424885791.webp?size=1024)
     */
-    Exit = "<:Exit:1043365197424885791>",
+    Exit = "<:_:1043365197424885791>",
     /**
-        ![Left](https://cdn.discordapp.com/emojis/1043368910432505976.png?size=1024)
+        ![Left](https://cdn.discordapp.com/emojis/1043368910432505976.webp?size=1024)
     */
-    Left = "<:Left:1043368910432505976>",
+    Left = "<:_:1043368910432505976>",
     /**
-        ![Right](https://cdn.discordapp.com/emojis/1043368953860329532.png?size=1024)
+        ![Right](https://cdn.discordapp.com/emojis/1043368953860329532.webp?size=1024)
     */
-    Right = "<:Right:1043368953860329532>",
+    Right = "<:_:1043368953860329532>",
     /**
-        ![Transparent](https://cdn.discordapp.com/emojis/1043420854379356210.png?size=1024)
+        ![Transparent](https://cdn.discordapp.com/emojis/1043420854379356210.webp?size=1024)
     */
-    Transparent = "<:Transparent:1043420854379356210>",
+    Transparent = "<:_:1043420854379356210>",
     /**
-        ![close](https://cdn.discordapp.com/emojis/1043572422001037452.png?size=1024)
+        ![close](https://cdn.discordapp.com/emojis/1043572422001037452.webp?size=1024)
     */
-    Close = "<:close:1043572422001037452>",
+    Close = "<:_:1043572422001037452>",
     /**
-        ![checkmark](https://cdn.discordapp.com/emojis/1043572707360510072.png?size=1024)
+        ![checkmark](https://cdn.discordapp.com/emojis/1043572707360510072.webp?size=1024)
     */
-    Checkmark = "<:checkmark:1043572707360510072>",
+    Checkmark = "<:_:1043572707360510072>",
     /**
-        ![VerifiedBotText](https://cdn.discordapp.com/emojis/1043595399669231746.png?size=1024)
+        ![VerifiedBotText](https://cdn.discordapp.com/emojis/1043595399669231746.webp?size=1024)
     */
-    VerifiedBotText = "<:VerifiedBotText:1043595399669231746>",
+    VerifiedBotText = "<:_:1043595399669231746>",
     /**
-        ![VerifiedBotCheck](https://cdn.discordapp.com/emojis/1043595400701022350.png?size=1024)
+        ![VerifiedBotCheck](https://cdn.discordapp.com/emojis/1043595400701022350.webp?size=1024)
     */
-    VerifiedBotCheck = "<:VerifiedBotCheck:1043595400701022350>",
+    VerifiedBotCheck = "<:_:1043595400701022350>",
     /**
-        ![Community](https://cdn.discordapp.com/emojis/1043716351447011338.png?size=1024)
+        ![Community](https://cdn.discordapp.com/emojis/1043716351447011338.webp?size=1024)
     */
-    Community = "<:Community:1043716351447011338>",
+    Community = "<:_:1043716351447011338>",
     /**
-        ![bravery](https://cdn.discordapp.com/emojis/1043717218866823291.png?size=1024)
+        ![bravery](https://cdn.discordapp.com/emojis/1043717218866823291.webp?size=1024)
     */
-    Bravery = "<:bravery:1043717218866823291>",
+    Bravery = "<:_:1043717218866823291>",
     /**
-        ![brilliance](https://cdn.discordapp.com/emojis/1043717260499488879.png?size=1024)
+        ![brilliance](https://cdn.discordapp.com/emojis/1043717260499488879.webp?size=1024)
     */
-    Brilliance = "<:brilliance:1043717260499488879>",
+    Brilliance = "<:_:1043717260499488879>",
     /**
-        ![balance](https://cdn.discordapp.com/emojis/1043717302564171846.png?size=1024)
+        ![balance](https://cdn.discordapp.com/emojis/1043717302564171846.webp?size=1024)
     */
-    Balance = "<:balance:1043717302564171846>",
+    Balance = "<:_:1043717302564171846>",
     /**
-        ![StatusOnline](https://cdn.discordapp.com/emojis/1044019293307801680.png?size=1024)
+        ![StatusOnline](https://cdn.discordapp.com/emojis/1044019293307801680.webp?size=1024)
     */
-    StatusOnline = "<:StatusOnline:1044019293307801680>",
+    StatusOnline = "<:_:1044019293307801680>",
     /**
-        ![StatusOffline](https://cdn.discordapp.com/emojis/1044019373775540276.png?size=1024)
+        ![StatusOffline](https://cdn.discordapp.com/emojis/1044019373775540276.webp?size=1024)
     */
-    StatusOffline = "<:StatusOffline:1044019373775540276>",
+    StatusOffline = "<:_:1044019373775540276>",
     /**
-        ![HelpCircle](https://cdn.discordapp.com/emojis/1044458637579518026.png?size=1024)
+        ![HelpCircle](https://cdn.discordapp.com/emojis/1044458637579518026.webp?size=1024)
     */
-    HelpCircle = "<:HelpCircle:1044458637579518026>",
+    HelpCircle = "<:_:1044458637579518026>",
     /**
-        ![ActiveDeveloper](https://cdn.discordapp.com/emojis/1049873261615382668.png?size=1024)
+        ![ActiveDeveloper](https://cdn.discordapp.com/emojis/1049873261615382668.webp?size=1024)
     */
-    ActiveDeveloper = "<:ActiveDeveloper:1049873261615382668>",
+    ActiveDeveloper = "<:_:1049873261615382668>",
     /**
-        ![ServerOwner](https://cdn.discordapp.com/emojis/1049873748397936652.png?size=1024)
+        ![ServerOwner](https://cdn.discordapp.com/emojis/1049873748397936652.webp?size=1024)
     */
-    ServerOwner = "<:ServerOwner:1049873748397936652>",
+    ServerOwner = "<:_:1049873748397936652>",
     /**
-        ![Enabled](https://cdn.discordapp.com/emojis/1049904633939763211.png?size=1024)
+        ![Enabled](https://cdn.discordapp.com/emojis/1049904633939763211.webp?size=1024)
     */
-    Enabled = "<:Enabled:1049904633939763211>",
+    Enabled = "<:_:1049904633939763211>",
     /**
-        ![Disabled](https://cdn.discordapp.com/emojis/1049904650989600849.png?size=1024)
+        ![Disabled](https://cdn.discordapp.com/emojis/1049904650989600849.webp?size=1024)
     */
-    Disabled = "<:Disabled:1049904650989600849>",
+    Disabled = "<:_:1049904650989600849>",
     /**
-        ![blank](https://cdn.discordapp.com/emojis/1049914365752651796.png?size=1024)
+        ![blank](https://cdn.discordapp.com/emojis/1049914365752651796.webp?size=1024)
     */
-    Blank = "<:blank:1049914365752651796>",
+    Blank = "<:_:1049914365752651796>",
     /**
-        ![StemItem](https://cdn.discordapp.com/emojis/1051630581340971108.png?size=1024)
+        ![StemItem](https://cdn.discordapp.com/emojis/1051630581340971108.webp?size=1024)
     */
-    StemItem = "<:StemItem:1051630581340971108>",
+    StemItem = "<:_:1051630581340971108>",
     /**
-        ![StemEnd](https://cdn.discordapp.com/emojis/1051630676354551839.png?size=1024)
+        ![StemEnd](https://cdn.discordapp.com/emojis/1051630676354551839.webp?size=1024)
     */
-    StemEnd = "<:StemEnd:1051630676354551839>",
+    StemEnd = "<:_:1051630676354551839>",
     /**
-        ![emoji_46](https://cdn.discordapp.com/emojis/1054096080180097154.png?size=1024)
+        ![emoji_46](https://cdn.discordapp.com/emojis/1054096080180097154.webp?size=1024)
     */
-    Emoji46 = "<:emoji_46:1054096080180097154>",
+    Emoji46 = "<:_:1054096080180097154>",
     /**
-        ![emoji_47](https://cdn.discordapp.com/emojis/1054096101180985384.png?size=1024)
+        ![emoji_47](https://cdn.discordapp.com/emojis/1054096101180985384.webp?size=1024)
     */
-    Emoji47 = "<:emoji_47:1054096101180985384>",
+    Emoji47 = "<:_:1054096101180985384>",
     /**
-        ![emoji_48](https://cdn.discordapp.com/emojis/1054096119954673855.png?size=1024)
+        ![emoji_48](https://cdn.discordapp.com/emojis/1054096119954673855.webp?size=1024)
     */
-    Emoji48 = "<:emoji_48:1054096119954673855>",
+    Emoji48 = "<:_:1054096119954673855>",
     /**
-        ![Statistics](https://cdn.discordapp.com/emojis/1067239843152793660.png?size=1024)
+        ![Statistics](https://cdn.discordapp.com/emojis/1067239843152793660.webp?size=1024)
     */
-    Statistics = "<:Statistics:1067239843152793660>",
+    Statistics = "<:_:1067239843152793660>",
     /**
-        ![Clipboard](https://cdn.discordapp.com/emojis/1080303994343280701.png?size=1024)
+        ![Clipboard](https://cdn.discordapp.com/emojis/1080303994343280701.webp?size=1024)
     */
-    Clipboard = "<:Clipboard:1080303994343280701>",
+    Clipboard = "<:_:1080303994343280701>",
     /**
-        ![VerifiedLight](https://cdn.discordapp.com/emojis/1080647205423153184.png?size=1024)
+        ![VerifiedLight](https://cdn.discordapp.com/emojis/1080647205423153184.webp?size=1024)
     */
-    VerifiedLight = "<:VerifiedLight:1080647205423153184>",
+    VerifiedLight = "<:_:1080647205423153184>",
     /**
-        ![VerifiedGreen](https://cdn.discordapp.com/emojis/1080647224616308797.png?size=1024)
+        ![VerifiedGreen](https://cdn.discordapp.com/emojis/1080647224616308797.webp?size=1024)
     */
-    VerifiedGreen = "<:VerifiedGreen:1080647224616308797>"
+    VerifiedGreen = "<:_:1080647224616308797>",
+    /**
+        ![Broom](https://cdn.discordapp.com/emojis/1086651988739113031.webp?size=1024)
+    */
+    Broom = "<:_:1086651988739113031>",
+    /**
+        ![Game](https://cdn.discordapp.com/emojis/1086652337273180251.webp?size=1024)
+    */
+    Game = "<:_:1086652337273180251>"
 }
 
 export enum IconURLs {
     /**
-        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless?size=1024)
+        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless)
     */
     Bot = "https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless",
     /**
-        ![Book](https://cdn.discordapp.com/emojis/1043579932665708604.png?size=1024)
+        ![Book](https://cdn.discordapp.com/emojis/1043579932665708604.webp?size=1024)
     */
-    Book = "https://cdn.discordapp.com/emojis/1043579932665708604.png",
+    Book = "https://cdn.discordapp.com/emojis/1043579932665708604.webp",
     /**
-        ![Clock](https://cdn.discordapp.com/emojis/1043579937690497044.png?size=1024)
+        ![Clock](https://cdn.discordapp.com/emojis/1043579937690497044.webp?size=1024)
     */
-    Clock = "https://cdn.discordapp.com/emojis/1043579937690497044.png",
+    Clock = "https://cdn.discordapp.com/emojis/1043579937690497044.webp",
     /**
-        ![Code](https://cdn.discordapp.com/emojis/1043579940903342201.png?size=1024)
+        ![Code](https://cdn.discordapp.com/emojis/1043579940903342201.webp?size=1024)
     */
-    Code = "https://cdn.discordapp.com/emojis/1043579940903342201.png",
+    Code = "https://cdn.discordapp.com/emojis/1043579940903342201.webp",
     /**
-        ![Color](https://cdn.discordapp.com/emojis/1043579942811750410.png?size=1024)
+        ![Color](https://cdn.discordapp.com/emojis/1043579942811750410.webp?size=1024)
     */
-    Color = "https://cdn.discordapp.com/emojis/1043579942811750410.png",
+    Color = "https://cdn.discordapp.com/emojis/1043579942811750410.webp",
     /**
-        ![External](https://cdn.discordapp.com/emojis/1043579944254578768.png?size=1024)
+        ![External](https://cdn.discordapp.com/emojis/1043579944254578768.webp?size=1024)
     */
-    External = "https://cdn.discordapp.com/emojis/1043579944254578768.png",
+    External = "https://cdn.discordapp.com/emojis/1043579944254578768.webp",
     /**
-        ![Link](https://cdn.discordapp.com/emojis/1043579945777119242.png?size=1024)
+        ![Link](https://cdn.discordapp.com/emojis/1043579945777119242.webp?size=1024)
     */
-    Link = "https://cdn.discordapp.com/emojis/1043579945777119242.png",
+    Link = "https://cdn.discordapp.com/emojis/1043579945777119242.webp",
     /**
-        ![MemberAdd](https://cdn.discordapp.com/emojis/1043579947639386292.png?size=1024)
+        ![MemberAdd](https://cdn.discordapp.com/emojis/1043579947639386292.webp?size=1024)
     */
-    MemberAdd = "https://cdn.discordapp.com/emojis/1043579947639386292.png",
+    MemberAdd = "https://cdn.discordapp.com/emojis/1043579947639386292.webp",
     /**
-        ![Refresh](https://cdn.discordapp.com/emojis/1043579950197903430.png?size=1024)
+        ![Refresh](https://cdn.discordapp.com/emojis/1043579950197903430.webp?size=1024)
     */
-    Refresh = "https://cdn.discordapp.com/emojis/1043579950197903430.png",
+    Refresh = "https://cdn.discordapp.com/emojis/1043579950197903430.webp",
     /**
-        ![Trash](https://cdn.discordapp.com/emojis/1043579951586213888.png?size=1024)
+        ![Trash](https://cdn.discordapp.com/emojis/1043579951586213888.webp?size=1024)
     */
-    Trash = "https://cdn.discordapp.com/emojis/1043579951586213888.png",
+    Trash = "https://cdn.discordapp.com/emojis/1043579951586213888.webp",
     /**
-        ![Brush](https://cdn.discordapp.com/emojis/1043584063358906558.png?size=1024)
+        ![Brush](https://cdn.discordapp.com/emojis/1043584063358906558.webp?size=1024)
     */
-    Brush = "https://cdn.discordapp.com/emojis/1043584063358906558.png",
+    Brush = "https://cdn.discordapp.com/emojis/1043584063358906558.webp",
     /**
-        ![Channel](https://cdn.discordapp.com/emojis/1043584064751423608.png?size=1024)
+        ![Channel](https://cdn.discordapp.com/emojis/1043584064751423608.webp?size=1024)
     */
-    Channel = "https://cdn.discordapp.com/emojis/1043584064751423608.png",
+    Channel = "https://cdn.discordapp.com/emojis/1043584064751423608.webp",
     /**
-        ![Flag](https://cdn.discordapp.com/emojis/1043584066068422747.png?size=1024)
+        ![Flag](https://cdn.discordapp.com/emojis/1043584066068422747.webp?size=1024)
     */
-    Flag = "https://cdn.discordapp.com/emojis/1043584066068422747.png",
+    Flag = "https://cdn.discordapp.com/emojis/1043584066068422747.webp",
     /**
-        ![Mark](https://cdn.discordapp.com/emojis/1043584067418992670.png?size=1024)
+        ![Mark](https://cdn.discordapp.com/emojis/1043584067418992670.webp?size=1024)
     */
-    Mark = "https://cdn.discordapp.com/emojis/1043584067418992670.png",
+    Mark = "https://cdn.discordapp.com/emojis/1043584067418992670.webp",
     /**
-        ![Badge](https://cdn.discordapp.com/emojis/1043599252414275634.png?size=1024)
+        ![Badge](https://cdn.discordapp.com/emojis/1043599252414275634.webp?size=1024)
     */
-    Badge = "https://cdn.discordapp.com/emojis/1043599252414275634.png",
+    Badge = "https://cdn.discordapp.com/emojis/1043599252414275634.webp",
     /**
-        ![Globe](https://cdn.discordapp.com/emojis/1043599254125563925.png?size=1024)
+        ![Globe](https://cdn.discordapp.com/emojis/1043599254125563925.webp?size=1024)
     */
-    Globe = "https://cdn.discordapp.com/emojis/1043599254125563925.png",
+    Globe = "https://cdn.discordapp.com/emojis/1043599254125563925.webp",
     /**
-        ![Emoji](https://cdn.discordapp.com/emojis/1043718870013325394.png?size=1024)
+        ![Emoji](https://cdn.discordapp.com/emojis/1043718870013325394.webp?size=1024)
     */
-    Emoji = "https://cdn.discordapp.com/emojis/1043718870013325394.png",
+    Emoji = "https://cdn.discordapp.com/emojis/1043718870013325394.webp",
     /**
-        ![Folder](https://cdn.discordapp.com/emojis/1043718871422615612.png?size=1024)
+        ![Folder](https://cdn.discordapp.com/emojis/1043718871422615612.webp?size=1024)
     */
-    Folder = "https://cdn.discordapp.com/emojis/1043718871422615612.png",
+    Folder = "https://cdn.discordapp.com/emojis/1043718871422615612.webp",
     /**
-        ![Image](https://cdn.discordapp.com/emojis/1043718873045811271.png?size=1024)
+        ![Image](https://cdn.discordapp.com/emojis/1043718873045811271.webp?size=1024)
     */
-    Image = "https://cdn.discordapp.com/emojis/1043718873045811271.png",
+    Image = "https://cdn.discordapp.com/emojis/1043718873045811271.webp",
     /**
-        ![Voice](https://cdn.discordapp.com/emojis/1043733614589902878.png?size=1024)
+        ![Voice](https://cdn.discordapp.com/emojis/1043733614589902878.webp?size=1024)
     */
-    Voice = "https://cdn.discordapp.com/emojis/1043733614589902878.png",
+    Voice = "https://cdn.discordapp.com/emojis/1043733614589902878.webp",
     /**
-        ![Members](https://cdn.discordapp.com/emojis/1044023938591756370.png?size=1024)
+        ![Members](https://cdn.discordapp.com/emojis/1044023938591756370.webp?size=1024)
     */
-    Members = "https://cdn.discordapp.com/emojis/1044023938591756370.png",
+    Members = "https://cdn.discordapp.com/emojis/1044023938591756370.webp",
     /**
-        ![Info](https://cdn.discordapp.com/emojis/1044457273990324264.png?size=1024)
+        ![Info](https://cdn.discordapp.com/emojis/1044457273990324264.webp?size=1024)
     */
-    Info = "https://cdn.discordapp.com/emojis/1044457273990324264.png",
+    Info = "https://cdn.discordapp.com/emojis/1044457273990324264.webp",
     /**
-        ![Shield](https://cdn.discordapp.com/emojis/1044472705845563442.png?size=1024)
+        ![Shield](https://cdn.discordapp.com/emojis/1044472705845563442.webp?size=1024)
     */
-    Shield = "https://cdn.discordapp.com/emojis/1044472705845563442.png",
+    Shield = "https://cdn.discordapp.com/emojis/1044472705845563442.webp",
     /**
-        ![Lock](https://cdn.discordapp.com/emojis/1044474659749507082.png?size=1024)
+        ![Lock](https://cdn.discordapp.com/emojis/1044474659749507082.webp?size=1024)
     */
-    Lock = "https://cdn.discordapp.com/emojis/1044474659749507082.png",
+    Lock = "https://cdn.discordapp.com/emojis/1044474659749507082.webp",
     /**
-        ![Unlock](https://cdn.discordapp.com/emojis/1044474661519495188.png?size=1024)
+        ![Unlock](https://cdn.discordapp.com/emojis/1044474661519495188.webp?size=1024)
     */
-    Unlock = "https://cdn.discordapp.com/emojis/1044474661519495188.png",
+    Unlock = "https://cdn.discordapp.com/emojis/1044474661519495188.webp",
     /**
-        ![Paint](https://cdn.discordapp.com/emojis/1046915159668572240.png?size=1024)
+        ![Paint](https://cdn.discordapp.com/emojis/1046915159668572240.webp?size=1024)
     */
-    Paint = "https://cdn.discordapp.com/emojis/1046915159668572240.png",
+    Paint = "https://cdn.discordapp.com/emojis/1046915159668572240.webp",
     /**
-        ![Zap](https://cdn.discordapp.com/emojis/1046915192191197214.png?size=1024)
+        ![Zap](https://cdn.discordapp.com/emojis/1046915192191197214.webp?size=1024)
     */
-    Zap = "https://cdn.discordapp.com/emojis/1046915192191197214.png",
+    Zap = "https://cdn.discordapp.com/emojis/1046915192191197214.webp",
     /**
-        ![Gift](https://cdn.discordapp.com/emojis/1046915229453406310.png?size=1024)
+        ![Gift](https://cdn.discordapp.com/emojis/1046915229453406310.webp?size=1024)
     */
-    Gift = "https://cdn.discordapp.com/emojis/1046915229453406310.png",
+    Gift = "https://cdn.discordapp.com/emojis/1046915229453406310.webp",
     /**
-        ![ConfigureAdvanced](https://cdn.discordapp.com/emojis/1046915256225640600.png?size=1024)
+        ![ConfigureAdvanced](https://cdn.discordapp.com/emojis/1046915256225640600.webp?size=1024)
     */
-    ConfigureAdvanced = "https://cdn.discordapp.com/emojis/1046915256225640600.png",
+    ConfigureAdvanced = "https://cdn.discordapp.com/emojis/1046915256225640600.webp",
     /**
-        ![Configure](https://cdn.discordapp.com/emojis/1046915276043726890.png?size=1024)
+        ![Configure](https://cdn.discordapp.com/emojis/1046915276043726890.webp?size=1024)
     */
-    Configure = "https://cdn.discordapp.com/emojis/1046915276043726890.png",
+    Configure = "https://cdn.discordapp.com/emojis/1046915276043726890.webp",
     /**
-        ![Discover](https://cdn.discordapp.com/emojis/1046915294624501821.png?size=1024)
+        ![Discover](https://cdn.discordapp.com/emojis/1046915294624501821.webp?size=1024)
     */
-    Discover = "https://cdn.discordapp.com/emojis/1046915294624501821.png",
+    Discover = "https://cdn.discordapp.com/emojis/1046915294624501821.webp",
     /**
-        ![DefaultTrash](https://cdn.discordapp.com/emojis/1049878137917419631.png?size=1024)
+        ![DefaultTrash](https://cdn.discordapp.com/emojis/1049878137917419631.webp?size=1024)
     */
-    DefaultTrash = "https://cdn.discordapp.com/emojis/1049878137917419631.png",
+    DefaultTrash = "https://cdn.discordapp.com/emojis/1049878137917419631.webp",
     /**
-        ![Tag](https://cdn.discordapp.com/emojis/1053881213112295505.png?size=1024)
+        ![Tag](https://cdn.discordapp.com/emojis/1053881213112295505.webp?size=1024)
     */
-    Tag = "https://cdn.discordapp.com/emojis/1053881213112295505.png",
+    Tag = "https://cdn.discordapp.com/emojis/1053881213112295505.webp",
     /**
-        ![Add](https://cdn.discordapp.com/emojis/1053887100551966771.png?size=1024)
+        ![Add](https://cdn.discordapp.com/emojis/1053887100551966771.webp?size=1024)
     */
-    Add = "https://cdn.discordapp.com/emojis/1053887100551966771.png",
+    Add = "https://cdn.discordapp.com/emojis/1053887100551966771.webp",
     /**
-        ![RoleAdd](https://cdn.discordapp.com/emojis/1053887102187741304.png?size=1024)
+        ![RoleAdd](https://cdn.discordapp.com/emojis/1053887102187741304.webp?size=1024)
     */
-    RoleAdd = "https://cdn.discordapp.com/emojis/1053887102187741304.png",
+    RoleAdd = "https://cdn.discordapp.com/emojis/1053887102187741304.webp",
     /**
-        ![RoleRemove](https://cdn.discordapp.com/emojis/1053887104842735677.png?size=1024)
+        ![RoleRemove](https://cdn.discordapp.com/emojis/1053887104842735677.webp?size=1024)
     */
-    RoleRemove = "https://cdn.discordapp.com/emojis/1053887104842735677.png",
+    RoleRemove = "https://cdn.discordapp.com/emojis/1053887104842735677.webp",
     /**
-        ![Remove](https://cdn.discordapp.com/emojis/1053887107921363034.png?size=1024)
+        ![Remove](https://cdn.discordapp.com/emojis/1053887107921363034.webp?size=1024)
     */
-    Remove = "https://cdn.discordapp.com/emojis/1053887107921363034.png",
+    Remove = "https://cdn.discordapp.com/emojis/1053887107921363034.webp",
     /**
-        ![Success](https://cdn.discordapp.com/emojis/1054103410183524402.png?size=1024)
+        ![Success](https://cdn.discordapp.com/emojis/1054103410183524402.webp?size=1024)
     */
-    Success = "https://cdn.discordapp.com/emojis/1054103410183524402.png",
+    Success = "https://cdn.discordapp.com/emojis/1054103410183524402.webp",
     /**
-        ![Error](https://cdn.discordapp.com/emojis/1054103452579549326.png?size=1024)
+        ![Error](https://cdn.discordapp.com/emojis/1054103452579549326.webp?size=1024)
     */
-    Error = "https://cdn.discordapp.com/emojis/1054103452579549326.png",
+    Error = "https://cdn.discordapp.com/emojis/1054103452579549326.webp",
     /**
-        ![Advanced](https://cdn.discordapp.com/emojis/1061826562514751508.png?size=1024)
+        ![Advanced](https://cdn.discordapp.com/emojis/1061826562514751508.webp?size=1024)
     */
-    Advanced = "https://cdn.discordapp.com/emojis/1061826562514751508.png",
+    Advanced = "https://cdn.discordapp.com/emojis/1061826562514751508.webp",
     /**
-        ![Dark](https://cdn.discordapp.com/emojis/1061826566373527644.png?size=1024)
+        ![Dark](https://cdn.discordapp.com/emojis/1061826566373527644.webp?size=1024)
     */
-    Dark = "https://cdn.discordapp.com/emojis/1061826566373527644.png",
+    Dark = "https://cdn.discordapp.com/emojis/1061826566373527644.webp",
     /**
-        ![Print](https://cdn.discordapp.com/emojis/1061826569800253441.png?size=1024)
+        ![Print](https://cdn.discordapp.com/emojis/1061826569800253441.webp?size=1024)
     */
-    Print = "https://cdn.discordapp.com/emojis/1061826569800253441.png",
+    Print = "https://cdn.discordapp.com/emojis/1061826569800253441.webp",
     /**
-        ![Star](https://cdn.discordapp.com/emojis/1061826573222826014.png?size=1024)
+        ![Star](https://cdn.discordapp.com/emojis/1061826573222826014.webp?size=1024)
     */
-    Star = "https://cdn.discordapp.com/emojis/1061826573222826014.png",
+    Star = "https://cdn.discordapp.com/emojis/1061826573222826014.webp",
     /**
-        ![Sync](https://cdn.discordapp.com/emojis/1061826576171421736.png?size=1024)
+        ![Sync](https://cdn.discordapp.com/emojis/1061826576171421736.webp?size=1024)
     */
-    Sync = "https://cdn.discordapp.com/emojis/1061826576171421736.png",
+    Sync = "https://cdn.discordapp.com/emojis/1061826576171421736.webp",
     /**
-        ![Date](https://cdn.discordapp.com/emojis/1061841890384814081.png?size=1024)
+        ![Date](https://cdn.discordapp.com/emojis/1061841890384814081.webp?size=1024)
     */
-    Date = "https://cdn.discordapp.com/emojis/1061841890384814081.png",
+    Date = "https://cdn.discordapp.com/emojis/1061841890384814081.webp",
     /**
-        ![Plane](https://cdn.discordapp.com/emojis/1065079776546660512.png?size=1024)
+        ![Plane](https://cdn.discordapp.com/emojis/1065079776546660512.webp?size=1024)
     */
-    Plane = "https://cdn.discordapp.com/emojis/1065079776546660512.png",
+    Plane = "https://cdn.discordapp.com/emojis/1065079776546660512.webp",
     /**
-        ![Member](https://cdn.discordapp.com/emojis/1065090193494904913.png?size=1024)
+        ![Member](https://cdn.discordapp.com/emojis/1065090193494904913.webp?size=1024)
     */
-    Member = "https://cdn.discordapp.com/emojis/1065090193494904913.png",
+    Member = "https://cdn.discordapp.com/emojis/1065090193494904913.webp",
     /**
-        ![Quotes](https://cdn.discordapp.com/emojis/1066185365523792042.png?size=1024)
+        ![Quotes](https://cdn.discordapp.com/emojis/1066185365523792042.webp?size=1024)
     */
-    Quotes = "https://cdn.discordapp.com/emojis/1066185365523792042.png",
+    Quotes = "https://cdn.discordapp.com/emojis/1066185365523792042.webp",
     /**
-        ![Search](https://cdn.discordapp.com/emojis/1066924460495622196.png?size=1024)
+        ![Search](https://cdn.discordapp.com/emojis/1066924460495622196.webp?size=1024)
     */
-    Search = "https://cdn.discordapp.com/emojis/1066924460495622196.png",
+    Search = "https://cdn.discordapp.com/emojis/1066924460495622196.webp",
     /**
-        ![AirdotTeam](https://cdn.discordapp.com/emojis/1079942878937239732.png?size=1024)
+        ![AirdotTeam](https://cdn.discordapp.com/emojis/1079942878937239732.webp?size=1024)
     */
-    AirdotTeam = "https://cdn.discordapp.com/emojis/1079942878937239732.png",
+    AirdotTeam = "https://cdn.discordapp.com/emojis/1079942878937239732.webp",
     /**
-        ![ProUser](https://cdn.discordapp.com/emojis/1079942882519175208.png?size=1024)
+        ![ProUser](https://cdn.discordapp.com/emojis/1079942882519175208.webp?size=1024)
     */
-    ProUser = "https://cdn.discordapp.com/emojis/1079942882519175208.png",
+    ProUser = "https://cdn.discordapp.com/emojis/1079942882519175208.webp",
     /**
-        ![Dot](https://cdn.discordapp.com/emojis/1043218649940508712.png?size=1024)
+        ![Dot](https://cdn.discordapp.com/emojis/1043218649940508712.webp?size=1024)
     */
-    Dot = "https://cdn.discordapp.com/emojis/1043218649940508712.png",
+    Dot = "https://cdn.discordapp.com/emojis/1043218649940508712.webp",
     /**
-        ![Exit](https://cdn.discordapp.com/emojis/1043365197424885791.png?size=1024)
+        ![Exit](https://cdn.discordapp.com/emojis/1043365197424885791.webp?size=1024)
     */
-    Exit = "https://cdn.discordapp.com/emojis/1043365197424885791.png",
+    Exit = "https://cdn.discordapp.com/emojis/1043365197424885791.webp",
     /**
-        ![Left](https://cdn.discordapp.com/emojis/1043368910432505976.png?size=1024)
+        ![Left](https://cdn.discordapp.com/emojis/1043368910432505976.webp?size=1024)
     */
-    Left = "https://cdn.discordapp.com/emojis/1043368910432505976.png",
+    Left = "https://cdn.discordapp.com/emojis/1043368910432505976.webp",
     /**
-        ![Right](https://cdn.discordapp.com/emojis/1043368953860329532.png?size=1024)
+        ![Right](https://cdn.discordapp.com/emojis/1043368953860329532.webp?size=1024)
     */
-    Right = "https://cdn.discordapp.com/emojis/1043368953860329532.png",
+    Right = "https://cdn.discordapp.com/emojis/1043368953860329532.webp",
     /**
-        ![Transparent](https://cdn.discordapp.com/emojis/1043420854379356210.png?size=1024)
+        ![Transparent](https://cdn.discordapp.com/emojis/1043420854379356210.webp?size=1024)
     */
-    Transparent = "https://cdn.discordapp.com/emojis/1043420854379356210.png",
+    Transparent = "https://cdn.discordapp.com/emojis/1043420854379356210.webp",
     /**
-        ![close](https://cdn.discordapp.com/emojis/1043572422001037452.png?size=1024)
+        ![close](https://cdn.discordapp.com/emojis/1043572422001037452.webp?size=1024)
     */
-    Close = "https://cdn.discordapp.com/emojis/1043572422001037452.png",
+    Close = "https://cdn.discordapp.com/emojis/1043572422001037452.webp",
     /**
-        ![checkmark](https://cdn.discordapp.com/emojis/1043572707360510072.png?size=1024)
+        ![checkmark](https://cdn.discordapp.com/emojis/1043572707360510072.webp?size=1024)
     */
-    Checkmark = "https://cdn.discordapp.com/emojis/1043572707360510072.png",
+    Checkmark = "https://cdn.discordapp.com/emojis/1043572707360510072.webp",
     /**
-        ![VerifiedBotText](https://cdn.discordapp.com/emojis/1043595399669231746.png?size=1024)
+        ![VerifiedBotText](https://cdn.discordapp.com/emojis/1043595399669231746.webp?size=1024)
     */
-    VerifiedBotText = "https://cdn.discordapp.com/emojis/1043595399669231746.png",
+    VerifiedBotText = "https://cdn.discordapp.com/emojis/1043595399669231746.webp",
     /**
-        ![VerifiedBotCheck](https://cdn.discordapp.com/emojis/1043595400701022350.png?size=1024)
+        ![VerifiedBotCheck](https://cdn.discordapp.com/emojis/1043595400701022350.webp?size=1024)
     */
-    VerifiedBotCheck = "https://cdn.discordapp.com/emojis/1043595400701022350.png",
+    VerifiedBotCheck = "https://cdn.discordapp.com/emojis/1043595400701022350.webp",
     /**
-        ![Community](https://cdn.discordapp.com/emojis/1043716351447011338.png?size=1024)
+        ![Community](https://cdn.discordapp.com/emojis/1043716351447011338.webp?size=1024)
     */
-    Community = "https://cdn.discordapp.com/emojis/1043716351447011338.png",
+    Community = "https://cdn.discordapp.com/emojis/1043716351447011338.webp",
     /**
-        ![bravery](https://cdn.discordapp.com/emojis/1043717218866823291.png?size=1024)
+        ![bravery](https://cdn.discordapp.com/emojis/1043717218866823291.webp?size=1024)
     */
-    Bravery = "https://cdn.discordapp.com/emojis/1043717218866823291.png",
+    Bravery = "https://cdn.discordapp.com/emojis/1043717218866823291.webp",
     /**
-        ![brilliance](https://cdn.discordapp.com/emojis/1043717260499488879.png?size=1024)
+        ![brilliance](https://cdn.discordapp.com/emojis/1043717260499488879.webp?size=1024)
     */
-    Brilliance = "https://cdn.discordapp.com/emojis/1043717260499488879.png",
+    Brilliance = "https://cdn.discordapp.com/emojis/1043717260499488879.webp",
     /**
-        ![balance](https://cdn.discordapp.com/emojis/1043717302564171846.png?size=1024)
+        ![balance](https://cdn.discordapp.com/emojis/1043717302564171846.webp?size=1024)
     */
-    Balance = "https://cdn.discordapp.com/emojis/1043717302564171846.png",
+    Balance = "https://cdn.discordapp.com/emojis/1043717302564171846.webp",
     /**
-        ![StatusOnline](https://cdn.discordapp.com/emojis/1044019293307801680.png?size=1024)
+        ![StatusOnline](https://cdn.discordapp.com/emojis/1044019293307801680.webp?size=1024)
     */
-    StatusOnline = "https://cdn.discordapp.com/emojis/1044019293307801680.png",
+    StatusOnline = "https://cdn.discordapp.com/emojis/1044019293307801680.webp",
     /**
-        ![StatusOffline](https://cdn.discordapp.com/emojis/1044019373775540276.png?size=1024)
+        ![StatusOffline](https://cdn.discordapp.com/emojis/1044019373775540276.webp?size=1024)
     */
-    StatusOffline = "https://cdn.discordapp.com/emojis/1044019373775540276.png",
+    StatusOffline = "https://cdn.discordapp.com/emojis/1044019373775540276.webp",
     /**
-        ![HelpCircle](https://cdn.discordapp.com/emojis/1044458637579518026.png?size=1024)
+        ![HelpCircle](https://cdn.discordapp.com/emojis/1044458637579518026.webp?size=1024)
     */
-    HelpCircle = "https://cdn.discordapp.com/emojis/1044458637579518026.png",
+    HelpCircle = "https://cdn.discordapp.com/emojis/1044458637579518026.webp",
     /**
-        ![ActiveDeveloper](https://cdn.discordapp.com/emojis/1049873261615382668.png?size=1024)
+        ![ActiveDeveloper](https://cdn.discordapp.com/emojis/1049873261615382668.webp?size=1024)
     */
-    ActiveDeveloper = "https://cdn.discordapp.com/emojis/1049873261615382668.png",
+    ActiveDeveloper = "https://cdn.discordapp.com/emojis/1049873261615382668.webp",
     /**
-        ![ServerOwner](https://cdn.discordapp.com/emojis/1049873748397936652.png?size=1024)
+        ![ServerOwner](https://cdn.discordapp.com/emojis/1049873748397936652.webp?size=1024)
     */
-    ServerOwner = "https://cdn.discordapp.com/emojis/1049873748397936652.png",
+    ServerOwner = "https://cdn.discordapp.com/emojis/1049873748397936652.webp",
     /**
-        ![Enabled](https://cdn.discordapp.com/emojis/1049904633939763211.png?size=1024)
+        ![Enabled](https://cdn.discordapp.com/emojis/1049904633939763211.webp?size=1024)
     */
-    Enabled = "https://cdn.discordapp.com/emojis/1049904633939763211.png",
+    Enabled = "https://cdn.discordapp.com/emojis/1049904633939763211.webp",
     /**
-        ![Disabled](https://cdn.discordapp.com/emojis/1049904650989600849.png?size=1024)
+        ![Disabled](https://cdn.discordapp.com/emojis/1049904650989600849.webp?size=1024)
     */
-    Disabled = "https://cdn.discordapp.com/emojis/1049904650989600849.png",
+    Disabled = "https://cdn.discordapp.com/emojis/1049904650989600849.webp",
     /**
-        ![blank](https://cdn.discordapp.com/emojis/1049914365752651796.png?size=1024)
+        ![blank](https://cdn.discordapp.com/emojis/1049914365752651796.webp?size=1024)
     */
-    Blank = "https://cdn.discordapp.com/emojis/1049914365752651796.png",
+    Blank = "https://cdn.discordapp.com/emojis/1049914365752651796.webp",
     /**
-        ![StemItem](https://cdn.discordapp.com/emojis/1051630581340971108.png?size=1024)
+        ![StemItem](https://cdn.discordapp.com/emojis/1051630581340971108.webp?size=1024)
     */
-    StemItem = "https://cdn.discordapp.com/emojis/1051630581340971108.png",
+    StemItem = "https://cdn.discordapp.com/emojis/1051630581340971108.webp",
     /**
-        ![StemEnd](https://cdn.discordapp.com/emojis/1051630676354551839.png?size=1024)
+        ![StemEnd](https://cdn.discordapp.com/emojis/1051630676354551839.webp?size=1024)
     */
-    StemEnd = "https://cdn.discordapp.com/emojis/1051630676354551839.png",
+    StemEnd = "https://cdn.discordapp.com/emojis/1051630676354551839.webp",
     /**
-        ![emoji_46](https://cdn.discordapp.com/emojis/1054096080180097154.png?size=1024)
+        ![emoji_46](https://cdn.discordapp.com/emojis/1054096080180097154.webp?size=1024)
     */
-    Emoji46 = "https://cdn.discordapp.com/emojis/1054096080180097154.png",
+    Emoji46 = "https://cdn.discordapp.com/emojis/1054096080180097154.webp",
     /**
-        ![emoji_47](https://cdn.discordapp.com/emojis/1054096101180985384.png?size=1024)
+        ![emoji_47](https://cdn.discordapp.com/emojis/1054096101180985384.webp?size=1024)
     */
-    Emoji47 = "https://cdn.discordapp.com/emojis/1054096101180985384.png",
+    Emoji47 = "https://cdn.discordapp.com/emojis/1054096101180985384.webp",
     /**
-        ![emoji_48](https://cdn.discordapp.com/emojis/1054096119954673855.png?size=1024)
+        ![emoji_48](https://cdn.discordapp.com/emojis/1054096119954673855.webp?size=1024)
     */
-    Emoji48 = "https://cdn.discordapp.com/emojis/1054096119954673855.png",
+    Emoji48 = "https://cdn.discordapp.com/emojis/1054096119954673855.webp",
     /**
-        ![Statistics](https://cdn.discordapp.com/emojis/1067239843152793660.png?size=1024)
+        ![Statistics](https://cdn.discordapp.com/emojis/1067239843152793660.webp?size=1024)
     */
-    Statistics = "https://cdn.discordapp.com/emojis/1067239843152793660.png",
+    Statistics = "https://cdn.discordapp.com/emojis/1067239843152793660.webp",
     /**
-        ![Clipboard](https://cdn.discordapp.com/emojis/1080303994343280701.png?size=1024)
+        ![Clipboard](https://cdn.discordapp.com/emojis/1080303994343280701.webp?size=1024)
     */
-    Clipboard = "https://cdn.discordapp.com/emojis/1080303994343280701.png",
+    Clipboard = "https://cdn.discordapp.com/emojis/1080303994343280701.webp",
     /**
-        ![VerifiedLight](https://cdn.discordapp.com/emojis/1080647205423153184.png?size=1024)
+        ![VerifiedLight](https://cdn.discordapp.com/emojis/1080647205423153184.webp?size=1024)
     */
-    VerifiedLight = "https://cdn.discordapp.com/emojis/1080647205423153184.png",
+    VerifiedLight = "https://cdn.discordapp.com/emojis/1080647205423153184.webp",
     /**
-        ![VerifiedGreen](https://cdn.discordapp.com/emojis/1080647224616308797.png?size=1024)
+        ![VerifiedGreen](https://cdn.discordapp.com/emojis/1080647224616308797.webp?size=1024)
     */
-    VerifiedGreen = "https://cdn.discordapp.com/emojis/1080647224616308797.png"
+    VerifiedGreen = "https://cdn.discordapp.com/emojis/1080647224616308797.webp",
+    /**
+        ![Broom](https://cdn.discordapp.com/emojis/1086651988739113031.webp?size=1024)
+    */
+    Broom = "https://cdn.discordapp.com/emojis/1086651988739113031.webp",
+    /**
+        ![Game](https://cdn.discordapp.com/emojis/1086652337273180251.webp?size=1024)
+    */
+    Game = "https://cdn.discordapp.com/emojis/1086652337273180251.webp"
 }

@@ -19,7 +19,7 @@ const guilds = [
 const defaultIcons = [{
     name: "Bot",
     toString: () => "<:Bot:1040733154656403616>",
-    url: "https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless"
+    imageURL: (options) => "https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless"
 }]
 
 /**
@@ -45,17 +45,18 @@ client.on("ready", async () => {
     }));
 
     const DevMode = Boolean(process.env.DEV);
+    const DefaultOptions = { size: 1024, extension: "webp" };
     const Text = `// 🤖 This is an automated function that generates emojis from servers
 // 📝 Any edits made in this file will be overwritten
 export enum Icons {
 ${emojis.map(e => `${DevMode == true ? `    /**
-        ![${e.name}](${`${e.url}?size=1024`})
+        ![${e.name}](${`${e.imageURL(DefaultOptions)}`})
     */\n` : ""}    ${reformat(e.name.toString())} = "${e.toString()}"`).join(",\n")}
 }`;
     const URLText = `\n\nexport enum IconURLs {
 ${emojis.map(e => `${DevMode == true ? `    /**
-        ![${e.name}](${`${e.url}?size=1024`})
-    */\n` : ""}    ${reformat(e.name.toString())} = "${e.url}"`).join(",\n")}
+        ![${e.name}](${`${e.imageURL(DefaultOptions)}`})
+    */\n` : ""}    ${reformat(e.name.toString())} = "${e.imageURL()}"`).join(",\n")}
 }`
 
     const readText = fs.readFileSync("src/icons.ts", "utf-8");

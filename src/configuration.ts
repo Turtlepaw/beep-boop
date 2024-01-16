@@ -187,11 +187,13 @@ export enum DefaultIcons {
     Unlock = "🔓",
     Configure = "⚙️",
     Discover = "🧭",
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
     AdvancedConfiguration = "⚙️",
     Gift = "🎁",
     Zap = "⚡",
     Trash = "🗑️",
     Enabled = "✔️",
+    // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
     Disabled = "❌",
     ProUser = "⚡ (pro user) "
 }
