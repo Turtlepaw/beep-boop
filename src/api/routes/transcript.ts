@@ -14,12 +14,13 @@ export default class Transcripts extends APIRoute {
 
     async Get(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const ChannelId = req.params.id;
-        if (ChannelId == null) return res.send(APIMessages.BadRequest("id"));
+        if (ChannelId == null) return APIMessages.BadRequest(res, "id");
 
         const Ticket = await client.Storage.Tickets.Get({
             ChannelId
         });
 
-        res.send(Ticket == null ? APIMessages.NotFound() : JSON.stringify(Array.from(Ticket.Messages.values())));
+        if (Ticket == null) return APIMessages.NotFound(res);
+        return res.send(JSON.stringify(Array.from(Ticket.Messages.values()))).status(200);
     }
 }

@@ -18,6 +18,7 @@ import { Error as CustomError } from "../models/Error";
 import { APIUser } from "../models/APIUser";
 import { Ticket } from "../models/Ticket";
 import { ConfigurationEvents } from "../@types/Logging";
+import { Cache } from "../models/Cache";
 
 export interface CleanupChannel {
     Type: CleanupType;
@@ -74,6 +75,7 @@ class ResolvableConfiguration {
         Channel: string;
         Status: boolean;
         Reaction: string;
+        ReactionCount: number;
     };
 
     // Tickets
@@ -97,7 +99,15 @@ class ResolvableConfiguration {
     public Logging: {
         Status: boolean;
         Categories: Set<ConfigurationEvents>;
+        Channel: string;
     }
+
+    // Leave Feedback
+    public LeaveFeedback: {
+        Status: boolean;
+        Channel: string;
+    }
+
     // Raw configuration
     public raw: GuildConfiguration;
 }
@@ -165,6 +175,10 @@ export class ResolvedGuildConfiguration extends ResolvableConfiguration {
     isInviteBlocker() {
         return this?.InviteBlocker?.Status ?? false;
     }
+
+    hasStarboard() {
+        return this?.Starboard?.Status == true && this?.Starboard?.Channel != null;
+    }
 }
 
 const entities = [
@@ -180,7 +194,8 @@ const entities = [
     Action,
     APIUser,
     Ticket,
-    CustomError
+    CustomError,
+    Cache
 ];
 
 export const AppDataSource = new DataSource({
@@ -208,6 +223,7 @@ export async function InitializeProvider(client: Client) {
         Errors: new StorageManager(client.storage, CustomError.name),
         ApiUsers: new StorageManager(client.storage, APIUser.name),
         Tickets: new StorageManager(client.storage, Ticket.name),
+        ImageCache: new StorageManager(client.storage, Cache.name)
     }
 }
 
@@ -392,7 +408,8 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             Starboard: {
                 Channel: config?.StarboardChannel || null,
                 Status: config?.StarboardStatus ?? false,
-                Reaction: config?.StarboardReaction ?? "⭐"
+                Reaction: config?.StarboardReaction ?? "⭐",
+                ReactionCount: config?.StarboardReactionCount ?? 5
             },
             // Appeals
             Appeals: {
@@ -416,7 +433,12 @@ export class GuildConfigurationManager extends StorageManager<GuildConfiguration
             })),
             Logging: {
                 Status: config?.LoggingStatus ?? false,
-                Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>()
+                Categories: config?.LoggingCategories ?? new Set<ConfigurationEvents>(),
+                Channel: config?.LoggingChannel
+            },
+            LeaveFeedback: {
+                Channel: config?.LeaveFeedbackChannel,
+                Status: config?.LeaveFeedbackStatus ?? false
             },
             // Raw configuration
             raw: config

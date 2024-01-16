@@ -1,5 +1,5 @@
-import { Center } from "@chakra-ui/react";
-import { CSSProperties } from "react";
+import { Box, BoxProps, Center } from "@chakra-ui/react";
+import { CSSProperties, useState } from "react";
 
 const numbers = [
     "1",
@@ -12,6 +12,7 @@ const numbers = [
     "8",
     "9"
 ];
+
 const letters = [
     "a",
     "b",
@@ -87,26 +88,33 @@ export function generatePassword(width: number = 10) {
     return password;
 }
 
-export function AutoCenter({ children, className, style }: {
+/**
+ * Handy util for centering all children components
+ */
+export function AutoCenter(props: {
     children: React.ReactNode;
     className?: string;
     style?: CSSProperties;
-}) {
+    centerAllWithAutoCenter?: boolean;
+} & BoxProps) {
+    const { children, className, style, centerAllWithAutoCenter } = props;
+    const [id] = useState(generateId());
     if (Array.isArray(children)) {
         return (
-            <div className={`${className} py-5`} style={style}>
+            <Box className={`${className}`} style={style} {...props} key={id}>
                 {children.map(child => {
+                    const ParentComponent = centerAllWithAutoCenter ? AutoCenter : Center;
                     return (
-                        <Center key={generateId()}>
+                        <ParentComponent>
                             {child}
-                        </Center>
+                        </ParentComponent>
                     );
                 })}
-            </div>
+            </Box>
         );
     } else {
         return (
-            <Center className={`${className} py-5`} style={style}>
+            <Center className={`${className} py-5`} style={style} {...props} key={id}>
                 {children}
             </Center>
         );

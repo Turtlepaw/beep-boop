@@ -19,6 +19,7 @@ const OAUTH_QS = new URLSearchParams({
 const OAUTH_URI = `https://discord.com/api/oauth2/authorize?${OAUTH_QS}`;
 
 export default async function OAuth(req: NextApiRequest, res: NextApiResponse) {
+    console.log(config)
     if (req.method !== "GET") return res.redirect("/");
 
     const { code = null, error = null } = req.query;

@@ -21,6 +21,7 @@ export default class Ranking extends APIRoute {
             MemberId: userId
         });
 
-        res.send(Ranking ?? APIMessages.NotFound());
+        if (Ranking == null) return APIMessages.NotFound(res);
+        res.send(Ranking);
     }
 }

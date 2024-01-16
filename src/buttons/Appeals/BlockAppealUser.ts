@@ -44,7 +44,7 @@ export default class BlockAppealUser extends Button {
         const Reason = ModalInteraction.fields.getTextInputValue(Fields.Reason);
         ModalInteraction.reply({
             embeds: [
-                new Embed()
+                new Embed(ModalInteraction)
                     .setFields([{
                         name: `${Icons.Member} User Blocked`,
                         value: `${inlineCode(Id)} (${userMention(Id)})`

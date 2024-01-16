@@ -2,6 +2,7 @@ import { Client, ColorResolvable, User } from "discord.js";
 import { Subscriptions } from "../models/Profile";
 import { Colors } from "../configuration";
 import { HexColorString } from "@airdot/verifiers";
+import { VERIFIED_REPUTATION } from "@constants";
 
 export interface Profile {
     bio?: string;
@@ -12,6 +13,7 @@ export interface Profile {
     subscription?: Subscriptions;
     expires?: Date;
     guilds: Set<string>;
+    verfied: boolean;
 }
 
 export function CreateUser(user: User, client: Client) {
@@ -22,7 +24,8 @@ export function CreateUser(user: User, client: Client) {
         reputation: 0,
         userId: user.id,
         subscription: Subscriptions.None,
-        expires: null
+        expires: null,
+        verified: false
     })
 }
 
@@ -35,14 +38,15 @@ export async function ResolveUser(Id: string, client: Client): Promise<Profile> 
     }
 
     return {
-        accentColor: (user?.accentColor as HexColorString) || ResolvedUser.hexAccentColor || Colors.Transparent,
+        accentColor: (user?.accentColor as HexColorString) ?? Colors.Transparent,
         bio: user?.bio || "This user has no bio.",
         displayName: user?.displayName || ResolvedUser.username,
         reputation: user?.reputation || 0,
         userId: user?.userId || ResolvedUser.id,
         subscription: user?.subscription || Subscriptions.None,
         expires: new Date(user?.expires) || null,
-        guilds: user?.guilds ?? new Set()
+        guilds: user?.guilds ?? new Set(),
+        verfied: user?.verified ?? false
     }
 }
 
@@ -89,6 +93,13 @@ export function SetAccentColor(Id: string, accentColor: string, client: Client) 
     });
 }
 
+export function SetVerified(Id: string, verified: boolean, client: Client) {
+    Endorse(Id, client, VERIFIED_REPUTATION, true);
+    return client.Storage.Profiles.Edit(Id, {
+        verified
+    });
+}
+
 export function SetSubscription(Id: string, subscription: Subscriptions, expires: Date, client: Client) {
     return client.Storage.Profiles.Edit(Id, {
         subscription,
@@ -96,9 +107,9 @@ export function SetSubscription(Id: string, subscription: Subscriptions, expires
     });
 }
 
-export async function Endorse(Id: string, client: Client, n = 1) {
+export async function Endorse(Id: string, client: Client, n = 1, force = false) {
     const rep = await FetchUser(Id, client);
     return client.Storage.Profiles.Edit(Id, {
-        reputation: (rep?.reputation || 0) + n
+        reputation: force == true ? n : ((rep?.reputation ?? 0) + n)
     });
 }

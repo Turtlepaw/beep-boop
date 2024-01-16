@@ -18,15 +18,14 @@ export default class Configuration extends APIRoute {
     async Get(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const GuildId = req.params.guildId;
 
-        if (!Verifiers.Discord.Snowflake(GuildId)) return res.send(
-            APIMessages.BadRequest("guildId")
-        );
+        if (!Verifiers.Discord.Snowflake(GuildId)) return APIMessages.BadRequest(res, "guildId")
 
         const Settings = await client.Storage.Configuration.forGuild({
             name: "Unknown Guild",
             id: GuildId
         });
 
-        return res.send(Settings ?? APIMessages.NotFound());
+        if (Settings == null) return APIMessages.NotFound(res);
+        return res.send(Settings);
     }
 }

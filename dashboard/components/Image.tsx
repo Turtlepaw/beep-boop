@@ -1,4 +1,5 @@
 import NextImage from 'next/image';
+import { CSSProperties } from 'react';
 
 export interface ImageProperties {
     className?: string;
@@ -8,6 +9,7 @@ export interface ImageProperties {
     alt?: string;
     loading?: "eager" | "lazy";
     layout?: boolean;
+    style?: CSSProperties;
 }
 
 export function Image({
@@ -17,11 +19,13 @@ export function Image({
     height,
     alt,
     loading,
-    layout
+    layout,
+    style
 }: ImageProperties) {
     return (
         <NextImage
             src={src}
+            style={style}
             height={height ?? width}
             width={width}
             alt={alt ?? ""}

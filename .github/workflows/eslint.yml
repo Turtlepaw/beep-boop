@@ -1,0 +1,24 @@
+name: ESlint
+on: [push, pull_request]
+jobs:
+  test:
+    name: Run ESlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
+
+      - name: 🚚 Enable Corepack
+        run: npx corepack enable
+
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          cache: yarn
+
+      - name: 📦 Install dependencies
+        run: yarn install
+
+      - name: 🚀 Lint
+        run: yarn run lint

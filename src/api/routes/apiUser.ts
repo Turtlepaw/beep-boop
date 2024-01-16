@@ -7,6 +7,7 @@ import { Routes } from "../api-types";
 import { APIMessages } from "..";
 import { Client } from "discord.js";
 import { GenerateToken } from "../../utils/Id";
+import { Logger } from "../../logger";
 
 export default class ApiUsers extends APIRoute {
     constructor() {
@@ -15,24 +16,32 @@ export default class ApiUsers extends APIRoute {
 
     async Get(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client): Promise<any> {
         const UserId = req.params.id;
-        if (UserId == null) return res.send(APIMessages.BadRequest("id"));
+        if (UserId == null) return APIMessages.BadRequest(res, "id");
 
         const User = await client.Storage.ApiUsers.Get({
             User: UserId
         });
 
-        res.send(User ?? APIMessages.NotFound());
+        if (User == null) APIMessages.NotFound(res);
+
+        return res.send(User).status(200);
     }
 
     async Post(req: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>, res: Response<any, Record<string, any>>, client: Client<boolean>): Promise<any> {
         const UserId = req.params.id;
-        if (UserId == null) return res.send(APIMessages.BadRequest("id"));
+        if (UserId == null) return APIMessages.BadRequest(res, "id");
 
-        const User = await client.Storage.ApiUsers.Create({
-            User: UserId,
-            Token: GenerateToken()
-        });
+        let User;
+        try {
+            User = await client.Storage.ApiUsers.Create({
+                User: UserId,
+                Token: GenerateToken()
+            });
+        } catch (e) {
+            Logger.error(`API Error (creating user): ${e}`);
+        }
 
-        res.send(User ?? APIMessages.InternalError());
+        if (User == null) return APIMessages.InternalError(res);
+        res.send(User);
     }
 }

@@ -1,15 +1,14 @@
-import { Button, Center } from '@chakra-ui/react'
+import { Center } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import Head from 'next/head'
-import React, { useState } from 'react';
-import { AutoCenter } from '../components/AutoCenter';
-import { ExternalIcon, Menu } from '../components/Menu';
+import React from 'react';
+import { AutoCenter } from '../components/Layout/AutoCenter';
+import { Menu } from '../components/Layout/Menu';
 import { DefaultProps, parseUser } from '../utils/parse-user';
-import { Configuration } from './_app';
 import { Meta } from '../components/Meta';
-import { BrandBg, BrandBorder, BrandColor, Link, Links } from '../components/Link';
-import { FAQ, FaqItem } from '../components/FAQ';
+import { BrandBg, BrandBorder, BrandColor } from '../utils/styles';
+import { FAQ, FaqItem } from '../components/Layout/FAQ';
 import { Image } from '../components/Image';
+import { Links, Link } from '../components/Utils/Link';
 
 export function Feature({ included, children }: {
     included?: boolean;
@@ -98,8 +97,8 @@ export default function Home(props: DefaultProps) {
             <AutoCenter>
                 <div className='text-center'>
                     <AutoCenter>
-                        <h2 className='font-bold text-2xl'>Introducing <span style={BrandColor} className={hasUnderline ? "underline" : ""}>Subscriptions</span>,</h2>
-                        <h1 className='font-black text-4xl pt-5 pb-1.5 max-w-[38rem]'>
+                        {/* <h2 className='font-bold text-2xl'>Introducing <span style={BrandColor} className={hasUnderline ? "underline" : ""}>Subscriptions</span>,</h2> */}
+                        <h1 className='font-black text-4xl pt-2 pb-1.5 max-w-[38rem]'>
                             <Image className='mr-2 !w-[3.6rem] !h-[3.6rem] inline' loading='eager' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Magic%20Wand.png" alt="Magic Wand" width={200} /> <span className={hasUnderline ? "underline" : ""} style={BrandColor}>Level up</span> and <Image className='mr-2 !w-[3.6rem] !h-[3.6rem] inline' src="https://raw.githubusercontent.com/Turtlepaw/fluent-emojis/master/Emojis/Activities/Artist%20Palette.png" alt="Artist Palette" width={200} /><span style={BrandColor} className={hasUnderline ? "underline" : ""}>customize</span> your server.
                         </h1>
                     </AutoCenter>
@@ -107,8 +106,8 @@ export default function Home(props: DefaultProps) {
                         <p className='max-w-sm text-lg font-medium text-light'>Get your own custom bot and more with an active pro subscription.</p>
                     </Center>
                 </div>
-                <h1 className="text-light text-center font-bold text-2xl pt-5 pb-1">Teirs</h1>
-                <div className='flexContainer'>
+                {/* <h1 className="text-light text-center font-bold text-2xl pt-5 pb-1">Teirs</h1> */}
+                <div className='flexContainer pt-5'>
                     <PricingTier
                         Title='Pro'
                         Description='The subscription with a little bit more of everything'
@@ -131,6 +130,7 @@ export default function Home(props: DefaultProps) {
                             <Feature included>1 Custom Bot</Feature>
                             <Feature included>Pro Badge</Feature>
                             <Feature included>Vote for future updates</Feature>
+                            <Feature included>Instant <Link href='/verification' isExternal>Verification</Link></Feature>
                         </>}
                     />
                 </div>

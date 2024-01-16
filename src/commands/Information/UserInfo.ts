@@ -1,12 +1,13 @@
-import { ChatInputCommandInteraction, SlashCommandBooleanOption, SlashCommandUserOption } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandUserOption } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
 import { MemberInformation } from "../../utils/info";
+import { CommandOptions } from "@utils/defaults";
 
 export default class Send extends Command {
     constructor() {
         super({
             CanaryCommand: false,
-            Description: "Get information.",
+            Description: "Get information on a user or yourself.",
             GuildOnly: false,
             Name: "user-info",
             RequiredPermissions: [],
@@ -16,9 +17,7 @@ export default class Send extends Command {
                 new SlashCommandUserOption()
                     .setName("member")
                     .setDescription("The member to get information on."),
-                new SlashCommandBooleanOption()
-                    .setName("hidden")
-                    .setDescription("Make the reply visible only to you and hidden to everyone else.")
+                CommandOptions.Hidden()
             ]
             /*Subcomamnds: [
                 new SlashCommandSubcommandBuilder()

@@ -1,10 +1,15 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, SlashCommandBooleanOption } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, SlashCommandBooleanOption } from "discord.js";
+
+export enum CommandOptionNames {
+    Hidden = "hidden"
+}
 
 export const CommandOptions = {
     Hidden: (required?: boolean) => new SlashCommandBooleanOption()
-        .setName("hidden")
+        .setName(CommandOptionNames.Hidden)
         .setDescription("Make the command reply only visible to you.")
-        .setRequired(required ?? false)
+        .setRequired(required ?? false),
+    GetHiden: (interaction: ChatInputCommandInteraction) => interaction.options.getBoolean(CommandOptionNames.Hidden)
 };
 
 export const Components = {

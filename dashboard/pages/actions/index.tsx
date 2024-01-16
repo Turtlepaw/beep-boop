@@ -2,13 +2,14 @@ import { Badge, Button, Center } from '@chakra-ui/react'
 import { GetServerSideProps } from 'next';
 import Head from 'next/head'
 import { Image } from "../../components/Image";
-import { AutoCenter } from '../../components/AutoCenter';
+import { AutoCenter } from '../../components/Layout/AutoCenter';
 import { Feature, FeatureDescription, FeatureIcon, FeatureText, FeatureTitle } from '../../components/Feature';
-import { ExternalIcon, Menu } from '../../components/Menu';
+import { ExternalIcon, Menu } from '../../components/Layout/Menu';
 import { DefaultProps, parseUser } from '../../utils/parse-user';
-import { ButtonStyle, Configuration } from '../_app';
+import { Configuration } from '../../utils/configuration';
+import { ButtonStyle } from "../../components/Theming";
 import { Meta } from '../../components/Meta';
-import { BrandColor } from '../../components/Link';
+import { BrandColor } from '../../utils/styles';
 import { CustomBadge, Presets } from '../../components/Common';
 import { Action, GetActions } from '../../utils/api';
 

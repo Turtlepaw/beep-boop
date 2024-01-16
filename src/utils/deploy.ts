@@ -1,14 +1,17 @@
-import { REST, Routes, Client } from "discord.js";
+import { REST, Routes, Client, APIApplicationCommand } from "discord.js";
 import { BaseDirectory, guildId } from "../configuration";
 import klawSync from "klaw-sync";
 import CommandBuilder from "../lib/CommandBuilder";
 import ContextMenu from "../lib/ContextMenuBuilder";
 import { Logger } from "../logger";
+import { Omit } from "./Configure";
 
-interface ApiCommandData {
-    id: string;
-    name: string;
-}
+// interface ApiCommandData {
+//     id: string;
+//     name: string;
+// }
+
+export type ApiCommandData = Omit<APIApplicationCommand, "dm_permission">;
 
 export async function Deploy(client: Client, logs = true, isCustom: boolean) {
     const DeveloperCommands: object[] = [];
@@ -55,10 +58,7 @@ export async function Deploy(client: Client, logs = true, isCustom: boolean) {
             if (logs) console.log(`Successfully registered ${data?.length} dev application commands.`)
             Logger.info(`Registered application commands (dev) for ${client.user.tag}.`);
             for (const CommandData of data) {
-                client.DetailedCommands.push({
-                    Id: CommandData.id,
-                    Name: CommandData.name
-                });
+                client.DetailedCommands.push(CommandData);
             }
         })
         .catch(console.error);
@@ -68,10 +68,7 @@ export async function Deploy(client: Client, logs = true, isCustom: boolean) {
             if (logs) console.log(`Successfully registered ${data?.length} public application commands.`)
             Logger.info(`Registered application commands (global) for ${client.user.tag}.`);
             for (const CommandData of data) {
-                client.DetailedCommands.push({
-                    Id: CommandData.id,
-                    Name: CommandData.name
-                });
+                client.DetailedCommands.push(CommandData);
             }
         })
         .catch(console.error);

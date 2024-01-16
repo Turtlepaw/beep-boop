@@ -27,7 +27,7 @@ export default class Level extends Command {
         const Level = await client.Levels.Level(interaction.user.id, interaction.guild.id);
         await interaction.reply({
             embeds: [
-                new Embed(interaction.guild)
+                new Embed(interaction)
                     .setTitle("Rank")
                     .addFields([{
                         name: "Current Level",

@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { ChannelType, Client, Events as ClientEvents, Guild, GuildBasedChannel, InteractionReplyOptions, PermissionResolvable, RepliableInteraction, TextChannel, inlineCode } from "discord.js";
+import { Client, Events as ClientEvents, GuildBasedChannel, InteractionReplyOptions, PermissionResolvable, RepliableInteraction, inlineCode } from "discord.js";
 import klawSync from "klaw-sync";
-import { DEVELOPER_BUILD } from "../index";
-import { BaseDirectory, Embed, guildId, Icons, Logs } from "../configuration";
+import { BaseDirectory, Icons } from "../configuration";
 import ButtonBuilder from "../lib/ButtonBuilder";
 import EventBuilder from "../lib/Event";
-import { CreateLinkButton } from "./buttons";
-import { InteractionError, SendError } from "./error";
+import { InteractionError } from "./error";
 import SelectOptionBuilder from "../lib/SelectMenuBuilder";
 import { Logger } from "../logger";
 
@@ -30,31 +28,38 @@ const InputGuildMessage: InteractionReplyOptions = {
     ephemeral: true
 };
 
-async function CreateError(Summary: string, ExecutingGuild: Guild, client: Client) {
-    if (Logs?.Error == null) return;
-    if (DEVELOPER_BUILD == true) return;
-    const Guild = await client.guilds.fetch(guildId);
-    const Channel = await Guild.channels.fetch(Logs.Error);
-    const InviteChannel = ExecutingGuild.channels.cache.filter(e => e.type == ChannelType.GuildText).first();
-    const Invite = await (InviteChannel as TextChannel).createInvite({
-        maxAge: 0,
-        maxUses: 0,
-        reason: "Something didn't go right, this might help developers locate the error."
-    }).catch(e => Logger.warn(`Failed Creating Invite: ${e}`)) || { url: "https://discord.com/no_invite" };
-
-    await (Channel as TextChannel).send({
-        embeds: [
-            new Embed(ExecutingGuild)
-                .setTitle("Something didn't go right...")
-                .setDescription(`Here's what happened:\n\n\`\`\`bash\n${Summary}\`\`\``)
-        ],
-        components: [
-            CreateLinkButton(
-                Invite.url,
-                "Invite URL"
-            )
-        ]
+async function CreateError(Summary: string, interaction: RepliableInteraction) {
+    return await InteractionError({
+        interaction,
+        createError: true,
+        ephemeral: true,
+        error: Summary
     });
+
+    // if (Logs?.Error == null) return;
+    // if (DEVELOPER_BUILD == true) return;
+    // const Guild = await client.guilds.fetch(guildId);
+    // const Channel = await Guild.channels.fetch(Logs.Error);
+    // const InviteChannel = ExecutingGuild.channels.cache.filter(e => e.type == ChannelType.GuildText).first();
+    // const Invite = await (InviteChannel as TextChannel).createInvite({
+    //     maxAge: 0,
+    //     maxUses: 0,
+    //     reason: "Something didn't go right, this might help developers locate the error."
+    // }).catch(e => Logger.warn(`Failed Creating Invite: ${e}`)) || { url: "https://discord.com/no_invite" };
+
+    // await (Channel as TextChannel).send({
+    //     embeds: [
+    //         new Embed(ExecutingGuild)
+    //             .setTitle("Something didn't go right...")
+    //             .setDescription(`Here's what happened:\n\n\`\`\`bash\n${Summary}\`\`\``)
+    //     ],
+    //     components: [
+    //         CreateLinkButton(
+    //             Invite.url,
+    //             "Invite URL"
+    //         )
+    //     ]
+    // });
 }
 
 async function StartEventService(client: Client) {
@@ -168,19 +173,13 @@ async function StartButtonService(client: Client) {
                     await Button.ExecuteInteraction(interaction, client, Id);
                 } catch (e) {
                     // Send it to the developers
-                    CreateError(e, interaction.guild, client);
+                    CreateError(e, interaction);
 
                     // Log error
                     console.log(`Error:`.red, e);
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.customId}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         });
@@ -230,19 +229,13 @@ async function StartSelectMenuService(client: Client) {
                     await SelectOption.ExecuteInteraction(interaction, client, Values);
                 } catch (e) {
                     // Send it to the developers
-                    CreateError(e, interaction.guild, client);
+                    CreateError(e, interaction);
 
                     // Log error
                     console.log(`Error:`.red, e);
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.values[0]}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         });
@@ -281,19 +274,13 @@ async function StartContextMenuService(client: Client) {
                     await ContextMenu.ExecuteContextMenu(interaction, client);
                 } catch (e) {
                     // Send it to the developers
-                    CreateError(e, interaction.guild, client);
+                    CreateError(e, interaction);
 
                     // Log error
                     console.log(`Error:`.red, e);
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.commandName}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         });
@@ -352,19 +339,13 @@ export async function StartService(client: Client) {
                     await command?.ExecuteCommand(interaction, client);
                 } catch (e) {
                     // Send it to the developers
-                    CreateError(e, interaction.guild, client);
+                    CreateError(e, interaction);
 
                     // Log error
                     console.log(`Error:`.red, e);
 
                     // Log it in the logger
                     Logger.error(`Error executing ${interaction.commandName}:`, e);
-
-                    // Send error message
-                    SendError(
-                        interaction,
-                        e
-                    );
                 }
             }
         })

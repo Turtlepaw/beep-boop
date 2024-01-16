@@ -134,3 +134,8 @@ log.json
 *.key
 *.cert
 .vercel
+
+# yarn
+.yarn
+
+src/icons

@@ -69,8 +69,9 @@ export async function parseUser(ctx: GetServerSidePropsContext, getGuilds: boole
     let parsedGuilds = null;
 
     if (getGuilds) {
+        console.warn("The getGuilds paramater is deprecated, fetch the guilds with SWR instead");
         const Guilds = await GetGuildsWith(User.id);
-        User.guilds = Guilds;
+        User.guilds = Guilds.fullResult;
         // const raw = await GetUser(token);
 
         // const guilds: RawDiscordGuild[] = await fetch("http://discord.com/api/users/@me/guilds", {
@@ -101,7 +102,18 @@ export async function parseUser(ctx: GetServerSidePropsContext, getGuilds: boole
     return User;
 }
 
+export enum Errors {
+    NotLoggedIn = "NOT_LOGGED_IN",
+    NotFound = "NOT_FOUND"
+}
+
 export interface DefaultProps {
     user: DiscordUser | null;
     mobile: boolean;
+    error?: Errors;
+}
+
+export interface ConfigProps {
+    apiUri: string;
+    privateKey: string
 }

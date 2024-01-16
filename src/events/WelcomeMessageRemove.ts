@@ -2,6 +2,7 @@ import { Client, Events, GuildMember, TextChannel } from "discord.js";
 import Event from "../lib/Event";
 import { CleanupType } from "../models/Configuration";
 import { Logger } from "../logger";
+import { LogSnagChannels } from "../@types/logsnag";
 
 export interface MemberMessage {
     MessageId: string;
@@ -24,10 +25,20 @@ export default class LeaveAppealMessage extends Event {
         });
         const Channel = await member.guild.channels.fetch(JoinMessage.Channel) as TextChannel;
 
+        client.LogSnag.publish({
+            channel: LogSnagChannels.WelcomeMessages,
+            event: "Welcome Message Deleted",
+            icon: "🗑️",
+            tags: {
+                user: member.user.tag
+            }
+        });
+
         try {
             const Message = await Channel.messages.fetch(JoinMessage.Message);
 
             if (Message.deletable) Message.delete();
+            else client.Errors.AddError("Couldn't delete welcome message", "Welcome Messages (auto cleanup)", member.guild);
         } catch (e) {
             Logger.error(`Error Deleting Welcome Message: ${e}`);
         }

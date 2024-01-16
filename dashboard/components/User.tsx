@@ -1,10 +1,10 @@
 import { Button, Center } from "@chakra-ui/react";
-import { AutoCenter } from "./AutoCenter";
+import { AutoCenter } from "./Layout/AutoCenter";
 import { Meta } from "./Meta";
 import { Image, Images } from "./Image";
-import { Link } from "./Link";
+import { Link } from "./Utils/Link";
 import { DefaultProps } from "../utils/parse-user";
-import { Menu } from "./Menu";
+import { Menu } from "./Layout/Menu";
 
 export function NotLoggedIn(props: DefaultProps) {
     return (

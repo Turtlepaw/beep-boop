@@ -1,64 +1,122 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, Client, ComponentType, ModalBuilder, SlashCommandSubcommandBuilder, TextInputBuilder, TextInputStyle, User, UserContextMenuCommandInteraction } from "discord.js";
 import Command, { Categories } from "../../lib/CommandBuilder";
-import { Embed, Emojis, Icons } from "../../configuration";
+import { Colors, Embed, Emojis, Icons, Logs, TeamRole } from "@config";
 import { FriendlyInteractionError } from "../../utils/error";
-import { Endorse, ResolveUser, SetBio, SetDisplayName } from "../../utils/Profile";
+import { Endorse, Profile, ResolveUser, SetAccentColor, SetBio, SetDisplayName } from "../../utils/Profile";
 import { Subscriptions } from "../../models/Profile";
+import { MAX_REPUTATION_UPVOTE, STAFF_REPUTATION } from "@constants";
+import { IconURLs } from "@icons";
 
-export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral = true, user?: User) {
+function isProfile(profile: unknown): profile is Profile {
+    try {
+        return profile["reputation"] != null
+    } catch {
+        return false;
+    }
+}
+
+export async function ViewProfile(interaction: UserContextMenuCommandInteraction | ChatInputCommandInteraction, ephemeral = true, user?: User | Profile, onlyEmbed = false) {
     if (user == null && interaction.isContextMenuCommand()) user = interaction.targetUser;
     const { client } = interaction;
-    const profile = await ResolveUser(user.id, client);
+    const profile = isProfile(user) ? user : await ResolveUser(user.id, client);
     const Badges = {
-        Pro: Icons.ProUser
+        Pro: Icons.ProUser,
+        Team: Icons.AirdotTeam,
+        Verified: Icons.VerifiedLight
     }
+
+    const Guild = await client.guilds.fetch(Logs.Guild);
+    const Role = await Guild.roles.fetch(TeamRole);
+
     const OwnedBadges = [
-        ...(profile.subscription == Subscriptions.Pro ? [Badges.Pro] : [])
-    ]
+        ...(profile.verfied ? [Badges.Verified] : []),
+        ...(profile.subscription != Subscriptions.None ? [Badges.Pro] : []),
+        ...(Role.members.has(isProfile(user) ? profile.userId : user.id) ? [Badges.Team] : [])
+    ];
 
-    const Message = await interaction.reply({
-        ephemeral,
-        fetchReply: true,
-        embeds: [
-            new Embed(interaction.guild)
-                .setTitle(`${profile.displayName}'s Profile`)
-                .setColor(profile.accentColor)
-                .setThumbnail(user.avatarURL())
-                .addFields([{
-                    name: `About me`,
-                    value: profile.bio
-                }, {
-                    name: `Reputation (endorsements)`,
-                    value: profile.reputation.toString()
-                }, {
-                    name: "Badges",
-                    value: `${OwnedBadges.length <= 0 ? "None." : OwnedBadges.join(" ")}`
-                }])
-        ],
-        components: [
-            new ActionRowBuilder<ButtonBuilder>()
-                .addComponents(
-                    new ButtonBuilder()
-                        .setEmoji(Emojis.Help)
-                        .setCustomId("INFO")
-                        .setStyle(ButtonStyle.Secondary)
-                )
-        ]
+    const embed = new Embed(interaction)
+        .setAuthor({
+            iconURL: profile.verfied ? IconURLs.VerifiedGreen : null,
+            name: profile.displayName
+        })
+        .setTitle(`${profile.displayName}'s Profile`)
+        .setColor(profile.accentColor ?? Colors.Transparent)
+        .setThumbnail(isProfile(user) ? null : user.avatarURL())
+        .addFields([{
+            name: `About me`,
+            value: profile.bio
+        }, {
+            name: `Reputation (endorsements)`,
+            value: profile.reputation.toString()
+        }, {
+            name: "Badges",
+            value: `${OwnedBadges.length <= 0 ? "None" : OwnedBadges.join(" ")}`
+        }]);
+
+    if (!onlyEmbed) {
+        const Message = await interaction.reply({
+            ephemeral,
+            fetchReply: true,
+            embeds: [
+                embed
+            ],
+            components: [
+                new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setEmoji(Emojis.Help)
+                            .setCustomId("INFO")
+                            .setStyle(ButtonStyle.Secondary)
+                    )
+            ]
+        });
+
+        const Collector = Message.createMessageComponentCollector({
+            time: 0,
+            max: 0,
+            componentType: ComponentType.Button
+        });
+
+        Collector.on('collect', async button => {
+            if (button.customId == "INFO") {
+                await button.reply({
+                    ephemeral: true,
+                    content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, in some communities, you're required to have a certain amount of endorsements to join. When you help people you might get endorsed, and you can also endorse other users that you know.`
+                });
+            }
+        });
+    } else {
+        return embed;
+    }
+}
+
+export async function EndorseUser(user: User, ephemeral = true, interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction) {
+    const { client } = interaction;
+    const current = await ResolveUser(interaction.user.id, client);
+    if (current.reputation < MAX_REPUTATION_UPVOTE) return interaction.reply({
+        content: `${Icons.Shield} You must have a reputation of ${MAX_REPUTATION_UPVOTE.toString()} or more to endorse someone.`,
+        ephemeral: true
     });
+    if (user.id == interaction.user.id) return FriendlyInteractionError(interaction, "You can't endorse yourself.")
+    Endorse(user.id, client);
 
-    const Collector = Message.createMessageComponentCollector({
-        time: 0,
-        max: 0,
-        componentType: ComponentType.Button
-    });
-
-    Collector.on('collect', async button => {
-        if (button.customId == "INFO") {
-            await button.reply({
-                ephemeral: true,
-                content: `**${Emojis.Help} Endorsements FAQ**\nEndorsements are used to verify that you're not a bot or a spammer, in some communities, you're required to have a certain amount of endorsements to join. When you help people you might get endorsed, and you can also endorse other users that you know.`
-            });
+    try {
+        const payload = {
+            content: `${Icons.MemberAdd} ${interaction.user} endorsed you.`
         }
+
+        const DM = await user.createDM(true);
+        DM.send(payload);
+    } catch {
+        const payload = {
+            content: `${Icons.MemberAdd} ${user}, ${interaction.user} endorsed you.`
+        }
+        interaction.channel.send(payload)
+    }
+
+    await interaction.reply({
+        ephemeral,
+        content: `${Icons.Success} You endorsed ${user}!`
     });
 }
 
@@ -114,47 +172,38 @@ export default class Send extends Command {
         const ephemeral = interaction.options.getBoolean("hidden", false) || true;
 
         if (Subcommand == Subcommands.View) {
-            ViewProfile(interaction, ephemeral, user);
+            return ViewProfile(interaction, ephemeral, user);
         } else if (Subcommand == Subcommands.Endorse) {
-            if (user.id == interaction.user.id) return FriendlyInteractionError(interaction, "You can't endorse yourself.")
-            Endorse(user.id, client);
-
-            const payload = {
-                content: `${Icons.MemberAdd} ${interaction.user} endorsed you.`
-            }
-
-            try {
-                const DM = await user.createDM(true);
-                DM.send(payload);
-            } catch {
-                interaction.channel.send(payload)
-            }
-
-            await interaction.reply({
-                ephemeral,
-                content: `${Icons.Success} You endorsed ${user}!`
-            })
+            return EndorseUser(user, ephemeral, interaction);
         } else if (Subcommand == Subcommands.Customimize) {
             enum Id {
                 AboutMe = "EDIT_ABOUT_ME",
                 DisplayName = "SET_DISPLAY_NAME",
+                AccentColor = "SET_ACCENT_COLOR",
                 AboutMeModal = "ABOUT_ME_MODAL",
                 DisplayNameModal = "DISPLAY_NAME_MODAL",
+                AccentColorModal = "ACCENT_COLOR_MODAL",
                 Text = "MODAL_TEXT"
             }
+            const Profile = await ResolveUser(interaction.user.id, client);
+
             const ActionButtons = new ActionRowBuilder<ButtonBuilder>()
                 .addComponents(
                     new ButtonBuilder()
                         .setLabel("Edit About Me")
                         .setCustomId(Id.AboutMe)
-                        .setStyle(ButtonStyle.Primary),
+                        .setStyle(ButtonStyle.Secondary),
                     new ButtonBuilder()
                         .setLabel("Edit Display Name")
                         .setCustomId(Id.DisplayName)
-                        .setStyle(ButtonStyle.Primary)
+                        .setStyle(ButtonStyle.Secondary),
+                    new ButtonBuilder()
+                        .setLabel("Edit Accent Color")
+                        .setCustomId(Id.AccentColor)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(Profile.subscription == Subscriptions.None)
                 );
 
-            const Profile = await ResolveUser(interaction.user.id, client);
             const AboutMeText = new TextInputBuilder()
                 .setCustomId(Id.Text)
                 .setLabel("Text")
@@ -171,8 +220,17 @@ export default class Send extends Command {
                 .setPlaceholder("Awesome User")
                 .setRequired(true)
                 .setStyle(TextInputStyle.Paragraph);
+            const AccentColorText = new TextInputBuilder()
+                .setCustomId(Id.Text)
+                .setLabel("Accent Color")
+                .setMinLength(7)
+                .setMaxLength(9)
+                .setPlaceholder("#5865F2")
+                .setRequired(true)
+                .setStyle(TextInputStyle.Short);
             if (Profile?.bio != null) AboutMeText.setValue(Profile.bio);
             if (Profile?.displayName != null) DisplayNameText.setValue(Profile.displayName);
+            if (Profile?.accentColor != null) AccentColorText.setValue(Profile.accentColor.toString());
             const AboutMeModal = new ModalBuilder()
                 .addComponents(
                     new ActionRowBuilder<TextInputBuilder>()
@@ -191,17 +249,36 @@ export default class Send extends Command {
                 )
                 .setTitle("Display Name")
                 .setCustomId(Id.DisplayNameModal);
+            const AccentColorModal = new ModalBuilder()
+                .addComponents(
+                    new ActionRowBuilder<TextInputBuilder>()
+                        .addComponents(
+                            AccentColorText
+                        )
+                )
+                .setTitle("Accent Color")
+                .setCustomId(Id.AccentColorModal);
 
             const Message = await interaction.reply({
                 ephemeral,
                 fetchReply: true,
                 components: [ActionButtons],
                 embeds: [
-                    new Embed(interaction.guild)
+                    new Embed(interaction)
                         .setTitle("Customizing your profile")
                         .setDescription("Select an option below to start customizing your profile!")
                 ]
             });
+
+            const Guild = await client.guilds.fetch(Logs.Guild);
+            const Role = await Guild.roles.fetch(TeamRole);
+            if (Role.members.has(interaction.user.id) && Profile.reputation < STAFF_REPUTATION) {
+                await Endorse(interaction.user.id, client, STAFF_REPUTATION, true);
+                interaction.followUp({
+                    ephemeral: true,
+                    content: `${Icons.Shield} Since your part of the Airdot Team, you've automatically gained ${STAFF_REPUTATION} reputation.`
+                });
+            }
 
             const Collector = Message.createMessageComponentCollector({
                 time: 0,
@@ -214,6 +291,8 @@ export default class Send extends Command {
                     await button.showModal(AboutMeModal)
                 } else if (button.customId == Id.DisplayName) {
                     await button.showModal(DisplayNameModal);
+                } else if (button.customId == Id.AccentColor) {
+                    await button.showModal(AccentColorModal);
                 }
 
                 const Modal = await button.awaitModalSubmit({
@@ -228,6 +307,9 @@ export default class Send extends Command {
                 } else if (button.customId == Id.DisplayName) {
                     SetDisplayName(interaction.user.id, text, client);
                     type = "display name"
+                } else if (button.customId == Id.AccentColor) {
+                    SetAccentColor(interaction.user.id, text, client);
+                    type = "accent color"
                 }
 
                 await Modal.reply({

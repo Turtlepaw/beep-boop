@@ -1,20 +1,43 @@
-import { EmbedBuilder, Guild } from "discord.js";
+import { EmbedBuilder, Guild, Interaction } from "discord.js";
 import { Colors } from "../configuration";
 import { Verifiers } from "@airdot/verifiers";
 
 export class Embed extends EmbedBuilder {
-    public guild: Guild;
-    constructor(guild?: Guild) {
-        super();
-        if (guild != null) this.guild = guild;
-        this.setColor(Colors.BrandColor)
-        //this.GetColor();
+    private isGuild(guild: unknown): guild is Guild {
+        try {
+            return guild["maximumMembers"] != null;
+        } catch (e) {
+            // it's not a guild
+            return false;
+        }
     }
 
-    async GetColor() {
-        if (this.guild == null) return;
-        const { client } = this.guild;
-        const config = await client.Storage.Configuration.forGuild(this.guild);
+    public interaction: Interaction;
+    public guild: Guild;
+    constructor(interactionOrGuild: Interaction | Guild) {
+        super();
+        this.setColor(Colors.BrandColor);
+        if (this.isGuild(interactionOrGuild)) this.guild = interactionOrGuild;
+        else this.interaction = interactionOrGuild;
+
+        if (interactionOrGuild != null) this.getColorCache(this.isGuild(interactionOrGuild) ? interactionOrGuild : interactionOrGuild.guild);
+    }
+
+    private getColorCache(guild: Guild) {
+        if (guild == null) return;
+        if (guild?.client == null) return;
+
+        if (guild.client.ColorCache.has(guild.id)) {
+            this.setColor(guild.client.ColorCache.get(guild.id));
+        }
+    }
+
+    private async GetColor() {
+        if (this.interaction == null && this.guild == null) return;
+        //@ts-expect-error legacy
+        const { client, guild } = this.interaction ?? this.guild;
+        if (guild == null) return;
+        const config = await client.Storage.Configuration.forGuild(guild);
         if (config?.Color == null) return;
         if (!Verifiers.HexColor(config.Color)) return; //throw new Error("config.color must be a hex color");
         this.setColor(config.Color);
@@ -22,6 +45,6 @@ export class Embed extends EmbedBuilder {
 
     async Resolve() {
         await this.GetColor();
-        return this
+        return this;
     }
 }
