@@ -5,18 +5,17 @@ jobs:
     name: Run ESlint
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      - name: 🏗 Setup repo
+        uses: actions/checkout@v3
 
-      - name: Install node.js v18
-        uses: actions/setup-node@v2
+      - name: 🏗 Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: 'yarn'
-          cache-dependency-path: yarn.lock
+          node-version: 18.x
+          cache: yarn
 
-      - name: Install dependencies
-        run: yarn --immutable
+      - name: 📦 Install dependencies
+        run: yarn install
 
-      - name: Run yarn lint
-        run: yarn lint
+      - name: 🚀 Lint
+        run: yarn run lint
