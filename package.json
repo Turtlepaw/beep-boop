@@ -27,7 +27,7 @@
     "logsnag": "^0.1.6",
     "mitt": "^3.0.0",
     "ms": "^2.1.3",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.3.2",
     "pino": "^7.0.0-rc.9",
     "puppeteer": "^19.3.0",
     "reflect-metadata": "^0.1.13",
