@@ -3629,20 +3629,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/next@npm:^10.12.0":
-  version: 10.12.0
-  resolution: "@trpc/next@npm:10.12.0"
-  dependencies:
-    react-ssr-prepass: ^1.5.0
+"@trpc/next@npm:^10.45.0":
+  version: 10.45.0
+  resolution: "@trpc/next@npm:10.45.0"
   peerDependencies:
-    "@tanstack/react-query": ^4.3.8
-    "@trpc/client": 10.12.0
-    "@trpc/react-query": ^10.8.0
-    "@trpc/server": 10.12.0
+    "@tanstack/react-query": ^4.18.0
+    "@trpc/client": 10.45.0
+    "@trpc/react-query": 10.45.0
+    "@trpc/server": 10.45.0
     next: "*"
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 49dbc03215772f6b16da2d354950c88cf833ea4946857d3515b7e3d9e83819d52b663d2993478a94d789d7c8522b0907b36173d0480be1aa4e5d9933379057ad
+  checksum: e0755abe52bfdace02fce08053233d52e83858ee0e7359b8f0dc766463c54322e1b8a7944fbb1e3fa94f1d3b656ce7379a500c85fb5e09d60274c65e8feaf491
   languageName: node
   linkType: hard
 
@@ -4688,7 +4686,7 @@ __metadata:
     "@primer/react": ^35.19.0
     "@tanstack/react-query": ^4.24.9
     "@trpc/client": ^10.12.0
-    "@trpc/next": ^10.12.0
+    "@trpc/next": ^10.45.0
     "@trpc/react-query": ^10.12.0
     "@trpc/server": ^10.12.0
     "@types/cookie": ^0.5.1
@@ -7307,15 +7305,6 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: c6b1752c8c5b89c9dc5c27ba985dce693049891c0942a19ec516658fecbba535a4e3b5fa7c815a326617704eeba8ae65f395ef68dd7dfa618acd1dc234774b01
-  languageName: node
-  linkType: hard
-
-"react-ssr-prepass@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "react-ssr-prepass@npm:1.5.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: efe89b9f8b2053474613f56dfdbeb41d8ee2e572bf819a39377d95d3e4a9acf8a4a16e28d8d8034cb9ac2b316d11dc9e62217743e4322046d08175eb3b4fed3e
   languageName: node
   linkType: hard
 
