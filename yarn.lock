@@ -2740,7 +2740,7 @@ __metadata:
     cors: ^2.8.5
     decancer: ^1.6.5
     discord-linked-roles: ^0.2.1
-    discord-trivia: ^2.0.0
+    discord-trivia: ^2.0.3
     discord.js: ^14.14.1
     dotenv: ^16.3.1
     eslint: ^8.56.0
@@ -3605,10 +3605,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.37.20, discord-api-types@npm:^0.37.23, discord-api-types@npm:^0.37.24, discord-api-types@npm:^0.37.35, discord-api-types@npm:^0.37.36":
+"discord-api-types@npm:^0.37.20, discord-api-types@npm:^0.37.23, discord-api-types@npm:^0.37.24, discord-api-types@npm:^0.37.35":
   version: 0.37.36
   resolution: "discord-api-types@npm:0.37.36"
   checksum: ba3de3640270738c6fcef515a5d3a22069c89973e7d95984a7ddf1633a6e01fef2b99d4524f4535771694f87e4d779aa7511f21e06abd1c25707b4791c29d386
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.37.43":
+  version: 0.37.67
+  resolution: "discord-api-types@npm:0.37.67"
+  checksum: 693d8e5062e4032afa58b3dd058af9fcb0891ee4425e044b73f72db95d01fe886116ef853993051e72ee5b36b664a6eaaccc37ab94999f348ac1100c85c02763
   languageName: node
   linkType: hard
 
@@ -3627,14 +3634,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-trivia@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "discord-trivia@npm:2.0.0"
+"discord-trivia@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "discord-trivia@npm:2.0.3"
   dependencies:
-    discord-api-types: ^0.37.36
-    discord.js: ^14.8.0
+    discord-api-types: ^0.37.43
+    discord.js: ^14.11.0
+    jquery: ^3.7.0
     open-trivia-db: ^2.1.5
-  checksum: c9adf76b60f2562dba7e0deaee2b3c754e00f4dc71c78a9f8b068393fe8c41e31cc4098d981fa17ff3ef55e94f90c9d0cf8b3d7660d9d05fa4446a5505148d72
+  checksum: 8bbbcdbb3e2291426cf73c2564ac2dde2c80dece9ec7e0b81ff419cb5895db506be492f2ab6e4fe1e0a7c0a745d161177a5f64edb340e74ceb55f0b58fe11b88
   languageName: node
   linkType: hard
 
@@ -3658,7 +3666,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord.js@npm:^14.14.1":
+"discord.js@npm:^14.11.0, discord.js@npm:^14.14.1":
   version: 14.14.1
   resolution: "discord.js@npm:14.14.1"
   dependencies:
@@ -5002,6 +5010,13 @@ __metadata:
   version: 0.4.4
   resolution: "jpeg-js@npm:0.4.4"
   checksum: bd7cb61aa8df40a9ee2c2106839c3df6054891e56cfc22c0ac581402e06c6295f962a4754b0b2ac50a401789131b1c6dc9df8d24400f1352168be1894833c590
+  languageName: node
+  linkType: hard
+
+"jquery@npm:^3.7.0":
+  version: 3.7.1
+  resolution: "jquery@npm:3.7.1"
+  checksum: 4370b8139d6ae82867eb6f7f21d1edccf1d1bdf41c0840920ea80d366c2cd5dbe1ceebb110ee9772aa839b04400faa1572c5c560b507c688ed7b61cea26c0e27
   languageName: node
   linkType: hard
 
