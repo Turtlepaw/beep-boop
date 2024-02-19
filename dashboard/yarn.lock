@@ -3907,10 +3907,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/edge-config@npm:^0.1.0":
+"@vercel/edge-config-fs@npm:0.1.0":
   version: 0.1.0
-  resolution: "@vercel/edge-config@npm:0.1.0"
-  checksum: 2da09a664b848e7c64354857affcab8c92d100e8153f6f1569422129dcae057ba035ac77ddd28e82a4156c5ae29557abe055d7346db1ede804dc6593a44ac241
+  resolution: "@vercel/edge-config-fs@npm:0.1.0"
+  checksum: 4eb27927a1c6a9d77cee4457424e208c3ff7f01e1cd0249b133804d12fd7099bd1aed6a9d9574b122d3bd59289b294a913b4df05bb69aca6091c8a020cbc2121
+  languageName: node
+  linkType: hard
+
+"@vercel/edge-config@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@vercel/edge-config@npm:1.0.2"
+  dependencies:
+    "@vercel/edge-config-fs": 0.1.0
+    ts-essentials: 9.4.1
+  peerDependencies:
+    "@opentelemetry/api": ^1.7.0
+  peerDependenciesMeta:
+    "@opentelemetry/api":
+      optional: true
+  checksum: 97b1d9e8c01ee6d049b8aa27440b6c526b4838184dadeaf6e3e0db15d056f3a691928571ecce7d885347b2f63a6e3ae082b10a15038c8bd5010183df87efc351
   languageName: node
   linkType: hard
 
@@ -4701,7 +4716,7 @@ __metadata:
     "@types/react-highlight": ^0.12.5
     "@types/styled-components": ^5
     "@vercel/analytics": ^0.1.6
-    "@vercel/edge-config": ^0.1.0
+    "@vercel/edge-config": ^1.0.2
     autoprefixer: ^10.4.12
     axios: ^1.6.0
     cookie: ^0.5.0
@@ -8017,6 +8032,18 @@ __metadata:
   version: 0.0.3
   resolution: "tr46@npm:0.0.3"
   checksum: 726321c5eaf41b5002e17ffbd1fb7245999a073e8979085dacd47c4b4e8068ff5777142fc6726d6ca1fd2ff16921b48788b87225cbc57c72636f6efa8efbffe3
+  languageName: node
+  linkType: hard
+
+"ts-essentials@npm:9.4.1":
+  version: 9.4.1
+  resolution: "ts-essentials@npm:9.4.1"
+  peerDependencies:
+    typescript: ">=4.1.0"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 3a7404b88549a005eb19881348905bc76faec2438f1997a9cccb8ecdaaef481b88896fea91353c14435f6d4354259a1c527c438b353353c9de526a9c593ab7d0
   languageName: node
   linkType: hard
 
