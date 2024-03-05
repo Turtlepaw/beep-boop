@@ -1,55 +1,39 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "module": "ESNext",
-        "strict": false,
-        "moduleResolution": "Node",
-        "resolveJsonModule": true,
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "skipDefaultLibCheck": true,
-        "sourceMap": true,
-        "pretty": true,
-        "outDir": "./dist/",
-        "baseUrl": "./",
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "paths": {
-            "@utils/*": [
-                "src/utils/*"
-            ],
-            "@logger": [
-                "src/logger"
-            ],
-            "@config": [
-                "src/configuration"
-            ],
-            "@selects/*": [
-                "src/select_menus/*"
-            ],
-            "@commands/*": [
-                "src/commands/*"
-            ],
-            "@constants": [
-                "src/constants"
-            ],
-            "@icons": [
-                "src/icons"
-            ]
-        }
-    },
-    "exclude": [
-        "node_modules",
-        "./node_modules",
-        "./node_modules/*",
-        "./node_modules/@types/node/index.d.ts",
-        "./wip",
-        "./dashboard",
-        "./archived/",
-        "./archived/*",
-        "archived"
-    ],
-    "include": [
-        "src",
-    ]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "strict": false,
+    "moduleResolution": "Node10",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "sourceMap": true,
+    "pretty": true,
+    "outDir": "./dist/",
+    "baseUrl": "./",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "@utils/*": ["src/utils/*"],
+      "@logger": ["src/logger"],
+      "@config": ["src/configuration"],
+      "@selects/*": ["src/select_menus/*"],
+      "@commands/*": ["src/commands/*"],
+      "@constants": ["src/constants"],
+      "@icons": ["src/icons"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "./node_modules",
+    "./node_modules/*",
+    "./node_modules/@types/node/index.d.ts",
+    "./wip",
+    "./dashboard",
+    "./archived/",
+    "./archived/*",
+    "archived"
+  ],
+  "include": ["src"]
 }

@@ -1,38 +1,64 @@
 import ContextMenu from "../lib/ContextMenuBuilder";
-import { ApplicationCommandType, UserContextMenuCommandInteraction, inlineCode } from "discord.js";
+import {
+  ApplicationCommandType,
+  GuildMember,
+  UserContextMenuCommandInteraction,
+  inlineCode,
+} from "discord.js";
 import { Embed, Icons } from "../configuration";
 import { CleanMember } from "../utils/Clean";
-import { Verifiers } from "@airdot/verifiers";
 import { InteractionError } from "../utils/error";
 
 export default class DeleteThis extends ContextMenu {
-    constructor() {
-        super({
-            Name: "Clean Nickname",
-            CanaryCommand: false,
-            GuildOnly: true,
-            RequiredPermissions: [],
-            SomePermissions: ["ManageNicknames"],
-            Type: ApplicationCommandType.User
-        })
+  constructor() {
+    super({
+      Name: "Clean Nickname",
+      CanaryCommand: false,
+      GuildOnly: true,
+      RequiredPermissions: [],
+      SomePermissions: ["ManageNicknames"],
+      Type: ApplicationCommandType.User,
+    });
+  }
+
+  public async ExecuteContextMenu(
+    interaction: UserContextMenuCommandInteraction
+  ) {
+    await interaction.deferReply({ ephemeral: true });
+    if (!(interaction.targetMember instanceof GuildMember)) {
+      return await InteractionError({
+        interaction,
+        error:
+          "Member provided failed verifiers (returned API member instead of Discord.js member)",
+      });
     }
 
-    public async ExecuteContextMenu(interaction: UserContextMenuCommandInteraction) {
-        if (!Verifiers.Discord.Member(interaction.targetMember)) {
-            return await InteractionError({
-                interaction,
-                error: "Member provided failed verifiers (returned API member instead of Discord.js member)"
-            });
-        }
+    const cleaned = await CleanMember(interaction.targetMember as GuildMember);
+    if (
+      interaction.guild.members.me.roles.highest.position <=
+      interaction.targetMember.roles.highest.position
+    )
+      return await interaction.editReply({
+        content: `${Icons.ConfigureAdvanced} This member's position is equal or higher than mine`,
+        embeds: [
+          new Embed(interaction).setDescription(
+            `${inlineCode(
+              interaction.targetMember.user.username
+            )} -> ${inlineCode(cleaned)}`
+          ),
+        ],
+      });
 
-        const cleaned = await CleanMember(interaction.targetMember);
-        await interaction.reply({
-            content: `${Icons.Flag} Cleaned up their username.`,
-            ephemeral: true,
-            embeds: [
-                new Embed(interaction)
-                    .setDescription(`${inlineCode(interaction.targetMember.user.username)} -> ${inlineCode(cleaned)}`)
-            ]
-        });
-    }
+    await interaction.targetMember.setNickname(cleaned);
+    await interaction.editReply({
+      content: `${Icons.Flag} Cleaned up their username.`,
+      embeds: [
+        new Embed(interaction).setDescription(
+          `${inlineCode(
+            interaction.targetMember.user.username
+          )} -> ${inlineCode(cleaned)}`
+        ),
+      ],
+    });
+  }
 }
