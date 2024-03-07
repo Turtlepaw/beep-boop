@@ -2,7 +2,7 @@
 // 📝 Any edits made in this file will be overwritten
 export enum Icons {
     /**
-        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless)
+        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=1024&quality=lossless)
     */
     Bot = "<:Bot:1040733154656403616>",
     /**
@@ -337,7 +337,7 @@ export enum Icons {
 
 export enum IconURLs {
     /**
-        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless)
+        ![Bot](https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=1024&quality=lossless)
     */
     Bot = "https://cdn.discordapp.com/emojis/1040733154656403616.webp?size=96&quality=lossless",
     /**

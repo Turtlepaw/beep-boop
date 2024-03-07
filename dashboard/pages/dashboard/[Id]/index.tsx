@@ -1,175 +1,236 @@
-import { Box, Button, Center, Grid, GridItem, HStack, Heading, Select, Switch, Text, VStack } from '@chakra-ui/react'
-import { GetServerSideProps } from 'next';
-import Head from 'next/head'
-import React, { useState } from 'react';
-import { AutoCenter } from '../../../components/Layout/AutoCenter';
-import { Experimental } from '../../../components/Beta';
-import { AddIcon, DownIcon } from '../../../components/Icons';
-import { ExternalIcon, Menu } from '../../../components/Layout/Menu';
-import { SideMenu } from '../../../components/SideMenu';
-import { GetChannels } from '../../../utils/api';
-import { DefaultProps, parseUser } from '../../../utils/parse-user';
-import { APIChannel, APIGuild } from '../../../utils/types';
-import { CreateHandler } from '../../../utils/utils';
-import { Configuration } from '../../_app';
-import { Mentions } from '../../../components/Mention';
-import { Permissions } from '../../../utils/permissions';
-import { Meta } from '../../../components/Meta';
-import { Image } from '../../../components/Image';
-import { NotLoggedIn } from '../../../components/User';
-import { SaveAlert } from '../../../components/SaveAlert';
-import { ButtonStyle } from '../../../components/Theming';
+import {
+  Box,
+  Button,
+  Center,
+  Grid,
+  GridItem,
+  HStack,
+  Heading,
+  Select,
+  Switch,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
+import Head from "next/head";
+import React, { useState } from "react";
+import { AutoCenter } from "../../../components/Layout/AutoCenter";
+import { Experimental } from "../../../components/Beta";
+import { AddIcon, DownIcon } from "../../../components/Icons";
+import { ExternalIcon, Menu } from "../../../components/Layout/Menu";
+import { SideMenu } from "../../../components/SideMenu";
+import { GetChannels } from "../../../utils/api";
+import { DefaultProps, parseUser } from "../../../utils/parse-user";
+import { APIChannel, APIGuild } from "../../../utils/types";
+import { CreateHandler } from "../../../utils/utils";
+import { Configuration } from "../../_app";
+import { Mentions } from "../../../components/Mention";
+import { Permissions } from "../../../utils/permissions";
+import { Meta } from "../../../components/Meta";
+import { Image } from "../../../components/Image";
+import { NotLoggedIn } from "../../../components/User";
+import { SaveAlert } from "../../../components/SaveAlert";
+import { ButtonStyle } from "../../../components/Theming";
 
 export interface Props extends DefaultProps {
-    guild: APIGuild | null;
-    channels: APIChannel[];
-    channel?: string;
+  guild: APIGuild | null;
+  channels: APIChannel[];
+  channel?: string;
 }
 
-export function Card(props: {
-    children: React.ReactNode;
-    href: string;
-}) {
-    return (
-        <Center>
-            <a className='card ActiveCard' href={props.href}>
-                <Center className='px-20 py-4'>
-                    <div className='inline'>
-                        {props.children}
-                    </div>
-                    <div className='pl-2'>
-                        <ExternalIcon />
-                    </div>
-                </Center>
-            </a>
+export function Card(props: { children: React.ReactNode; href: string }) {
+  return (
+    <Center>
+      <a className="card ActiveCard" href={props.href}>
+        <Center className="px-20 py-4">
+          <div className="inline">{props.children}</div>
+          <div className="pl-2">
+            <ExternalIcon />
+          </div>
         </Center>
-    )
+      </a>
+    </Center>
+  );
 }
 
-
-
-export function Title({ children }: { children: string; }) {
-    return (
-        <Heading fontSize={17} textTransform="uppercase" fontWeight="semibold">{children}</Heading>
-    );
+export function Title({ children }: { children: string }) {
+  return (
+    <Heading fontSize={17} textTransform="uppercase" fontWeight="semibold">
+      {children}
+    </Heading>
+  );
 }
 
 export default function Home(props: Props) {
-    const { guild, channels } = props;
-    if (guild == null) return <NotLoggedIn {...props} />;
+  const { guild, channels } = props;
+  if (guild == null) return <NotLoggedIn {...props} />;
 
-    const [SavePanel, SetPanel] = useState(false);
-    const [IsSaving, SetSaving] = useState(false);
-    const [Channel, SetChannel] = useState("");
-    const [blockInvites, setBlockInvites] = useState(false);
-    const [oldBlockInvites, setOldBlockInvites] = useState(false);
-    const HandleChannel = CreateHandler(Channel, SetChannel, () => SetPanel(true));
-    const SaveSettings = async () => {
-        //SetAppeals(guild.Id, Channel)
-    };
-    const SaveAll = () => {
-        SetSaving(!IsSaving)
-    }
-    const TogglePanel = () => SetPanel(!SavePanel)
-    const handle = (older: boolean | string, setter: React.Dispatch<React.SetStateAction<boolean | string>>, type: "bool" | "string" = "bool", currentValue: string | boolean, newValue?: string) => {
-        // if (
-        //     (type == "string" && older == newValue) ||
-        //     (type == "bool" && older == currentValue)
-        // ) SetPanel(true);
-        // else SetPanel(false);
-
-        if (type == "string") {
-            setter(newValue);
-        } else if (type == "bool") {
-            setter(!currentValue as boolean);
-        }
-    }
-
-    return (
-        <>
-            {/* <Menu user={props.user} isDashboard mobile={props.mobile} /> */}
-            <Meta>Dashboard</Meta>
-            <div className='!flex'>
-                <SideMenu GuildName={guild.Name} Guilds={props.user.guilds} GuildId={guild.Id} user={props.user} />
-                <AutoCenter className='text-center'>
-                    <Box backgroundColor="#202225" px={8} py={4} mb={4} mt={6} borderRadius="lg">
-                        <Center>
-                            <img src={guild.IconURL || ""} className="rounded-full w-16" />
-                        </Center>
-                        <h1 className='font-bold text-4xl pt-5 pb-3'>
-                            {guild?.Name}
-                        </h1>
-                        <Center>
-                            {/* <Mentions.Role className='w-[8.6rem] font-semibold'></Mentions.Role> */}
-                            <Box backgroundColor={Permissions.TypeString(props.guild) == "Full Access" ? "#3BA55C" : "yellow.500"} p="4.8px" mr={2} borderRadius="full" />{Permissions.TypeString(props.guild)}
-                        </Center>
-                    </Box>
-
-                    <div className='card'>
-                        <Box pt={8} px={8}>
-                            <Title>Server Management</Title>
-                            <HStack pt={2}>
-                                <VStack>
-                                    <Switch onChange={() => handle(oldBlockInvites, setBlockInvites, "bool", blockInvites)} />
-                                </VStack>
-                                <VStack>
-                                    <Text>Block Invite Links</Text>
-                                </VStack>
-                            </HStack>
-                        </Box>
-                        <Box pt={3} float="right" pr={4} pb={4}>
-                            <Button size="sm" variant={ButtonStyle.BrandColor} onClick={() => SetPanel(true)} isLoading={SavePanel} _hover={{}}>Save</Button>
-                        </Box>
-                    </div>
-                    <div className='pt-5'>
-                        <Title>Plugins</Title>
-                        <Card href={`${props.guild?.Id}/appeals`}>
-                            <h1>Appeal Settings</h1>
-                        </Card>
-                    </div>
-                </AutoCenter>
-                {/* <SaveAlert Save={(next) => { next() }} isOpen={SavePanel} setOpen={SetPanel} /> */}
-            </div >
-        </>
+  const [SavePanel, SetPanel] = useState(false);
+  const [IsSaving, SetSaving] = useState(false);
+  const [Channel, SetChannel] = useState("");
+  const [blockInvites, setBlockInvites] = useState(false);
+  const [oldBlockInvites, setOldBlockInvites] = useState(false);
+  const HandleChannel = CreateHandler(Channel, SetChannel, () =>
+    SetPanel(true)
+  );
+  const SaveSettings = async () => {
+    //SetAppeals(guild.Id, Channel)
+  };
+  const SaveAll = () => {
+    SetSaving(!IsSaving);
+  };
+  const TogglePanel = () => SetPanel(!SavePanel);
+  const handle = (
+    older: boolean | string,
+    setter: React.Dispatch<React.SetStateAction<boolean | string>>,
+    type: "bool" | "string" = "bool",
+    currentValue: string | boolean,
+    newValue?: string
+  ) => {
+    if (
+      (type == "string" && older == newValue) ||
+      (type == "bool" && older == currentValue)
     )
+      SetPanel(true);
+    else SetPanel(false);
+
+    if (type == "string") {
+      setter(newValue);
+    } else if (type == "bool") {
+      setter(!currentValue as boolean);
+    }
+  };
+
+  return (
+    <>
+      {/* <Menu user={props.user} isDashboard mobile={props.mobile} /> */}
+      <Meta>Dashboard</Meta>
+      <div className="!flex">
+        <SideMenu
+          GuildName={guild.Name}
+          Guilds={props.user.guilds}
+          GuildId={guild.Id}
+          user={props.user}
+        />
+        <AutoCenter className="text-center">
+          <Box
+            backgroundColor="#202225"
+            px={8}
+            py={4}
+            mb={4}
+            mt={6}
+            borderRadius="lg"
+          >
+            <Center>
+              <img src={guild.IconURL || ""} className="rounded-full w-16" />
+            </Center>
+            <h1 className="font-bold text-4xl pt-5 pb-3">{guild?.Name}</h1>
+            <Center>
+              {/* <Mentions.Role className='w-[8.6rem] font-semibold'></Mentions.Role> */}
+              <Box
+                backgroundColor={
+                  Permissions.TypeString(props.guild) == "Full Access"
+                    ? "#3BA55C"
+                    : "yellow.500"
+                }
+                p="4.8px"
+                mr={2}
+                borderRadius="full"
+              />
+              {Permissions.TypeString(props.guild)}
+            </Center>
+          </Box>
+
+          <div className="card">
+            <Box pt={8} px={8}>
+              <Title>Server Management</Title>
+              <HStack pt={2}>
+                <VStack>
+                  <Switch
+                    onChange={() =>
+                      handle(
+                        oldBlockInvites,
+                        setBlockInvites,
+                        "bool",
+                        blockInvites
+                      )
+                    }
+                  />
+                </VStack>
+                <VStack>
+                  <Text>Block Invite Links</Text>
+                </VStack>
+              </HStack>
+            </Box>
+            <Box pt={3} float="right" pr={4} pb={4}>
+              {/* <Button
+                size="sm"
+                variant={ButtonStyle.BrandColor}
+                onClick={() => SetPanel(true)}
+                isLoading={SavePanel}
+                _hover={{}}
+              >
+                Save
+              </Button> */}
+            </Box>
+          </div>
+          <div className="pt-5">
+            <Title>Plugins</Title>
+            <Card href={`${props.guild?.Id}/appeals`}>
+              <h1>Appeal Settings</h1>
+            </Card>
+          </div>
+        </AutoCenter>
+        <SaveAlert
+          Save={(next) => {
+            next();
+          }}
+          isOpen={SavePanel}
+          setOpen={SetPanel}
+        />
+      </div>
+    </>
+  );
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async function (ctx) {
-    const user = await parseUser(ctx, true);
-    if (!user || user.guilds == null) {
-        return {
-            props: {
-                user: null,
-                guild: null,
-                channels: [],
-                mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
-            }
-        }
-    }
-
-    const guild = user.guilds.find(e => e?.Id == ctx.query.Id);
-
-    if (!guild) {
-        return {
-            props: {
-                user: null,
-                guild: null,
-                channels: [],
-                mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
-            }
-        }
-    }
-
-    const channels = await GetChannels(guild.Id);
-    const channel = null; //await GetAppeals(guild.Id);
-
+export const getServerSideProps: GetServerSideProps<Props> = async function (
+  ctx
+) {
+  const user = await parseUser(ctx, true);
+  if (!user || user.guilds == null) {
     return {
-        props: {
-            user,
-            guild,
-            channels,
-            channel,
-            mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
-        }
+      props: {
+        user: null,
+        guild: null,
+        channels: [],
+        mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
+      },
     };
+  }
+
+  const guild = user.guilds.find((e) => e?.Id == ctx.query.Id);
+
+  if (!guild) {
+    return {
+      props: {
+        user: null,
+        guild: null,
+        channels: [],
+        mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
+      },
+    };
+  }
+
+  const channels = await GetChannels(guild.Id);
+  const channel = null; //await GetAppeals(guild.Id);
+
+  return {
+    props: {
+      user,
+      guild,
+      channels,
+      channel,
+      mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
+    },
+  };
 };
