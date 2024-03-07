@@ -10,7 +10,9 @@ import crypto from "crypto";
 
 export default class ApiUsers extends APIRoute {
   constructor() {
-    super(Routes.Github);
+    super(Routes.Github, {
+      public: true,
+    });
   }
 
   async Post(
