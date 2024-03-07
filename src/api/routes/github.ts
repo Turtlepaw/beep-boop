@@ -15,17 +15,18 @@ export default class ApiUsers extends APIRoute {
     });
   }
 
-  Get(
+  async Get(
     _: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
     res: Response<any, Record<string, any>>
-  ): any {
+  ): Promise<any> {
     return res.status(200).send("This webhook is working");
   }
+
   async Post(
     request: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
     response: Response<any, Record<string, any>>,
     client: Client<boolean>
-  ): any {
+  ): Promise<any> {
     const payload = request.body;
     const incomingSignature = request.headers["x-hub-signature-256"]; // GitHub sends the signature in this header
 
