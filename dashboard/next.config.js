@@ -1,3 +1,4 @@
+const webpack = require("webpack");
 function MultipleLinks(destination, ...sources) {
   return sources.map((e) => ({
     source: e,
