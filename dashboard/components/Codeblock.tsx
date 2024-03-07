@@ -10,9 +10,10 @@ export function Codeblock({ children, className }: BasicProperties) {
     return (
         <div className={`bg-[#2f3136] px-2 py-2 border-[#202225] rounded-[.3rem] ${className}`}>
             <Highlight
-                language="javascript">
-                {children}
-            </Highlight >
+                language="javascript"
+                //@ts-expect-error
+                children={children}
+            />
         </div>
     )
 }
