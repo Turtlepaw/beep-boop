@@ -155,7 +155,7 @@ export async function API(client: Client, token: string) {
     if (verifyAuthentication(auth)) {
       next();
     } else {
-      res.status(401).send("Unauthorized");
+      res.status(401).send("No Access");
     }
   });
 
