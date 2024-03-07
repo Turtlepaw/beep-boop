@@ -16,7 +16,7 @@ import Head from "next/head";
 import React, { useState } from "react";
 import { AutoCenter } from "../../../components/Layout/AutoCenter";
 import { Experimental } from "../../../components/Beta";
-import { AddIcon, DownIcon } from "../../../components/Icons";
+import { AddIcon, DownIcon } from "../../../components/oldIcons";
 import { ExternalIcon, Menu } from "../../../components/Layout/Menu";
 import { SideMenu } from "../../../components/SideMenu";
 import { GetChannels } from "../../../utils/api";

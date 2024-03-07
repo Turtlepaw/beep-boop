@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { GetServerSideProps } from "next";
 import { AutoCenter } from "../../components/Layout/AutoCenter";
-import { AddIcon } from "../../components/Icons";
+import { AddIcon } from "../../components/oldIcons";
 import { Menu } from "../../components/Layout/Menu";
 import { ConfigProps, DefaultProps, parseUser } from "../../utils/parse-user";
 import { GenerateInviteURL } from "../../utils/Invite";
