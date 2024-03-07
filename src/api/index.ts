@@ -118,7 +118,7 @@ export async function API(client: Client, token: string) {
         const auth = req.headers.authorization;
         if (!verifyAuthentication(auth)) {
           console.log(`Unauthorized user at ${route.route} (${type})`.yellow);
-          res.status(401).send("Unauthorized");
+          res.status(401).send("Unauthorized (no access)");
           return false;
         } else return true;
       } else return true;
