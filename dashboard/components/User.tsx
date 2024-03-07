@@ -3,13 +3,13 @@ import { AutoCenter } from "./Layout/AutoCenter";
 import { Meta } from "./Meta";
 import { Image, Images } from "./Image";
 import { Link } from "./Utils/Link";
-import { DefaultProps } from "../utils/parse-user";
+import { DefaultProps, DeprecatedDefaultProps } from "../utils/parse-user";
 import { Menu } from "./Layout/Menu";
 
-export function NotLoggedIn(props: DefaultProps) {
+export function NotLoggedIn(props?: DeprecatedDefaultProps) {
   return (
     <>
-      <Menu {...props} />
+      <Menu />
       <Meta>Not Logged In</Meta>
       <div className="py-20">
         <AutoCenter>

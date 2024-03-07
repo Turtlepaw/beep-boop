@@ -147,7 +147,8 @@ async function StartButtonService(client: Client) {
       const Button: ButtonBuilder = new OriginalFile.default();
       if (Button.CustomId.endsWith("{any}")) {
         //appealbtn_deny -> startswith_appealbtn
-        Button.CustomId = "startwith_" + Button.CustomId.replace("_{any}", "");
+        Button.CustomId =
+          "startwith_" + Button.CustomId.replaceAll("_{any}", "");
       }
       Buttons.push(Button);
     }
@@ -164,6 +165,13 @@ async function StartButtonService(client: Client) {
             Id = interaction.customId
               .replace(e.CustomId.replace("startwith_", ""), "")
               .replace("_", "");
+            console.debug(
+              `Parsed `.gray +
+                e.CustomId.yellow +
+                ` as `.gray +
+                FullId.green +
+                ` (${Id})`.cyan
+            );
             //Check if it starts with the Id
             if (interaction.customId.startsWith(FullId)) {
               CustomId = interaction.customId;

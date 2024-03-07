@@ -1,6 +1,6 @@
 {
   "name": "beep-boop",
-  "packageManager": "yarn@3.4.1",
+  "packageManager": "yarn@4.1.1",
   "dependencies": {
     "@airdot/activities": "^4.1.6",
     "@airdot/linked-roles": "^0.2.8",
@@ -30,6 +30,7 @@
     "node-fetch": "^2.6.7",
     "pino": "^7.0.0-rc.9",
     "puppeteer": "^19.3.0",
+    "readline": "^1.3.0",
     "reflect-metadata": "^0.1.13",
     "request": "^2.88.2",
     "sqlite3": "^5.1.5",

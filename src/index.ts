@@ -1,6 +1,33 @@
 //dotenv stuff
 import * as dotenv from "dotenv";
+import readline from "readline";
 dotenv.config();
+
+readline.emitKeypressEvents(process.stdin);
+
+if (process.stdin.isTTY) process.stdin.setRawMode(true);
+
+console.log("press q to exit, or any key to print log");
+
+process.stdin.on("keypress", (chunk, key) => {
+  if (key && key.name == "q") {
+    process.exit();
+  } else if (key && key.name == "r") {
+    console.log("Restarting...".yellow);
+    const devProcess = spawn("yarn", ["dev"], {
+      cwd: process.cwd(),
+      stdio: "inherit",
+    });
+    devProcess.on("exit", (code) => {
+      if (code === 0) {
+        console.log("TypeScript rebuilt successfully.".green);
+      } else {
+        console.error("Error rebuilding TypeScript.".red);
+      }
+    });
+    process.exit();
+  }
+});
 
 export const TOKEN = process.env.TOKEN;
 export const API_TOKEN = process.env.API_TOKEN;
@@ -50,6 +77,7 @@ import {
 } from "./utils/metadata";
 import { CommandDataManager } from "@utils/Commands";
 import { LoggingService } from "@utils/logging";
+import { spawn } from "child_process";
 
 //Debug logs
 //console.log("DEBUG LOG:".red, process.env)
@@ -225,8 +253,9 @@ export async function HandleBotStart() {
 
   // Set client status
   if (Status != null) {
+    console.log("Updating status".gray);
     client.user.setActivity(Status);
-  }
+  } else console.warn("You haven't set up a custom status".yellow);
 }
 
 client.login(TOKEN);

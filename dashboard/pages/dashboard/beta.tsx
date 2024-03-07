@@ -19,7 +19,7 @@ import { useEffect, useState } from "react";
 import { AuthenticationLoading, NotLoggedIn } from "../../components/User";
 import { Image } from "../../components/Image";
 import { config } from "../../utils/config";
-import { SWRManager } from "../../utils/swr";
+import { SWRManager, useFetchOptions } from "../../utils/swr";
 import { Routes } from "../../utils/api-types";
 import { APIGuild } from "../../utils/types";
 import ErrorMessage from "../../components/ErrorMessage";
@@ -31,30 +31,27 @@ import { Configuration } from "../../utils/configuration";
 import { NextLink } from "../../components/Utils/Link";
 import { Icons } from "../../components/icons";
 import { useSession } from "next-auth/react";
+import { SWRResponse } from "swr";
 
 export type PageProps = DefaultProps & { inviteURL: string } & ConfigProps;
 export default function Home(props: PageProps) {
   const { data, status } = useSession();
-  if (status == "loading") return <AuthenticationLoading {...props} />;
-  if (status == "unauthenticated") return <NotLoggedIn {...props} />;
-  const state = useState("");
   const swr = new SWRManager(props.privateKey, props.apiUri);
-  function fetchData() {
-    return swr.useFetch<APIGuild[]>({
-      route: Routes.GuildsWith + `?id=${data.user.id}`,
-    });
-  }
-  let guilds = fetchData();
-
+  let guilds = swr.useFetch<APIGuild[]>({
+    route: Routes.GuildsWith + `?id=${data?.user?.id}`,
+  });
   const Clipboard = useClipboard(guilds.error);
   const [expanded, expand] = useState(false);
+  if (status == "loading") return <AuthenticationLoading {...props} />;
+  if (status == "unauthenticated") return <NotLoggedIn {...props} />;
+
   console.log(guilds.data);
 
   return (
     <div>
       <AutoCenter className="text-center" pb={5}>
         <Meta>Dashboard</Meta>
-        <Menu user={props.user} isDashboard mobile={props.mobile} />
+        <Menu isDashboard />
         {/* <div className='pt-5 pb-5'>
                     <h1 className='font-bold text-4xl pb-1'>
                         Select a Server

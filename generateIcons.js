@@ -52,7 +52,13 @@ client.on("ready", async () => {
   const DefaultOptions = { size: 1024, extension: "webp" };
   const Text = `// 🤖 This is an automated function that generates emojis from servers
 // 📝 Any edits made in this file will be overwritten
-export enum Icons {
+export interface Icon {
+  toString: () => string;
+  id: string;
+  url: string;
+}
+
+export const Icons: Record<string, Icon> = {
 ${emojis
   .map(
     (e) =>
@@ -62,7 +68,11 @@ ${emojis
         ![${e.name}](${`${e.imageURL(DefaultOptions)}`})
     */\n`
           : ""
-      }    ${reformat(e.name.toString())} = "${e.toString()}"`
+      }    ${reformat(
+        e.name.toString()
+      )}: { toString: () => "${e.toString()}", id: "${
+        e.id
+      }", url: "${e.imageURL(DefaultOptions)}" }`
   )
   .join(",\n")}
 }`;

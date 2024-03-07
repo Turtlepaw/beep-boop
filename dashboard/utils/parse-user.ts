@@ -136,6 +136,12 @@ export interface DefaultProps {
   error?: Errors;
 }
 
+export interface DeprecatedDefaultProps {
+  user?: DiscordUser | null;
+  mobile?: boolean;
+  error?: Errors;
+}
+
 export interface ConfigProps {
   apiUri: string;
   privateKey: string;

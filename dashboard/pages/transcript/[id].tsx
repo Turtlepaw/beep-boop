@@ -9,8 +9,10 @@ import { NotLoggedIn } from "../../components/User";
 import { ApiTicket, TicketMessage } from "../../utils/api-types";
 import { Menu } from "../../components/Layout/Menu";
 import { Markdown } from "../../components/Discord/Markdown";
+import { useSession } from "next-auth/react";
 
-export interface Props extends DefaultProps {
+export interface Props {
+  error?: Errors;
   messages: TicketMessage[];
   ticket: ApiTicket;
 }
@@ -30,6 +32,7 @@ function isToday(_date: any) {
 }
 
 export default function Home(props: Props) {
+  const { data, status } = useSession();
   const { messages, ticket } = props;
 
   function GetUser(id: string) {
@@ -39,12 +42,11 @@ export default function Home(props: Props) {
     else return id;
   }
 
-  console.log(messages);
-  if (props.error == Errors.NotLoggedIn) return <NotLoggedIn {...props} />;
+  // if (status != "authenticated") return <NotLoggedIn />;
   if (messages == null)
     return (
       <>
-        <Menu user={props.user} isDashboard mobile={props.mobile} />
+        <Menu isDashboard />
         <Meta>Ticket Not Found</Meta>
         <div className="pb-20 pt-10">
           <Center>
@@ -70,7 +72,7 @@ export default function Home(props: Props) {
 
   return (
     <>
-      <Menu user={props.user} isDashboard mobile={props.mobile} />
+      <Menu isDashboard />
       <Meta>Ticket Transcript</Meta>
       <div className="py-10">
         <AutoCenter>
@@ -85,7 +87,7 @@ export default function Home(props: Props) {
             ticket-{ticket.Creator.Username.toLowerCase()}
           </h1>
           <p className="text-light">
-            This is the start of a conversation with {ticket.Creator.Username}.
+            This is an archive of a ticket with {ticket.Creator.Username}
           </p>
         </AutoCenter>
         <div className="pt-5">
@@ -93,6 +95,7 @@ export default function Home(props: Props) {
             .filter((e) => e.Content != "")
             .map((message) => {
               const date = new Date(message.Date);
+              //[["STARTING_MESSAGE",{"Components":[{"label":"Close Ticket","style":4},{"label":"Claim Ticket","style":3}],"User":{"Avatar":"https://cdn.discordapp.com/avatars/1028790472879128676/902c86b8a30461ca366f7163e925f5e8.webp?size=4096","Bot":true,"Tag":"Beep Boop Development#0106","Username":"Beep Boop Development"},"Embeds":[{"color":16736350,"title":"Ticket","author":{"name":"Created By Turtlepaw","icon_url":"https://cdn.discordapp.com/avatars/820465204411236362/aa4ece5f0f241fad5e3e554e5ef63887.webp"},"fields":[{"name":"Created At","value":"<t:1675363787:R>","inline":true},{"name":"Created By","value":"<@820465204411236362>","inline":true},{"name":"Reason","value":"No reason provided","inline":true},{"name":"Claimed By","value":"No one has claimed this ticket yet","inline":true}]}]}],["1070778229369077810",{"Content":"You can use ticket transcripts to look through tickets that have been closed","Date":"Thu Feb 02 2023 13:50:23 GMT-0500 (Eastern Standard Time)","Embeds":[],"Id":"1070778229369077810","User":{"Avatar":"https://cdn.discordapp.com/avatars/820465204411236362/aa4ece5f0f241fad5e3e554e5ef63887.png?size=4096","Tag":"Turtlepaw#3806","Username":"Turtlepaw","Bot":false},"Components":[]}],["1070778237141123113",{"Content":"","Date":"Thu Feb 02 2023 13:50:25 GMT-0500 (Eastern Standard Time)","Embeds":[{"type":"rich","title":"<:Flag:1043584066068422747> Add a Reason","description":"Would you like to add a reason to this?","color":5793266}],"Id":"1070778237141123113","User":{"Avatar":"https://cdn.discordapp.com/avatars/1028790472879128676/902c86b8a30461ca366f7163e925f5e8.png?size=4096","Tag":"Beep Boop Development#0106","Username":"Beep Boop Development","Bot":true},"Components":[]}]]
               return (
                 <div key={message.Id} className="hover:bg-[#232429] py-2 pb-5">
                   <div className="pl-10">
@@ -205,19 +208,6 @@ export default function Home(props: Props) {
 export const getServerSideProps: GetServerSideProps<Props> = async function (
   ctx
 ) {
-  const user = await parseUser(ctx);
-  if (!user) {
-    return {
-      props: {
-        user: null,
-        messages: null,
-        ticket: null,
-        error: Errors.NotLoggedIn,
-        mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
-      },
-    };
-  }
-
   const messages = await Transcript(
     Array.isArray(ctx.params.id) ? ctx.params.id[0] : ctx.params.id
   );
@@ -227,9 +217,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (
       props: {
         error: Errors.NotFound,
         messages: null,
-        user,
         ticket: null,
-        mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
       },
     };
   }
@@ -239,10 +227,8 @@ export const getServerSideProps: GetServerSideProps<Props> = async function (
   );
   return {
     props: {
-      user,
       ticket: ticket.fullResult,
       messages: messages.fullResult,
-      mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
     },
   };
 };
