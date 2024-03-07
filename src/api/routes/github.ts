@@ -11,15 +11,21 @@ import crypto from "crypto";
 export default class ApiUsers extends APIRoute {
   constructor() {
     super(Routes.Github, {
-      public: [Method.Post],
+      public: [Method.Post, Method.Get],
     });
   }
 
+  Get(
+    _: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
+    res: Response<any, Record<string, any>>
+  ): any {
+    return res.status(200).send("This webhook is working");
+  }
   async Post(
     request: Request<ParamsDictionary, any, any, ParsedQs, Record<string, any>>,
     response: Response<any, Record<string, any>>,
     client: Client<boolean>
-  ): Promise<any> {
+  ): any {
     const payload = request.body;
     const incomingSignature = request.headers["x-hub-signature-256"]; // GitHub sends the signature in this header
 
