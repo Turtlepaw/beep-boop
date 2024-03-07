@@ -3601,20 +3601,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/next@npm:^10.12.0":
-  version: 10.12.0
-  resolution: "@trpc/next@npm:10.12.0"
-  dependencies:
-    react-ssr-prepass: ^1.5.0
+"@trpc/next@npm:^10.45.1":
+  version: 10.45.1
+  resolution: "@trpc/next@npm:10.45.1"
   peerDependencies:
-    "@tanstack/react-query": ^4.3.8
-    "@trpc/client": 10.12.0
-    "@trpc/react-query": ^10.8.0
-    "@trpc/server": 10.12.0
+    "@tanstack/react-query": ^4.18.0
+    "@trpc/client": 10.45.1
+    "@trpc/react-query": 10.45.1
+    "@trpc/server": 10.45.1
     next: "*"
     react: ">=16.8.0"
     react-dom: ">=16.8.0"
-  checksum: 49dbc03215772f6b16da2d354950c88cf833ea4946857d3515b7e3d9e83819d52b663d2993478a94d789d7c8522b0907b36173d0480be1aa4e5d9933379057ad
+  checksum: d52c2004eff3e84dc020fac36585246ddfcfc2acc30e8ab2ffb3186adda79ef2f46f0c35c4abd76422f06a3c47d0ccac72442fda1f94971ce5463c0801dffa7b
   languageName: node
   linkType: hard
 
@@ -3754,7 +3752,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:18.0.24":
+"@types/react@npm:*":
   version: 18.0.24
   resolution: "@types/react@npm:18.0.24"
   dependencies:
@@ -3762,6 +3760,17 @@ __metadata:
     "@types/scheduler": "*"
     csstype: ^3.0.2
   checksum: 7d06125bac61e1c6661e5dfbeeeb56d5b6d1d4c743292faebaa6b0f30f8414c7af3cadf674923fd86e4ca14e82566ff9156cd40c56786be024600c31b97d6c03
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:18.2.0":
+  version: 18.2.0
+  resolution: "@types/react@npm:18.2.0"
+  dependencies:
+    "@types/prop-types": "*"
+    "@types/scheduler": "*"
+    csstype: ^3.0.2
+  checksum: db3d92b423150222a666329f7aa3023e3e942044700557b8a7d161530847e621aec9f56c9e7f71761b06dd164c8a7b17ad52355863efe80963dffa5537e8e5fd
   languageName: node
   linkType: hard
 
@@ -4676,14 +4685,14 @@ __metadata:
     "@primer/react": ^35.19.0
     "@tanstack/react-query": ^4.24.9
     "@trpc/client": ^10.12.0
-    "@trpc/next": ^10.12.0
+    "@trpc/next": ^10.45.1
     "@trpc/react-query": ^10.12.0
     "@trpc/server": ^10.12.0
     "@types/cookie": ^0.5.1
     "@types/jsonwebtoken": ^8.5.9
     "@types/node": 18.11.7
     "@types/node-fetch": ^2.6.2
-    "@types/react": 18.0.24
+    "@types/react": 18.2.0
     "@types/react-burger-menu": ^2.8.3
     "@types/react-dom": 18.0.8
     "@types/react-highlight": ^0.12.5
@@ -7277,15 +7286,6 @@ __metadata:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: c6b1752c8c5b89c9dc5c27ba985dce693049891c0942a19ec516658fecbba535a4e3b5fa7c815a326617704eeba8ae65f395ef68dd7dfa618acd1dc234774b01
-  languageName: node
-  linkType: hard
-
-"react-ssr-prepass@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "react-ssr-prepass@npm:1.5.0"
-  peerDependencies:
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0
-  checksum: efe89b9f8b2053474613f56dfdbeb41d8ee2e572bf819a39377d95d3e4a9acf8a4a16e28d8d8034cb9ac2b316d11dc9e62217743e4322046d08175eb3b4fed3e
   languageName: node
   linkType: hard
 
