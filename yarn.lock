@@ -2332,10 +2332,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^10.12.0":
-  version: 10.12.0
-  resolution: "@trpc/server@npm:10.12.0"
-  checksum: 0429616b8b1776c156110d53ca897961882f98798a3361280f37702a894af5c9b333782447b95f21882010cc8493a079bacb2e2e6c2071be8be84a7498f2631b
+"@trpc/server@npm:^10.45.1":
+  version: 10.45.1
+  resolution: "@trpc/server@npm:10.45.1"
+  checksum: 62317ce75c14fd6a5701341e85448e2706412a95a008a50a78a78503e09bad3448e0b11c423676529ec060c3565f2e31893555161b72c166c45a5920c137c848
   languageName: node
   linkType: hard
 
@@ -3109,7 +3109,7 @@ __metadata:
     "@airdot/activities": ^4.1.6
     "@airdot/linked-roles": ^0.2.8
     "@airdot/verifiers": ^2.1.0
-    "@trpc/server": ^10.12.0
+    "@trpc/server": ^10.45.1
     "@types/cookie-parser": ^1.4.3
     "@types/cors": ^2
     "@types/express": ^4.17.14
