@@ -4,17 +4,29 @@ import {
   MenuButton,
   MenuItem as ChakraMenuItem,
   MenuList,
+  Spinner,
+  DarkMode,
+  Box,
+  BoxProps,
+  HStack,
 } from "@chakra-ui/react";
 import React from "react";
 import { DefaultProps } from "../../utils/parse-user";
 import { DownIcon, UpIcon } from "../oldIcons";
 import { BrandColor } from "../../utils/styles";
-import { AutoCenter } from "../Layout/AutoCenter";
+import { AutoCenter } from "./AutoCenter";
 import NextLink from "next/link";
 import { Configuration } from "../../utils/configuration";
+import { useWindowSize } from "../../utils/window";
+import { SessionContextValue, signIn, useSession } from "next-auth/react";
+import { Icons } from "../icons";
+import { Image } from "../Image";
 
-export interface MenuProps extends DefaultProps {
+export interface MenuProps {
   isDashboard?: boolean;
+  user?: any;
+  mobile?: boolean;
+  error?: any;
 }
 
 function MenuItem({
@@ -79,17 +91,85 @@ export function Link({
   );
 }
 
+export function Avatar({ ...props }: BoxProps & { transparent?: boolean }) {
+  return (
+    <Box
+      style={{
+        //backgroundColor: "#32343a",
+        background: !props.transparent ? "#32343a" : "transparent",
+        cursor: "pointer",
+        borderRadius: "100%",
+      }}
+      {...props}
+    />
+  );
+}
+
+export function User({ auth }: { auth: SessionContextValue }) {
+  switch (auth.status) {
+    case "authenticated":
+      return (
+        <DarkMode>
+          <ChakraMenu>
+            {({ isOpen }) => (
+              <>
+                <MenuButton className="hover:opacity-75">
+                  <HStack>
+                    <Avatar transparent>
+                      <Image
+                        alt="User Avatar"
+                        src={auth.data?.user?.image}
+                        width={50}
+                        style={{ borderRadius: "100%" }}
+                      />
+                    </Avatar>
+                    {isOpen ? (
+                      <UpIcon className="w-5 inline" />
+                    ) : (
+                      <DownIcon className="w-5 inline" />
+                    )}
+                  </HStack>
+                </MenuButton>
+                <MenuList bgColor="#1e1f22">
+                  <NextLink href="/dashboard">
+                    <MenuItem>My Servers</MenuItem>
+                  </NextLink>
+                  <NextLink href="/api/logout">
+                    <MenuItem className="!text-red-500">Logout</MenuItem>
+                  </NextLink>
+                </MenuList>
+              </>
+            )}
+          </ChakraMenu>
+        </DarkMode>
+      );
+    case "loading":
+      return (
+        <Avatar>
+          <Spinner color={Configuration.Color} size="xs" p={0} />
+        </Avatar>
+      );
+    case "unauthenticated":
+      return (
+        <Avatar onClick={() => signIn("discord")} p={2}>
+          <Icons.Member size={35} />
+        </Avatar>
+      );
+  }
+}
+
 export function Menu(props: MenuProps) {
-  const mobile = props.mobile;
-  const Component = mobile ? AutoCenter : Center;
+  const session = useSession();
+  const { isMobile } = useWindowSize();
+  const Component = isMobile ? AutoCenter : Center;
   return (
     <Center>
-      <div className={`${mobile ? "" : "pr-5 pt-5"} z-50`}>
+      <div className={`${isMobile ? "" : "pr-5 pt-5"} z-50`}>
         <Component>
           <NextLink
             style={BrandColor}
             className={`${
-              mobile ? "pb-1" : "!inline"
+              isMobile ? "pb-1" : "!inline"
             } font-bold text-2xl pr-6 hover:opacity-80`}
             href="/"
           >
@@ -100,42 +180,8 @@ export function Menu(props: MenuProps) {
             <Link href="/dashboard">Dashboard</Link>
             <Link href="/pricing">Pricing</Link>
           </div>
-          <div className={`${mobile ? "pt-1" : ""} !float-right !inline`}>
-            {props.user != null ? (
-              <>
-                <ChakraMenu>
-                  {({ isOpen }) => (
-                    <>
-                      <MenuButton className="hover:opacity-75">
-                        <img
-                          src={props.user.avatarURL}
-                          className="w-8 mr-0.5 rounded-full inline"
-                        />
-                        {isOpen ? (
-                          <UpIcon className="w-5 inline" />
-                        ) : (
-                          <DownIcon className="w-5 inline" />
-                        )}
-                      </MenuButton>
-                      <MenuList bgColor="#1e1f22">
-                        <NextLink href="/dashboard">
-                          <MenuItem>My Servers</MenuItem>
-                        </NextLink>
-                        <NextLink href="/api/logout">
-                          <MenuItem className="!text-red-500">Logout</MenuItem>
-                        </NextLink>
-                      </MenuList>
-                    </>
-                  )}
-                </ChakraMenu>
-              </>
-            ) : (
-              <a href="/api/oauth" className="hover:opacity-80">
-                <div className="bg-gray-600 px-1.5 py-1.5 rounded-full inline-block">
-                  <img src="/Icons/Member.svg" className="w-7" />
-                </div>
-              </a>
-            )}
+          <div className={`${isMobile ? "pt-1" : ""} !float-right !inline`}>
+            <User auth={session} />
           </div>
         </Component>
       </div>

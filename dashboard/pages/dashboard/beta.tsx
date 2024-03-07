@@ -16,7 +16,7 @@ import { ConfigProps, DefaultProps, parseUser } from "../../utils/parse-user";
 import { GenerateInviteURL } from "../../utils/Invite";
 import { Meta } from "../../components/Meta";
 import { useEffect, useState } from "react";
-import { NotLoggedIn } from "../../components/User";
+import { AuthenticationLoading, NotLoggedIn } from "../../components/User";
 import { Image } from "../../components/Image";
 import { config } from "../../utils/config";
 import { SWRManager } from "../../utils/swr";
@@ -30,15 +30,18 @@ import {
 import { Configuration } from "../../utils/configuration";
 import { NextLink } from "../../components/Utils/Link";
 import { Icons } from "../../components/icons";
+import { useSession } from "next-auth/react";
 
 export type PageProps = DefaultProps & { inviteURL: string } & ConfigProps;
 export default function Home(props: PageProps) {
-  if (props.user == null) return <NotLoggedIn {...props} />;
+  const { data, status } = useSession();
+  if (status == "loading") return <AuthenticationLoading {...props} />;
+  if (status == "unauthenticated") return <NotLoggedIn {...props} />;
   const state = useState("");
   const swr = new SWRManager(props.privateKey, props.apiUri);
   function fetchData() {
     return swr.useFetch<APIGuild[]>({
-      route: Routes.GuildsWith + `?id=${props.user.id}`,
+      route: Routes.GuildsWith + `?id=${data.user.id}`,
     });
   }
   let guilds = fetchData();
@@ -175,10 +178,8 @@ export default function Home(props: PageProps) {
 
 export const getServerSideProps: GetServerSideProps<PageProps> =
   async function (ctx) {
-    const user = await parseUser(ctx);
     return {
       props: {
-        user,
         inviteURL: GenerateInviteURL(true),
         mobile: /mobile/i.test(ctx.req.headers["user-agent"] ?? ""),
         apiUri: config.apiUri,
