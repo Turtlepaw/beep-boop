@@ -117,6 +117,7 @@ export async function API(client: Client, token: string) {
       if (route?.public == null || !route?.public?.includes(type)) {
         const auth = req.headers.authorization;
         if (!verifyAuthentication(auth)) {
+          console.log(`Unauthorized user at ${route.route} (${type})`.yellow);
           res.status(401).send("Unauthorized");
           return false;
         } else return true;
@@ -146,7 +147,7 @@ export async function API(client: Client, token: string) {
           : e.route.replaceAll(/\/:\w+/gi, "")
       ).includes(req.path as Routes)
     )
-      next();
+      return next();
     const auth = req.headers.authorization;
     if (verifyAuthentication(auth)) {
       next();
