@@ -136,6 +136,6 @@ log.json
 .vercel
 
 # yarn
-.yarn
+.yarn/cache
 
 src/icons
