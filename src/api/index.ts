@@ -141,7 +141,7 @@ export async function API(client: Client, token: string) {
   //authentication with app.use
   app.use((req, res, next) => {
     console.log(
-      `(app.use): Unauthorized user at ${route.route} (${type})`.yellow
+      `(app.use): Unauthorized user at ${req.path} (${req.method})`.yellow
     );
     if (
       APIRoutes.map((e) =>
