@@ -98,17 +98,17 @@ export async function ServerConfiguration(interaction: RepliableInteraction) {
     new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId("ADD_AS_BIRTHDAY")
-        .setEmoji(Icons.Sync)
+        .setEmoji(Icons.Sync.id)
         .setLabel("Add Birthday as Event")
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setLabel("Error Logs")
-        .setEmoji(Icons.Print)
+        .setEmoji(Icons.Print.id)
         .setCustomId("ERROR_LOG")
         .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
         .setLabel("Advanced")
-        .setEmoji(Icons.Advanced)
+        .setEmoji(Icons.Advanced.id)
         .setStyle(ButtonStyle.Secondary)
         .setCustomId(AdvancedButtonId)
     ),
@@ -122,7 +122,7 @@ export async function ServerConfiguration(interaction: RepliableInteraction) {
             new SelectMenuOptionBuilder()
               .setLabel(v.Label)
               .setDescription(v.Description)
-              .setEmoji(v.Icon)
+              .setEmoji(v.Icon.id)
               .setValue(k)
           )
         )
