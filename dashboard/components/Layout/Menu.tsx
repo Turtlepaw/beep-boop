@@ -3,6 +3,7 @@ import {
   Center,
   MenuButton,
   MenuItem as ChakraMenuItem,
+  MenuItemProps as ChakraMenuProps,
   MenuList,
   Spinner,
   DarkMode,
@@ -18,9 +19,15 @@ import { AutoCenter } from "./AutoCenter";
 import NextLink from "next/link";
 import { Configuration } from "../../utils/configuration";
 import { useWindowSize } from "../../utils/window";
-import { SessionContextValue, signIn, useSession } from "next-auth/react";
+import {
+  SessionContextValue,
+  signIn,
+  signOut,
+  useSession,
+} from "next-auth/react";
 import { Icons } from "../icons";
 import { Image } from "../Image";
+import { signInWithDiscord } from "../../utils/auth";
 
 export interface MenuProps {
   isDashboard?: boolean;
@@ -29,22 +36,14 @@ export interface MenuProps {
   error?: any;
 }
 
-function MenuItem({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
+function MenuItem({ ...props }: ChakraMenuProps) {
   return (
     <ChakraMenuItem
       _hover={{
         bgColor: "#252629",
       }}
-      className={className}
-    >
-      {children}
-    </ChakraMenuItem>
+      {...props}
+    />
   );
 }
 
@@ -134,9 +133,9 @@ export function User({ auth }: { auth: SessionContextValue }) {
                   <NextLink href="/dashboard">
                     <MenuItem>My Servers</MenuItem>
                   </NextLink>
-                  <NextLink href="/api/logout">
-                    <MenuItem className="!text-red-500">Logout</MenuItem>
-                  </NextLink>
+                  <MenuItem onClick={() => signOut()} className="!text-red-500">
+                    Logout
+                  </MenuItem>
                 </MenuList>
               </>
             )}
@@ -151,7 +150,7 @@ export function User({ auth }: { auth: SessionContextValue }) {
       );
     case "unauthenticated":
       return (
-        <Avatar onClick={() => signIn("discord")} p={2}>
+        <Avatar onClick={() => signInWithDiscord()} p={2}>
           <Icons.Member size={35} />
         </Avatar>
       );

@@ -28,14 +28,7 @@ export const config = {
   appUri: process.env.APP_URI, //validateEnv("APP_URI", "http://localhost:3000", true),
   apiUri: process.env.API_URI, //validateEnv("API_URI", "http://localhost:4000", true),
   apiToken: process.env.API_TOKEN, //validateEnv("API_TOKEN", "", true),
-  jwtSecret: process.env.JWT_SECRET, /*validateEnv(
-    "JWT_SECRET",
-    "this is a development value that should be changed in production!!!!!",
-    true
-  ),*/
-  botToken: process.env.TOKEN, /*validateEnv(
-    "TOKEN",
-    "this is your bot's token",
-    true
-  )*/
+  jwtSecret: process.env.JWT_SECRET,
+  botToken: process.env.TOKEN,
+  discordUri: "https://discord.com/api",
 } as const;

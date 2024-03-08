@@ -1,5 +1,6 @@
 // auth.ts
 import "next-auth";
+import { signIn } from "next-auth/react";
 
 // Declare your framework library
 declare module "next-auth" {
@@ -30,4 +31,8 @@ declare module "next-auth/jwt" {
     /** OpenID ID Token */
     idToken?: string;
   }
+}
+
+export function signInWithDiscord() {
+  return signIn("discord", {}, { scope: "identify guilds" });
 }

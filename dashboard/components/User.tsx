@@ -2,9 +2,11 @@ import { Button, Center, Spinner } from "@chakra-ui/react";
 import { AutoCenter } from "./Layout/AutoCenter";
 import { Meta } from "./Meta";
 import { Image, Images } from "./Image";
-import { Link } from "./Utils/Link";
+import { Link, NextLink } from "./Utils/Link";
 import { DefaultProps, DeprecatedDefaultProps } from "../utils/parse-user";
 import { Menu } from "./Layout/Menu";
+import { signIn } from "next-auth/react";
+import { signInWithDiscord } from "../utils/auth";
 
 export function NotLoggedIn(props?: DeprecatedDefaultProps) {
   return (
@@ -33,22 +35,21 @@ export function NotLoggedIn(props?: DeprecatedDefaultProps) {
             to access this page.
           </p>
           <Center className="pt-5">
-            <a className="inline px-1.5" href="/api/oauth">
-              <Button
-                variant="primary"
-                leftIcon={
-                  <Image
-                    width={25}
-                    src="/Icons/PersonLogin.svg"
-                    alt="Login Icon"
-                  />
-                }
-                className="inline"
-              >
-                Login
-              </Button>
-            </a>
-            <a className="inline px-1.5" href="/">
+            <Button
+              onClick={() => signInWithDiscord()}
+              variant="primary"
+              leftIcon={
+                <Image
+                  width={25}
+                  src="/Icons/PersonLogin.svg"
+                  alt="Login Icon"
+                />
+              }
+              className="inline"
+            >
+              Login
+            </Button>
+            <NextLink className="inline px-1.5" href="/">
               <Button
                 variant="secondary"
                 leftIcon={
@@ -62,7 +63,7 @@ export function NotLoggedIn(props?: DeprecatedDefaultProps) {
               >
                 Back Home
               </Button>
-            </a>
+            </NextLink>
           </Center>
         </AutoCenter>
       </div>
