@@ -43,6 +43,7 @@ export const theme = extendTheme({
       },
       body: {
         bg: "#0d0e0f",
+        color: "white",
       },
       input: {
         //bg: mode('grey.extradark', 'grey.extralight')(props),

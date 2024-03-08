@@ -358,6 +358,31 @@ export async function LoggingService(client: Client) {
      * handle this we could register for all events
      * and notify all registered servers
      */
+    // Object.entries(Events).map((e) => {
+    //   const eventName = e[0]
+    //   client.on(eventName, (...args) => {
+    //     console.log("Received".gray, eventName.cyan);
+    //     if (
+    //       eventName == Events.MessageUpdate &&
+    //       args[0]?.author?.id == client.user.id
+    //     )
+    //       return;
+    //     if (args.find((e) => e?.guild?.id != guild.id) != null) return;
+    //     const handler = Handlers[v[1]][eventName];
+    //     try {
+    //       let embed = new Embed(guild).setTitle(title);
+    //       const result = await handler(embed, ...args);
+    //       if (typeof result == "string") embed.setDescription(result);
+    //       if (handler?.toString != null) result.toString();
+    //       if (typeof result == "object") embed = result;
+    //       await Channel.send({
+    //         embeds: [embed],
+    //       });
+    //     } catch (e) {
+    //       Logger.error(`Couldn't log event (${eventName}): ${e}`);
+    //     }
+    //   });
+    // });
     Object.entries(ConfigurationEvents)
       .filter((v) => config.Logging.Categories.has(v[1]))
       .forEach((v) => {
