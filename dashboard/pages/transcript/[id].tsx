@@ -125,9 +125,13 @@ export default function Home(props: Props) {
         <div className="pt-5">
           {messages
             .filter((e) => e.Content != "")
+            .sort((a, b) => {
+              const dateA = new Date(a.Date);
+              const dateB = new Date(b.Date);
+              return dateA.getTime() - dateB.getTime();
+            })
             .map((message) => {
               const date = new Date(message.Date);
-              //[["STARTING_MESSAGE",{"Components":[{"label":"Close Ticket","style":4},{"label":"Claim Ticket","style":3}],"User":{"Avatar":"https://cdn.discordapp.com/avatars/1028790472879128676/902c86b8a30461ca366f7163e925f5e8.webp?size=4096","Bot":true,"Tag":"Beep Boop Development#0106","Username":"Beep Boop Development"},"Embeds":[{"color":16736350,"title":"Ticket","author":{"name":"Created By Turtlepaw","icon_url":"https://cdn.discordapp.com/avatars/820465204411236362/aa4ece5f0f241fad5e3e554e5ef63887.webp"},"fields":[{"name":"Created At","value":"<t:1675363787:R>","inline":true},{"name":"Created By","value":"<@820465204411236362>","inline":true},{"name":"Reason","value":"No reason provided","inline":true},{"name":"Claimed By","value":"No one has claimed this ticket yet","inline":true}]}]}],["1070778229369077810",{"Content":"You can use ticket transcripts to look through tickets that have been closed","Date":"Thu Feb 02 2023 13:50:23 GMT-0500 (Eastern Standard Time)","Embeds":[],"Id":"1070778229369077810","User":{"Avatar":"https://cdn.discordapp.com/avatars/820465204411236362/aa4ece5f0f241fad5e3e554e5ef63887.png?size=4096","Tag":"Turtlepaw#3806","Username":"Turtlepaw","Bot":false},"Components":[]}],["1070778237141123113",{"Content":"","Date":"Thu Feb 02 2023 13:50:25 GMT-0500 (Eastern Standard Time)","Embeds":[{"type":"rich","title":"<:Flag:1043584066068422747> Add a Reason","description":"Would you like to add a reason to this?","color":5793266}],"Id":"1070778237141123113","User":{"Avatar":"https://cdn.discordapp.com/avatars/1028790472879128676/902c86b8a30461ca366f7163e925f5e8.png?size=4096","Tag":"Beep Boop Development#0106","Username":"Beep Boop Development","Bot":true},"Components":[]}]]
               return (
                 <div key={message.Id} className="hover:bg-[#232429] py-2 pb-5">
                   <div className="pl-10">
@@ -139,9 +143,30 @@ export default function Home(props: Props) {
                     />
                     <div className="inline-grid pl-5">
                       <div>
-                        <span className="inline-block font-semibold">
-                          {message.User.Username}
-                        </span>
+                        <Tooltip
+                          hasArrow
+                          className="inline-block"
+                          label={
+                            <Box className="pr-2" color={"white"}>
+                              {message.User.Id}
+                            </Box>
+                          }
+                          placement="top"
+                          shouldWrapChildren
+                          bg="#292b2f"
+                          borderRadius={6}
+                          padding="4px 2px 4px 12px"
+                        >
+                          <span
+                            className="inline-block font-semibold"
+                            style={{
+                              color: message.User.Color ?? "white",
+                              cursor: "pointer",
+                            }}
+                          >
+                            {message.User.Username}
+                          </span>
+                        </Tooltip>
                         {message.User.Bot && (
                           <Box
                             backgroundColor="#5865f2"
@@ -223,12 +248,18 @@ export default function Home(props: Props) {
                                   minute: "2-digit",
                                 })
                                 .slice()}
+                              {message?.isEdit && " • Edited"}
+                              {message?.Deleted && " • Deleted"}
                             </Text>
                           </Tooltip>
                         </span>
                       </div>
                       <div>
-                        {message.Content}
+                        {message.Content?.length > 0 && (
+                          <Markdown getUser={GetUser}>
+                            {message.Content}
+                          </Markdown>
+                        )}
                         {message.Embeds?.length > 0 &&
                           message.Embeds.map((embed) => (
                             <div
