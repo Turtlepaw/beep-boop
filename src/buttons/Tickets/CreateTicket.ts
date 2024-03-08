@@ -49,7 +49,7 @@ export default class CreateTicket extends Button {
       SkipReason = "SKIP_ADD_REASON_TICKET",
     }
 
-    const Buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
+    let Buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(Id.AddReason)
         //.setEmoji(Icons.Flag)
@@ -115,7 +115,7 @@ export default class CreateTicket extends Button {
     let Reason = "No reason provided";
     let Interaction: ModalSubmitInteraction | ButtonInteraction =
       ButtonInteraction;
-    if (ButtonInteraction.customId == "ADD_REASON") {
+    if (ButtonInteraction.customId == Id.AddReason) {
       ButtonInteraction.showModal(Modal);
       const ModalInteraction = await ButtonInteraction.awaitModalSubmit({
         time: 0,
@@ -123,6 +123,15 @@ export default class CreateTicket extends Button {
 
       Reason = ModalInteraction.fields.getTextInputValue("REASON");
       Interaction = ModalInteraction;
+      Buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
+        Buttons.components.map((e) => {
+          return e.setDisabled(true);
+        })
+      );
+
+      Message.edit({
+        components: [Buttons],
+      });
     }
 
     const TicketChannel = await Channel.children.create({

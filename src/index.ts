@@ -11,6 +11,7 @@ console.log("press q to exit, or any key to print log");
 
 process.stdin.on("keypress", (chunk, key) => {
   if (key && key.name == "q") {
+    console.log("Exiting...".red);
     process.exit();
   } else if (key && key.name == "r") {
     console.log("Restarting...".yellow);

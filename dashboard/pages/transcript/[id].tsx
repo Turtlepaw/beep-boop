@@ -31,6 +31,37 @@ function isToday(_date: any) {
   );
 }
 
+function formatTimestamp(inputString: string): string {
+  const regex = /<t:(\d+):R>/g;
+  return inputString.replace(regex, (_, timestamp) => {
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timeDifference = currentTime - parseInt(timestamp, 10);
+
+    let formattedTimestamp = "";
+    if (timeDifference < 60) {
+      formattedTimestamp = "1 minute ago";
+    } else if (timeDifference < 3600) {
+      const minutes = Math.floor(timeDifference / 60);
+      formattedTimestamp = `${minutes} minutes ago`;
+    } else if (timeDifference < 86400) {
+      const hours = Math.floor(timeDifference / 3600);
+      formattedTimestamp = `${hours} hours ago`;
+    } else {
+      const days = Math.floor(timeDifference / 86400);
+      formattedTimestamp = `${days} days ago`;
+    }
+
+    return (
+      <span style={{ backgroundColor: "white" }}>{formattedTimestamp}</span>
+    );
+  });
+}
+
+function isTimestampString(str: string): boolean {
+  const regex = /^<t:\d+:\w+>$/;
+  return regex.test(str);
+}
+
 export default function Home(props: Props) {
   const { data, status } = useSession();
   const { messages, ticket } = props;
@@ -156,15 +187,43 @@ export default function Home(props: Props) {
                           className="pl-2 text-light"
                           suppressHydrationWarning
                         >
-                          {isToday(message.Date)
-                            ? "Today at"
-                            : `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`}{" "}
-                          {date
-                            .toLocaleTimeString("us", {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
-                            .slice()}
+                          <Tooltip
+                            hasArrow
+                            className="inline-block"
+                            label={
+                              <Box className="pr-2" color={"white"}>
+                                {date.toLocaleDateString("en-US", {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                })}
+                                ,{" "}
+                                {date.toLocaleTimeString("en-US", {
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                })}
+                              </Box>
+                            }
+                            placement="top"
+                            shouldWrapChildren
+                            bg="#292b2f"
+                            borderRadius={6}
+                            padding="4px 2px 4px 12px"
+                          >
+                            <Text className="text-light" cursor={"default"}>
+                              {isToday(message.Date)
+                                ? "Today at"
+                                : `${date.getMonth()}/${date.getDay()}/${date.getFullYear()}`}{" "}
+                              {date
+                                .toLocaleTimeString("us", {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                })
+                                .slice()}
+                            </Text>
+                          </Tooltip>
                         </span>
                       </div>
                       <div>
@@ -173,7 +232,7 @@ export default function Home(props: Props) {
                           message.Embeds.map((embed) => (
                             <div
                               key={embed.title}
-                              className="pl-4 rounded-sm mt-1 py-2 border-l-4 border-l-[#5865f2] bg-[#2F3136]"
+                              className="pl-4 pr-4 rounded-md mt-1 py-2 border-l-[5px] border-l-[#5865f2] bg-[#2F3136]"
                             >
                               <h1 className="font-bold text-lg pb-2">
                                 {embed.title}
