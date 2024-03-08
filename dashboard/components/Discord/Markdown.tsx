@@ -33,7 +33,6 @@ export function Markdown({ children, getUser }: MarkdownProperties) {
     //if (!timestampRegex.test(mention)) return ` ${mention} `;
     if (timestampRegex.test(mention)) {
       const data = /^<t:(\d+):\w+>$/gi.exec(mention);
-      console.log(data, mention);
       if (data === null || data.length <= 0) {
         newArray.push(<Mention>Unknown Timestamp</Mention>);
       } else {
