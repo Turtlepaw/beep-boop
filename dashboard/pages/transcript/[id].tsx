@@ -33,6 +33,7 @@ function isToday(_date: any) {
 
 function formatTimestamp(inputString: string): string {
   const regex = /<t:(\d+):R>/g;
+  //@ts-expect-error
   return inputString.replace(regex, (_, timestamp) => {
     const currentTime = Math.floor(Date.now() / 1000);
     const timeDifference = currentTime - parseInt(timestamp, 10);
