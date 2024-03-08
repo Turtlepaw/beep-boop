@@ -3,7 +3,6 @@ import {
   Channel,
   Client,
   Collection,
-  ComponentType,
   Events,
   GuildBasedChannel,
   GuildScheduledEvent,
@@ -18,19 +17,19 @@ import {
   User,
   bold,
   codeBlock,
+  inlineCode,
   time,
 } from "discord.js";
 import { ConfigurationEvents, GuildEvents } from "../@types/Logging";
 import { Embed } from "./EmbedBuilder";
 import { Logger } from "@logger";
 import { Icons } from "@icons";
-import e from "express";
 
 export type LogEvents = {
   [key in ConfigurationEvents]: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: (
       embed: Embed,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ...args: any
     ) =>
       | string
@@ -43,9 +42,9 @@ export type LogEvents = {
 
 const d = {
   mention: (user: User) => `${user.toString()} (${user.id})`,
-  //@ts-expect-error aaa
   channel: (channel: Channel) =>
     `${channel.toString()}${
+      //@ts-expect-error aaa
       typeof channel?.name == "string" ? ` (${channel.name})` : ""
     }`,
   ot: Icons.Dot,
@@ -179,7 +178,28 @@ const Handlers = {
       newPresence: Presence
     ) => {
       ebd.setTitle("Member Status Updated");
+      ebd
+        .setAuthor({
+          name: `${newPresence.member.displayName}`,
+          iconURL: newPresence.member.displayAvatarURL({
+            extension: "webp",
+            size: 1024,
+          }),
+        })
+        .setFooter({
+          text: newPresence.member.id,
+        });
       // catch updates
+      if (oldPresence.status != newPresence.status) {
+        ebd.addFields({
+          name: `Status`,
+          value: `${inlineCode(oldPresence.status)} -> ${inlineCode(
+            newPresence.status
+          )}`,
+          inline: true,
+        });
+      }
+
       return ebd;
     },
   },
@@ -323,15 +343,29 @@ export async function LoggingService(client: Client) {
     const config = await client.Storage.Configuration.forGuild(guild);
     if (config.Logging.Status == false || config.Logging.Categories.size == 0)
       return;
+    console.log(
+      config.Logging.Categories,
+      Object.entries(ConfigurationEvents).map((e) => e[1])
+    );
     const Channel = (await guild.channels.fetch(
       config.Logging.Channel
     )) as GuildTextBasedChannel;
+    /**
+     * Side Note:
+     * Beep Boop currently fetches all guilds and
+     * registers events per server, this won't work
+     * if the user changes their configuration, to
+     * handle this we could register for all events
+     * and notify all registered servers
+     */
     Object.entries(ConfigurationEvents)
       .filter((v) => config.Logging.Categories.has(v[1]))
       .forEach((v) => {
         const events = GuildEvents[v[1]];
         Object.entries(events).forEach(([eventName, title]) => {
+          console.log("Registering for".gray, eventName.cyan);
           client.on(eventName, async (...args) => {
+            console.log("Received".gray, eventName.cyan);
             if (
               eventName == Events.MessageUpdate &&
               args[0]?.author?.id == client.user.id
