@@ -62,8 +62,9 @@ export default function Home(props: Props) {
     fullURL: `${props.apiUri}/v1/guilds?id=${data?.user?.id}`,
     route: null,
   });
-  const guild =
-    guilds.data != null ? guilds.data.find((e) => e.Id == query.Id) : null;
+  const guild = Array.isArray(guilds.data)
+    ? guilds.data.find((e) => e.Id == query.Id)
+    : null;
 
   const [SavePanel, SetPanel] = useState(false);
   const [IsSaving, SetSaving] = useState(false);
@@ -137,6 +138,8 @@ export default function Home(props: Props) {
               {Permissions.TypeString(guild)}
             </Center>
           </Box>
+
+          <swr.Error response={guilds} />
 
           <div className="card">
             <Box pt={8} px={8}>

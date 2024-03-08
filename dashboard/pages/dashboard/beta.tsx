@@ -78,45 +78,7 @@ export default function Home(props: PageProps) {
             <Spinner />
           </Center>
         )}
-        {guilds.error && (
-          <VStack pt={2}>
-            <ErrorMessage>
-              Something went wrong, try again in a few minutes.
-            </ErrorMessage>
-            <Box
-              cursor="pointer"
-              onClick={() => expand(!expanded)}
-              className="hover:opacity-80"
-            >
-              {expanded ? "Less" : "More"} Details{" "}
-              {expanded ? <UpIcon /> : <DownIcon />}
-            </Box>
-            {expanded && (
-              <Box pb={5} pt={3}>
-                <Code
-                  p={5}
-                  mx={20}
-                  overflow="hidden"
-                  backgroundColor="#2f3136"
-                  textColor="white"
-                  borderColor="#202225"
-                  borderWidth={1.3}
-                  borderRadius="md"
-                  lang="js"
-                >
-                  {JSON.stringify(guilds.error)}
-                  {/* {isCopied ?
-                                    <CheckIcon color='#248045' /> :
-                                    <CopyIcon color={Configuration.Color} onClick={() => {
-                                        Clipboard.onCopy();
-                                        setCopy(true);
-                                    }} />
-                                } */}
-                </Code>
-              </Box>
-            )}
-          </VStack>
-        )}
+        <swr.Error response={guilds} />
         {guilds.data && (
           <div className="FlexContainer2">
             {guilds.data.map((e) => {

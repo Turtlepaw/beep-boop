@@ -7,21 +7,19 @@ import {
   TextProps,
   VStack,
 } from "@chakra-ui/react";
-import React, { PropsWithChildren, useState } from "react";
-import { slide as Menu } from "react-burger-menu";
-import Select from "react-select";
+import React from "react";
 import { Configuration } from "../pages/_app";
-import { APIGuild, DiscordUser } from "../utils/types";
-import { colourStyles } from "./Select";
+import { APIGuild } from "../utils/types";
 import { AutoCenter } from "./Layout/AutoCenter";
 import { BrandColor } from "./Utils/Link";
 import { RobotIcon } from "./Robot";
-import { LightText, LighterText } from "../utils/styles";
+import { LighterText } from "../utils/styles";
 import { Autocomplete } from "@primer/react";
 import Link from "next/link";
 import { Image } from "./Image";
 import { SWRResponse } from "swr";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 function MenuItem({
   children,
@@ -70,6 +68,7 @@ export function SideMenu({
   GuildId: string;
 }) {
   const { data, status } = useSession();
+  const router = useRouter();
   if (status != "authenticated") return <div></div>;
   return (
     <div className="SideMenu overflow-hidden !w-[18rem] px-8 py-5 overflow-y-auto border-r border-r-[#33353b] mr-10">
@@ -100,6 +99,26 @@ export function SideMenu({
         >
           <img src="/Icons/Return.svg" className="inline" /> Change Server
         </Link>
+        <Autocomplete>
+          <Autocomplete.Input />
+          <Autocomplete.Overlay>
+            <Autocomplete.Menu
+              selectedItemIds={[]}
+              items={
+                !Array.isArray(Guilds?.data)
+                  ? []
+                  : Guilds.data.map((e) => ({
+                      text: e.Name,
+                      id: e.Id,
+                    }))
+              }
+              onSelectedChange={(data) => {
+                router.push(`/dashboard/${data[0].id}`);
+              }}
+              aria-labelledby="autocompleteLabel"
+            />
+          </Autocomplete.Overlay>
+        </Autocomplete>
       </Center>
       <AutoCenter className="pt-2">
         <HStack>

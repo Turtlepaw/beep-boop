@@ -3,6 +3,10 @@ import { Routes } from "./api-types";
 import { config } from "./config";
 import fetch, { AxiosResponse } from "axios";
 import { Methods } from "./api";
+import { Box, Code, VStack } from "@chakra-ui/react";
+import ErrorMessage from "../components/ErrorMessage";
+import { DownIcon, UpIcon } from "../components/oldIcons";
+import { useState } from "react";
 
 export interface useFetchOptions extends SWRConfiguration {
   method?: Methods;
@@ -74,6 +78,51 @@ export class SWRManager {
       options?.fullURL ?? this.url + options.route,
       this.createFetcher(options.method, options.body),
       options
+    );
+  }
+
+  Error({ response }: { response: SWRResponse<any, any, any> }) {
+    const [expanded, expand] = useState(false);
+    return (
+      response.error && (
+        <VStack pt={2}>
+          <ErrorMessage>
+            Something went wrong, try again in a few minutes.
+          </ErrorMessage>
+          <Box
+            cursor="pointer"
+            onClick={() => expand(!expanded)}
+            className="hover:opacity-80"
+          >
+            {expanded ? "Less" : "More"} Details{" "}
+            {expanded ? <UpIcon /> : <DownIcon />}
+          </Box>
+          {expanded && (
+            <Box pb={5} pt={3}>
+              <Code
+                p={5}
+                mx={20}
+                overflow="hidden"
+                backgroundColor="#2f3136"
+                textColor="white"
+                borderColor="#202225"
+                borderWidth={1.3}
+                borderRadius="md"
+                lang="js"
+              >
+                {JSON.stringify(response.error)}
+                {/* {isCopied ?
+                                <CheckIcon color='#248045' /> :
+                                <CopyIcon color={Configuration.Color} onClick={() => {
+                                    Clipboard.onCopy();
+                                    setCopy(true);
+                                }} />
+                            } */}
+              </Code>
+            </Box>
+          )}
+        </VStack>
+      )
     );
   }
 }
