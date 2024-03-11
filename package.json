@@ -40,7 +40,7 @@
     "typeorm": "^0.3.11",
     "unzipper": "^0.10.11",
     "utilsfordiscordjs": "^1.1.8",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.1"
   },
   "scripts": {
     "build": "rm -rf ./dist && tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
@@ -68,7 +68,7 @@
     "@types/node-fetch": "^2.6.2",
     "@types/request": "^2.48.8",
     "@types/unzipper": "^0.10.5",
-    "@types/uuid": "^9.0.0",
+    "@types/uuid": "^9.0.8",
     "@typescript-eslint/eslint-plugin": "^6.19.0",
     "@typescript-eslint/parser": "^6.19.0",
     "eslint": "^8.56.0",
