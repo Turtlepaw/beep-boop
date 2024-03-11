@@ -3156,7 +3156,7 @@ __metadata:
     tsconfig-paths: "npm:^3.14.2"
     typeorm: "npm:^0.3.11"
     typescript: "npm:^5.3.3"
-    unzipper: "npm:^0.10.11"
+    unzipper: "npm:^0.10.14"
     utilsfordiscordjs: "npm:^1.1.8"
     uuid: "npm:^9.0.0"
   languageName: unknown
@@ -8037,9 +8037,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unzipper@npm:^0.10.11":
-  version: 0.10.11
-  resolution: "unzipper@npm:0.10.11"
+"unzipper@npm:^0.10.14":
+  version: 0.10.14
+  resolution: "unzipper@npm:0.10.14"
   dependencies:
     big-integer: "npm:^1.6.17"
     binary: "npm:~0.3.0"
@@ -8051,7 +8051,7 @@ __metadata:
     listenercount: "npm:~1.0.1"
     readable-stream: "npm:~2.3.6"
     setimmediate: "npm:~1.0.4"
-  checksum: 10/8691fb5ebef4ae6b379102eef3a92513b2aa4f1ff54b13a2bafa72fe3eaaff4b86e9189ef8538728fca3a10817c3e4649420bcf3447ece921f6bc2f7603a075a
+  checksum: 10/3f7b44f3c7253bc08da2988baf559f00b261c5340625e6e5206c5d73b4dea409b89caae4048346cf9f215d3cdf930e3bdee98edac5e0abc843eed765c52b398d
   languageName: node
   linkType: hard
 
