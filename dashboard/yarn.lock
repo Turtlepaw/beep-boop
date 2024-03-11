@@ -3754,10 +3754,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/server@npm:^10.45.1":
-  version: 10.45.1
-  resolution: "@trpc/server@npm:10.45.1"
-  checksum: 10/f502705c65e9b2a47cfecad72e091dcd27873af0ba61d0de1f0c335ef398da142e8647ae220100c568450c0a306c07258842797db9fc819ca66174ea4ddf8cbb
+"@trpc/server@npm:^10.45.2":
+  version: 10.45.2
+  resolution: "@trpc/server@npm:10.45.2"
+  checksum: 10/0f3fdb5cd505c9f6947e00d67d61663cf87c51c9a591e5f3443f62b37b7d78e1f729cc6784090ec46e4a3c38e73277170590be8eeb8c4ee3dffcc80a3557c1a4
   languageName: node
   linkType: hard
 
@@ -5068,7 +5068,7 @@ __metadata:
     "@trpc/client": "npm:^10.45.1"
     "@trpc/next": "npm:^10.45.1"
     "@trpc/react-query": "npm:^10.45.1"
-    "@trpc/server": "npm:^10.45.1"
+    "@trpc/server": "npm:^10.45.2"
     "@types/cookie": "npm:^0.6.0"
     "@types/jsonwebtoken": "npm:^9.0.6"
     "@types/node": "npm:20.11.25"
