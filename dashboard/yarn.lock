@@ -3717,12 +3717,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@trpc/client@npm:^10.45.1":
-  version: 10.45.1
-  resolution: "@trpc/client@npm:10.45.1"
+"@trpc/client@npm:^10.45.2":
+  version: 10.45.2
+  resolution: "@trpc/client@npm:10.45.2"
   peerDependencies:
-    "@trpc/server": 10.45.1
-  checksum: 10/eaaf4df3696277bff4cddd4dd8b65ecc1dbe06aaa50030e485f36e3a84725c853a41b64304b8d470078f71728b58da4fce2f361bd121c8777f4daf14dcacc8e8
+    "@trpc/server": 10.45.2
+  checksum: 10/a772f7ed529d1753412f04abbd84432e49eadec626fc568354349832995aa06f41d42f434ec4152f2531d125a719a332b935ae2adbbc262e2a6e569ec761f260
   languageName: node
   linkType: hard
 
@@ -5065,7 +5065,7 @@ __metadata:
     "@fluentui/react-icons": "npm:^2.0.231"
     "@primer/react": "npm:^36.10.0"
     "@tanstack/react-query": "npm:^5.25.0"
-    "@trpc/client": "npm:^10.45.1"
+    "@trpc/client": "npm:^10.45.2"
     "@trpc/next": "npm:^10.45.1"
     "@trpc/react-query": "npm:^10.45.1"
     "@trpc/server": "npm:^10.45.1"
