@@ -2542,10 +2542,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^9.0.0":
-  version: 9.0.0
-  resolution: "@types/uuid@npm:9.0.0"
-  checksum: 10/59ae56d9547c8758588659da2a2b4c97cce79c2aae1798c892bb29452ef08e87859dea2ec3a66bfa88d0d2153147520be2b1893be920f9f0bc9c53a3207ea6aa
+"@types/uuid@npm:^9.0.8":
+  version: 9.0.8
+  resolution: "@types/uuid@npm:9.0.8"
+  checksum: 10/b8c60b7ba8250356b5088302583d1704a4e1a13558d143c549c408bf8920535602ffc12394ede77f8a8083511b023704bc66d1345792714002bfa261b17c5275
   languageName: node
   linkType: hard
 
@@ -3117,7 +3117,7 @@ __metadata:
     "@types/node-fetch": "npm:^2.6.2"
     "@types/request": "npm:^2.48.8"
     "@types/unzipper": "npm:^0.10.5"
-    "@types/uuid": "npm:^9.0.0"
+    "@types/uuid": "npm:^9.0.8"
     "@typescript-eslint/eslint-plugin": "npm:^6.19.0"
     "@typescript-eslint/parser": "npm:^6.19.0"
     axios: "npm:^1.6.6"
@@ -3158,7 +3158,7 @@ __metadata:
     typescript: "npm:^5.3.3"
     unzipper: "npm:^0.10.11"
     utilsfordiscordjs: "npm:^1.1.8"
-    uuid: "npm:^9.0.0"
+    uuid: "npm:^9.0.1"
   languageName: unknown
   linkType: soft
 
@@ -8130,6 +8130,15 @@ __metadata:
   bin:
     uuid: dist/bin/uuid
   checksum: 10/23857699a616d1b48224bc2b8440eae6e57d25463c3a0200e514ba8279dfa3bde7e92ea056122237839cfa32045e57d8f8f4a30e581d720fd72935572853ae2e
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^9.0.1":
+  version: 9.0.1
+  resolution: "uuid@npm:9.0.1"
+  bin:
+    uuid: dist/bin/uuid
+  checksum: 10/9d0b6adb72b736e36f2b1b53da0d559125ba3e39d913b6072f6f033e0c87835b414f0836b45bcfaf2bdf698f92297fea1c3cc19b0b258bc182c9c43cc0fab9f2
   languageName: node
   linkType: hard
 
