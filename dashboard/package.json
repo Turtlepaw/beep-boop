@@ -14,7 +14,7 @@
     "@emotion/styled": "^11.11.0",
     "@fluentui/react-icons": "^2.0.231",
     "@primer/react": "^36.10.0",
-    "@tanstack/react-query": "^5.25.0",
+    "@tanstack/react-query": "^5.28.4",
     "@trpc/client": "^10.45.1",
     "@trpc/next": "^10.45.1",
     "@trpc/react-query": "^10.45.1",
