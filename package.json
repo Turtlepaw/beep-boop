@@ -17,7 +17,7 @@
     "cors": "^2.8.5",
     "decancer": "3.0.1",
     "discord-linked-roles": "^0.2.1",
-    "discord-trivia": "^2.0.0",
+    "discord-trivia": "^3.0.2",
     "discord.js": "latest",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
